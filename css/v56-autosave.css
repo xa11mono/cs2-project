@@ -1,0 +1,47 @@
+.v56-autosave-section { border: 1px solid rgba(65, 130, 190, .3); border-radius: 8px; padding: 9px !important; background: rgba(40, 82, 120, .08); }
+.v56-autosave-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.v56-autosave-actions button { min-width: 0; white-space: normal; line-height: 1.25; }
+.v56-autosave-status { margin-top: 8px; padding: 7px 8px; border-radius: 6px; background: rgba(130, 145, 165, .12); color: var(--text-muted, #aeb8c5); font-size: 10px; line-height: 1.4; overflow-wrap: anywhere; }
+.v56-autosave-status[data-state="ok"] { color: #8ed4ad; background: rgba(56, 150, 100, .12); }
+.v56-autosave-status[data-state="warn"] { color: #e8c274; background: rgba(190, 145, 45, .12); }
+.v56-autosave-status[data-state="error"] { color: #ff9292; background: rgba(190, 55, 55, .12); }
+.v56-autosave-note { margin-top: 6px; color: var(--text-muted, #8e9aa9); font-size: 9px; line-height: 1.45; }
+@media (max-width: 520px) { .v56-autosave-actions { grid-template-columns: 1fr; } }
+
+/* v59 · Always-visible folder save shortcut in the sidebar. */
+.v59-quick-autosave { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:7px; padding-top:7px; border-top:1px solid var(--border); }
+.v59-quick-autosave button { min-width:0; white-space:normal; line-height:1.25; font-size:9px !important; }
+.v59-quick-autosave button:first-child { grid-column:1 / -1; border-color:rgba(70,180,125,.45); color:#9ee0ba; }
+#v56-autosave-status-short { grid-column:1 / -1; color:var(--text-muted); font-size:9px; line-height:1.35; overflow-wrap:anywhere; }
+#v56-autosave-status-short[data-state="ok"] { color:#8ed4ad; }
+#v56-autosave-status-short[data-state="warn"] { color:#e8c274; }
+#v56-autosave-status-short[data-state="error"] { color:#ff9292; }
+.v59-database-import { border:1px solid rgba(145,120,220,.24); border-radius:8px; padding:9px !important; background:rgba(100,80,160,.05); }
+.v59-import-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.v59-import-card { display:flex; flex-direction:column; gap:6px; min-width:0; padding:8px; border:1px solid var(--border); border-radius:7px; background:rgba(0,0,0,.1); }
+.v59-import-card b { color:var(--text-main,#e7edf5); font-size:10px; }
+.v59-import-card small,.v59-import-note { color:var(--text-muted); font-size:9px; line-height:1.4; }
+.v59-import-card button { margin-top:auto; white-space:normal; font-size:9px; }
+.v59-import-check { display:flex; align-items:center; gap:6px; margin-top:7px; color:var(--text-muted); font-size:9px; }
+.v59-import-check input { accent-color:var(--accent); }
+.v59-template-actions { display:flex; gap:6px; margin-top:7px; }
+.v59-template-actions button { flex:1; min-width:0; white-space:normal; font-size:9px; }
+.v59-import-status { margin-top:8px; padding:7px 8px; border-radius:6px; background:rgba(130,145,165,.12); color:var(--text-muted); font-size:9px; line-height:1.45; overflow-wrap:anywhere; }
+.v59-import-status[data-state="ok"] { color:#8ed4ad; background:rgba(56,150,100,.12); }
+.v59-import-status[data-state="error"] { color:#ff9292; background:rgba(190,55,55,.12); }
+.v59-import-note { display:block; margin-top:6px; }
+@media(max-width:520px) { .v59-import-grid { grid-template-columns:1fr; } .v59-template-actions { flex-direction:column; } }
+
+/* v59 portal settings controls */
+.v59-portal-actions{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 5px}
+.v59-portal-actions .hs-btn{font-size:11px;min-height:32px}
+.v59-portal-status{padding:8px 9px;border:1px solid var(--border,#2b3543);border-radius:7px;background:rgba(100,120,145,.08);font-size:10px;line-height:1.45;color:var(--text-muted,#9aa7b7);overflow-wrap:anywhere;margin-top:7px}
+.v59-portal-status[data-state="ok"]{color:#8ed4ad;border-color:rgba(56,150,100,.35);background:rgba(56,150,100,.08)}
+.v59-portal-status[data-state="warn"]{color:#e8c274;border-color:rgba(190,145,45,.35)}
+.v59-portal-status[data-state="error"]{color:#ff9292;border-color:rgba(190,55,55,.35)}
+.v59-portal-import-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.v59-portal-import-grid>div{min-width:0;padding:9px;border:1px solid var(--border,#2b3543);border-radius:7px;background:rgba(0,0,0,.1)}
+.v59-portal-import-grid b{font-size:11px;color:var(--text,var(--c-text))}
+.v59-page-check{display:flex;gap:7px;align-items:center;margin-top:8px;font-size:10px;color:var(--text-muted,#9aa7b7)}
+.v59-page-check input{accent-color:var(--accent,#e58e26)}
+@media(max-width:700px){.v59-portal-import-grid{grid-template-columns:1fr}.v59-portal-actions .hs-btn{flex:1}}

@@ -1,0 +1,606 @@
+{
+ "version": 1,
+ "type": "cs2-rosters",
+ "asOf": "2026-11-05",
+ "note": "Команды из актуальной базы, которых нет в игре. Импорт: Настройки → «Импорт баз составов», галочка «Добавлять новые команды».",
+ "teams": [
+  {
+   "name": "Envy",
+   "country": "FR",
+   "roster": [
+    {
+     "nick": "Maka",
+     "country": "FR"
+    },
+    {
+     "nick": "Lucky",
+     "country": "FR"
+    },
+    {
+     "nick": "misutaaa",
+     "country": "FR"
+    },
+    {
+     "nick": "Kursy",
+     "country": "FR"
+    },
+    {
+     "nick": "Graviti",
+     "country": "FR"
+    }
+   ]
+  },
+  {
+   "name": "SINNERS",
+   "country": "CZ",
+   "roster": [
+    {
+     "nick": "beastik",
+     "country": "CZ"
+    },
+    {
+     "nick": "SHOCK",
+     "country": "CZ"
+    },
+    {
+     "nick": "MoDo",
+     "country": "RO"
+    },
+    {
+     "nick": "kisserek",
+     "country": "PL"
+    },
+    {
+     "nick": "stressarN",
+     "country": "MK"
+    }
+   ]
+  },
+  {
+   "name": "5star",
+   "country": "MN",
+   "roster": [
+    {
+     "nick": "NEUZ",
+     "country": "MN"
+    },
+    {
+     "nick": "rate",
+     "country": "MN"
+    },
+    {
+     "nick": "clouden",
+     "country": "MN"
+    },
+    {
+     "nick": "ariucle",
+     "country": "MN"
+    },
+    {
+     "nick": "hoolig4n",
+     "country": "MN"
+    }
+   ]
+  },
+  {
+   "name": "Nemesis",
+   "country": "RU",
+   "roster": [
+    {
+     "nick": "SELLTER",
+     "country": "RU"
+    },
+    {
+     "nick": "r3salt",
+     "country": "RU"
+    },
+    {
+     "nick": "mag1k3Y",
+     "country": "KZ"
+    },
+    {
+     "nick": "tex1y",
+     "country": "RU"
+    },
+    {
+     "nick": "Sdaim",
+     "country": "RU"
+    }
+   ]
+  },
+  {
+   "name": "DENDELE",
+   "country": "BR",
+   "roster": [
+    {
+     "nick": "gafolo",
+     "country": "BR"
+    },
+    {
+     "nick": "koala",
+     "country": "BR"
+    },
+    {
+     "nick": "maxxkor",
+     "country": "AR"
+    },
+    {
+     "nick": "rdnzao",
+     "country": "BR"
+    },
+    {
+     "nick": "doc",
+     "country": "BR"
+    }
+   ]
+  },
+  {
+   "name": "PRIVATE",
+   "country": "BY",
+   "roster": [
+    {
+     "nick": "1eeR",
+     "country": "BY"
+    },
+    {
+     "nick": "H4SAN4TOR",
+     "country": "RU"
+    },
+    {
+     "nick": "sowalio",
+     "country": "RU"
+    },
+    {
+     "nick": "sh1nejezzz",
+     "country": "RU"
+    },
+    {
+     "nick": "z1k4",
+     "country": "RU"
+    }
+   ]
+  },
+  {
+   "name": "Black Phoenix",
+   "country": "LV",
+   "roster": [
+    {
+     "nick": "4X1s",
+     "country": "LV"
+    },
+    {
+     "nick": "karnez",
+     "country": "RU"
+    },
+    {
+     "nick": "topo",
+     "country": "RU"
+    },
+    {
+     "nick": "MRcreed",
+     "country": "RU"
+    },
+    {
+     "nick": "Salazar",
+     "country": "RU"
+    }
+   ]
+  },
+  {
+   "name": "FlyQuest",
+   "country": "AU",
+   "roster": [
+    {
+     "nick": "jks",
+     "country": "AU"
+    },
+    {
+     "nick": "aliStair",
+     "country": "AU"
+    },
+    {
+     "nick": "INS",
+     "country": "AU"
+    },
+    {
+     "nick": "Vexite",
+     "country": "AU"
+    },
+    {
+     "nick": "nettik",
+     "country": "NZ"
+    }
+   ]
+  },
+  {
+   "name": "PURE",
+   "country": "LV",
+   "roster": [
+    {
+     "nick": "keen",
+     "country": "LV"
+    },
+    {
+     "nick": "aNdu",
+     "country": "EE"
+    },
+    {
+     "nick": "POLO",
+     "country": "PL"
+    },
+    {
+     "nick": "Polbandana",
+     "country": "UA"
+    },
+    {
+     "nick": "tein",
+     "country": "PL"
+    }
+   ]
+  },
+  {
+   "name": "UNiTY",
+   "country": "CZ",
+   "roster": [
+    {
+     "nick": "Dytor",
+     "country": "CZ"
+    },
+    {
+     "nick": "KWERTZZ",
+     "country": "CZ"
+    },
+    {
+     "nick": "2high",
+     "country": "MK"
+    },
+    {
+     "nick": "M1key",
+     "country": "SK"
+    },
+    {
+     "nick": "Sn0w",
+     "country": "SE"
+    }
+   ]
+  },
+  {
+   "name": "INFINITE",
+   "country": "DE",
+   "roster": [
+    {
+     "nick": "ScrunK",
+     "country": "DE"
+    },
+    {
+     "nick": "Blytz",
+     "country": "RO"
+    },
+    {
+     "nick": "kyuubii",
+     "country": "DE"
+    },
+    {
+     "nick": "volt",
+     "country": "RO"
+    },
+    {
+     "nick": "sl3nd",
+     "country": "HU"
+    }
+   ]
+  },
+  {
+   "name": "UPGRADE",
+   "country": "UA",
+   "roster": [
+    {
+     "nick": "synyx",
+     "country": "UA"
+    },
+    {
+     "nick": "SquEzxc",
+     "country": "BY"
+    },
+    {
+     "nick": "pleynnn",
+     "country": "RU"
+    },
+    {
+     "nick": "tw1sterzaza",
+     "country": "BY"
+    },
+    {
+     "nick": "DAN9ARMATURA",
+     "country": "RU"
+    }
+   ]
+  },
+  {
+   "name": "Marsborne",
+   "country": "CA",
+   "roster": [
+    {
+     "nick": "freshie",
+     "country": "CA"
+    },
+    {
+     "nick": "nicx",
+     "country": "US"
+    },
+    {
+     "nick": "Grizz",
+     "country": "US"
+    },
+    {
+     "nick": "ogwizard",
+     "country": "US"
+    },
+    {
+     "nick": "WUMBO",
+     "country": "US"
+    }
+   ]
+  },
+  {
+   "name": "Inner Circle Academy",
+   "country": "UA",
+   "roster": [
+    {
+     "nick": "Flierax",
+     "country": "UA"
+    },
+    {
+     "nick": "3ippoch",
+     "country": "UA"
+    },
+    {
+     "nick": "NaYz",
+     "country": "UA"
+    },
+    {
+     "nick": "L1seYoung",
+     "country": "UA"
+    },
+    {
+     "nick": "Tamefear",
+     "country": "UA"
+    }
+   ]
+  },
+  {
+   "name": "ex-6666",
+   "country": "UA",
+   "roster": [
+    {
+     "nick": "amster",
+     "country": "UA"
+    },
+    {
+     "nick": "kL1o",
+     "country": "UA"
+    },
+    {
+     "nick": "rendysky",
+     "country": "UA"
+    },
+    {
+     "nick": "skcH",
+     "country": "UA"
+    },
+    {
+     "nick": "stefienson",
+     "country": "UA"
+    }
+   ]
+  },
+  {
+   "name": "ASTRAL",
+   "country": "XK",
+   "roster": [
+    {
+     "nick": "gxx-",
+     "country": "XK"
+    },
+    {
+     "nick": "swiz",
+     "country": "PL"
+    },
+    {
+     "nick": "RaY5ive",
+     "country": "LT"
+    },
+    {
+     "nick": "Neqy",
+     "country": "EE"
+    },
+    {
+     "nick": "meowpop",
+     "country": "LV"
+    }
+   ]
+  },
+  {
+   "name": "WBT",
+   "country": "UA",
+   "roster": [
+    {
+     "nick": "Psycho",
+     "country": "UA"
+    },
+    {
+     "nick": "Smash",
+     "country": "UA"
+    },
+    {
+     "nick": "s4ltovsk1yy",
+     "country": "UA"
+    },
+    {
+     "nick": "DemQQ",
+     "country": "UA"
+    },
+    {
+     "nick": "tyr1k",
+     "country": "UA"
+    }
+   ]
+  },
+  {
+   "name": "mellren",
+   "country": "BY",
+   "roster": [
+    {
+     "nick": "lollipop21k",
+     "country": "BY"
+    },
+    {
+     "nick": "menddel",
+     "country": "BY"
+    },
+    {
+     "nick": "mdl",
+     "country": "BY"
+    },
+    {
+     "nick": "shootic",
+     "country": "RU"
+    },
+    {
+     "nick": "Maksilvl",
+     "country": "RU"
+    }
+   ]
+  },
+  {
+   "name": "Turma do Pagode",
+   "country": "BR",
+   "roster": [
+    {
+     "nick": "WOOD7",
+     "country": "BR"
+    },
+    {
+     "nick": "Tuurtle",
+     "country": "BR"
+    },
+    {
+     "nick": "naitte",
+     "country": "BR"
+    },
+    {
+     "nick": "pesadelo",
+     "country": "BR"
+    },
+    {
+     "nick": "matios",
+     "country": "BR"
+    }
+   ]
+  },
+  {
+   "name": "ex-Zero Tenacity",
+   "country": "RS",
+   "roster": [
+    {
+     "nick": "Kind0",
+     "country": "RS"
+    },
+    {
+     "nick": "Dragon",
+     "country": "RS"
+    },
+    {
+     "nick": "VLDN",
+     "country": "RS"
+    },
+    {
+     "nick": "Cjoffo",
+     "country": "ME"
+    },
+    {
+     "nick": "brutmonster",
+     "country": "BA"
+    }
+   ]
+  },
+  {
+   "name": "BARCA",
+   "country": "BR",
+   "roster": [
+    {
+     "nick": "zmb",
+     "country": "BR"
+    },
+    {
+     "nick": "pancc",
+     "country": "BR"
+    },
+    {
+     "nick": "Alisson",
+     "country": "BR"
+    },
+    {
+     "nick": "happ",
+     "country": "BR"
+    },
+    {
+     "nick": "divine",
+     "country": "BR"
+    }
+   ]
+  },
+  {
+   "name": "Glitch",
+   "country": "PL",
+   "roster": [
+    {
+     "nick": "szejn",
+     "country": "PL"
+    },
+    {
+     "nick": "smekk",
+     "country": "RO"
+    },
+    {
+     "nick": "shaiK",
+     "country": "BG"
+    },
+    {
+     "nick": "Brillo",
+     "country": "SE"
+    },
+    {
+     "nick": "rud",
+     "country": "LV"
+    }
+   ]
+  },
+  {
+   "name": "Fire Flux",
+   "country": "TR",
+   "roster": [
+    {
+     "nick": "Cizzx",
+     "country": "TR"
+    },
+    {
+     "nick": "Quality",
+     "country": "TR"
+    },
+    {
+     "nick": "zer0UKY",
+     "country": "TR"
+    },
+    {
+     "nick": "xEternaLxx",
+     "country": "TR"
+    },
+    {
+     "nick": "zemix",
+     "country": "TR"
+    }
+   ]
+  }
+ ]
+}

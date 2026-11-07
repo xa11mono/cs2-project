@@ -1,0 +1,20 @@
+CS2 Manager v57 — Major Path, player career stats, MVP styling and fast batch skips
+
+Major Path
+- Added sort options for world VRS rank, Stage 2 forecast chance and any invitation chance.
+- Sorts the full eligible candidate pool before limiting the displayed list to 40 teams.
+- Clarified that VRS order, regional slots and invitation probabilities are distinct measures.
+
+Player profiles and awards
+- Archive roster stamping now merges missing team rosters into empty or partial `rost` objects instead of treating any existing object as complete.
+- Career statistics are snapshotted before players leave a team and merged back into player stats after they become free agents.
+- Major Winner count uses normalized trophy kinds from the full award ledger and is displayed in the yellow badge.
+- Removed the extra glow from MVP medal artwork while preserving its gold treatment.
+
+Calendar performance
+- Multi-day skips batch expensive saves and UI rendering while keeping daily match simulation active.
+- Background parallel tournaments are caught up once at the final virtual time using the fast-forward result path.
+- Qualifier completion retains a no-progress escape hatch so a broken bracket cannot spin indefinitely.
+
+Compatibility note
+- Player career stats already missing before v57 cannot be reconstructed if the old archive has no roster snapshot or saved career aggregate. Newly archived tournaments and transfers preserve these stats going forward.

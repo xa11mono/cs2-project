@@ -1,0 +1,5 @@
+/* v45 Competition Integrity */
+.hs-qresult{padding:10px 12px;border-top:1px solid var(--line,rgba(255,255,255,.08))}.hs-qresult>div{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.hs-qresult button{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--line,rgba(255,255,255,.12));border-radius:8px;background:rgba(255,255,255,.03);color:inherit}.hs-qresult button i{font-style:normal;color:var(--muted,#999);font-size:11px}.cal-major-pickem .cal-bar{background:linear-gradient(90deg,#f5b942,#ffdb80)!important;color:#211700}.cal-major-stage .cal-bar{background:linear-gradient(90deg,#8a78e8,#5d9de8)!important}.major-qualification-slots .known{display:inline-flex;align-items:center;gap:5px}.major-qualification-slots .known .hs-logo{width:18px;height:18px;flex:0 0 18px}.major-qualification-slots .known b{font-size:11px}
+/* v84: HLTV Awards в календаре */
+.cal-major-awards .cal-bar{background:linear-gradient(90deg,#c9a24a,#f1d27a)!important;color:#1d1503}
+.cal-major-awards .hs-kind{background:#3a2e10;color:#f1d27a}

@@ -1,0 +1,18 @@
+CS2 Manager — v44 Match Dynamics
+
+• Added a persistent match-dynamics layer to the live broadcast state. Momentum, psychological pressure, coach plans, mistakes and opponent reads survive UI redraws and remain compatible with older saves.
+• Momentum and pressure now make a bounded contribution to the next round's win probability. The combined v44 modifier is capped at ±3 percentage points; team strength, buy power and economy remain the base of the round calculation.
+• Player composure is estimated from the existing tacticalIQ and clutch attributes. Teams under score/streak/match-point pressure receive a small probability penalty, moderated by their composure.
+• Coaches can react after losing streaks or a large score deficit. The coach switches the team's tactical style for the next two rounds; the changed style is passed into the actual v34 micro-simulation (opening tempo, duel and utility behavior), not just displayed as text.
+• The engine detects repeated T-side attack lanes from actual bomb-plant/opening-kill events. After repeated hits on the same lane, the defending coach reads the pattern and uses a disciplined counter-style for up to three rounds.
+• Failed trade attempts and lost opening advantages are identified from real round events. They are presented as mistakes and apply a small, one-round confidence penalty to the affected team.
+• Added a two-voice commentary layer: play-by-play reactions and analyst notes for clutches/aces, eco upsets, streaks, comebacks, failed trades, retakes, bomb finishes, overtime, pressure and tactical adaptation.
+• Corrected a v34 event association bug so successful trade attempts are marked on the trade event itself; this prevents false player-mistake reports.
+• Added a live dynamics panel to the match detail, Match Center and spectator mode: momentum, psychological pressure, active coach/read plan with remaining rounds, current win streak, last-five form, mistake count, coach name and six latest commentary/coach reactions.
+• Existing v43 tactical/technical pause behavior is unchanged.
+
+Verification:
+• node --check passed for all JavaScript files.
+• node tests/v44-match-dynamics.test.js passed, including a test that confirms a coach plan changes the actual v34 T-side simulation style.
+• node tests/v43-match-immersion.test.js passed.
+• Full browser/Playwright suite was not run because Playwright is not installed in this environment.

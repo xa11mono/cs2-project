@@ -1,0 +1,8 @@
+CS2 Manager v68 — Major Path quota-aware probability calibration
+
+- Added a soft regional-quota prior to Major invitation probabilities.
+- Current regional place and point margin to the cutoff now affect the odds: being inside the current regional slots raises the chance; being outside lowers it.
+- The adjustment is horizon-aware: current quota weighs more when fewer tournaments remain before invite lock and less when the simulation horizon is longer.
+- Expected slot totals for every region + stage pair are preserved by matrix balancing; no extra invitations are created.
+- Each team's combined probability remains <= 100%, and displayed invite chance equals Stage 3 + Stage 2 + Stage 1.
+- Bumped the Major Path script cache key to v68.

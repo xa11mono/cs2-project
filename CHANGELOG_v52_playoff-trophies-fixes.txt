@@ -1,0 +1,23 @@
+CS2 Manager v52 — playoff logos and trophy retention
+
+1) Playoff logos
+- Eliminated team crests remain in full colour in playoff brackets, including semifinal and final views.
+- Loser styling remains on score/name text; the crest no longer inherits grayscale, opacity or blend-mode effects.
+
+2) Persistent trophy history
+- Added a durable team-title ledger to the awards store, separate from the bounded tournament-snapshot archive.
+- Existing titles are migrated at startup from team history, archived event snapshots and player title records.
+- Duplicate records are merged by team + event + season, including records that previously had different history/archive IDs.
+- Old titles remain visible in team profiles, player career trophies, the trophy cabinet, Major winners, champions by year, team trophy totals and season archive after detailed bracket snapshots are pruned.
+- A trophy without a retained bracket remains visible as a static record and does not open a missing event.
+- Removed display caps that hid older trophy records.
+
+3) Correct trophy tiers
+- Corrected stale Tier-3 labels when the underlying event metadata identifies Tier-1.
+- Tier-1, Tier-2 and Tier-3 are counted independently, alongside Major, S-Tier and Academy titles.
+- Qualifiers are excluded from championship trophy records.
+
+Validation
+- Node regression tests v43 through v52 passed.
+- Changed JavaScript files passed `node --check`.
+- Browser-dependent Playwright/media-pipeline test could not complete because Playwright is not installed in this environment.

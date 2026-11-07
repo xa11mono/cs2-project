@@ -1,0 +1,21 @@
+CS2 Manager v50 — Pick'em, logos, and academy transfer fixes
+
+Pick'em Major
+- Added explicit category buttons for each prediction category. A player can select 0:3 first without completing 3:0.
+- Empty prediction slots also activate their category when clicked.
+- Added a short explanation of the Pick'em format: 2 picks for 3:0, 6 picks for 3:1/3:2 advancement, and 2 picks for 0:3.
+- Clarified that 1:3 and 2:3 are elimination results displayed on the Swiss board, not separate official Pick'em prediction slots.
+
+Stage II / Stage III team logos
+- Logo rendering now tries all available sources in sequence: personal media library, saved team logo/photo/crest fields, and EMDB metadata.
+- If one image URL is broken, the next available source is attempted before falling back to initials.
+
+Academy recruitment / transfers
+- Current professional-roster players are tagged with persistent professional-origin metadata.
+- Academy signing and transfer gates now reject professional-origin players even if they have already been moved between academies or the transfer is marked forced.
+- Old saves continue to migrate accidentally placed professional-origin players out of academy rosters.
+
+Validation
+- Added tests/v50-pickem-academy-logos.test.js.
+- The v43–v50 JavaScript regression tests pass.
+- The Playwright browser suite requires the `playwright` package, which is not installed in this environment; it was not run.

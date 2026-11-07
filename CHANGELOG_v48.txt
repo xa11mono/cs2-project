@@ -1,0 +1,10 @@
+CS2 Manager v48 — Matchday, Major Path & Pick'Em Quality Fixes
+
+- Calendar: an old scheduled timestamp after a skipped day is no longer mislabeled as a match delay; only explicit delay metadata triggers the badge. Both match rows and detail views use the same status.
+- Major Path: after Pick'Em Day, the future-event preview uses the same frozen Stage 1/2/3 pools as the live Major. The stage labels cannot diverge from the teams actually assigned to each stage.
+- Pick'Em: day-skip synchronization now restores saved picks, scores completed stages if needed, switches to the next newly available stage and persists the result. Both the new page and legacy modal restore the first unfilled category (3:0 -> 0:3 -> advance).
+- Pick'Em logos: team logo rendering falls back to the EMDB team metadata for newly qualified Stage II/III teams.
+- Major invite forecast: uncertainty is wider for teams close to regional cutoffs; near-certain Monte Carlo results are displayed as 99.5%+ rather than a false exact 100%. Tier-weight strings are normalized before simulation.
+- Academy transfers: manual career negotiations now reject professional-origin free agents for academies; old saves migrate identifiable professional players out of academy rosters.
+- HLTV: retains the complete pro-team list (no top-30 slice), with default and EMDB roster imports supporting older saves.
+- Player profile: the MVP Winner badge and MVP achievement tile use a stronger yellow/gold highlight.

@@ -1,0 +1,10 @@
+CS2 Manager v27 — tournament fields and trophy strip
+
+- Tier-2 eligibility now rotates through teams ranked approximately 9th–65th.
+- Tier-3 eligibility now includes teams from approximately 51st place down through the full non-academy team pool.
+- Tier-2/3 tournament participant selection rotates through the eligible pools instead of repeatedly favoring the same small subset.
+- Most Tier-2/3 events now use 32-team single-elimination brackets; selected events use 16-team double elimination or 8-team GSL.
+- Added a 16-team double-elimination bracket layout and match progression.
+- Upcoming events in existing saves are expanded to the new field size without rewriting live/completed events.
+- Increased trophy-rail tiles from 66px to 102px on desktop (88px on narrower windows).
+- Qualification events no longer award trophy cups; existing qualification cups are hidden/removed from player and team trophy rails.

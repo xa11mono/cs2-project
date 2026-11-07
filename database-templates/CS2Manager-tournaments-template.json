@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "type": "cs2-tournaments",
+  "asOf": "2026-11-01",
+  "tournaments": [
+    { "name": "IEM Katowice", "year": 2027, "tier": "S-Tier", "organizer": "ESL", "format": "double", "size": 16, "prize": 1000000, "city": "Katowice", "country": "PL" },
+    { "name": "PGL Major", "year": 2027, "tier": "Major", "organizer": "PGL", "format": "swiss", "size": 32, "prize": 1250000 },
+    { "name": "BLAST Open", "year": 2027, "tier": "Tier-1", "organizer": "BLAST", "format": "single", "size": 16, "prize": 500000 },
+    { "name": "CCT Europe Series", "tier": "Tier-2", "organizer": "CCT", "format": "single", "size": 16 },
+    { "name": "Entry League", "tier": "Tier-3", "organizer": "Entry League", "format": "swiss", "size": 16 },
+    { "name": "Team Spirit Academy League", "tier": "Academy", "organizer": "Team Spirit", "format": "gsl", "size": 8 }
+  ]
+}

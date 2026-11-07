@@ -1,0 +1,443 @@
+/* v87 — «Игровая оболочка»: портал HLTV внутри интерфейса менеджерской игры.
+   Палитра — сланцево-синие панели HLTV (вместо почти чёрных чернил), один тёплый акцент (кнопка «Продолжить»,
+   активный раздел, маркер «»» у заголовков блоков). Фон — фактура «бетона» с тёплым свечением за «Продолжить».
+   Подключается последним. Значения — в DESIGN.md (раздел v87). */
+:root{
+  --c-canvas:#10161e;--c-surface:#18202a;--c-surface-2:#1f2935;--c-raised:#283441;--c-line:#26303c;--c-line-strong:#36434f;
+  --c-text:#edf1f6;--c-text-2:#bcc6d2;--c-text-3:#92a0b1;
+  --c-link:#97b6d8;--c-link-hi:#c3d6ec;
+  --c-side:#0c1117;--c-side-2:#121820;
+  --gs-side:240px;--gs-rail:72px;--gs-top:64px;
+  --pt-top:64px;--pt-nav:0px;--pt-max:none;
+  --sh-box:0 1px 0 rgba(255,255,255,.04) inset,0 14px 30px -22px rgba(0,0,0,.9);
+  --gs-grain:url("../assets/ui/grain.png");
+}
+/* ---------- фон ---------- */
+html.gs-shell body.portal-on{background:var(--c-canvas)!important}
+html.gs-shell body.portal-on::before{background:
+  radial-gradient(780px 380px at calc(100% + 60px) -80px,rgba(255,122,61,.16),transparent 70%),
+  radial-gradient(900px 640px at 30% 120%,rgba(70,110,160,.10),transparent 70%),
+  linear-gradient(180deg,#131a23 0%,#0f141b 100%)!important}
+html.gs-shell body.portal-on::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--gs-grain);background-size:160px;opacity:.55;mix-blend-mode:overlay}
+/* ---------- раскладка ---------- */
+html.gs-shell #hs-root.portal{padding-left:var(--gs-side);transition:padding-left var(--m-medium) var(--ease)}
+html.gs-shell #hs-root .pt-nav{display:none!important}
+html.gs-shell #hs-root.portal .hs-page{margin:0 auto;padding:var(--s-6) var(--s-6) var(--s-8)}
+html.gs-shell #hs-root.portal .hs-body{min-height:calc(100vh - var(--gs-top))}
+html.gs-shell #hs-root .hs-back{display:none!important}
+/* ---------- боковое меню ---------- */
+#hs-root .gs-side{position:fixed;inset:0 auto 0 0;width:var(--gs-side);z-index:70;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,var(--c-side-2) 0%,var(--c-side) 55%);border-right:1px solid rgba(255,255,255,.05);
+  box-shadow:12px 0 32px -24px rgba(0,0,0,.9);transition:width var(--m-medium) var(--ease)}
+#hs-root .gs-side::before{content:"";position:absolute;inset:0;pointer-events:none;background:var(--gs-grain);background-size:160px;opacity:.35;mix-blend-mode:overlay}
+#hs-root .gs-brand{position:relative;display:flex;align-items:center;gap:12px;height:var(--gs-top);padding:0 12px 0 16px;border-bottom:1px solid rgba(255,255,255,.05);flex:none}
+#hs-root .gs-mark{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:8px;background:var(--g-action);box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 8px 18px -10px rgba(255,122,61,.9);cursor:pointer;border:0;padding:0}
+#hs-root .gs-mark b{font:800 12px/1 var(--f-ui);letter-spacing:.04em;color:var(--c-on-action)}
+#hs-root .gs-who{min-width:0;display:flex;flex-direction:column;gap:2px;flex:1}
+#hs-root .gs-who small{font-size:var(--t-micro);font-weight:600;color:var(--c-text-3)}
+#hs-root .gs-who b{font-size:var(--t-h3);font-weight:750;color:var(--c-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hs-root .gs-railbtn{width:30px;height:30px;flex:none;display:grid;place-items:center;border:0;border-radius:var(--r-control);background:transparent;color:var(--c-text-3);cursor:pointer}
+#hs-root .gs-railbtn svg{width:18px;height:18px}
+#hs-root .gs-railbtn:hover{background:rgba(255,255,255,.06);color:var(--c-text)}
+#hs-root .gs-nav{position:relative;flex:1;overflow-y:auto;overflow-x:hidden;padding:12px 10px;display:flex;flex-direction:column;gap:2px;scrollbar-width:thin;scrollbar-color:#2a3542 transparent}
+#hs-root .gs-foot{position:relative;flex:none;padding:10px;border-top:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;gap:2px}
+#hs-root .gs-it{position:relative;display:flex;align-items:center;gap:12px;width:100%;height:40px;padding:0 12px;border:0;border-radius:8px;background:transparent;
+  color:var(--c-text-2);font:500 var(--t-body)/1 var(--f-ui);text-align:left;cursor:pointer;white-space:nowrap;
+  transition:background var(--m-micro) var(--ease),color var(--m-micro) var(--ease)}
+#hs-root .gs-ic{width:20px;height:20px;flex:none;display:grid;place-items:center;color:var(--c-text-3);transition:color var(--m-micro) var(--ease)}
+#hs-root .gs-ic svg{width:20px;height:20px}
+#hs-root .gs-lb{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+#hs-root .gs-it:hover{background:rgba(255,255,255,.045);color:var(--c-text)}
+#hs-root .gs-it:hover .gs-ic{color:var(--c-text-2)}
+#hs-root .gs-it.on{background:linear-gradient(90deg,rgba(255,122,61,.18),rgba(255,122,61,.04));color:#fff;font-weight:650}
+#hs-root .gs-it.on::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--c-action)}
+#hs-root .gs-it.on .gs-ic{color:var(--c-action)}
+#hs-root .gs-it:focus-visible{outline:2px solid var(--c-focus);outline-offset:-2px}
+#hs-root .gs-chev{width:16px;height:16px;flex:none;color:var(--c-text-3);transition:transform var(--m-small) var(--ease)}
+#hs-root .gs-chev svg{width:16px;height:16px}
+#hs-root .gs-grp.open>.gs-gh .gs-chev{transform:rotate(90deg)}
+#hs-root .gs-grp.on>.gs-gh{color:#fff}
+#hs-root .gs-grp.on>.gs-gh .gs-ic{color:var(--c-action)}
+#hs-root .gs-grp>.gs-sub{display:flex;flex-direction:column;gap:0;overflow:hidden;max-height:0;transition:max-height var(--m-medium) var(--ease)}
+#hs-root .gs-grp.open>.gs-sub{max-height:520px}
+#hs-root .gs-it.sub{height:34px;padding-left:44px;font-size:var(--t-small);font-weight:500;color:var(--c-text-3)}
+#hs-root .gs-it.sub::after{content:"";position:absolute;left:21px;top:0;bottom:0;width:1px;background:rgba(255,255,255,.07)}
+#hs-root .gs-it.sub:hover{color:var(--c-text)}
+#hs-root .gs-it.sub.on{background:rgba(255,122,61,.10);color:#fff}
+#hs-root .gs-it.sub.on::before{left:20px;top:9px;bottom:9px;width:3px}
+/* свёрнутое меню — рельс с иконками */
+/* ---------- шапка экрана ---------- */
+html.gs-shell #hs-root .pt-top{background:linear-gradient(180deg,rgba(16,22,30,.94),rgba(16,22,30,.86))!important;border-bottom:1px solid rgba(255,255,255,.05)!important;
+  backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);overflow:visible}
+html.gs-shell #hs-root .pt-top::after{content:"";position:absolute;right:0;top:0;width:520px;height:100%;pointer-events:none;
+  background:radial-gradient(360px 120px at 100% 0,rgba(255,122,61,.20),transparent 70%)}
+html.gs-shell #hs-root .pt-top-in{max-width:none;height:var(--gs-top);padding:0 20px 0 16px;gap:16px;position:relative;z-index:1}
+#hs-root .gs-lead{display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 auto}
+#hs-root .gs-hist{display:flex;gap:2px;flex:none}
+#hs-root .gs-hb{width:34px;height:36px;display:grid;place-items:center;border:0;border-radius:var(--r-control);background:transparent;color:var(--c-text-2);cursor:pointer}
+#hs-root .gs-hb svg{width:22px;height:22px}
+#hs-root .gs-hb:hover{background:rgba(255,255,255,.06);color:#fff}
+#hs-root .gs-hb:active{transform:scale(.94)}
+#hs-root .gs-title{display:flex;align-items:baseline;gap:12px;min-width:0}
+#hs-root .gs-title h1{margin:0;font:600 26px/1.1 var(--f-ui);letter-spacing:-.01em;color:var(--c-text);white-space:nowrap}#gs-crumb{font-size:var(--t-body);font-weight:600;color:var(--c-text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}#gs-crumb:not(:empty)::before{content:"›";margin-right:10px;color:var(--c-action)}
+html.gs-shell #hs-root .pt-top .hs-search{margin-left:0;flex:0 1 280px;min-width:160px}
+html.gs-shell #hs-root .pt-season{flex:none}
+html.gs-shell #hs-root .pt-time{gap:8px;align-items:center}
+html.gs-shell #hs-root .pt-clock{display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding:0 6px 0 10px;margin-left:4px;border-left:1px solid rgba(255,255,255,.08)}
+html.gs-shell #hs-root .pt-clock b{font:700 17px/1 var(--f-num);color:#fff;letter-spacing:.02em}
+html.gs-shell #hs-root .pt-clock small{font-size:var(--t-caption);font-weight:600;color:var(--c-text-3);white-space:nowrap}
+#hs-root .gs-brand-hidden{display:none}
+html.gs-shell #hs-root .pt-brand[hidden]{display:none!important}
+/* «Продолжить» — главная кнопка игры */
+html.gs-shell #hs-root #pt-skip.gs-continue{height:44px!important;min-width:176px;padding:0 18px 0 16px!important;gap:12px!important;border-radius:var(--r-control)!important;
+  background:var(--g-action)!important;color:var(--c-on-action)!important;border:1px solid rgba(255,214,170,.55)!important;
+  box-shadow:0 0 0 1px rgba(0,0,0,.25),0 10px 28px -10px rgba(255,122,61,.95),inset 0 1px 0 rgba(255,255,255,.35)!important;
+  display:inline-flex!important;align-items:center;justify-content:flex-start;transition:transform var(--m-press-up) var(--ease),filter var(--m-micro) var(--ease)}
+html.gs-shell #hs-root #pt-skip.gs-continue>svg{order:2;width:20px!important;height:20px!important;margin-left:auto;flex:none}
+html.gs-shell #hs-root #pt-skip.gs-continue .gs-cont{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0;text-align:left}
+html.gs-shell #hs-root #pt-skip.gs-continue .gs-cont b{font:800 15px/1 var(--f-ui);letter-spacing:.06em;text-transform:uppercase}
+html.gs-shell #hs-root #pt-skip.gs-continue #pt-skip-l{font:600 11px/1 var(--f-ui);opacity:.78;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+@media (hover:hover){html.gs-shell #hs-root #pt-skip.gs-continue:hover{filter:brightness(1.07) saturate(1.05)}}
+html.gs-shell #hs-root #pt-skip.gs-continue:active{transform:scale(.97);transition-duration:var(--m-press-down)}
+html.gs-shell #hs-root #pt-skip.gs-continue:focus-visible{outline:2px solid var(--c-focus);outline-offset:3px}
+html.gs-shell #hs-root .pt-skipdd>.pt-tbtn{height:44px!important;width:30px!important;margin-left:-6px}
+/* ---------- панели в духе HLTV ---------- */
+html.gs-shell #hs-root .hs-box,html.gs-shell .hs-box{background:var(--c-surface)!important;border:1px solid var(--c-line)!important;box-shadow:var(--sh-box)!important;border-radius:10px!important}
+html.gs-shell #hs-root .hs-box-h{background:linear-gradient(180deg,var(--c-surface-2),#1c2530)!important;border-bottom:1px solid var(--c-line)!important;border-radius:10px 10px 0 0}
+html.gs-shell #hs-root .hs-box-h h3::before,html.gs-shell #hs-root .hs-box-h h2::before{content:"»";margin-right:8px;color:var(--c-action);font-weight:800}
+html.gs-shell #hs-root .hs-head>h1.gs-dup{display:none}
+html.gs-shell #hs-root .hs-head:has(>h1.gs-dup){justify-content:flex-end;margin-top:-4px}
+html.gs-shell #hs-root .hs-head:has(>h1.gs-dup:only-child){display:none}
+html.gs-shell #hs-root .hs-link,html.gs-shell #hs-root a{color:var(--c-link)}
+html.gs-shell #hs-root .hs-link:hover,html.gs-shell #hs-root a:hover{color:var(--c-link-hi)}
+html.gs-shell #hs-root .hs-tbl thead th{background:var(--c-surface-2)}
+
+/* ---------- главная: арена за героем ---------- */
+html.gs-shell #hs-root .hm-hero,html.gs-shell #hs-root .v37-premium-hero,html.gs-shell #hs-root .v37-event-hero{
+  background:linear-gradient(90deg,rgba(13,18,25,.92) 0%,rgba(13,18,25,.55) 45%,rgba(13,18,25,.15) 100%),url("../assets/ui/arena.webp") center 35%/cover no-repeat,var(--c-surface)!important;
+  border:1px solid rgba(255,255,255,.07)!important}
+/* ---------- команда ---------- */
+html.gs-shell #hs-page[data-gs-page="team"]{--gs-team:120,140,170}
+html.gs-shell #hs-root .tm-head.gs-team-head{position:relative;isolation:isolate;padding:22px 24px;margin-bottom:16px;border-radius:12px;overflow:hidden;
+  background:radial-gradient(520px 260px at 0% 0%,rgba(var(--gs-team),.30),transparent 70%),linear-gradient(110deg,rgba(var(--gs-team),.12),transparent 55%),var(--c-surface);
+  border:1px solid var(--c-line)}
+html.gs-shell #hs-root .tm-head.gs-team-head::after{content:"";position:absolute;inset:0;z-index:-1;background:var(--gs-grain);background-size:160px;opacity:.35;mix-blend-mode:overlay}
+html.gs-shell #hs-root .tm-roster{gap:14px}
+html.gs-shell #hs-root .tm-roster .tm-p{padding:0 0 12px!important;overflow:hidden;border-radius:12px;gap:4px;border:1px solid var(--c-line)!important;
+  background:linear-gradient(180deg,rgba(var(--gs-team),.22) 0%,rgba(var(--gs-team),.05) 58%,var(--c-surface) 72%)!important;
+  box-shadow:0 18px 32px -24px rgba(0,0,0,.95);transition:transform var(--m-small) var(--ease),border-color var(--m-small) var(--ease)}
+@media (hover:hover){html.gs-shell #hs-root .tm-roster .tm-p:hover{transform:translateY(-3px);border-color:rgba(var(--gs-team),.7)!important}}
+html.gs-shell #hs-root .tm-roster .tm-p .ph{width:100%;height:190px;border-radius:0;background:radial-gradient(60% 70% at 50% 85%,rgba(var(--gs-team),.35),transparent 70%)!important;box-shadow:none}
+html.gs-shell #hs-root .tm-roster .tm-p .ph .cs2-portrait{position:absolute;inset:0;width:100%;height:100%;background:none}
+html.gs-shell #hs-root .tm-roster .tm-p .ph img{object-fit:contain!important;object-position:center bottom!important;-webkit-mask-image:linear-gradient(180deg,#000 82%,transparent);mask-image:linear-gradient(180deg,#000 82%,transparent)}
+html.gs-shell #hs-root .tm-roster .tm-p .nm{font-size:16px;font-weight:700;margin-top:4px;display:flex;align-items:center;gap:6px}
+html.gs-shell #hs-root .tm-roster .tm-p .nm .flg{position:absolute;top:12px;left:12px;width:22px;height:auto}
+html.gs-shell #hs-root .tm-roster .tm-p .rt{top:auto;bottom:12px;right:12px}
+#hs-root .gs-role{position:absolute;top:10px;right:12px;z-index:2;font-size:var(--t-micro);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-2)}
+html.gs-shell #hs-root .tm-roster .tm-p .mx-role{position:absolute;left:10px;bottom:10px;z-index:2}
+/* ---------- игрок ---------- */
+html.gs-shell #hs-page[data-gs-page="player"]{--gs-team:120,140,170}
+html.gs-shell #hs-root .hs-phead{position:relative;isolation:isolate;overflow:hidden;padding:20px 24px 0;border-radius:12px;border:1px solid var(--c-line);margin-bottom:16px;
+  background:radial-gradient(420px 300px at 120px 100%,rgba(var(--gs-team),.38),transparent 70%),linear-gradient(105deg,rgba(var(--gs-team),.14),transparent 60%),var(--c-surface)}
+html.gs-shell #hs-root .hs-phead::after{content:"";position:absolute;inset:0;z-index:-1;background:var(--gs-grain);background-size:160px;opacity:.35;mix-blend-mode:overlay}
+#hs-root .gs-pwm{position:absolute;right:-30px;top:50%;width:300px;height:300px;transform:translateY(-50%);object-fit:contain;opacity:.07;z-index:-1;filter:grayscale(.2);pointer-events:none}
+html.gs-shell #hs-root .hs-phead .hs-pphoto{width:200px;height:200px;box-shadow:none;background:none!important;border-radius:0;align-self:flex-end}
+html.gs-shell #hs-root .hs-phead .hs-pphoto img{-webkit-mask-image:linear-gradient(180deg,#000 85%,transparent);mask-image:linear-gradient(180deg,#000 85%,transparent)}
+html.gs-shell #hs-root .hs-phead .hs-pid{padding-bottom:20px;align-self:center}
+html.gs-shell #hs-root .hs-phead .hs-pid h1{font-size:34px;letter-spacing:-.01em}
+html.gs-shell #hs-root .hs-phead>.hs-pact{padding-bottom:20px}
+/* ---------- рейтинг: фото пятёрки ---------- */
+html.gs-shell #hs-root .hs-rankrow{position:relative;overflow:hidden;isolation:isolate}
+html.gs-shell #hs-root .hs-rankrow:has(.gs-lineup){padding-right:260px!important}
+html.gs-shell #hs-root .hs-rankrow::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(270deg,rgba(var(--gs-team,120,140,170),.16),transparent 45%)}
+#hs-root .gs-lineup{position:absolute;right:10px;bottom:0;top:0;display:flex;align-items:flex-end;pointer-events:none}
+#hs-root .gs-lineup img,#hs-root .gs-lineup i{width:60px;height:64px;object-fit:cover;object-position:top;margin-left:-14px;-webkit-mask-image:linear-gradient(180deg,#000 75%,transparent);mask-image:linear-gradient(180deg,#000 75%,transparent)}
+#hs-root .gs-lineup i{display:block}
+@media (max-width:1280px){#hs-root .gs-lineup{display:none}}
+/* ---------- аватары в таблицах ---------- */
+#hs-root .gs-ava{display:inline-block;width:26px;height:26px;margin-right:8px;vertical-align:middle;border-radius:50%;overflow:hidden;background:var(--c-surface-2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+#hs-root .gs-ava img{width:100%;height:100%;object-fit:cover;object-position:top;transform:scale(1.25) translateY(8%)}
+/* ---------- заставка загрузки ---------- */
+html.gs-shell #cs2-splash{background:radial-gradient(700px 400px at 50% 40%,rgba(255,122,61,.10),transparent 70%),url("../assets/ui/arena.webp") center/cover,#0e131a!important}
+/* ---------- узкие экраны ---------- */
+@media (max-width:1280px){html.gs-shell{--gs-side:212px}
+#hs-root .gs-title h1{font-size:22px}
+html.gs-shell #hs-root .pt-top .hs-search{flex-basis:200px}}
+@media (max-width:1100px){html.gs-shell #hs-root .pt-season{display:none}
+html.gs-shell #gs-crumb{display:none}}
+@media (max-width:860px){html.gs-shell #hs-root .pt-top .hs-search{display:none}
+html.gs-shell #hs-root .pt-speed{display:none}
+html.gs-shell #hs-root #pt-skip.gs-continue{min-width:0}
+html.gs-shell #hs-root #pt-skip.gs-continue #pt-skip-l{display:none}
+#hs-root .gs-title h1{font-size:19px}}
+@media (prefers-reduced-motion:reduce){#hs-root .gs-side,#hs-root .gs-grp>.gs-sub,#hs-root .gs-chev,html.gs-shell #hs-root.portal{transition:none!important}}
+
+/* фото с тёмным фоном (full) растворяются по краям */
+html.gs-shell #hs-root .hs-phead .hs-pphoto img,html.gs-shell #hs-root .tm-roster .tm-p .ph img{
+  -webkit-mask-image:linear-gradient(180deg,#000 80%,transparent),linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);
+  -webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,#000 80%,transparent),linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask-composite:intersect}
+html.gs-shell #hs-root .tm-roster .tm-p .ph .mx-role{position:absolute;left:auto;right:10px;top:auto;bottom:10px;z-index:3}
+/* шапка: название экрана важнее поиска */
+html.gs-shell #hs-root .pt-top #season-title{display:none}
+#hs-root .gs-lead{flex:0 0 auto;min-width:0}
+html.gs-shell #hs-root .pt-time{margin-left:auto}
+#hs-root .gs-title{overflow:hidden}
+#hs-root .gs-title h1{overflow:hidden;text-overflow:ellipsis;flex:none;max-width:100%}
+html.gs-shell #hs-root .pt-top .hs-search{flex:0 8 230px;min-width:0}
+@media (max-width:1440px){html.gs-shell #hs-root .pt-season{display:none}}
+#hs-root #gs-crumb{flex:0 1 auto;max-width:280px}
+
+#hs-root .gs-it{flex:none}
+#hs-root .gs-cap{flex:none;margin:14px 12px 6px;font-size:var(--t-micro);font-weight:650;color:#6f7d8f;white-space:nowrap}
+
+/* ---------- клуб менеджера в боковом меню ---------- */
+#hs-root .gs-mark.club{background:linear-gradient(160deg,#1f2935,#141b24);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 8px 18px -12px rgba(0,0,0,.9)}
+#hs-root .gs-mark.club .hs-logo{width:30px;height:30px;background:none!important;border:0!important;box-shadow:none!important}
+#hs-root .gs-mark.club .hs-logo img{width:100%;height:100%;object-fit:contain}
+
+/* ---------- статусы игрока (как «Active / Happy») ---------- */
+.gs-sts{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.gs-st{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:5px;font-size:var(--t-micro);font-weight:650;border:1px solid;white-space:nowrap}
+.gs-st.up{color:#7ff0b9;border-color:rgba(52,211,153,.55);background:rgba(52,211,153,.12);box-shadow:inset 0 0 12px rgba(52,211,153,.12)}
+.gs-st.ok{color:var(--c-text-2);border-color:var(--c-line-strong);background:rgba(255,255,255,.03)}
+.gs-st.dn{color:#ffb3bd;border-color:rgba(251,113,133,.55);background:rgba(251,113,133,.10)}
+.gs-st.up::before{content:"▲";font-size:8px;margin-right:5px}.gs-st.dn::before{content:"▼";font-size:8px;margin-right:5px}
+
+/* ---------- штаб: блок состава ---------- */
+#hs-page[data-gs-page="org"]{--gs-team:120,140,170}
+.gs-staffbox{margin:0 0 16px}
+.gs-sh{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 10px}
+.gs-sh h3{margin:0;font-size:var(--t-h2);font-weight:700;color:var(--c-text)}
+.gs-sh h3::before{content:"»";margin-right:8px;color:var(--c-action);font-weight:800}
+html.gs-shell #hs-root .tm-roster.gs-staff .tm-p{padding-bottom:14px!important}
+html.gs-shell #hs-root .tm-roster .tm-p .gs-flag{position:absolute;top:10px;left:12px;z-index:2;line-height:0}
+html.gs-shell #hs-root .tm-roster .tm-p .gs-flag img{width:22px;height:auto}
+html.gs-shell #hs-root .tm-roster.gs-staff .tm-p small{color:var(--c-text-3)}
+
+/* ---------- кольца состояния в профиле ---------- */
+.gs-rings{display:flex;gap:14px;align-self:center;padding-bottom:20px;flex:none}
+.gs-ring{position:relative;width:76px;display:flex;flex-direction:column;align-items:center}
+.gs-ring svg{width:76px;height:76px}
+.gs-ring .tr{fill:none;stroke:rgba(255,255,255,.08);stroke-width:5}
+.gs-ring .br{fill:none;stroke-width:5;stroke-linecap:round;transition:stroke-dasharray .6s var(--ease)}
+.gs-ring.hi .br{stroke:var(--c-win)}.gs-ring.mid .br{stroke:var(--c-gold)}.gs-ring.lo .br{stroke:var(--c-loss)}
+.gs-ring b{position:absolute;top:0;left:0;right:0;height:76px;display:grid;place-items:center;font:700 20px/1 var(--f-num);color:#fff}
+.gs-ring small{margin-top:4px;font-size:var(--t-micro);font-weight:650;color:var(--c-text-3)}
+@media (max-width:1280px){.gs-rings{display:none}}
+
+/* ---------- выбор организации ---------- */
+html.gs-shell #hs-root .cr-pick{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(170px,1fr))!important;gap:12px!important}
+html.gs-shell #hs-root .cr-pickt{--gs-team:120,140,170;position:relative;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:8px;height:132px;padding:14px 10px!important;border-radius:12px!important;
+  border:1px solid var(--c-line)!important;overflow:hidden;isolation:isolate;
+  background:radial-gradient(80% 90% at 50% 0%,rgba(var(--gs-team),.30),transparent 75%),var(--c-surface)!important;transition:transform var(--m-small) var(--ease),border-color var(--m-small) var(--ease)}
+html.gs-shell #hs-root .cr-pickt .hs-logo{width:52px;height:52px}
+html.gs-shell #hs-root .cr-pickt b{font-size:var(--t-h3);font-weight:700}
+html.gs-shell #hs-root .cr-pickt small{position:absolute;top:8px;left:10px;font:700 var(--t-micro)/1 var(--f-num);color:var(--c-text-3)}
+@media (hover:hover){html.gs-shell #hs-root .cr-pickt:hover{transform:translateY(-3px);border-color:rgba(var(--gs-team),.75)!important}}
+
+html.gs-shell #hs-root .hs-phead .hs-pphoto img{-webkit-mask-image:radial-gradient(ellipse 62% 78% at 50% 42%,#000 58%,transparent 100%);mask-image:radial-gradient(ellipse 62% 78% at 50% 42%,#000 58%,transparent 100%);-webkit-mask-composite:source-over;mask-composite:add}
+.gs-staffbox{margin-top:16px}
+
+/* ---------- рельс: свёрнутое меню (кнопкой или на узком экране); папка раскрывает меню поверх ---------- */
+html.gs-shell.gs-railed{--gs-side:var(--gs-rail)}
+html.gs-railed #hs-root .gs-side:not(.gs-peek) :is(.gs-who,.gs-lb,.gs-chev){display:none}
+html.gs-railed #hs-root .gs-side:not(.gs-peek) .gs-brand{flex-direction:column;justify-content:center;gap:6px;height:auto;padding:12px 0}
+html.gs-railed #hs-root .gs-side:not(.gs-peek) .gs-it{justify-content:center;padding:0}
+html.gs-railed #hs-root .gs-side:not(.gs-peek) .gs-sub{display:none}
+html.gs-railed #hs-root .gs-side:not(.gs-peek) .gs-cap{margin:10px 4px 4px;font-size:0;height:1px;background:rgba(255,255,255,.07)}
+html.gs-railed #hs-root .gs-side:not(.gs-peek) :is(.gs-nav,.gs-foot){padding-left:8px;padding-right:8px}
+html.gs-railed #hs-root .gs-side.gs-peek{width:252px;box-shadow:24px 0 60px -10px rgba(0,0,0,.85)}
+html.gs-railed #hs-root .gs-side.gs-peek .gs-railbtn{display:grid}
+@media (max-width:1100px){html.gs-railed #hs-root .gs-railbtn{display:none}}
+
+#hs-root .gs-foot{flex-direction:row;align-items:center;gap:4px}
+#hs-root .gs-foot>.gs-it{flex:1 1 auto;width:auto}
+#hs-root .gs-foot>.gs-railbtn{width:36px;height:40px}
+html.gs-railed #hs-root .gs-side:not(.gs-peek) .gs-foot{flex-direction:column}
+html.gs-railed #hs-root .gs-side:not(.gs-peek) .gs-foot>.gs-it{width:100%}
+
+/* v87.1: контент занимает всю ширину рядом с меню — без пустых полей на больших мониторах и при уменьшенном масштабе */
+html.gs-shell #hs-root.portal .hs-page,html.gs-shell #hs-root .pt-game-host{max-width:none;width:100%}
+@media (min-width:1900px){html.gs-shell #hs-root.portal .hs-page{padding-left:32px;padding-right:32px}}
+
+/* v87.1: строка LIVE — подсветка на всю строку одним градиентом (раньше градиент начинался заново в каждой ячейке) */
+html.gs-shell #hs-root tr.live{background:linear-gradient(90deg,rgba(255,77,109,.12),rgba(255,77,109,.03) 45%,transparent 80%)}
+html.gs-shell #hs-root tr.live td{background:transparent!important}
+html.gs-shell #hs-root tr.live td:first-child{box-shadow:inset 3px 0 0 var(--c-live)}
+/* аватар: лицо крупнее, подложка в тон, рядом с флагом в одну линию */
+#hs-root .gs-ava{width:28px;height:28px;background:radial-gradient(circle at 50% 30%,#3a4757,#1c2430);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);flex:none}
+#hs-root .gs-ava img{transform:scale(1.55) translateY(14%)}
+#hs-root td:has(>.gs-ava){white-space:nowrap}
+#hs-root td>.gs-ava+.fl,#hs-root td>.gs-ava+.flg{vertical-align:middle}
+
+/* v87.1: у крупных фото (шапка игрока, карточки состава) нет тёмной подложки-рамки — фото вырезаны,
+   человек стоит прямо на фоне шапки; снизу мягко растворяется */
+html.gs-shell #hs-root .hs-phead .hs-pphoto .cs2-portrait,html.gs-shell #hs-root .tm-roster .tm-p .ph .cs2-portrait{background:none!important;box-shadow:none!important;border-radius:0}
+html.gs-shell #hs-root .hs-phead .hs-pphoto .cs2-portrait::after,html.gs-shell #hs-root .tm-roster .tm-p .ph .cs2-portrait::after{display:none}
+html.gs-shell #hs-root .hs-phead .hs-pphoto{overflow:visible;border-radius:0;box-shadow:none!important}
+html.gs-shell #hs-root .hs-phead .hs-pphoto img,html.gs-shell #hs-root .tm-roster .tm-p .ph img{
+  object-fit:contain!important;object-position:center bottom!important;
+  -webkit-mask-image:linear-gradient(180deg,#000 78%,transparent 100%)!important;mask-image:linear-gradient(180deg,#000 78%,transparent 100%)!important;
+  -webkit-mask-composite:source-over!important;mask-composite:add!important;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+html.gs-shell #hs-root .hs-phead .hs-pphoto{width:220px;height:210px}
+
+/* v87.2: ширина контента ограничена (больше — за счёт масштаба интерфейса), строки матчей компактные */
+html.gs-shell #hs-root.portal .hs-page{max-width:1680px;margin:0 auto}
+html.gs-shell #hs-root .mrow{grid-template-columns:minmax(0,240px) 64px minmax(0,240px) minmax(0,1fr) auto!important}
+html.gs-shell #hs-root .mrow .mrow-x{justify-self:end}
+#hs-root .gs-mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,640px),1fr));gap:16px;align-items:start}
+#hs-root .gs-mgrid>section.hs-box{margin:0!important}
+#hs-root .gs-scalebtn{width:auto!important;min-width:36px;padding:0 6px;gap:3px;display:flex!important;align-items:center}
+#hs-root .gs-scalebtn b{font:700 10px/1 var(--f-num);color:var(--c-text-3)}
+html.gs-railed #hs-root .gs-side:not(.gs-peek) .gs-scalebtn b{display:none}
+
+/* ================= v87.2 · Зал славы ================= */
+#hs-root .gs-hof{display:flex;flex-direction:column;gap:22px}
+#hs-root .gs-hh{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,.9fr);min-height:300px;border-radius:14px;border:1px solid rgba(245,192,74,.28);
+  background:linear-gradient(90deg,rgba(12,16,22,.95) 0%,rgba(12,16,22,.7) 45%,rgba(12,16,22,.35) 100%),url("../assets/ui/arena.webp") center 40%/cover,#11161d}
+#hs-root .gs-hh::before{content:"";position:absolute;right:12%;top:-30px;width:520px;height:380px;z-index:-1;background:linear-gradient(180deg,rgba(245,192,74,.42),rgba(245,192,74,.06) 70%,transparent);clip-path:polygon(40% 0,60% 0,100% 100%,0 100%);filter:blur(10px)}
+#hs-root .gs-hh::after{content:"";position:absolute;inset:0;z-index:-1;background:var(--gs-grain);background-size:160px;opacity:.4;mix-blend-mode:overlay}
+#hs-root .gs-hh-t{padding:30px 32px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+#hs-root .gs-hh-k{font:700 11px/1 var(--f-num);letter-spacing:.14em;text-transform:uppercase;color:#f5c04a}
+#hs-root .gs-hh h2{margin:0;font:800 44px/1 var(--f-ui);letter-spacing:-.02em;background:linear-gradient(180deg,#fff6d8,#f5c04a 70%,#b8862a);-webkit-background-clip:text;background-clip:text;color:transparent}
+#hs-root .gs-hh p{margin:0;max-width:520px;color:var(--c-text-2)}
+#hs-root .gs-hh-n{display:flex;gap:26px;margin-top:8px}
+#hs-root .gs-hh-n b{display:block;font:700 26px/1 var(--f-num);color:#fff}#hs-root .gs-hh-n small{font-size:var(--t-caption);color:var(--c-text-3)}
+#hs-root .gs-hh-ps{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:0;padding-top:18px}
+#hs-root .gs-hh-p{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:170px;margin:0 -14px;padding:0!important}
+#hs-root .gs-hh-p .ph{position:relative;display:block;width:170px;height:200px}
+#hs-root .gs-hh-p.p0{order:2;z-index:2;width:200px}#hs-root .gs-hh-p.p0 .ph{width:200px;height:240px}
+#hs-root .gs-hh-p.p1{order:1}#hs-root .gs-hh-p.p2{order:3}
+#hs-root .gs-hh-p .cs2-portrait{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;background:none!important;border-radius:0!important}
+#hs-root .gs-hh-p .cs2-portrait::after{display:none}
+#hs-root .gs-hh-p .cs2-portrait img{object-fit:contain!important;object-position:center bottom!important;filter:drop-shadow(0 14px 18px rgba(0,0,0,.6));-webkit-mask-image:linear-gradient(180deg,#000 82%,transparent);mask-image:linear-gradient(180deg,#000 82%,transparent)}
+#hs-root .gs-hh-p b{margin-top:-6px;font-size:15px;font-weight:800;color:#fff;text-shadow:0 2px 8px #000}
+#hs-root .gs-hh-p small{font:700 10.5px/1.4 var(--f-num);color:#f5c04a;margin-bottom:16px}
+#hs-root .gs-hh-plinth{position:absolute;left:50%;bottom:6px;width:86%;height:44px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(50% 50% at 50% 40%,rgba(245,192,74,.28),transparent 70%);z-index:0}
+#hs-root .gs-hsec .gs-sh .hs-dim{font-size:var(--t-caption)}
+#hs-root .gs-plqs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+#hs-root .gs-plq{--m:245,192,74;position:relative;isolation:isolate;overflow:hidden;display:flex!important;flex-direction:column;align-items:stretch;padding:0 0 14px!important;border-radius:12px;text-align:center;
+  border:1px solid rgba(var(--m),.35)!important;background:linear-gradient(180deg,rgba(var(--m),.20),rgba(var(--m),.03) 55%,var(--c-surface) 75%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 30px -22px #000;
+  transition:transform var(--m-small) var(--ease),border-color var(--m-small) var(--ease)}
+#hs-root .gs-plq::before{content:"";position:absolute;left:50%;top:-20px;width:260px;height:240px;transform:translateX(-50%);z-index:-1;background:linear-gradient(180deg,rgba(var(--m),.35),transparent 75%);clip-path:polygon(38% 0,62% 0,100% 100%,0 100%);filter:blur(6px)}
+#hs-root .gs-plq.fut{--m:170,186,204}
+@media (hover:hover){#hs-root .gs-plq:hover{transform:translateY(-3px);border-color:rgba(var(--m),.8)!important}}
+#hs-root .gs-plq-rib{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:3;white-space:nowrap;height:20px;padding:0 10px;border-radius:5px;font:700 10px/20px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:rgb(var(--m));background:rgba(10,13,18,.75);border:1px solid rgba(var(--m),.5)}
+#hs-root .gs-plq-ph{position:relative;display:block;height:200px;margin-top:22px}
+#hs-root .gs-plq-ph .cs2-portrait{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;background:none!important;border-radius:0!important}
+#hs-root .gs-plq-ph .cs2-portrait::after{display:none}
+#hs-root .gs-plq-ph .cs2-portrait img{object-fit:contain!important;object-position:center bottom!important;filter:drop-shadow(0 10px 14px rgba(0,0,0,.55));-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent);mask-image:linear-gradient(180deg,#000 80%,transparent)}
+#hs-root .gs-plq.fut .gs-plq-ph .cs2-portrait img{filter:grayscale(.35) drop-shadow(0 10px 14px rgba(0,0,0,.55))}
+#hs-root .gs-plq-id{display:flex;flex-direction:column;gap:2px;margin:-4px 12px 10px;padding:9px 10px;border-radius:8px;background:linear-gradient(180deg,#1d2631,#151c25);border:1px solid rgba(var(--m),.30);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+#hs-root .gs-plq-id b{font-size:16px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+#hs-root .gs-plq-id small{font-size:var(--t-caption);color:var(--c-text-3)}
+#hs-root .gs-plq-st{display:grid;grid-template-columns:repeat(4,1fr);margin:0 12px;border-top:1px solid var(--c-line);border-bottom:1px solid var(--c-line)}
+#hs-root .gs-plq-st div{padding:8px 0}#hs-root .gs-plq-st b{display:block;font:700 17px/1.1 var(--f-num);color:#fff}#hs-root .gs-plq-st small{font-size:10.5px;color:var(--c-text-3)}
+#hs-root .gs-plq-st div:first-child b{color:rgb(var(--m))}
+#hs-root .gs-plq-cups{display:flex;justify-content:center;gap:4px;margin:10px 12px 0;height:48px}
+#hs-root .gs-plq-cups i{width:42px;height:48px;display:grid;place-items:end center;filter:drop-shadow(0 4px 6px rgba(0,0,0,.6))}
+#hs-root .gs-plq-cups svg{max-width:42px;max-height:48px}
+#hs-root .gs-plq-tm{display:flex;justify-content:center;gap:8px;margin-top:8px}
+#hs-root .gs-plqs.fut{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+#hs-root .gs-plqs.fut .gs-plq-ph{height:170px}
+#hs-root .gs-tys{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+#hs-root .gs-ty{--gs-team:120,140,170;position:relative;display:flex!important;flex-direction:column;align-items:center;gap:8px;padding:22px 12px 16px!important;border-radius:12px;border:1px solid var(--c-line)!important;overflow:hidden;isolation:isolate;
+  background:radial-gradient(90% 80% at 50% 0%,rgba(var(--gs-team),.32),transparent 70%),var(--c-surface)!important}
+#hs-root .gs-ty .hs-logo{width:72px;height:72px}
+#hs-root .gs-ty-aw{position:absolute;top:8px;right:8px;width:34px;height:40px;opacity:.9}#hs-root .gs-ty-aw svg{width:100%;height:100%}
+#hs-root .gs-ty b{font-size:16px;font-weight:800}#hs-root .gs-ty small{font:600 11px/1 var(--f-num);color:var(--c-text-3)}
+@media (max-width:1100px){#hs-root .gs-hh{grid-template-columns:1fr}#hs-root .gs-hh-ps{display:none}}
+
+/* ================= v87.2 · Витрина кубков (силуэты кубков прежние) ================= */
+/* цвет луча = уровень */
+#hs-root :is(.tc-item,.tc-major,.gs-case){--t:150,170,190}
+#hs-root :is(.tc-item,.gs-case):has(.k-major),#hs-root .tc-major{--t:245,192,74}
+#hs-root :is(.tc-item,.gs-case):has(.k-elite){--t:255,138,61}
+#hs-root :is(.tc-item,.gs-case):has(.k-regular){--t:90,169,255}
+#hs-root :is(.tc-item,.gs-case):has(.k-tier2){--t:47,212,212}
+#hs-root :is(.tc-item,.gs-case):has(:is(.k-tier3,.k-qual)){--t:169,139,245}
+#hs-root :is(.tc-item,.gs-case):has(.k-academy){--t:88,197,138}
+/* карточка кабинета: постамент под лучом, табличка снизу */
+html.gs-shell #hs-root .tc-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(168px,1fr))!important;gap:12px!important}
+html.gs-shell #hs-root .tc-item{position:relative;isolation:isolate;overflow:hidden;display:flex!important;flex-direction:column;align-items:center;justify-content:flex-end;min-height:220px;padding:0 10px 12px!important;border-radius:12px!important;
+  border:1px solid var(--c-line)!important;background:radial-gradient(70% 40% at 50% 70%,rgba(var(--t),.16),transparent 70%),linear-gradient(180deg,#151c25,#0d1218 80%)!important;text-align:center}
+html.gs-shell #hs-root .tc-item::before{content:"";position:absolute;left:50%;top:-10px;width:180px;height:190px;transform:translateX(-50%);z-index:-1;background:linear-gradient(180deg,rgba(var(--t),.30),rgba(var(--t),.05) 72%,transparent);clip-path:polygon(41% 0,59% 0,100% 100%,0 100%);filter:blur(5px)}
+html.gs-shell #hs-root .tc-item .tc-tr{position:relative;display:flex!important;align-items:flex-end;justify-content:center;width:120px!important;height:120px!important;margin:18px 0 12px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.65))}
+html.gs-shell #hs-root .tc-item .tc-tr svg{max-width:110px;max-height:118px}
+html.gs-shell #hs-root .tc-item .tc-tr::after{content:"";position:absolute;left:50%;bottom:-8px;width:120px;height:16px;transform:translateX(-50%);z-index:-1;border-radius:50%;
+  background:radial-gradient(50% 50% at 50% 40%,#2c3846,#121820 70%);box-shadow:inset 0 1px 0 rgba(var(--t),.6),0 10px 16px -6px #000}
+html.gs-shell #hs-root .tc-item>b{font-size:var(--t-h3);font-weight:750;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html.gs-shell #hs-root .tc-item>small{font:600 11px/1.5 var(--f-num);color:var(--c-text-3)}
+@media (hover:hover){html.gs-shell #hs-root .tc-item:hover{border-color:rgba(var(--t),.7)!important}html.gs-shell #hs-root .tc-item:hover .tc-tr{transform:translateY(-3px);transition:transform var(--m-small) var(--ease)}}
+/* победители Major — широкая витрина с золотым лучом */
+html.gs-shell #hs-root .tc-major{position:relative;isolation:isolate;overflow:hidden;border-radius:12px!important;border:1px solid rgba(245,192,74,.25)!important;
+  background:radial-gradient(40% 90% at 90px 70%,rgba(245,192,74,.18),transparent 70%),linear-gradient(90deg,#161d26,#10151c)!important}
+html.gs-shell #hs-root .tc-major::before{content:"";position:absolute;left:30px;top:-10px;width:130px;height:150px;z-index:-1;background:linear-gradient(180deg,rgba(245,192,74,.35),transparent 80%);clip-path:polygon(40% 0,60% 0,100% 100%,0 100%);filter:blur(5px)}
+html.gs-shell #hs-root .tc-major .tc-tr.big{filter:drop-shadow(0 10px 12px rgba(0,0,0,.6))}
+/* полка игрока/команды: маленькие постаменты под лучами и доска снизу */
+html.gs-shell #hs-root .pl-shelf{position:relative;isolation:isolate;padding:14px 12px 18px!important;border-radius:12px!important;background:linear-gradient(180deg,#141b24,#0e1319)!important;border:1px solid var(--c-line)!important;overflow:hidden}
+html.gs-shell #hs-root .pl-shelf::after{content:"";position:absolute;left:0;right:0;bottom:0;height:10px;background:linear-gradient(180deg,#2a3542,#141a22);box-shadow:0 -1px 0 rgba(255,255,255,.06)}
+html.gs-shell #hs-root .pl-shelf .hs-achi{--t:255,138,61;position:relative;isolation:isolate;background:none!important;border:0!important;box-shadow:none!important}
+html.gs-shell #hs-root .pl-shelf .hs-achi:has(.st){--t:245,192,74}
+html.gs-shell #hs-root .pl-shelf .hs-achi.mvp{--t:90,169,255}
+html.gs-shell #hs-root .pl-shelf .hs-achi::before{content:"";position:absolute;left:50%;top:-18px;width:110px;height:130px;transform:translateX(-50%);z-index:-1;background:linear-gradient(180deg,rgba(var(--t),.26),transparent 80%);clip-path:polygon(40% 0,60% 0,100% 100%,0 100%);filter:blur(4px);pointer-events:none}
+html.gs-shell #hs-root .pl-shelf .hs-achi::after{content:"";position:absolute;left:50%;bottom:2px;width:74px;height:11px;transform:translateX(-50%);z-index:-1;border-radius:50%;background:radial-gradient(50% 50% at 50% 40%,#2c3846,#121820 70%);box-shadow:inset 0 1px 0 rgba(var(--t),.55);pointer-events:none}
+html.gs-shell #hs-root .pl-shelf .hs-achi.is-marker::before{opacity:.45}
+html.gs-shell #hs-root .pl-shelf .hs-achi>svg{filter:drop-shadow(0 6px 8px rgba(0,0,0,.6))}
+/* шапка турнира и главный герой: кубок под лучом на постаменте */
+html.gs-shell #hs-root :is(.ev-tr,.v37-hero-art){position:relative;isolation:isolate}
+html.gs-shell #hs-root :is(.ev-tr,.v37-hero-art)::before{content:"";position:absolute;left:50%;top:-40px;width:300px;height:calc(100% + 40px);transform:translateX(-50%);z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,170,90,.32),rgba(255,170,90,.05) 75%,transparent);clip-path:polygon(41% 0,59% 0,100% 100%,0 100%);filter:blur(7px)}
+html.gs-shell #hs-root :is(.ev-tr,.v37-hero-art)::after{content:"";position:absolute;left:50%;bottom:-6px;width:min(200px,90%);height:22px;transform:translateX(-50%);z-index:-1;border-radius:50%;pointer-events:none;
+  background:radial-gradient(50% 50% at 50% 40%,#2c3846,#11161d 70%);box-shadow:inset 0 1px 0 rgba(255,170,90,.55),0 14px 22px -6px #000}
+html.gs-shell #hs-root :is(.ev-tr,.v37-hero-art)>svg{filter:drop-shadow(0 14px 18px rgba(0,0,0,.6))}
+#hs-root .gs-medal{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:132px;height:132px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,#fff1c4,#d9a748 38%,#8a5f18 75%,#4a3208);box-shadow:inset 0 0 0 6px rgba(0,0,0,.18),inset 0 0 0 9px rgba(255,236,180,.45),0 14px 24px -8px #000}
+#hs-root .gs-medal::before{content:"";position:absolute;inset:16px;border-radius:50%;border:1.5px dashed rgba(74,50,8,.55)}
+#hs-root .gs-medal b{font:800 42px/1 var(--f-ui);letter-spacing:.02em;color:#4a3208;text-shadow:0 1px 0 rgba(255,240,200,.6)}
+#hs-root .gs-plq.fut .gs-medal{background:radial-gradient(circle at 35% 30%,#ffffff,#b9c3cd 38%,#5d6773 75%,#2c333c);box-shadow:inset 0 0 0 6px rgba(0,0,0,.18),inset 0 0 0 9px rgba(255,255,255,.4),0 14px 24px -8px #000}
+#hs-root .gs-plq.fut .gs-medal b{color:#2c333c}
+#hs-root .gs-plqs.fut .gs-medal{width:112px;height:112px}#hs-root .gs-plqs.fut .gs-medal b{font-size:36px}
+
+#hs-root .gs-pwm{display:block;background:center/contain no-repeat}
+
+#hs-root .gs-arch{margin-bottom:18px}
+html.gs-shell #hs-root .gs-arch .tc-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))!important}
+#hs-root .gs-case .gs-case-ch{display:flex;align-items:center;justify-content:center;gap:6px;font:650 12px/1.4 var(--f-ui)!important;color:var(--c-text)!important;max-width:100%;overflow:hidden;white-space:nowrap}
+
+html.gs-shell #hs-root.portal .hs-body{min-height:calc(100vh / var(--gs-zoom,1) - var(--gs-top))}
+
+/* v87.3 · «Мои прошлые Pick'Em»: у блока не было стилей — стадии карточками, команды чипами с итогом */
+#hs-root .v84-pkh{padding:14px 16px;border-bottom:1px solid var(--c-line)}
+#hs-root .v84-pkh:last-child{border-bottom:0}
+#hs-root .v84-pkh h4{display:flex;align-items:baseline;gap:10px;margin:0 0 12px;font-size:var(--t-h3);font-weight:750}
+#hs-root .v84-pkh{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+#hs-root .v84-pkh>h4{grid-column:1/-1;margin:0}
+#hs-root .v84-pkh-st{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:10px;background:var(--c-surface-2);border:1px solid var(--c-line)}
+#hs-root .v84-pkh-st>b{font-size:var(--t-small);font-weight:750;display:flex;justify-content:space-between}
+#hs-root .v84-pkh-st>em{order:-1;align-self:flex-end;margin-bottom:-26px;font:700 12px/1 var(--f-num);font-style:normal;color:var(--c-gold)}
+#hs-root .v84-pkh-st>div{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+#hs-root .v84-pkh-st>div>small{flex:0 0 46px;font:700 11px/1 var(--f-num);color:var(--c-text-3)}
+#hs-root .v84-pkh-st>div>i{color:var(--c-text-3);font-style:normal}
+#hs-root .v84-pkh-t{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px 0 4px;border-radius:5px;font-size:var(--t-caption);font-weight:600;white-space:nowrap;
+  background:rgba(255,255,255,.03);border:1px solid var(--c-line-strong);color:var(--c-text-2)}
+#hs-root .v84-pkh-t .hs-logo{width:16px;height:16px;flex:none}
+#hs-root .v84-pkh-t.ok{border-color:rgba(52,211,153,.55);background:rgba(52,211,153,.10);color:#bff5dc}
+#hs-root .v84-pkh-t.ok::after{content:"✓";font-weight:800;color:var(--c-win)}
+#hs-root .v84-pkh-t.no{border-color:rgba(251,113,133,.4);color:var(--c-text-3)}
+#hs-root .v84-pkh-t.no::after{content:"✕";font-weight:800;color:var(--c-loss)}
+
+/* v87.3 · связь «основа ↔ академия» на странице команды */
+#hs-root .gs-acad{--gs-team:120,140,170;position:relative;display:flex!important;align-items:center;gap:14px;width:100%;margin:-2px 0 16px;padding:12px 16px!important;border-radius:12px;text-align:left;
+  border:1px solid var(--c-line)!important;background:linear-gradient(90deg,rgba(var(--gs-team),.18),transparent 55%),var(--c-surface)!important;transition:border-color var(--m-small) var(--ease)}
+@media (hover:hover){#hs-root .gs-acad:hover{border-color:rgba(var(--gs-team),.7)!important}}
+#hs-root .gs-acad-k{position:absolute;top:-9px;left:14px;height:18px;padding:0 8px;border-radius:5px;font:700 10px/18px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:#7ff0b9;background:#0f141b;border:1px solid rgba(88,197,138,.55)}
+#hs-root .gs-acad .hs-logo{width:44px;height:44px;flex:none}
+#hs-root .gs-acad-id{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+#hs-root .gs-acad-id b{font-size:16px;font-weight:800}#hs-root .gs-acad-id small{font-size:var(--t-caption);color:var(--c-text-3)}
+#hs-root .gs-acad-ps{display:flex;gap:10px}
+#hs-root .gs-acad-p{display:flex;flex-direction:column;align-items:center;gap:3px;width:52px}
+#hs-root .gs-acad-p img,#hs-root .gs-acad-p>b{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:top;background:radial-gradient(circle at 50% 30%,#3a4757,#1c2430);display:grid;place-items:center;font-size:12px;color:var(--c-text-2)}
+#hs-root .gs-acad-p small{font-size:10.5px;color:var(--c-text-2);max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#hs-root .gs-acad-go{width:20px;color:var(--c-text-3)}#hs-root .gs-acad-go svg{width:20px;height:20px}
+@media (max-width:1100px){#hs-root .gs-acad-ps{display:none}}

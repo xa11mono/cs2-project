@@ -1,0 +1,27 @@
+// v72: current quota status is clearly separated from forecast stage.
+const fs = require('fs');
+const path = require('path');
+const vm = require('vm');
+const root = path.resolve(__dirname, '..');
+const source = fs.readFileSync(path.join(root, 'js/manager/v35-major-path.js'), 'utf8');
+const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const css = fs.readFileSync(path.join(root, 'css/v30-portal.css'), 'utf8');
+const assert = (v, m) => { if (!v) throw new Error(m); };
+const H = { PAGES: {}, SECTION_OF: {}, esc: s => String(s ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;'), box: (t,b) => `${t}${b}`, empty: s => s };
+const win = { HS: H, setInterval() { return 1; } };
+const ctx = { window: win, setInterval() { return 1; }, console: { info() {}, warn() {} }, Date, Math, Number, String, Object, Array, Map, Set };
+vm.runInNewContext(source, ctx, { filename: 'v35-major-path.js' });
+const api = win.V35Major;
+assert(api && typeof api.currentQuotaStatus === 'function', 'v72 must expose current quota status helper');
+const current = api.currentQuotaStatus(new Map([['B8', ['s2', 'Сейчас проходит в Stage 2 · 8 прямых приглашений по квотам']]]), 'B8');
+assert(current.label === 'В квоте' && current.className === 'current-in', 'a team in the current direct slots must get a concise in-quota label');
+assert(current.title.includes('Stage 2') && current.title.includes('срез VRS'), 'tooltip must retain the factual current stage without duplicating it in the table cell');
+const outside = api.currentQuotaStatus(new Map(), 'NRG');
+assert(outside.label === 'Вне квоты' && !outside.label.includes('состав'), 'teams outside the current slots must not be labelled as outside the roster');
+assert(outside.title.includes('32 прямых приглашений'), 'outside status must explain the actual cutoff');
+assert(source.includes('Статус квоты сейчас') && source.includes('Наиболее вероятная стадия'), 'table must clearly separate current quota status from forecast stage');
+assert(!source.includes('вне текущего состава'), 'ambiguous legacy roster wording must be removed');
+assert(source.includes('title="${esc(current.title)}"'), 'the current stage detail should remain available in a tooltip');
+assert(index.includes('v35-major-path.js?v=95') && index.includes('v30-portal.css?v=95'), 'v72 assets must bypass the browser cache');
+assert(css.includes('.mp-z.current-in') && css.includes('.mp-z.out'), 'current quota states must have distinct visual treatment');
+console.log('PASS v72: current quota status no longer visually conflicts with forecast stage; outside-quota wording is corrected');

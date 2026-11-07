@@ -1,0 +1,13 @@
+CS2 Manager v65 — Major Path probability ordering
+
+- Replaced the old ascending Stage 2-only order with a stage-aware probability order.
+- Each team is assigned to the stage with its highest simulated probability. Ties favor the higher stage (Stage 3, then Stage 2, then Stage 1).
+- All teams in the Stage 3 group appear before all Stage 2 teams; all Stage 2 teams appear before Stage 1 teams.
+- Inside each stage group, teams are sorted by the overall probability of receiving any Major invitation, descending.
+- If the overall invitation probability ties, the dominant-stage probability and remaining stage probabilities break ties; world VRS rank is only a final deterministic tie-breaker.
+- Added a separate “Основная стадия по прогнозу” column so the projected stage group is not confused with the current live seed; updated the explanatory text. The text now explains that regional quotas mean a world-rank #32 team can still have a substantial invitation probability (for example, 72%).
+- Exposed the pure probability classifier/sorter through V35Major for regression coverage.
+- Added tests covering Spirit/Vitality-style Stage 3 leaders, Falcons (98% Stage 3 + 2% Stage 2), mixed-stage classification, descending overall chance, group boundaries and non-mutating sort.
+
+Validation:
+- See v65-majorpath-stage-probability-sort.test.js.

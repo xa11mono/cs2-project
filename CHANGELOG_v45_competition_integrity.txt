@@ -1,0 +1,23 @@
+CS2 Manager v45 — Competition Integrity
+
+Tournament identity and awards
+- Upper-bracket final, lower-bracket final, and true Grand Final now have separate labels/news copy. Only the actual championship final awards the title.
+- Tournament completion is committed immediately when the championship final has a winner; the bronze match no longer blocks champion assignment.
+- MVP assignment is independent from team trophy insertion, so a pre-existing cup no longer suppresses MVP calculation.
+- Player profiles show achievements even when no match-stat record exists. Trophy shelf defaults to All and resets when opening a different player/team profile.
+- Legacy Tier-3 trophies use saved fieldProfile metadata for correct classification.
+
+Tournament planning and Major
+- Qualification and Major invite previews are prepared before tournament day and the Major roster is frozen in advance.
+- Upcoming event pages show known invitees before the event starts; team directory contains qualification placements/results.
+- Major calendar is split into Pick'Em Day, Stage I, Stage II, Stage III, and Champions Stage.
+- Pre-start Stage I Pick'Em can be saved and carried into the live Major.
+- Swiss 3:0 and 0:3 qualification buckets render team logos.
+- Major Path no longer forces top-32 teams with zero invite probability into the potential invite list.
+
+Rating and match balance
+- VRS approximation now stays anchored to saved team baseline instead of globally renormalizing all teams. Combined evidence and head-to-head adjustment is bounded to ±30 points; single-match K is reduced.
+- Map economy snowball is softened to reduce excessive blowouts while preserving rare upsets and dominant scorelines.
+
+Compatibility
+- Changes are additive and retain existing save data; the new qualification preview fields are persisted in season state.

@@ -1,0 +1,18 @@
+CS2 Manager v58 — reset database and qualifier pacing
+
+- Factory reset now waits for the IndexedDB tournament archive and autosave cleanup before reloading.
+- Clears all known CS2 game localStorage/sessionStorage keys, including Grand Slam/parallel tournament state, news, awards, Pick'em, matches and transfers.
+- Prevents autosave/pagehide writes from restoring the pre-reset state during reset.
+- Keeps custom media assets (logos/artwork) by design; game state and tournament history are reset.
+- The calendar clock and parallel tournament engine now hard-stop while paused.
+- Long skips process parallel events day-by-day, while deferring only expensive persistence and UI rendering.
+- Open qualifiers begin 18 days before a main Tier-1 event; Closed qualifiers begin 9 days before.
+- Qualifier grids run at a slower cadence (one bracket slot per game day, up to two matches/day).
+- Tier-1 creation no longer force-completes missed qualification matches. Qualifier winners are used only after their matches finish; remaining slots use the existing invite/at-large rules.
+- The “to tournament” calendar shortcut visits Open/Closed qualifier windows instead of jumping over them.
+- Rebased overdue qualifier events are protected from being snapped back to old dates by calendar realignment.
+
+Validation:
+- All tests/*.test.js passed (v43-v58).
+- All JavaScript files passed node --check.
+- Full browser/Playwright run not performed because Playwright is unavailable in the build environment.

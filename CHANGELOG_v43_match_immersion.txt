@@ -1,0 +1,14 @@
+CS2 Manager — v43 Match Immersion
+
+• Match feed now turns the actual V34 round events into a short broadcast recap: opening kill, utility, plant, retake/defuse, upset, clutch/ace highlight, round MVP and map leaders.
+• Match Center, spectator mode and the live match panel show the new round-story card.
+• Tactical IQ, clutch and utility attributes now influence duels, late-round survival and grenade value; team playstyle affects opening tempo. The calibrated round win probability remains the same.
+• AI tactical timeouts are pressure-driven: at most one per team per half, after a 3+ round losing streak or repeated losses while behind. The user's managed team is left to manual control.
+• Tactical timeouts consume the existing budget and use the existing post-timeout plan/impact logic. Manual pause duration is capped to the live scheduler window.
+• Technical stops are separate: 0.25% per eligible round, one per BO1/BO3 match and two per BO5; no tactical timeout is spent and no economy/probability bonus is applied.
+• Existing saves remain compatible; new match-story and technical-pause data is stored alongside the live match state.
+
+Verification:
+• JavaScript syntax checks passed for the changed scripts.
+• Dependency-free tests: node tests/v43-match-immersion.test.js
+• Full Playwright/browser regression suite was not run because Playwright is not installed in this environment.

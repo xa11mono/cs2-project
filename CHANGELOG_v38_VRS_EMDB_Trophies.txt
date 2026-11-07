@@ -1,0 +1,50 @@
+CS2 Manager v38 — VRS, EMDB rosters, individual award trophies
+
+VRS
+- Added a shared VRS calculation module based on Valve's published four-factor structure:
+  Bounty Offered, Bounty Collected, Opponent Network, and LAN Wins.
+- Uses a six-month window, top-10 results, age weighting, curve scaling,
+  event weighting for Bounty Collected / Opponent Network, and separate
+  age-weighted head-to-head adjustments.
+- Match-page forecast shows projected rating movement for both teams.
+- Completed main and parallel tournaments record prize earnings/results and
+  trigger rating recalculation; removed the old flat Tier-based rating bonus.
+- Keeps a gradual compatibility bridge for existing career saves.
+
+Important VRS limitations
+- This is an in-game approximation of the public Valve methodology, not
+  Valve's production scoring implementation.
+- Valve's full event-weight calculator is not publicly specified in the
+  roster-detail documentation. The game accepts event.vrsEventWeight or
+  event.eventWeight; otherwise it uses a prize-pool proxy.
+- Opponent Network is approximated from the number of distinct opponents a
+  beaten opponent has beaten.
+- Match-page H2H forecast includes a game-balancing underdog adjustment.
+- Active-player eligibility based on playing at least 5 of the last 10
+  matches is not implemented yet. Roster continuity currently uses a
+  3-of-5 retained-player approximation.
+
+EMDB import
+- Parsed the user-provided luccaneta_s_GLOBAL_UPDATED.emdb into
+  js/data-emdb-2026.js.
+- Dataset includes 6,686 players, 61 five-player rosters, 80 bench players,
+  532 organizations, 376 organization/logo URLs, and 1,151 portrait URLs.
+- All 6,686 player metadata entries include a nationality and two-letter
+  country code.
+- Team matching normalizes case/punctuation aliases (e.g. BC.Game/BC.GAME).
+- Old default rosters migrate to EMDB data. Existing custom/transferred
+  lineups are preserved.
+- Portrait and organization image links are external URLs from the database,
+  not locally bundled image files.
+
+Awards
+- Redesigned individual award cups for Player of the Year, Sniper of the Year,
+  and other award categories with distinct palettes/emblems and an engraved
+  two-digit year on the plinth. Full year remains in accessible label/history.
+
+Validation
+- All JavaScript files passed Node syntax checks.
+- Node smoke tests passed for EMDB coverage/import data, forecast calibration,
+  tournament rating commit, and award SVG/year output.
+- Full browser end-to-end testing was not run (Playwright unavailable in the
+  build environment).

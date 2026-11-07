@@ -1,0 +1,78 @@
+/* v84 — тема «Midnight Ink»: обновлённая палитра и визуальный язык портала.
+   Холодный чернильно-синий фон вместо почти чёрного, мягкие поверхности с лёгким градиентом и тонкой подсветкой
+   верхней грани, один тёплый акцент (коралл-янтарь) и вторичный синий для ссылок и информации.
+   Контраст текста ≥ 4.5:1 на всех поверхностях (WCAG AA). Подключается последним; всё остальное берёт цвета из токенов. */
+:root{
+  --c-canvas:#0a0e17;--c-surface:#111826;--c-surface-2:#162032;--c-raised:#1c283d;--c-line:#1f2a3e;--c-line-strong:#2c3a53;
+  --c-text:#eef2fa;--c-text-2:#b9c4d6;--c-text-3:#8a97ad;
+  --c-action:#ff7a3d;--c-action-2:#ffb547;--c-on-action:#1c0b02;--c-focus:#ffb08a;--c-info:#5b8cff;
+  --c-win:#34d399;--c-loss:#fb7185;--c-live:#ff4d6d;--c-gold:#fbbf24;
+  --c-border:var(--c-line);
+  --r-box:14px;--r-control:9px;--r-chip:6px;
+  --sh-box:0 1px 0 rgba(255,255,255,.035) inset,0 12px 32px -20px rgba(0,0,0,.85);
+  --sh-pop:0 24px 48px -16px rgba(0,0,0,.8);
+  --g-action:linear-gradient(135deg,#ff7a3d 0%,#ffb547 100%);
+}
+/* фон: мягкое свечение сверху — глубина без шума */
+body.portal-on{background:radial-gradient(1200px 600px at 12% -10%,rgba(255,122,61,.07),transparent 60%),radial-gradient(1000px 520px at 92% -8%,rgba(91,140,255,.08),transparent 60%),var(--c-canvas)!important;background-attachment:fixed!important}
+/* шапка и навигация: стекло */
+.pt-top{background:rgba(10,14,23,.78)!important;backdrop-filter:saturate(140%) blur(14px);-webkit-backdrop-filter:saturate(140%) blur(14px);border-bottom:1px solid rgba(255,255,255,.05)!important}
+.pt-nav{background:rgba(10,14,23,.72)!important;backdrop-filter:saturate(140%) blur(14px);-webkit-backdrop-filter:saturate(140%) blur(14px);border-bottom:1px solid rgba(255,255,255,.05)!important}
+.pt-ink{height:3px!important;background:var(--g-action)!important;box-shadow:0 0 12px rgba(255,122,61,.55)}
+#hs-root .pt-tabs .hs-tab{color:var(--c-text-2)}#hs-root .pt-tabs .hs-tab.on{color:var(--c-text)}
+.pt-brand b{background:var(--g-action)!important;color:var(--c-on-action)!important;-webkit-text-fill-color:currentColor}
+/* поверхности */
+#hs-root .hs-box,.hs-box{background:linear-gradient(180deg,var(--c-surface-2) 0%,var(--c-surface) 140px)!important;border:1px solid var(--c-line)!important;border-radius:var(--r-box)!important;box-shadow:var(--sh-box)!important}
+#hs-root .hs-box-h{border-bottom-color:var(--c-line)!important}
+#hs-root .hs-box-h h3{font-weight:700}
+#hs-root .pt-kpis>div,#hs-root .hs-ptiles>*{background:var(--c-surface)!important}
+/* кнопки: основная — градиент акцента; вторичная — стеклянная */
+#hs-root .hs-btn:not(.ghost){background:var(--g-action)!important;color:var(--c-on-action)!important;border-color:transparent!important;box-shadow:0 6px 18px -8px rgba(255,122,61,.65)}
+#hs-root .hs-btn:not(.ghost):hover{filter:brightness(1.06);box-shadow:0 8px 22px -8px rgba(255,122,61,.8)}
+#hs-root .hs-btn.ghost{background:rgba(255,255,255,.03)!important;border:1px solid var(--c-line-strong)!important;color:var(--c-text)!important}
+#hs-root .hs-btn.ghost:hover{background:rgba(255,255,255,.07)!important;border-color:#3b4b68!important}
+#hs-root .hs-chip{border-radius:var(--r-chip)}
+#hs-root .hs-chip.on{background:rgba(255,122,61,.14)!important;border-color:rgba(255,122,61,.55)!important;color:#ffd2bd!important}
+/* ссылки и вторичные акценты */
+#hs-root .hs-link,#hs-root a{color:#9db8ff}
+#hs-root .hs-link:hover,#hs-root a:hover{color:#c3d3ff}
+/* таблицы */
+#hs-root .hs-tbl thead th{color:var(--c-text-3)!important;font-weight:600;letter-spacing:.02em}
+#hs-root .hs-tbl td{border-color:var(--c-line)!important}
+/* поля ввода */
+#hs-root .hs-inp,#hs-root input[type=search],#hs-root select{background:rgba(255,255,255,.03)!important;border:1px solid var(--c-line-strong)!important;border-radius:var(--r-control)!important;color:var(--c-text)!important}
+#hs-root .hs-inp:focus,#hs-root input[type=search]:focus{border-color:rgba(255,122,61,.65)!important;box-shadow:0 0 0 3px rgba(255,122,61,.18)!important}
+/* выпадающие меню */
+#hs-root .pt-menu{background:rgba(17,24,38,.96)!important;backdrop-filter:blur(12px);border:1px solid var(--c-line-strong)!important;border-radius:12px!important;box-shadow:var(--sh-pop)!important}
+#hs-root .pt-menu button:hover{background:rgba(255,122,61,.1)!important;color:#fff!important}
+/* скорость/пауза/перемотка */
+.pt-speed button.on{background:var(--g-action)!important;color:var(--c-on-action)!important}
+/* уведомления */
+#v29-toasts .v29-toast{background:rgba(17,24,38,.94)!important;backdrop-filter:blur(12px);border:1px solid var(--c-line-strong)!important;border-left:3px solid var(--c-action)!important;border-radius:12px!important;box-shadow:var(--sh-pop)!important}
+/* сплэш загрузки в новой палитре */
+#cs2-splash{background:radial-gradient(800px 400px at 50% 30%,rgba(255,122,61,.10),transparent 60%),#0a0e17!important}
+#cs2-splash b{background:var(--g-action)!important;color:#1c0b02!important;box-shadow:none!important}
+#cs2-splash i{background:linear-gradient(90deg,#ff7a3d 0 40%,#1f2a3e 40%)!important;background-size:200% 100%!important}
+/* выделение текста */
+::selection{background:rgba(255,122,61,.35);color:#fff}
+/* профиль игрока: призовые, Top 20, MVP — плашками в общей строке */
+#hs-root .hs-pchips .v84-c-prize{color:#8ee6b8!important;border-color:rgba(52,211,153,.35)!important}
+#hs-root .hs-pchips .v84-c-steel{background:#34465f!important;color:#fff!important;border-color:transparent!important}
+#hs-root .hs-pchips .v84-c-top{color:#a9c1ff!important}#hs-root .hs-pchips .v84-c-top small{opacity:.75}
+/* «Главные истории»: крупные фото, ровная сетка */
+.v37-story-card{grid-template-columns:104px minmax(0,1fr) 14px!important;min-height:92px!important;padding:10px 6px!important;align-items:center}
+.v37-story-media{width:104px!important;height:78px!important;border-radius:10px!important}
+.v37-story-text>b{font-size:13px!important;line-height:1.35!important}
+.v37-story-text>small{font-size:11.5px!important;color:var(--c-text-3)!important}
+.v37-story-meta i,.v37-story-meta time{font-size:10.5px!important}
+/* главная: правая колонка — истории + моя лента, без пустот; громкие новости — ровная сетка */
+.v37-home-layout{align-items:stretch}
+.v37-home-layout>:last-child{display:flex;flex-direction:column;gap:14px}
+#hs-root .v84-my.in-rail{margin:0;flex:1;display:flex;flex-direction:column;min-height:0}
+#hs-root .v84-my.in-rail .v84-my-n{padding:9px 14px}
+#hs-root .v84-spots-g.odd>:first-child{grid-column:1/-1}
+#hs-root .v84-spot-tx small{color:var(--c-action)!important}
+#hs-root .v84-spot.legend .v84-spot-tx small{color:#e8be5a!important}#hs-root .v84-spot.mine .v84-spot-tx small{color:#8fb0ff!important}#hs-root .v84-spot.streamer .v84-spot-tx small{color:#b6a2ff!important}
+#hs-root .v37-news-rail .v84-my.in-rail{margin-top:12px;border-radius:12px;flex:1 1 auto}
+#hs-root .v37-news-rail .v84-my.in-rail .hs-box-h h3{font-size:16px}
+#hs-root .v37-news-rail .v84-my.in-rail .v84-my-n:nth-of-type(n+3){display:none}

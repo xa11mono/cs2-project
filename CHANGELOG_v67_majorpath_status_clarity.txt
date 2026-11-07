@@ -1,0 +1,10 @@
+CS2 Manager v67 — Major Path current quota / forecast clarity
+
+- Renamed the current-seed column to “Статус квоты сейчас”.
+- Replaced current-stage labels in table cells with concise “В квоте” / “Вне квоты” badges.
+- Preserved the exact current Stage 3/2/1 allocation in a hover tooltip for teams currently inside the 32 direct regional slots.
+- Renamed “Основная стадия по прогнозу” to “Наиболее вероятная стадия”.
+- Replaced the misleading “вне текущего состава” phrase with “Вне квоты”; a team outside current slots is not described as absent from the roster.
+- Clarified in the page help that current VRS quota status is a present-time snapshot, while forecast stage is an independent Monte Carlo outlook.
+- Added current-quota status regression tests and bumped the Major Path JS/CSS cache key to v67.
+- Probability values, stage grouping, quota allocation, and sorting calculations are unchanged.

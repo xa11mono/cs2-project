@@ -1,0 +1,9 @@
+CS2 Manager v51 — Major Pick'Em navigation and medal layout
+
+- Pick'Em is removed from the “Ещё” overflow menu and is now a separate top-level navigation button.
+- The button is hidden before the Major Pick'Em roster lock, appears on Pick'Em Day, and remains available throughout the Major until completion.
+- Removed the old Pick'Em trophy text from the season/time header and the redundant Pick'Em button in tournament management.
+- Reworked the Pick'Em page into a two-column layout: the stage predictions remain on the left, and the current Major coin/medal is displayed on the right.
+- The medal uses the existing generated Major-specific coin artwork and shows this Major's points, current tier, and progress to the next tier.
+- Added a responsive stacked layout for narrower screens.
+- Added v51 regression tests and updated the browser verification expectations.

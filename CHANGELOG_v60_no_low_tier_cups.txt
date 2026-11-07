@@ -1,0 +1,9 @@
+CS2 Manager — v60 category-aware achievement rendering
+
+- Tier-2, Tier-3 and qualifier achievements no longer use championship cup artwork.
+- Introduced three distinct category placeholders: a qualification pass, Tier-2 medal and Tier-3 hex badge.
+- Moved and initialized the shared event classifier before the trophy API is exported, preventing a JavaScript initialization-order error.
+- Parallel tournament archiving, event artwork, team profiles, player achievements, career pages and prestige shelves now resolve event type through the same classifier and archive metadata.
+- Legacy snapshots whose prestige field incorrectly says S-Tier are corrected using their stored tier and qualifier metadata.
+- Qualification achievements are based on the full set of teams that advanced, not on a fake champion field or only the first-place team.
+- Cup counters count championship categories only; Tier-2, Tier-3 and qualification marks are counted separately.

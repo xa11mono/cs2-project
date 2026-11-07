@@ -1,0 +1,113 @@
+/* v28: hard override for the team trophy cabinet. Kept in a new file name to avoid stale CSS cache. */
+#trophy-cabinet.tw-strip.tw-team-strip-v28 {
+  display:flex!important; flex-flow:row nowrap!important; align-items:center!important;
+  gap:5px!important; min-height:136px!important; height:136px!important;
+  box-sizing:border-box!important; padding:4px 8px!important; margin:0!important;
+  overflow-x:auto!important; overflow-y:hidden!important; white-space:nowrap!important;
+  flex:0 0 136px!important;
+}
+#trophy-cabinet.tw-strip.tw-team-strip-v28 > .tw-tile {
+  display:flex!important; flex:0 0 124px!important; width:124px!important; min-width:124px!important;
+  height:130px!important; min-height:130px!important; max-height:130px!important;
+  box-sizing:border-box!important; align-items:center!important; justify-content:center!important;
+  padding:0!important; margin:0!important; overflow:visible!important;
+}
+#trophy-cabinet.tw-strip.tw-team-strip-v28 > .tw-tile > .tw-img {
+  display:block!important; width:116px!important; height:122px!important; min-width:116px!important;
+  max-width:116px!important; min-height:122px!important; max-height:122px!important;
+}
+#trophy-cabinet.tw-strip.tw-team-strip-v28 > .tw-tile > .tw-img > svg.tw-svg {
+  display:block!important; width:100%!important; height:100%!important; max-width:none!important; max-height:none!important;
+}
+#trophy-cabinet.tw-strip.tw-team-strip-v28 .tw-b { right:4px!important; bottom:4px!important; transform:scale(1.08); transform-origin:bottom right; }
+@media(max-width:1200px){
+  #trophy-cabinet.tw-strip.tw-team-strip-v28{height:118px!important;min-height:118px!important;flex-basis:118px!important}
+  #trophy-cabinet.tw-strip.tw-team-strip-v28 > .tw-tile{flex-basis:108px!important;width:108px!important;min-width:108px!important;height:112px!important;min-height:112px!important;max-height:112px!important}
+  #trophy-cabinet.tw-strip.tw-team-strip-v28 > .tw-tile > .tw-img{width:100px!important;height:104px!important;min-width:100px!important;max-width:100px!important;min-height:104px!important;max-height:104px!important}
+}
+
+
+/* v28.1: Modern HLTV team profile uses .tm-shelf/.tm-cup (not #trophy-cabinet).
+   Force a larger art frame after the compact defaults in v30-portal.css. */
+#hs-root .tm-shelf {
+  min-height: 146px !important;
+  gap: 7px !important;
+  padding: 8px 8px 10px !important;
+  align-items: stretch !important;
+}
+#hs-root .tm-shelf > .tm-cup,
+#hs-root .tm-shelf > .tm-cup.static {
+  flex: 0 0 112px !important;
+  width: 112px !important;
+  min-width: 112px !important;
+  min-height: 134px !important;
+  height: 134px !important;
+  box-sizing: border-box !important;
+  padding: 7px 5px 5px !important;
+  gap: 5px !important;
+  justify-content: flex-start !important;
+  overflow: visible !important;
+}
+#hs-root .tm-shelf > .tm-cup svg,
+#hs-root .tm-shelf > .tm-cup img,
+#hs-root .tm-shelf > .tm-cup .ev-logo {
+  display: block !important;
+  flex: 0 0 auto !important;
+  width: 94px !important;
+  height: 106px !important;
+  max-width: 94px !important;
+  max-height: 106px !important;
+  object-fit: contain !important;
+  margin: 0 auto !important;
+}
+#hs-root .tm-shelf > .tm-cup i {
+  display: block !important;
+  width: 100% !important;
+  font-size: 11px !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+}
+@media(max-width: 900px) {
+  #hs-root .tm-shelf > .tm-cup,
+  #hs-root .tm-shelf > .tm-cup.static {
+    flex-basis: 96px !important; width: 96px !important; min-width: 96px !important;
+    min-height: 116px !important; height: 116px !important;
+  }
+  #hs-root .tm-shelf > .tm-cup svg,
+  #hs-root .tm-shelf > .tm-cup img,
+  #hs-root .tm-shelf > .tm-cup .ev-logo {
+    width: 80px !important; height: 88px !important; max-width: 80px !important; max-height: 88px !important;
+  }
+}
+
+
+/* v28.2: HLTV team overview uses .hs-achrow/.hs-achi — enlarge this strip too. */
+#hs-root .hs-achrow {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 7px !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 7px 3px 10px !important;
+  scrollbar-width: thin !important;
+}
+#hs-root .hs-achrow > .hs-achi {
+  flex: 0 0 108px !important;
+  width: 108px !important;
+  min-width: 108px !important;
+  height: 122px !important;
+  min-height: 122px !important;
+  box-sizing: border-box !important;
+}
+#hs-root .hs-achrow > .hs-achi .tw-svg {
+  width: 96px !important;
+  height: 108px !important;
+  max-width: 96px !important;
+  max-height: 108px !important;
+}
+#hs-root .hs-achrow > .hs-achi i { right: 4px !important; bottom: 4px !important; }
+@media(max-width:900px){
+  #hs-root .hs-achrow > .hs-achi { flex-basis: 92px !important; width: 92px !important; min-width: 92px !important; height: 104px !important; min-height: 104px !important; }
+  #hs-root .hs-achrow > .hs-achi .tw-svg { width: 80px !important; height: 90px !important; max-width:80px !important; max-height:90px !important; }
+}

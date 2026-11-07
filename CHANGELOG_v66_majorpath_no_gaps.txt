@@ -1,0 +1,11 @@
+CS2 Manager v66 — Major Path contiguous probability groups
+
+- Rebuilt the Major Path display as explicit, contiguous Stage 3 → Stage 2 → Stage 1 blocks. Empty spacer rows are never emitted.
+- Each block is sorted by the derived overall Major invite probability (Stage 3 + Stage 2 + Stage 1), descending; stage probabilities are mutually exclusive.
+- The derived total is used both for sorting and for the displayed total-invite column, preventing a stale or mismatched `in` field from splitting rows. Legacy `in` is used only if stage probability fields are absent/zero.
+- Stage 3/2/1 probabilities accept numeric fractions, numeric percent values, or strings ending in `%`.
+- Current VRS quota/seed remains informational and does not silently affect the forecast group. The UI now explicitly explains why current Stage 2 seed can appear inside predicted Stage 1.
+- Added data attributes for forecast stage and invite probability to make the rendered order inspectable.
+- Added explicit stage divider rows with no blank spacer rows.
+- Added cache-busting version 66 to the changed JS and CSS references so Chromium does not reuse stale assets.
+- Exported inviteProbability and probabilityBuckets for regression coverage.

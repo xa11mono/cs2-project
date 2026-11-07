@@ -1,0 +1,26 @@
+/* v57: профиль игрока — медаль MVP без неестественного ореола; Major Winner снова ярко-жёлтый. */
+#hs-root .hs-achi.mvp{
+  box-shadow:none!important;
+  background:linear-gradient(180deg,rgba(255,211,91,.16),rgba(185,126,25,.10))!important;
+  border-color:rgba(245,192,74,.55)!important;
+}
+#hs-root .hs-achi.mvp .tw-svg{filter:none!important;}
+#hs-root .hs-achi.mvp i.cnt{box-shadow:none!important;}
+#hs-root .hs-mvp-chip{box-shadow:none!important;text-shadow:none!important;}
+#hs-root .hs-chip.major-winner{
+  background:linear-gradient(180deg,#fff0a8 0%,#ffd24f 52%,#d79a12 100%)!important;
+  border:1px solid #ffe58b!important;
+  color:#251800!important;
+  box-shadow:none!important;
+  text-shadow:0 1px rgba(255,255,255,.22)!important;
+  font-weight:900!important;
+}
+#hs-root .mp-controls{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:0 0 10px;color:var(--text-muted);font-size:11px;}
+#hs-root .mp-controls select{max-width:220px;background:var(--panel,#151c27);color:var(--text,#e8edf4);border:1px solid var(--border,#2a3544);border-radius:7px;padding:6px 9px;font:inherit;}
+@media(max-width:680px){#hs-root .mp-controls{justify-content:flex-start;flex-wrap:wrap;}#hs-root .mp-controls select{max-width:100%;}}
+
+/* MVP artwork is intentionally flat; keep gold color without the floating halo. */
+#hs-root .hs-achi.mvp svg,
+#hs-root .hs-achi.mvp .tw-svg,
+#hs-root .v37-mvp-medal{filter:none!important;box-shadow:none!important;}
+#hs-root .v37-mvp-medal{box-shadow:none!important;}

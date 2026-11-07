@@ -1,0 +1,3831 @@
+{
+  "version": 1,
+  "type": "cs2-rosters",
+  "asOf": "2026-11-01",
+  "source": "target_rosters.csv supplied by user",
+  "teams": [
+    {
+      "name": "Team Spirit",
+      "country": "RU",
+      "roster": [
+        {
+          "nick": "sh1ro",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "magixx",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "tN1R",
+          "role": "Player",
+          "country": "BY"
+        },
+        {
+          "nick": "zont1x",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "donk",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Team Falcons",
+      "country": "DK",
+      "roster": [
+        {
+          "nick": "karrigan",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "NiKo",
+          "role": "Player",
+          "country": "Bosnia and Herzegovina"
+        },
+        {
+          "nick": "TeSeS",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "m0NESY",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "kyousuke",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Team Vitality",
+      "country": "FR",
+      "roster": [
+        {
+          "nick": "apEX",
+          "role": "Player",
+          "country": "FR"
+        },
+        {
+          "nick": "ropz",
+          "role": "Player",
+          "country": "EE"
+        },
+        {
+          "nick": "ZywOo",
+          "role": "Player",
+          "country": "FR"
+        },
+        {
+          "nick": "flameZ",
+          "role": "Player",
+          "country": "IL"
+        },
+        {
+          "nick": "mezii",
+          "role": "Player",
+          "country": "GB"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "MOUZ",
+      "country": "HU",
+      "roster": [
+        {
+          "nick": "torzsi",
+          "role": "Player",
+          "country": "HU"
+        },
+        {
+          "nick": "Spinx",
+          "role": "Player",
+          "country": "IL"
+        },
+        {
+          "nick": "xertioN",
+          "role": "Player",
+          "country": "IL"
+        },
+        {
+          "nick": "PR",
+          "role": "Player",
+          "country": "Czech Republic"
+        },
+        {
+          "nick": "xelex",
+          "role": "Player",
+          "country": "HU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "FURIA",
+      "country": "BR",
+      "roster": [
+        {
+          "nick": "FalleN",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "yuurih",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "YEKINDAR",
+          "role": "Player",
+          "country": "LV"
+        },
+        {
+          "nick": "KSCERATO",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "molodoy",
+          "role": "Player",
+          "country": "KZ"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "G2",
+      "country": "Bosnia and Herzegovina",
+      "roster": [
+        {
+          "nick": "huNter-",
+          "role": "Player",
+          "country": "Bosnia and Herzegovina"
+        },
+        {
+          "nick": "NertZ",
+          "role": "Player",
+          "country": "IL"
+        },
+        {
+          "nick": "r1nkle",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "HeavyGod",
+          "role": "Player",
+          "country": "IL"
+        },
+        {
+          "nick": "MATYS",
+          "role": "Player",
+          "country": "SK"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "NAVI",
+      "country": "FI",
+      "roster": [
+        {
+          "nick": "Aleksib",
+          "role": "Player",
+          "country": "FI"
+        },
+        {
+          "nick": "iM",
+          "role": "Player",
+          "country": "RO"
+        },
+        {
+          "nick": "b1t",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "w0nderful",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "makazze",
+          "role": "Player",
+          "country": "XK"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "FUT",
+      "country": "ES",
+      "roster": [
+        {
+          "nick": "SunPayus",
+          "role": "Player",
+          "country": "ES"
+        },
+        {
+          "nick": "xfl0ud",
+          "role": "Player",
+          "country": "Türkiye"
+        },
+        {
+          "nick": "dem0n",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "Krabeni",
+          "role": "Player",
+          "country": "XK"
+        },
+        {
+          "nick": "dziugss",
+          "role": "Player",
+          "country": "LT"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Legacy",
+      "country": "BR",
+      "roster": [
+        {
+          "nick": "arT",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "dumau",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "latto",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "try",
+          "role": "Player",
+          "country": "AR"
+        },
+        {
+          "nick": "ksloks",
+          "role": "Player",
+          "country": "BR"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Aurora",
+      "country": "Türkiye",
+      "roster": [
+        {
+          "nick": "XANTARES",
+          "role": "Player",
+          "country": "Türkiye"
+        },
+        {
+          "nick": "woxic",
+          "role": "Player",
+          "country": "Türkiye"
+        },
+        {
+          "nick": "Jimpphat",
+          "role": "Player",
+          "country": "FI"
+        },
+        {
+          "nick": "kyxsan",
+          "role": "Player",
+          "country": "MK"
+        },
+        {
+          "nick": "Wicadia",
+          "role": "Player",
+          "country": "Türkiye"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "FAZE",
+      "country": "SK",
+      "roster": [
+        {
+          "nick": "frozen",
+          "role": "Player",
+          "country": "SK"
+        },
+        {
+          "nick": "Twistzz",
+          "role": "Player",
+          "country": "CA"
+        },
+        {
+          "nick": "Neityu",
+          "role": "Player",
+          "country": "FR"
+        },
+        {
+          "nick": "jcobbb",
+          "role": "Player",
+          "country": "PL"
+        },
+        {
+          "nick": "JBOEN",
+          "role": "Player",
+          "country": "DK"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "The Mongolz",
+      "country": "MN",
+      "roster": [
+        {
+          "nick": "nin9",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "bLitz",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "Techno",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "910",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "cobrazera",
+          "role": "Player",
+          "country": "MN"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "BETBOOM",
+      "country": "RU",
+      "roster": [
+        {
+          "nick": "Boombl4",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "zorte",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "S1ren",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "d1Ledez",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "Magnojez",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Astralis",
+      "country": "SE",
+      "roster": [
+        {
+          "nick": "phzy",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "siuhy",
+          "role": "Player",
+          "country": "PL"
+        },
+        {
+          "nick": "Staehr",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "ryu",
+          "role": "Player",
+          "country": "LT"
+        },
+        {
+          "nick": "cmtry",
+          "role": "Player",
+          "country": "UA"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "9z",
+      "country": "Uruguay",
+      "roster": [
+        {
+          "nick": "max",
+          "role": "Player",
+          "country": "Uruguay"
+        },
+        {
+          "nick": "dgt",
+          "role": "Player",
+          "country": "Uruguay"
+        },
+        {
+          "nick": "meyern",
+          "role": "Player",
+          "country": "AR"
+        },
+        {
+          "nick": "luchov",
+          "role": "Player",
+          "country": "AR"
+        },
+        {
+          "nick": "HUASOPEEK",
+          "role": "Player",
+          "country": "CL"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Team Liquid",
+      "country": "CA",
+      "roster": [
+        {
+          "nick": "NAF",
+          "role": "Player",
+          "country": "CA"
+        },
+        {
+          "nick": "EliGE",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "malbsMd",
+          "role": "Player",
+          "country": "Guatemala"
+        },
+        {
+          "nick": "JT",
+          "role": "Player",
+          "country": "ZA"
+        },
+        {
+          "nick": "Jorko",
+          "role": "Player",
+          "country": "Bulgaria"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "B8",
+      "country": "UA",
+      "roster": [
+        {
+          "nick": "alex666",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "npl",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "kensizor",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "esenthial",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "s1zzi",
+          "role": "Player",
+          "country": "UA"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "paiN",
+      "country": "BR",
+      "roster": [
+        {
+          "nick": "biguzera",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "saffee",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "snow",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "Tatu",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "Rkzinho",
+          "role": "Player",
+          "country": "BR"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "BIG",
+      "country": "DE",
+      "roster": [
+        {
+          "nick": "tabseN",
+          "role": "Player",
+          "country": "DE"
+        },
+        {
+          "nick": "JDC",
+          "role": "Player",
+          "country": "DE"
+        },
+        {
+          "nick": "faveN",
+          "role": "Player",
+          "country": "DE"
+        },
+        {
+          "nick": "blameF",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "gr1ks",
+          "role": "Player",
+          "country": "BY"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "HEROIC",
+      "country": "SE",
+      "roster": [
+        {
+          "nick": "Brollan",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "nilo",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "susp",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "MartinezSa",
+          "role": "Player",
+          "country": "ES"
+        },
+        {
+          "nick": "Chr1zN",
+          "role": "Player",
+          "country": "DK"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "PARIVISION",
+      "country": "KZ",
+      "roster": [
+        {
+          "nick": "HObbit",
+          "role": "Player",
+          "country": "KZ"
+        },
+        {
+          "nick": "FL1T",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "Jame",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "xiELO",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "zweih",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "NIP",
+      "country": "DK",
+      "roster": [
+        {
+          "nick": "stavn",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "sjuush",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "Krimbo",
+          "role": "Player",
+          "country": "DE"
+        },
+        {
+          "nick": "adamb",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "xKacpersky",
+          "role": "Player",
+          "country": "PL"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "HOTU",
+      "country": "RU",
+      "roster": [
+        {
+          "nick": "n0rb3r7",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "kade0",
+          "role": "Player",
+          "country": "KZ"
+        },
+        {
+          "nick": "mizu",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "dwushka",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "frontales",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "GamerLegion",
+      "country": "SE",
+      "roster": [
+        {
+          "nick": "REZ",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "shalfey",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "Tauson",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "FL4MUS",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "hypex",
+          "role": "Player",
+          "country": "PL"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "MIBR",
+      "country": "SE",
+      "roster": [
+        {
+          "nick": "LNZ",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "nqz",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "insani",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "venomzera",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "tomaszin",
+          "role": "Player",
+          "country": "AR"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "magic",
+      "country": "BY",
+      "roster": [
+        {
+          "nick": "MaSvAl",
+          "role": "Player",
+          "country": "BY"
+        },
+        {
+          "nick": "lattykk",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "sFade8",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "AW",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "tenzy",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "TYLOO",
+      "country": "CN",
+      "roster": [
+        {
+          "nick": "JamYoung",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "Jee",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "Mercury",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "Moseyuh",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "Zero",
+          "role": "Player",
+          "country": "CN"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Inner Circle",
+      "country": "UA",
+      "roster": [
+        {
+          "nick": "cptkurtka023",
+          "role": "Player",
+          "age": 23,
+          "country": "UA"
+        },
+        {
+          "nick": "headtr1ck",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "zeRRoFIX",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "onic",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "Dawy",
+          "role": "Player",
+          "country": "UA"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "M80",
+      "country": "DE",
+      "roster": [
+        {
+          "nick": "slaxz-",
+          "role": "Player",
+          "country": "DE"
+        },
+        {
+          "nick": "Swisher",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "s1n",
+          "role": "Player",
+          "country": "DE"
+        },
+        {
+          "nick": "JBa",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "Lake",
+          "role": "Player",
+          "country": "US"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Lynn Vision",
+      "country": "CN",
+      "roster": [
+        {
+          "nick": "Westmelon",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "z4KR",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "Starry",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "EmiliaQAQ",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "C4LLM3SU3",
+          "role": "Player",
+          "country": "CN"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "100 Thieves",
+      "country": "DK",
+      "roster": [
+        {
+          "nick": "device",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "rain",
+          "role": "Player",
+          "country": "Norway"
+        },
+        {
+          "nick": "Gizmy",
+          "role": "Player",
+          "country": "GB"
+        },
+        {
+          "nick": "sirah",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "poiii",
+          "role": "Player",
+          "country": "SE"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "OG",
+      "country": "FR",
+      "roster": [
+        {
+          "nick": "bodyy",
+          "role": "Player",
+          "country": "FR"
+        },
+        {
+          "nick": "spooke",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "Ex3rcice",
+          "role": "Player",
+          "country": "FR"
+        },
+        {
+          "nick": "nut nut",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "Chucky",
+          "role": "Player",
+          "country": "Belgium"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Virtus.pro",
+      "country": "RU",
+      "roster": [
+        {
+          "nick": "mir",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "b1st",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "F0R3VER",
+          "role": "Player",
+          "country": "KZ"
+        },
+        {
+          "nick": "AquaRS",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "tO0RO",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "K27",
+      "country": "RU",
+      "roster": [
+        {
+          "nick": "clax",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "X5G7V",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "xeedo",
+          "role": "Player",
+          "country": "BY"
+        },
+        {
+          "nick": "kashl1d",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "qw1nk1",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "SAW",
+      "country": "PT",
+      "roster": [
+        {
+          "nick": "MUTiRiS",
+          "role": "Player",
+          "country": "PT"
+        },
+        {
+          "nick": "NOPEEj",
+          "role": "Player",
+          "country": "PT"
+        },
+        {
+          "nick": "story",
+          "role": "Player",
+          "country": "PT"
+        },
+        {
+          "nick": "ewjerkz",
+          "role": "Player",
+          "country": "PT"
+        },
+        {
+          "nick": "krazy",
+          "role": "Player",
+          "country": "PT"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Sashi",
+      "country": "DK",
+      "roster": [
+        {
+          "nick": "Zyphon",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "Anlelele",
+          "role": "Player",
+          "country": "Vietnam"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "BC.GAME",
+      "country": "UA",
+      "roster": [
+        {
+          "nick": "s1mple",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "Magisk",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "asap",
+          "role": "Player",
+          "country": "AU"
+        },
+        {
+          "nick": "Senzu",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "mzinho",
+          "role": "Player",
+          "country": "MN"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Eternal Fire",
+      "country": "ZA",
+      "roster": [
+        {
+          "nick": "MisteM",
+          "role": "Player",
+          "country": "ZA"
+        },
+        {
+          "nick": "regali",
+          "role": "Player",
+          "country": "RO"
+        },
+        {
+          "nick": "soulfly",
+          "role": "Player",
+          "country": "Türkiye"
+        },
+        {
+          "nick": "Kvem",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "jottAAA",
+          "role": "Player",
+          "country": "Türkiye"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "NRG",
+      "country": "US",
+      "roster": [
+        {
+          "nick": "nitr0",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "Sonic",
+          "role": "Player",
+          "country": "ZA"
+        },
+        {
+          "nick": "hallzerk",
+          "role": "Player",
+          "country": "Norway"
+        },
+        {
+          "nick": "Grim",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "Jeorge",
+          "role": "Player",
+          "country": "US"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "WW Team",
+      "country": "Kyrgyzstan",
+      "roster": [
+        {
+          "nick": "enzero",
+          "role": "Player",
+          "country": "Kyrgyzstan"
+        },
+        {
+          "nick": "Ryujin",
+          "role": "Player",
+          "country": "Uzbekistan"
+        },
+        {
+          "nick": "StRoGo",
+          "role": "Player",
+          "country": "Tajikistan"
+        },
+        {
+          "nick": "kelieN",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "m3wsu",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "EYEBALLERS",
+      "country": "SE",
+      "roster": [
+        {
+          "nick": "JW",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "KRIMZ",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "maxster",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "Ro1f",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "dex",
+          "role": "Player",
+          "country": "SE"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Luminosity",
+      "country": "Bulgaria",
+      "roster": [
+        {
+          "nick": "Rainwaker",
+          "role": "Player",
+          "country": "Bulgaria"
+        },
+        {
+          "nick": "afro",
+          "role": "Player",
+          "country": "FR"
+        },
+        {
+          "nick": "lux",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "yxngstxr",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "AZUWU",
+          "role": "Player",
+          "country": "GB"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "FOKUS",
+      "country": "SE",
+      "roster": [
+        {
+          "nick": "ztr",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "Banjo",
+          "role": "Player",
+          "country": "FI"
+        },
+        {
+          "nick": "podi",
+          "role": "Player",
+          "country": "FI"
+        },
+        {
+          "nick": "jocab",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "Matheos",
+          "role": "Player",
+          "country": "Croatia"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "1win",
+      "country": "RU",
+      "roster": [
+        {
+          "nick": "Ax1Le",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "nafany",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "BELCHONOKK",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "fame",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "ArtFr0st",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Nemiga",
+      "country": "RU",
+      "roster": [
+        {
+          "nick": "KaiR0N-",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "Xant3r",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "robo",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "khaN",
+          "role": "Player",
+          "country": "KZ"
+        },
+        {
+          "nick": "syph0",
+          "role": "Player",
+          "country": "KZ"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Imperial",
+      "country": "BR",
+      "roster": [
+        {
+          "nick": "chelo",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "VINI",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "decenty",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "noway",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "saadzin",
+          "role": "Player",
+          "country": "BR"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Fluxo",
+      "country": "BR",
+      "roster": [
+        {
+          "nick": "exit",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "dav1deuS",
+          "role": "Player",
+          "country": "CL"
+        },
+        {
+          "nick": "zevy",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "kye",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "Ltz",
+          "role": "Player",
+          "country": "BR"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Alliance",
+      "country": "SE",
+      "roster": [
+        {
+          "nick": "twist",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "eraa",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "bobeksde",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "upE",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "avid",
+          "role": "Player",
+          "country": "SE"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "fnatic",
+      "country": "UA",
+      "roster": [
+        {
+          "nick": "fEAR",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "jambo",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "jackasmo",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "cairne",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "mazay",
+          "role": "Player",
+          "country": "UA"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Iberian Soul",
+      "country": "ES",
+      "roster": [
+        {
+          "nick": "alex",
+          "role": "Player",
+          "country": "ES"
+        },
+        {
+          "nick": "mopoz",
+          "role": "Player",
+          "country": "ES"
+        },
+        {
+          "nick": "sausol",
+          "role": "Player",
+          "country": "ES"
+        },
+        {
+          "nick": "dav1g",
+          "role": "Player",
+          "country": "ES"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "9INE",
+      "country": "DK",
+      "roster": [
+        {
+          "nick": "raalz",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "kraghen",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "b1elany",
+          "role": "Player",
+          "country": "PL"
+        },
+        {
+          "nick": "flayy",
+          "role": "Player",
+          "country": "PL"
+        },
+        {
+          "nick": "rim3",
+          "role": "Player",
+          "country": "Türkiye"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Wildcard",
+      "country": "RS",
+      "roster": [
+        {
+          "nick": "nEMANHA",
+          "role": "Player",
+          "country": "RS"
+        },
+        {
+          "nick": "Cxzi",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "reck",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "HexT",
+          "role": "Player",
+          "country": "CA"
+        },
+        {
+          "nick": "fr3nd",
+          "role": "Player",
+          "country": "PL"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "JiJieHao",
+      "country": "Lebanon",
+      "roster": [
+        {
+          "nick": "m1N1",
+          "role": "Player",
+          "country": "Lebanon"
+        },
+        {
+          "nick": "sinnopsyy",
+          "role": "Player",
+          "country": "XK"
+        },
+        {
+          "nick": "Bibu",
+          "role": "Player",
+          "country": "Iraq"
+        },
+        {
+          "nick": "CacaNito",
+          "role": "Player",
+          "country": "MK"
+        },
+        {
+          "nick": "0SAMAS",
+          "role": "Player",
+          "country": "Palestine"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "BBL",
+      "country": "DK",
+      "roster": [
+        {
+          "nick": "IceBerg",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "MistR",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "salazar",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "leakz",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "NickyB",
+          "role": "Player",
+          "country": "DK"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Betclic",
+      "country": "PL",
+      "roster": [
+        {
+          "nick": "Demho",
+          "role": "Player",
+          "country": "PL"
+        },
+        {
+          "nick": "Prism",
+          "role": "Player",
+          "country": "PL"
+        },
+        {
+          "nick": "ex1st",
+          "role": "Player",
+          "country": "PL"
+        },
+        {
+          "nick": "ultimate",
+          "role": "Player",
+          "country": "PL"
+        },
+        {
+          "nick": "Qlocuu",
+          "role": "Player",
+          "country": "PL"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Rare Atom",
+      "country": "CN",
+      "roster": [
+        {
+          "nick": "Summer",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "kaze",
+          "role": "Player",
+          "country": "Malaysia"
+        },
+        {
+          "nick": "ChildKing",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "L1haNg",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "3gl",
+          "role": "Player",
+          "country": "CN"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Chinggis Warriors",
+      "country": "MN",
+      "roster": [
+        {
+          "nick": "sk0R",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "ROUX",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "cool4st",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "fury5k",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "tikuak",
+          "role": "Player",
+          "country": "MN"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "NEXVOID",
+      "country": "MN",
+      "roster": [
+        {
+          "nick": "erkaSt",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "xerolte",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "MiQ",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "AccuracyTG",
+          "role": "Player",
+          "country": "MN"
+        },
+        {
+          "nick": "Zesta",
+          "role": "Player",
+          "country": "MN"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Change The Game",
+      "country": "CN",
+      "roster": [
+        {
+          "nick": "Hack1ng",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "VanceKK",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "957",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "LaiKeXu",
+          "role": "Player",
+          "country": "CN"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Just Swing",
+      "country": "CN",
+      "roster": [
+        {
+          "nick": "gas",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "Purely",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "sATOR1",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "skrr",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "Daniel",
+          "role": "Player",
+          "country": "CN"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "XDM",
+      "country": "CN",
+      "roster": [
+        {
+          "nick": "rubeN",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "Shad0w",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "r1verLaKe",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "Kungao",
+          "role": "Player",
+          "country": "CN"
+        },
+        {
+          "nick": "darkk",
+          "role": "Player",
+          "country": "CN"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "UR",
+      "country": "BR",
+      "roster": [
+        {
+          "nick": "FalleN",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "yuurih",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "YEKINDAR",
+          "role": "Player",
+          "country": "LV"
+        },
+        {
+          "nick": "KSCERATO",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "molodoy",
+          "role": "Player",
+          "country": "KZ"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Legion",
+      "country": "Pakistan",
+      "roster": [
+        {
+          "nick": "HZI",
+          "role": "Player",
+          "country": "Pakistan"
+        },
+        {
+          "nick": "BulleT",
+          "role": "Player",
+          "country": "Pakistan"
+        },
+        {
+          "nick": "hf",
+          "role": "Player",
+          "country": "Pakistan"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "LAG",
+      "country": "CA",
+      "roster": [
+        {
+          "nick": "djay",
+          "role": "Player",
+          "country": "CA"
+        },
+        {
+          "nick": "Cryptic",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "Bwills",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "SLIGHT",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "Sandman",
+          "role": "Player",
+          "country": "US"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Bounty Hunters",
+      "country": "BR",
+      "roster": [
+        {
+          "nick": "ponter",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "KAISER",
+          "role": "Player",
+          "country": "AR"
+        },
+        {
+          "nick": "zock",
+          "role": "Player",
+          "country": "Uruguay"
+        },
+        {
+          "nick": "urban0",
+          "role": "Player",
+          "country": "BR"
+        },
+        {
+          "nick": "pepe",
+          "role": "Player",
+          "country": "BR"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "ShindeN",
+      "country": "AR",
+      "roster": [
+        {
+          "nick": "tom1jed",
+          "role": "Player",
+          "country": "AR"
+        },
+        {
+          "nick": "abizz",
+          "role": "Player",
+          "country": "AR"
+        },
+        {
+          "nick": "ivz",
+          "role": "Player",
+          "country": "AR"
+        },
+        {
+          "nick": "naz",
+          "role": "Player",
+          "country": "AR"
+        },
+        {
+          "nick": "guty",
+          "role": "Player",
+          "country": "AR"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Chicken Coop",
+      "country": "US",
+      "roster": [
+        {
+          "nick": "Wolffe",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "Drop",
+          "role": "Player",
+          "country": "CA"
+        },
+        {
+          "nick": "stesso",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "jared",
+          "role": "Player",
+          "country": "US"
+        },
+        {
+          "nick": "Crisp",
+          "role": "Player",
+          "country": "US"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Nexus",
+      "country": "LV",
+      "roster": [
+        {
+          "nick": "shield",
+          "role": "Player",
+          "country": "LV"
+        },
+        {
+          "nick": "fNk",
+          "role": "Player",
+          "country": "RO"
+        },
+        {
+          "nick": "s0und",
+          "role": "Player",
+          "country": "RO"
+        },
+        {
+          "nick": "Nexius",
+          "role": "Player",
+          "country": "Belgium"
+        },
+        {
+          "nick": "HOLY",
+          "role": "Player",
+          "country": "RO"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "CYBERSHOKE",
+      "country": "UA",
+      "roster": [
+        {
+          "nick": "synyx",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "SquEzxc",
+          "role": "Player",
+          "country": "BY"
+        },
+        {
+          "nick": "pleynnn",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "tw1sterzaza",
+          "role": "Player",
+          "country": "BY"
+        },
+        {
+          "nick": "DAN9ARMATURA",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "ECSTATIC",
+      "country": "DK",
+      "roster": [
+        {
+          "nick": "Inspire",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "Mol011",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "Skejs",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "Z1noz",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "Thom",
+          "role": "Player",
+          "country": "DK"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "CPH Wolves",
+      "country": "LT",
+      "roster": [
+        {
+          "nick": "Uzman",
+          "role": "Player",
+          "country": "LT"
+        },
+        {
+          "nick": "MadeInRed",
+          "role": "Player",
+          "country": "LT"
+        },
+        {
+          "nick": "Dyrod",
+          "role": "Player",
+          "country": "Croatia"
+        },
+        {
+          "nick": "Toshas",
+          "role": "Player",
+          "country": "SE"
+        },
+        {
+          "nick": "adex",
+          "role": "Player",
+          "country": "PL"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Sangal",
+      "country": "RO",
+      "roster": [
+        {
+          "nick": "adamS",
+          "role": "Player",
+          "country": "RO"
+        },
+        {
+          "nick": "bnox",
+          "role": "Player",
+          "country": "PL"
+        },
+        {
+          "nick": "puuha",
+          "role": "Player",
+          "country": "FI"
+        },
+        {
+          "nick": "R4DYX",
+          "role": "Player",
+          "country": "Türkiye"
+        },
+        {
+          "nick": "Joey",
+          "role": "Player",
+          "country": "ES"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "GUN5",
+      "country": "RU",
+      "roster": [
+        {
+          "nick": "1NVISIBLEE",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "xm1nd",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "z3ndeR",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "k4nfuz",
+          "role": "Player",
+          "country": "RU"
+        },
+        {
+          "nick": "saizius",
+          "role": "Player",
+          "country": "RU"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "Monte",
+      "country": "PL",
+      "roster": [
+        {
+          "nick": "mantuu",
+          "role": "Player",
+          "country": "PL"
+        },
+        {
+          "nick": "sdy",
+          "role": "Player",
+          "country": "UA"
+        },
+        {
+          "nick": "br0",
+          "role": "Player",
+          "country": "DK"
+        },
+        {
+          "nick": "CYPHER",
+          "role": "Player",
+          "country": "GB"
+        },
+        {
+          "nick": "St0m4k",
+          "role": "Player",
+          "country": "UA"
+        }
+      ],
+      "bench": []
+    },
+    {
+      "name": "ARCRED",
+      "country": "Uzbekistan",
+      "roster": [
+        {
+          "nick": "DSSj",
+          "role": "Player",
+          "country": "Uzbekistan"
+        },
+        {
+          "nick": "icyvl0ne",
+          "role": "Player",
+          "country": "Uzbekistan"
+        },
+        {
+          "nick": "ManticorE",
+          "role": "Player",
+          "country": "Uzbekistan"
+        },
+        {
+          "nick": "kumao",
+          "role": "Player",
+          "country": "KZ"
+        },
+        {
+          "nick": "ARSPOWER",
+          "role": "Player",
+          "country": "KZ"
+        }
+      ],
+      "bench": []
+    }
+  ],
+  "players": {
+    "sh1ro": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "magixx": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "tN1R": {
+      "role": "Player",
+      "country": "BY"
+    },
+    "zont1x": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "donk": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "karrigan": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "NiKo": {
+      "role": "Player",
+      "country": "Bosnia and Herzegovina"
+    },
+    "TeSeS": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "m0NESY": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "kyousuke": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "apEX": {
+      "role": "Player",
+      "country": "FR"
+    },
+    "ropz": {
+      "role": "Player",
+      "country": "EE"
+    },
+    "ZywOo": {
+      "role": "Player",
+      "country": "FR"
+    },
+    "flameZ": {
+      "role": "Player",
+      "country": "IL"
+    },
+    "mezii": {
+      "role": "Player",
+      "country": "GB"
+    },
+    "torzsi": {
+      "role": "Player",
+      "country": "HU"
+    },
+    "Spinx": {
+      "role": "Player",
+      "country": "IL"
+    },
+    "xertioN": {
+      "role": "Player",
+      "country": "IL"
+    },
+    "PR": {
+      "role": "Player",
+      "country": "Czech Republic"
+    },
+    "xelex": {
+      "role": "Player",
+      "country": "HU"
+    },
+    "FalleN": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "yuurih": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "YEKINDAR": {
+      "role": "Player",
+      "country": "LV"
+    },
+    "KSCERATO": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "molodoy": {
+      "role": "Player",
+      "country": "KZ"
+    },
+    "huNter-": {
+      "role": "Player",
+      "country": "Bosnia and Herzegovina"
+    },
+    "NertZ": {
+      "role": "Player",
+      "country": "IL"
+    },
+    "r1nkle": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "HeavyGod": {
+      "role": "Player",
+      "country": "IL"
+    },
+    "MATYS": {
+      "role": "Player",
+      "country": "SK"
+    },
+    "Aleksib": {
+      "role": "Player",
+      "country": "FI"
+    },
+    "iM": {
+      "role": "Player",
+      "country": "RO"
+    },
+    "b1t": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "w0nderful": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "makazze": {
+      "role": "Player",
+      "country": "XK"
+    },
+    "SunPayus": {
+      "role": "Player",
+      "country": "ES"
+    },
+    "xfl0ud": {
+      "role": "Player",
+      "country": "Türkiye"
+    },
+    "dem0n": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "Krabeni": {
+      "role": "Player",
+      "country": "XK"
+    },
+    "dziugss": {
+      "role": "Player",
+      "country": "LT"
+    },
+    "arT": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "dumau": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "latto": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "try": {
+      "role": "Player",
+      "country": "AR"
+    },
+    "ksloks": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "XANTARES": {
+      "role": "Player",
+      "country": "Türkiye"
+    },
+    "woxic": {
+      "role": "Player",
+      "country": "Türkiye"
+    },
+    "Jimpphat": {
+      "role": "Player",
+      "country": "FI"
+    },
+    "kyxsan": {
+      "role": "Player",
+      "country": "MK"
+    },
+    "Wicadia": {
+      "role": "Player",
+      "country": "Türkiye"
+    },
+    "frozen": {
+      "role": "Player",
+      "country": "SK"
+    },
+    "Twistzz": {
+      "role": "Player",
+      "country": "CA"
+    },
+    "Neityu": {
+      "role": "Player",
+      "country": "FR"
+    },
+    "jcobbb": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "JBOEN": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "nin9": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "bLitz": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "Techno": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "910": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "cobrazera": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "Boombl4": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "zorte": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "S1ren": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "d1Ledez": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "Magnojez": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "phzy": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "siuhy": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "Staehr": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "ryu": {
+      "role": "Player",
+      "country": "LT"
+    },
+    "cmtry": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "max": {
+      "role": "Player",
+      "country": "Uruguay"
+    },
+    "dgt": {
+      "role": "Player",
+      "country": "Uruguay"
+    },
+    "meyern": {
+      "role": "Player",
+      "country": "AR"
+    },
+    "luchov": {
+      "role": "Player",
+      "country": "AR"
+    },
+    "HUASOPEEK": {
+      "role": "Player",
+      "country": "CL"
+    },
+    "NAF": {
+      "role": "Player",
+      "country": "CA"
+    },
+    "EliGE": {
+      "role": "Player",
+      "country": "US"
+    },
+    "malbsMd": {
+      "role": "Player",
+      "country": "Guatemala"
+    },
+    "JT": {
+      "role": "Player",
+      "country": "ZA"
+    },
+    "Jorko": {
+      "role": "Player",
+      "country": "Bulgaria"
+    },
+    "alex666": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "npl": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "kensizor": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "esenthial": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "s1zzi": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "biguzera": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "saffee": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "snow": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "Tatu": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "Rkzinho": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "tabseN": {
+      "role": "Player",
+      "country": "DE"
+    },
+    "JDC": {
+      "role": "Player",
+      "country": "DE"
+    },
+    "faveN": {
+      "role": "Player",
+      "country": "DE"
+    },
+    "blameF": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "gr1ks": {
+      "role": "Player",
+      "country": "BY"
+    },
+    "Brollan": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "nilo": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "susp": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "MartinezSa": {
+      "role": "Player",
+      "country": "ES"
+    },
+    "Chr1zN": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "HObbit": {
+      "role": "Player",
+      "country": "KZ"
+    },
+    "FL1T": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "Jame": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "xiELO": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "zweih": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "stavn": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "sjuush": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "Krimbo": {
+      "role": "Player",
+      "country": "DE"
+    },
+    "adamb": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "xKacpersky": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "n0rb3r7": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "kade0": {
+      "role": "Player",
+      "country": "KZ"
+    },
+    "mizu": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "dwushka": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "frontales": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "REZ": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "shalfey": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "Tauson": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "FL4MUS": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "hypex": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "LNZ": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "nqz": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "insani": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "venomzera": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "tomaszin": {
+      "role": "Player",
+      "country": "AR"
+    },
+    "MaSvAl": {
+      "role": "Player",
+      "country": "BY"
+    },
+    "lattykk": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "sFade8": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "AW": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "tenzy": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "JamYoung": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "Jee": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "Mercury": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "Moseyuh": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "Zero": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "cptkurtka023": {
+      "role": "Player",
+      "age": 23,
+      "country": "UA"
+    },
+    "headtr1ck": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "zeRRoFIX": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "onic": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "Dawy": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "slaxz-": {
+      "role": "Player",
+      "country": "DE"
+    },
+    "Swisher": {
+      "role": "Player",
+      "country": "US"
+    },
+    "s1n": {
+      "role": "Player",
+      "country": "DE"
+    },
+    "JBa": {
+      "role": "Player",
+      "country": "US"
+    },
+    "Lake": {
+      "role": "Player",
+      "country": "US"
+    },
+    "Westmelon": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "z4KR": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "Starry": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "EmiliaQAQ": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "C4LLM3SU3": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "device": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "rain": {
+      "role": "Player",
+      "country": "Norway"
+    },
+    "Gizmy": {
+      "role": "Player",
+      "country": "GB"
+    },
+    "sirah": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "poiii": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "bodyy": {
+      "role": "Player",
+      "country": "FR"
+    },
+    "spooke": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "Ex3rcice": {
+      "role": "Player",
+      "country": "FR"
+    },
+    "nut nut": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "Chucky": {
+      "role": "Player",
+      "country": "Belgium"
+    },
+    "mir": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "b1st": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "F0R3VER": {
+      "role": "Player",
+      "country": "KZ"
+    },
+    "AquaRS": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "tO0RO": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "clax": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "X5G7V": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "xeedo": {
+      "role": "Player",
+      "country": "BY"
+    },
+    "kashl1d": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "qw1nk1": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "MUTiRiS": {
+      "role": "Player",
+      "country": "PT"
+    },
+    "NOPEEj": {
+      "role": "Player",
+      "country": "PT"
+    },
+    "story": {
+      "role": "Player",
+      "country": "PT"
+    },
+    "ewjerkz": {
+      "role": "Player",
+      "country": "PT"
+    },
+    "krazy": {
+      "role": "Player",
+      "country": "PT"
+    },
+    "Zyphon": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "Anlelele": {
+      "role": "Player",
+      "country": "Vietnam"
+    },
+    "s1mple": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "Magisk": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "asap": {
+      "role": "Player",
+      "country": "AU"
+    },
+    "Senzu": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "mzinho": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "MisteM": {
+      "role": "Player",
+      "country": "ZA"
+    },
+    "regali": {
+      "role": "Player",
+      "country": "RO"
+    },
+    "soulfly": {
+      "role": "Player",
+      "country": "Türkiye"
+    },
+    "Kvem": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "jottAAA": {
+      "role": "Player",
+      "country": "Türkiye"
+    },
+    "nitr0": {
+      "role": "Player",
+      "country": "US"
+    },
+    "Sonic": {
+      "role": "Player",
+      "country": "ZA"
+    },
+    "hallzerk": {
+      "role": "Player",
+      "country": "Norway"
+    },
+    "Grim": {
+      "role": "Player",
+      "country": "US"
+    },
+    "Jeorge": {
+      "role": "Player",
+      "country": "US"
+    },
+    "enzero": {
+      "role": "Player",
+      "country": "Kyrgyzstan"
+    },
+    "Ryujin": {
+      "role": "Player",
+      "country": "Uzbekistan"
+    },
+    "StRoGo": {
+      "role": "Player",
+      "country": "Tajikistan"
+    },
+    "kelieN": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "m3wsu": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "JW": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "KRIMZ": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "maxster": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "Ro1f": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "dex": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "Rainwaker": {
+      "role": "Player",
+      "country": "Bulgaria"
+    },
+    "afro": {
+      "role": "Player",
+      "country": "FR"
+    },
+    "lux": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "yxngstxr": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "AZUWU": {
+      "role": "Player",
+      "country": "GB"
+    },
+    "ztr": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "Banjo": {
+      "role": "Player",
+      "country": "FI"
+    },
+    "podi": {
+      "role": "Player",
+      "country": "FI"
+    },
+    "jocab": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "Matheos": {
+      "role": "Player",
+      "country": "Croatia"
+    },
+    "Ax1Le": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "nafany": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "BELCHONOKK": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "fame": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "ArtFr0st": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "KaiR0N-": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "Xant3r": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "robo": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "khaN": {
+      "role": "Player",
+      "country": "KZ"
+    },
+    "syph0": {
+      "role": "Player",
+      "country": "KZ"
+    },
+    "chelo": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "VINI": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "decenty": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "noway": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "saadzin": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "exit": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "dav1deuS": {
+      "role": "Player",
+      "country": "CL"
+    },
+    "zevy": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "kye": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "Ltz": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "twist": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "eraa": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "bobeksde": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "upE": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "avid": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "fEAR": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "jambo": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "jackasmo": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "cairne": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "mazay": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "alex": {
+      "role": "Player",
+      "country": "ES"
+    },
+    "mopoz": {
+      "role": "Player",
+      "country": "ES"
+    },
+    "sausol": {
+      "role": "Player",
+      "country": "ES"
+    },
+    "dav1g": {
+      "role": "Player",
+      "country": "ES"
+    },
+    "raalz": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "kraghen": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "b1elany": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "flayy": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "rim3": {
+      "role": "Player",
+      "country": "Türkiye"
+    },
+    "nEMANHA": {
+      "role": "Player",
+      "country": "RS"
+    },
+    "Cxzi": {
+      "role": "Player",
+      "country": "US"
+    },
+    "reck": {
+      "role": "Player",
+      "country": "US"
+    },
+    "HexT": {
+      "role": "Player",
+      "country": "CA"
+    },
+    "fr3nd": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "m1N1": {
+      "role": "Player",
+      "country": "Lebanon"
+    },
+    "sinnopsyy": {
+      "role": "Player",
+      "country": "XK"
+    },
+    "Bibu": {
+      "role": "Player",
+      "country": "Iraq"
+    },
+    "CacaNito": {
+      "role": "Player",
+      "country": "MK"
+    },
+    "0SAMAS": {
+      "role": "Player",
+      "country": "Palestine"
+    },
+    "IceBerg": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "MistR": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "salazar": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "leakz": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "NickyB": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "Demho": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "Prism": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "ex1st": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "ultimate": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "Qlocuu": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "Summer": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "kaze": {
+      "role": "Player",
+      "country": "Malaysia"
+    },
+    "ChildKing": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "L1haNg": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "3gl": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "sk0R": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "ROUX": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "cool4st": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "fury5k": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "tikuak": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "erkaSt": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "xerolte": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "MiQ": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "AccuracyTG": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "Zesta": {
+      "role": "Player",
+      "country": "MN"
+    },
+    "Hack1ng": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "VanceKK": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "957": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "LaiKeXu": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "gas": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "Purely": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "sATOR1": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "skrr": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "Daniel": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "rubeN": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "Shad0w": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "r1verLaKe": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "Kungao": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "darkk": {
+      "role": "Player",
+      "country": "CN"
+    },
+    "HZI": {
+      "role": "Player",
+      "country": "Pakistan"
+    },
+    "BulleT": {
+      "role": "Player",
+      "country": "Pakistan"
+    },
+    "hf": {
+      "role": "Player",
+      "country": "Pakistan"
+    },
+    "djay": {
+      "role": "Player",
+      "country": "CA"
+    },
+    "Cryptic": {
+      "role": "Player",
+      "country": "US"
+    },
+    "Bwills": {
+      "role": "Player",
+      "country": "US"
+    },
+    "SLIGHT": {
+      "role": "Player",
+      "country": "US"
+    },
+    "Sandman": {
+      "role": "Player",
+      "country": "US"
+    },
+    "ponter": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "KAISER": {
+      "role": "Player",
+      "country": "AR"
+    },
+    "zock": {
+      "role": "Player",
+      "country": "Uruguay"
+    },
+    "urban0": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "pepe": {
+      "role": "Player",
+      "country": "BR"
+    },
+    "tom1jed": {
+      "role": "Player",
+      "country": "AR"
+    },
+    "abizz": {
+      "role": "Player",
+      "country": "AR"
+    },
+    "ivz": {
+      "role": "Player",
+      "country": "AR"
+    },
+    "naz": {
+      "role": "Player",
+      "country": "AR"
+    },
+    "guty": {
+      "role": "Player",
+      "country": "AR"
+    },
+    "Wolffe": {
+      "role": "Player",
+      "country": "US"
+    },
+    "Drop": {
+      "role": "Player",
+      "country": "CA"
+    },
+    "stesso": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "jared": {
+      "role": "Player",
+      "country": "US"
+    },
+    "Crisp": {
+      "role": "Player",
+      "country": "US"
+    },
+    "shield": {
+      "role": "Player",
+      "country": "LV"
+    },
+    "fNk": {
+      "role": "Player",
+      "country": "RO"
+    },
+    "s0und": {
+      "role": "Player",
+      "country": "RO"
+    },
+    "Nexius": {
+      "role": "Player",
+      "country": "Belgium"
+    },
+    "HOLY": {
+      "role": "Player",
+      "country": "RO"
+    },
+    "synyx": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "SquEzxc": {
+      "role": "Player",
+      "country": "BY"
+    },
+    "pleynnn": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "tw1sterzaza": {
+      "role": "Player",
+      "country": "BY"
+    },
+    "DAN9ARMATURA": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "Inspire": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "Mol011": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "Skejs": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "Z1noz": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "Thom": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "Uzman": {
+      "role": "Player",
+      "country": "LT"
+    },
+    "MadeInRed": {
+      "role": "Player",
+      "country": "LT"
+    },
+    "Dyrod": {
+      "role": "Player",
+      "country": "Croatia"
+    },
+    "Toshas": {
+      "role": "Player",
+      "country": "SE"
+    },
+    "adex": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "adamS": {
+      "role": "Player",
+      "country": "RO"
+    },
+    "bnox": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "puuha": {
+      "role": "Player",
+      "country": "FI"
+    },
+    "R4DYX": {
+      "role": "Player",
+      "country": "Türkiye"
+    },
+    "Joey": {
+      "role": "Player",
+      "country": "ES"
+    },
+    "1NVISIBLEE": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "xm1nd": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "z3ndeR": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "k4nfuz": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "saizius": {
+      "role": "Player",
+      "country": "RU"
+    },
+    "mantuu": {
+      "role": "Player",
+      "country": "PL"
+    },
+    "sdy": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "br0": {
+      "role": "Player",
+      "country": "DK"
+    },
+    "CYPHER": {
+      "role": "Player",
+      "country": "GB"
+    },
+    "St0m4k": {
+      "role": "Player",
+      "country": "UA"
+    },
+    "DSSj": {
+      "role": "Player",
+      "country": "Uzbekistan"
+    },
+    "icyvl0ne": {
+      "role": "Player",
+      "country": "Uzbekistan"
+    },
+    "ManticorE": {
+      "role": "Player",
+      "country": "Uzbekistan"
+    },
+    "kumao": {
+      "role": "Player",
+      "country": "KZ"
+    },
+    "ARSPOWER": {
+      "role": "Player",
+      "country": "KZ"
+    }
+  },
+  "freeAgents": [],
+  "reserve": []
+}

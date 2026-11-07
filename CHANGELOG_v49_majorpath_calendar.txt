@@ -1,0 +1,14 @@
+CS2 Manager v49 — calendar and Major Path consistency
+
+- Day-skip rebasing now synchronizes `time`, `v18PlannedTime`, `gameScheduledAt`, `plannedTime`, and original planned time; stale launch and shift metadata are cleared for all pending broadcasts.
+- Calendar event rows read the canonical queue time first and require a measured delay, not a stale boolean flag, before displaying “задерживается”.
+- Major pools are rebuilt from the exact supplied 32-team roster instead of reusing a module-global cached pool from a prior preview/tournament.
+- Qualification seeding and Major invitation allocation now use one regional classifier. Explicit team/league region takes priority over mixed player nationalities; regional cache invalidates on roster/region changes.
+- Major Path stage badges and pools derive from the same 8/8/16 pool object; legacy locked rosters are validated against participants and migrated consistently.
+- Clarified that Stage 1/2/3 slots are allocated by regional quotas, not global rank ranges. Added regional place and points-to-cutoff columns.
+- Invitation Monte Carlo expanded to 5,000 runs and increased baseline VRS uncertainty so a three-point gap near the regional cutoff is not shown as an artificial certainty. Display resolution uses <1% and 99.5%+ / 99.9%+ rather than exact 0%/100% from finite samples.
+
+Validation:
+- JS syntax check for all manager scripts.
+- Regression suites v43–v48 plus v49 dynamic tests for schedule rebasing and regional cutoff odds.
+- Full browser UI test not run because Playwright is unavailable in this environment.

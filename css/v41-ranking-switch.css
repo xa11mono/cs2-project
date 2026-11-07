@@ -1,0 +1,52 @@
+/* v41 — верхний переключатель HLTV / VRS на странице рейтинга */
+#hs-root .v41-rank-tabs {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 48px;
+  margin: 0 0 20px;
+  overflow: hidden;
+  background: #20262e;
+  border: 1px solid #3b4653;
+  border-bottom: 3px solid #574b3e;
+}
+#hs-root .v41-rank-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 150px;
+  min-height: 46px;
+  padding: 0 22px !important;
+  border: 0 !important;
+  border-right: 1px solid #3b4653 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #9ba5af !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+  cursor: pointer;
+  transition: background .16s ease, color .16s ease, box-shadow .16s ease;
+}
+#hs-root .v41-rank-tab:hover {
+  background: #29323d !important;
+  color: #e5ebf1 !important;
+}
+#hs-root .v41-rank-tab.active {
+  background: #2b3541 !important;
+  color: #eef3f8 !important;
+  box-shadow: inset 0 -3px 0 #4d8db7;
+}
+#hs-root .v41-rank-tab-mark {
+  color: #d7e0e8;
+  font-size: 15px;
+  line-height: 1;
+}
+#hs-root .v41-rank-tab.active .v41-rank-tab-mark {
+  color: #ffad55;
+}
+#hs-root .v41-ranking-content { min-width: 0; }
+@media (max-width: 560px) {
+  #hs-root .v41-rank-tabs { margin-bottom: 14px; }
+  #hs-root .v41-rank-tab { flex: 1 1 50%; min-width: 0; padding: 0 9px !important; font-size: 11px !important; gap: 6px; }
+}

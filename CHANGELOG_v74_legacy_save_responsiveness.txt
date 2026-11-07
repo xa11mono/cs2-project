@@ -1,0 +1,11 @@
+CS2 Manager v74 — responsiveness for older, large saves
+
+- Calendar clock display is separated from expensive full panel rendering. Full recommendation/camp refresh is cached and throttled.
+- Career stats no longer rescan the full historical archive every 1.2 seconds; refresh is event-driven on roster/archive changes with a 15-second lightweight fallback.
+- Legacy career match snapshots are trimmed before cloning.
+- Tier-1 schedule resync no longer sorts/normalizes the entire pending queue on every 250ms pulse; it first checks whether the earliest queued match is overdue.
+- Tournament snapshots, news rewriting, ranking snapshots and full IndexedDB autosaves are throttled.
+- Calendar timer catches up after browser main-thread stalls rather than discarding elapsed wall time.
+- Added CS2RuntimePerformance.snapshot() diagnostics with Long Task API support.
+
+No data deletion or archive trimming is performed by this patch.

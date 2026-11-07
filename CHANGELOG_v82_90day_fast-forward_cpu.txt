@@ -1,0 +1,25 @@
+CS2 MANAGER v82 — 90-DAY FAST-FORWARD CPU / RESPONSIVENESS
+
+Root cause fixed:
+- Weekly AI training previously queried HS.stats() separately for each team.
+- Player training mutates roster attributes during that loop, invalidating the history-stat cache and causing repeated full historical-stat rebuilds on a large legacy save.
+
+Changes:
+- AI training now uses a lightweight per-team/per-map W-L index built from HS.matchIndex().
+- The prepared map index is cached and reused through the 90-day fast-forward batch (and invalidated on season/archive/live-tournament revision changes outside the batch).
+- Large history-index scans are processed in chunks of 300 matches with browser-frame yields.
+- Weekly team training is processed cooperatively in groups of four teams, with a browser-frame yield between groups.
+- Weekly career-clock catch-up is asynchronous during multi-day skip, including yields between weekly systems.
+- 90-day skips use a 4ms accumulated CPU slice and 12ms idle gap to reduce sustained CPU load; 30-day skips use 6ms/7ms, shorter skips use 9ms/2ms.
+- Added training-index/cache/yield diagnostics to CS2SimulationPerf.lastBatch.training and V31.trainingDiagnostics().
+- Fixed initialization order for CS2SimulationPerf.batchSlice before writing diagnostics.
+
+Compatibility:
+- No change to save schema or storage identifiers.
+- Existing career, match, roster, tournament, transfer, award and archive data remains intact.
+- Updated browser cache versions for changed scripts.
+
+Validation:
+- Node regression tests pass.
+- JavaScript syntax checks pass.
+- Real Chromium run with the user's legacy save was not available in the build environment; actual CPU/fan improvement must be verified on that save.

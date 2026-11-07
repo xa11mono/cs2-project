@@ -1,0 +1,44 @@
+CS2 Manager v39 — visual, Swiss, flags, news and Falcons corrections
+Date: 2026-10-31
+
+Included in this build:
+
+1) Swiss stages
+- The main in-game Swiss view reserves all five rounds at render time.
+- Future pairings are represented by non-interactive visual placeholders with '?' instead of invented teams or logos.
+- The Major Stage 1/2/3 panels render all five rounds and score buckets even before a stage is unlocked.
+- The HLTV portal Swiss grid displays the fixed 16-team score-group layout (or the 8-team layout based on the actual event participant count), including future TBD slots.
+- Placeholder matches are presentation-only and are not written to match history or simulation state.
+
+2) Tournament news isolation
+- The home-page post-final editorial bundle now uses the active/latest event's actual archive ID.
+- If that event ID is known but has no matching stories, the page no longer fills the bundle with stories from another tournament.
+- Stories generated for one tournament remain grouped under that tournament ID.
+
+3) Visual corrections
+- Team logos in compact Swiss score-group chips are constrained to fixed-size frames and rendered with object-fit: contain.
+- Story rail typography has been enlarged for category, date, headline and description.
+- Swiss TBD slots, Major future matches, and qualification placeholders have consistent '?' styling.
+- Player country flags are rendered as local SVG data-URIs in the player cards and HLTV player profile/mate strips.
+
+4) EMDB country flags
+- The build's SVG flag registry covers all 127 distinct country codes found in the bundled EMDB player database.
+
+5) Team Falcons roster correction
+- A one-time migration runs only when the saved Team Falcons roster contains kyxsan or multiple IGLs, avoiding an overwrite of unrelated manually changed Falcons lineups.
+- The corrected starting five is karrigan (IGL), NiKo (Rifler), TeSeS (Support), m0NESY (AWPer), kyousuke (Rifler).
+- Existing Falcons bench/reserve entries are retained.
+- kyxsan is removed from Falcons; the EMDB Aurora roster remains untouched.
+- A save marker prevents repeating the migration on subsequent launches.
+
+Validation performed:
+- JavaScript syntax check passed for all files under js/.
+- Isolated test confirmed the Falcons migration produces exactly one IGL, keeps kyxsan at Aurora, and does not leave NiKo in a second active roster.
+- Isolated test confirmed tournament editorial stories are filtered by the selected event ID.
+- Isolated test confirmed the 16-team portal Swiss template renders 5 round columns and 33 pending pairings.
+- EMDB flag check passed: 127/127 country codes have an SVG flag.
+- ZIP archive integrity checked after packaging.
+
+Limitations:
+- Full browser E2E tests were not run because Playwright is not installed in the build environment.
+- This build does not revise the VRS scoring formulas. The VRS audit remains a separate pending task; the previous V38 VRS approximation is carried forward unchanged.

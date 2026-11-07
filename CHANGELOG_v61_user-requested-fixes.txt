@@ -1,0 +1,7 @@
+CS2 Manager v61 patch
+
+- Regular season calendar slots are separated: Tier-1 events draw from the Tier-1 pool; dedicated Tier-2 slots draw from a filtered Tier-2 pool.
+- Tier-3 events, local competitions and qualifiers no longer create permanent trophy entries; results and rating history remain the appropriate record.
+- Media import recognizes prefixed player image names such as 1win_ArtFr0st.webp and team logo names such as 1win_logo.webp.
+- Added CS2Manager-target-rosters-2026.json converted from the supplied target_rosters.csv (75 teams, 368 roster entries).
+- Import the JSON from Settings -> Database import -> roster database. Image files can then be added in Settings -> Media library.

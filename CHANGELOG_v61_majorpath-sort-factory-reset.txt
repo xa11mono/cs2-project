@@ -1,0 +1,13 @@
+CS2 Manager v61 follow-up patch — Major Path sorting and full reset
+
+- The “Путь на мейджор” table is now always sorted by probability in ascending order: lower Stage 2 invitation chances appear first, higher chances appear lower in the list.
+- Overall invite probability and the other stage probabilities are used as tie-breakers; VRS rank remains visible but no longer controls row order.
+- Removed the manual sorting selector and the 40-row truncation so the probability order is complete.
+- Factory reset now also clears the autosave IndexedDB settings (including the remembered folder handle and backup timestamp).
+- Tournament archive cleanup now has a fallback that clears the archive IndexedDB object store when the primary archive cleanup reports failure.
+- Added regression coverage for Major Path probability sorting and reset cleanup of trophies, news, imported tournament/roster data, archive state and autosave settings.
+
+Validation:
+- All JavaScript regression tests from v43 through v59 passed when run individually.
+- JavaScript syntax checks passed for the modified application and test files.
+- The aggregate browser/media test runner could not be completed because Playwright is not installed in the environment.

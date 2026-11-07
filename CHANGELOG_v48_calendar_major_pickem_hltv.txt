@@ -1,0 +1,16 @@
+CS2 Manager v48 — calendar, Major Path, Pick'Em and HLTV fixes
+
+- After a skipped/advanced game day, refresh Pick'Em snapshots and page state even when the calendar is advanced outside the dedicated Skip button.
+- Rebase overdue broadcast queue entries from the current game clock and clear stale delay metadata. Active tournament match rows no longer fall back to the stale creation-time timestamp.
+- Major Path stage badges now use the exact canonical order returned by the invite allocator (Stage 3: first 8, Stage 2: next 8, Stage 1: next 16), avoiding mutable last-pool cache mismatches.
+- Major Path now shows region and regional rank beside world rank, explains regional Stage probabilities, and calculates the nearest qualification candidates against the regional seat limits rather than a misleading global top-32 cutoff.
+- Pick'Em automatically advances category selection from 3:0 to 0:3 to ADVANCE after completing each bucket in both portal and legacy modal.
+- Pick'Em save preserves predictions for completed/locked stages; partial playoff predictions can be saved before a champion is chosen.
+- Professional players retain pro-origin metadata when released from a team or moved to the temporary free-agent pool. Old save free agents are migrated from bench/transfer history; academies cannot recruit those players through either transfers or auto-replacement.
+- Older saves that contain only the original top-30 seed import missing default professional teams without overwriting existing team ratings, histories or rosters. HLTV ranking renders every non-academy team and displays the current team count.
+- MVP Winner profile badge remains gold.
+
+Validation:
+- Syntax check: all manager JavaScript files.
+- Regression tests: v43, v44, v45, v46 and v47 quality suite.
+- Full browser test is not included in this environment because Playwright is unavailable.

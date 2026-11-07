@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "type": "cs2-rosters",
+  "asOf": "2026-11-01",
+  "teams": [
+    {
+      "name": "Team Spirit",
+      "pts": 1020,
+      "country": "RU",
+      "style": "Tactical",
+      "coach": { "name": "hally", "flag": "🇷🇺" },
+      "roster": [
+        { "nick": "sh1ro", "realName": "Dmitry Sokolov", "age": 25, "country": "RU", "language": "Russian", "role": "AWPer", "skill": 93 },
+        { "nick": "magixx", "role": "Rifler" },
+        { "nick": "tN1R", "role": "Rifler" },
+        { "nick": "zont1x", "role": "Rifler" },
+        { "nick": "donk", "role": "Entry-fragger" }
+      ],
+      "bench": []
+    }
+  ],
+  "players": {
+    "sh1ro": { "realName": "Dmitry Sokolov", "age": 25, "country": "RU", "language": "Russian", "role": "AWPer", "skill": 93 }
+  },
+  "freeAgents": [],
+  "reserve": []
+}

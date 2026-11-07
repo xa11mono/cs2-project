@@ -1,0 +1,27 @@
+CS2 MANAGER v55 — LONG-SIMULATION RECOVERY
+
+1. Season rollover performance
+- Removed the duplicate season map-stat reset that remained after the old nested team loop was repaired.
+- Map ratings now drift and map statistics initialize once per team per season.
+- Rising-team ranking uses the team's existing array position rather than repeated indexOf scans.
+
+2. Multi-season calendar
+- Each new season regenerates the full 14-event Tier-1 calendar and its matching Tier-2 / Tier-3 / Academy parallel circuit.
+- The new season calendar anchor moves forward from the current in-game date instead of restarting in January in the past.
+- Previous seasons' parallel tournament schedules remain in history while only the active season schedule is replaced.
+
+3. Tournament progress recovery
+- Swiss and all three Major Swiss stages rebuild standings from saved match results and repair stale current-round pointers.
+- If the last saved round is complete but the next round/stage hand-off is missing, the next round or stage is reconstructed.
+- Single-elimination and double-elimination bracket hand-offs are restored from completed match results, including upper/lower bracket feeds, the bronze match, and grand final slots.
+- GSL group winners/losers and decider inputs are reconstructed from saved match results before creating the Top-8 playoff.
+- Bounty stage winners are restored into the LAN bracket when a save misses the stage transition.
+- Day skip now retries the canonical next-playable-match resolver when the broadcast queue is empty, and runs recovery during and after the skip.
+
+4. Diagnostics
+- Added window.v55TournamentHealth() to inspect the active tournament's stage pointers, queue, and playable match state.
+- Added regression tests for season rollover, Major/Swiss recovery, double-elimination slot recovery, and day-skip fallback.
+
+Verification notes:
+- Node regression tests and JavaScript syntax checks are included in this build.
+- Full browser simulation was not executed because Playwright is not installed in the build environment.

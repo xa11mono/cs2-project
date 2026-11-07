@@ -1,0 +1,17 @@
+/* v88 — ровная пятёрка фото в рейтинге и логотипы в «Главных историях» */
+#hs-root .gs-lineup.v88{position:absolute;right:10px;top:auto;bottom:0;height:64px;display:flex;align-items:flex-end;pointer-events:none}
+#hs-root .gs-lineup.v88 .v88-face{position:relative;display:block;flex:0 0 60px;width:60px;height:64px;margin-left:-12px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent)}
+#hs-root .gs-lineup.v88 .v88-face:first-child{margin-left:0}
+#hs-root .gs-lineup.v88 .v88-face img{position:absolute;max-width:none;margin:0;-webkit-mask-image:none;mask-image:none}
+#hs-root .gs-lineup.v88 .v88-face img:not(.v88-placed){left:0;top:0;width:60px;height:64px;object-fit:cover;object-position:50% 12%}
+#hs-root .gs-lineup.v88 .v88-face.none svg{position:absolute;inset:6px 8px 0;width:44px;height:58px;fill:currentColor;opacity:.16}
+@media (max-width:1280px){#hs-root .gs-lineup.v88{display:none}}
+
+/* логотип команды в карточке новости — целиком, по центру, без обрезки */
+.v37-story-media .v37-story-logo{display:grid;place-items:center;width:100%;height:100%;padding:10px;box-sizing:border-box}
+.v37-story-media .v37-story-logo .hl-logo,.v37-story-media .v37-story-logo .hs-logo{transform:none!important;width:100%!important;height:100%!important;
+  max-width:none!important;display:grid!important;place-items:center!important;background:none!important;border:0!important;box-shadow:none!important;padding:0!important}
+.v37-story-media .v37-story-logo img{width:auto!important;height:auto!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center!important;transform:none!important}
+.v37-story-media>img.v37-story-teamlogo{position:absolute;inset:0;width:100%!important;height:100%!important;max-height:none!important;padding:11px;box-sizing:border-box;object-fit:contain!important;object-position:center!important}
+.v37-editorial-card .v37-story-media>img.v37-story-teamlogo{padding:8px}

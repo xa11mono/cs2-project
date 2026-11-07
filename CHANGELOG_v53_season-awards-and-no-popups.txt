@@ -1,0 +1,19 @@
+CS2 Manager v53 — season-end individual awards and removal of blocking result dialogs
+
+1) Individual awards at season end
+- Yearly HLTV awards are no longer gated to December 14.
+- The season-end event now triggers generation after the final Tier-1 tournament has been archived.
+- Player of the Year, AWPer/Sniper, Rifler, IGL, Entry, Clutch, Support, Rookie, Breakout, Most Improved, Lurker, Anchor, Utility and Young Star awards are written to the player awards database.
+- A single HLTV Awards news story lists all award winners and the Top-3.
+- Role matching accepts common legacy labels such as AWP, AWPer, Sniper, IGL and localized role names.
+- Existing saved countdowns are cancelled when the season ceremony is published to avoid duplicate announcements.
+
+2) Non-blocking tournament progression
+- Removed success alerts for Swiss-stage qualification, BLAST Bounty LAN qualification, tournament completion and season completion.
+- Kept validation/error alerts (Pick'Em limits, invalid actions, save/import errors, etc.).
+- Tournament winners, season results and playoff qualification remain in the news feed.
+
+Validation
+- Updated JavaScript files pass node --check.
+- Added standalone v53 regression tests for season-end event handling, award persistence/news and removed success alerts.
+- Full Playwright browser verification is not run in this environment because Playwright is not installed.

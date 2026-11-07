@@ -1,0 +1,21 @@
+CS2 MANAGER v83 — CORRECT MVP FINALIST ELIGIBILITY
+
+Root cause fixed:
+- MVP selection could use the wrong/current roster snapshot and did not verify that the player’s team reached the grand final.
+- The old fallback substituted player OVR plus randomness when event statistics were unavailable, which could award MVP without a valid event performance sample.
+- Semi-final and quarter-final labels could be mistaken for a final; BO1 closeness could be inferred incorrectly from the series score 1:0.
+
+Changes:
+- Capture participating teams’ event rosters before calculating tournament awards.
+- Resolve the actual final from the archived bracket; MVP eligibility is limited to the two teams in that final.
+- Score eligible players using event Rating 2.0, with KPR, ADR, KAST, K/D, Impact, clutches and map sample as secondary factors.
+- The champion is preferred. The losing finalist can receive MVP only with Rating 2.0 >= 1.30, a >= 0.12 rating lead over the champion’s top player, the champion’s top two players are within 0.08 Rating of each other, and a close final (2:1 / 3:2; for BO1, round difference <= 5).
+- Require at least three event maps; remove old event MVP medals when player statistics are missing, the sample is insufficient, or the player’s team did not reach the final.
+- Remove the random OVR fallback: without sufficient event-level statistics, no MVP is assigned.
+- On startup, re-evaluate saved event MVP medals after the archive database is ready. Build the historical stats index once for the whole pass; skip legacy events without archived lineups for both finalists rather than guessing from current rosters.
+- Updated the trophy script cache version in index.html.
+
+Validation:
+- v83 regression tests pass for non-finalists, semi-final label parsing, rare runner-up exception, decisive BO3, decisive BO1, stale medal reconciliation/removal, missing statistics and archived-lineup safety checks.
+- Existing v62 reward registry, v70 organizer trophies / public Pick’Em and v71 yearly MVP regression tests pass.
+- JavaScript syntax check passes.
