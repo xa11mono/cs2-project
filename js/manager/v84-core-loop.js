@@ -56,12 +56,22 @@
   W.CS2Loop = Object.freeze({ every, clear, diagnostics, BASE_MS, FRAME_BUDGET });
 
   let sliceStart = now();
-  function frame() {
+  /* v97: «умная» уступка. Раньше каждая уступка при перемотке ждала кадра (requestAnimationFrame, до 16 мс), и при
+     бюджете работы 10 мс браузер больше простаивал, чем считал (~35% времени перемотки — ожидание). Теперь кадр
+     отдаётся не чаще раза в PAINT_MS (экран обновляется ~25 раз в секунду), а между кадрами управление возвращается
+     сразу через MessageChannel — ввод и клики обрабатываются, а пустого ожидания нет. */
+  const PAINT_MS = 40;
+  let lastPaint = now(), mc = null; const mq = [];
+  try { mc = new MessageChannel(); mc.port1.onmessage = () => { const f = mq.shift(); if (f) f(); }; } catch (e) { mc = null; }
+  const fast = fn => { if (mc) { mq.push(fn); mc.port2.postMessage(0); } else setTimeout(fn, 0); };
+  function frame(forcePaint) {
     return new Promise(resolve => {
       const done = () => { sliceStart = now(); resolve(true); };
+      const paint = () => { lastPaint = now(); done(); };
       try {
-        if (document.visibilityState !== 'hidden' && typeof W.requestAnimationFrame === 'function') W.requestAnimationFrame(done);
-        else setTimeout(done, 0);
+        const visible = document.visibilityState !== 'hidden' && typeof W.requestAnimationFrame === 'function';
+        if (visible && (forcePaint === true || now() - lastPaint >= PAINT_MS)) W.requestAnimationFrame(paint);
+        else fast(done);
       } catch (e) { setTimeout(done, 0); }
     });
   }

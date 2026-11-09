@@ -42,16 +42,38 @@
       .concat(tl.slice(rank + 3).flatMap(t => (t.players || []).filter(fit).map(p => ({ p, from: t.name }))));
     return pool.sort((a, b) => score(b.p) - score(a.p)).slice(0, 3);
   }
+  /* v97: стадии легендарности. Раньше статус то «угасал» (3 года без титула Tier-1), то назначался снова — и новость
+     «X — легендарный клуб» выходила по кругу. Теперь у клуба есть стадия по числу Мейджоров, и она не теряется:
+     бронзовый (2), серебряный (3), золотой (4–5), платиновый (6+). Новость — только когда клуб поднимается на новую
+     стадию. Золотое свечение логотипа по-прежнему горит, пока у клуба есть свежий титул (активная легенда). */
+  const STAGES = [[6, 'platinum', 'Платиновый'], [4, 'gold', 'Золотой'], [3, 'silver', 'Серебряный'], [2, 'bronze', 'Бронзовый']];
+  function stageOf(name) {
+    const m = majorsByTeam()[norm(name)] || 0, st = S(), best = st && st.stage ? st.stage[name] || 0 : 0;
+    const i = STAGES.findIndex(x => m >= x[0]), lvl = Math.max(best, i < 0 ? 0 : STAGES.length - i);
+    if (!(lvl > 0)) return null;
+    const row = STAGES[STAGES.length - lvl];
+    return { lvl, key: row[1], label: row[2], majors: m, active: W.CS2Legend(name) };
+  }
+  W.CS2LegendStage = stageOf;
   function tick() {
     const st = S(); if (!st || typeof teams === 'undefined') return;
-    // новые легендарные клубы
+    st.stage = st.stage || {};
     const c = majorsByTeam();
-    // потеря статуса: долгий спад (нет титулов 3 года и команда вне Tier-1)
-    Object.keys(st.teams).forEach(n => { if (st.teams[n] && !isLegend(n)) { delete st.teams[n]; if (ST()?.v84LegendInit) news({ cat: 'season', icon: '🕯️', imp: 6, title: `${n}: легендарный статус угас`, lead: 'Три года без титулов Tier-1: легендарный статус держится только на свежих трофеях.', body: ['История клуба никуда не денется, но вернуть статус можно только новыми трофеями.'], tags: [{ t: 'team', v: n }] }); } });
-    teams.filter(t => !t.isAcademy && isLegend(t.name) && !st.teams[t.name]).forEach(t => {
-      st.teams[t.name] = Number(ST()?.calendar?.currentMs) || Date.now();
-      if (Object.keys(st.teams).length > 0 && ST()?.v84LegendInit) news({ cat: 'season', icon: '👑', imp: 7, title: `${t.name} — легендарный клуб`, lead: `${c[norm(t.name)]} Мейджора в истории: ${t.name} входит в число легендарных организаций CS.`, body: ['Логотип клуба теперь отмечен золотым свечением.'], tags: [{ t: 'team', v: t.name }] });
+    // активная легенда (свечение логотипа): клуб с 2+ Мейджорами и свежим титулом. Смена активности — без новостей.
+    Object.keys(st.teams).forEach(n => { if (st.teams[n] && !isLegend(n)) delete st.teams[n]; });
+    teams.filter(t => !t.isAcademy && isLegend(t.name) && !st.teams[t.name]).forEach(t => { st.teams[t.name] = Number(ST()?.calendar?.currentMs) || Date.now(); });
+    // стадии: только рост, новость — при переходе на новую стадию
+    teams.filter(t => !t.isAcademy && (c[norm(t.name)] || 0) >= 2).forEach(t => {
+      const m = c[norm(t.name)] || 0, idx = STAGES.findIndex(x => m >= x[0]), lvl = STAGES.length - idx;
+      const prev = st.stage[t.name] || 0; if (lvl <= prev) return;
+      st.stage[t.name] = lvl;
+      if (!ST()?.v84LegendInit || !ST()?.v97LegendStages) return;   // при первом запуске — без новостей «задним числом»
+      const lab = STAGES[idx][2];
+      news({ cat: 'season', icon: '👑', imp: 7, title: prev ? `${t.name}: ${lab.toLowerCase()} статус легендарного клуба` : `${t.name} — легендарный клуб`,
+        lead: prev ? `${m}-й Мейджор в истории поднимает ${t.name} на новую ступень: ${lab.toLowerCase()} статус.` : `${m} Мейджора в истории: ${t.name} входит в число легендарных организаций CS (${lab.toLowerCase()} статус).`,
+        body: ['Стадии легендарного клуба: бронзовый — 2 Мейджора, серебряный — 3, золотой — 4–5, платиновый — 6 и больше. Стадия не теряется.'], tags: [{ t: 'team', v: t.name }] });
     });
+    if (ST() && !ST().v97LegendStages) ST().v97LegendStages = 1;
     const s0 = ST(); if (s0 && !s0.v84LegendInit) s0.v84LegendInit = 1; // при первом запуске — без новостей «задним числом»
     // прощание и спор о преемнике
     const moves = (typeof transferState !== 'undefined' ? transferState.v30Moves || [] : []).slice(-40);
@@ -73,5 +95,17 @@
     });
   }
   (globalThis.CS2Loop?.every || ((f, ms) => (typeof setInterval === 'function' ? setInterval : window.setInterval)(f, ms)))(() => { if (!W.v57BatchCalendarSkip) try { tick(); } catch (e) {} }, 6000);
-  W.CS2LegendClubs = { tick, majorsByTeam, state: S };
+  W.CS2LegendClubs = { tick, majorsByTeam, state: S, stageOf };
+  // v97: стадия легендарного клуба на странице команды
+  const H = W.HS;
+  if (H && Array.isArray(H.AFTER)) H.AFTER.push(page => {
+    if (page !== 'team') return;
+    try {
+      const root = document.getElementById('hs-page'), name = H.S && H.S.arg ? decodeURIComponent(String(H.S.arg).split('/')[0]) : '';
+      if (!root || !name || root.querySelector('.v97-legend')) return;
+      const g = stageOf(name); if (!g) return;
+      const html = `<div class="v97-legend v97-legend-${g.key}" title="Стадии: бронзовый — 2 Мейджора, серебряный — 3, золотой — 4–5, платиновый — 6+"><span class="v97-legend-i">👑</span><b>Легендарный клуб · ${H.esc(g.label)} статус</b><small>${g.majors} Major в истории${g.active ? '' : ' · сейчас без свежих титулов'}</small></div>`;
+      const head = root.querySelector('.hs-head') || root.firstElementChild; if (head) head.insertAdjacentHTML('afterend', html);
+    } catch (e) {}
+  });
 })();

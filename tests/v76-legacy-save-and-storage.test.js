@@ -62,7 +62,7 @@ assert(/tx\.oncomplete = \(\) => resolve\(true\)/.test(hub) && /const BATCH = 20
 assert(/hubArchiveUsesIndexedDB/.test(guard), 'storage compaction must understand when archive data is safely in IndexedDB');
 assert(/основной автосейв продолжает использовать IndexedDB/.test(guard), 'quota warning must not falsely imply data loss when browser autosave is active');
 const html = read('index.html');
-assert(html.includes('auto_script_1.js?v=95') && html.includes('v25-hltv-hub.js?v=95') && html.includes('v38-vrs-emdb-awards.js?v=95') && html.includes('v29-storage-guard.js?v=95'), 'all patched scripts must use the matching cache busting versions');
+assert(html.includes('auto_script_1.js?v=97') && html.includes('v25-hltv-hub.js?v=97') && html.includes('v38-vrs-emdb-awards.js?v=97') && html.includes('v29-storage-guard.js?v=97'), 'all patched scripts must use the matching cache busting versions');
 
 console.log('PASS v76: old JSON team-name strings are converted into team records and duplicates are removed');
 console.log('PASS v76: VRS safely ignores malformed global entries and still applies valid background matches');

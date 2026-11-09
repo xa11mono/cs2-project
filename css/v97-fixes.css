@@ -1,0 +1,14 @@
+/* v97 — правки по отзыву: стадии легендарного клуба, история позиций в рейтинге. Значения — токены css/v30-portal.css. */
+.v97-legend { display: flex; align-items: center; gap: var(--s-2, 8px); margin: 0 0 var(--s-3, 12px); padding: 8px 12px;
+  border: 1px solid var(--c-line); border-left: 3px solid var(--v97-lg, var(--c-gold)); border-radius: var(--r-2, 6px); background: var(--c-surface); }
+.v97-legend b { color: var(--c-text); font-weight: 600; }
+.v97-legend small { color: var(--c-text-3); margin-left: auto; }
+.v97-legend-i { font-size: 16px; line-height: 1; }
+.v97-legend-bronze { --v97-lg: #c98a4b; }
+.v97-legend-silver { --v97-lg: #c3ccd6; }
+.v97-legend-gold { --v97-lg: var(--c-gold); }
+.v97-legend-platinum { --v97-lg: #9fe3ff; }
+.v97-rk-per { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px; }
+.v97-rk-tbl td.best { color: var(--c-win); }
+.v97-rk-tbl td.worst { color: var(--c-loss); }
+.v97-rkbox .hs-tbl td, .v97-rkbox .hs-tbl th { white-space: nowrap; }

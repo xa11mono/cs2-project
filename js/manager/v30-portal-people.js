@@ -158,7 +158,7 @@ function careerOf(nick) { // команды игрока по архиву со�
   // время (стенд-ин), шоу-матчи и сборные Кубка наций, академии при игре за основу; короткое «вкрапление»
   // (1–2 турнира) между отрезками одной и той же команды — тоже замена, оно сливается с основной командой.
   const arch = H.archive(), stints = [], standIn = p => p && (p.isStandIn || /STAND/i.test(String(p.status || '')));
-  Object.values(arch).filter(s => s && s.rost && !s.show && !/nations|showmatch|шоу/i.test(String(s.kind || s.prestige || s.name || ''))).sort((a, b) => (a.ts || 0) - (b.ts || 0)).forEach(s => {
+  Object.values(arch).filter(s => s && s.rost && !s.show && !/nations|showmatch|шоу/i.test(String(s.kind || s.prestige || s.name || ''))).sort((a, b) => (Number(a.ge || a.gs) || a.ts || 0) - (Number(b.ge || b.gs) || b.ts || 0)).forEach(s => {   // v97: по игровой дате
     const team = Object.keys(s.rost).find(t => (s.rost[t] || []).some(p => p.nick === nick && !standIn(p))); if (!team) return;
     const last = stints[stints.length - 1];
     if (last && last.team === team) { last.to = s.season; last.events++; last.lastEv = s.name; if (s.champion === team) last.titles++; }
@@ -226,7 +226,7 @@ H.PAGES.players = () => {
       return `<button type="button" class="v84-hof" data-player="${esc(x.nick)}">
         <div class="v84-hof-top"><span class="ph">${H.photoHtml(p)}</span><div class="v84-hof-id"><b>${pFlag(p)} ${esc(x.nick)}</b>${p.realName ? `<small>${esc(p.realName)}</small>` : ''}
           <span class="v84-hof-st ${x.active ? 'on' : ''}">${x.active ? `В игре · ${esc(now?.t?.name || 'свободный агент')}` : 'Завершил карьеру'}</span>${ind[x.nick] ? `<span class="v84-hof-y">Введён в ${ind[x.nick]}</span>` : ''}</div></div>
-        <div class="v84-hof-stats">${stat(x.maj, 'Major')}${stat(x.ti, 'Титулы')}${stat(x.mvp, 'MVP')}${stat(x.top, 'Top-20')}${stat(x.best ? '#' + x.best : '—', 'Лучшее')}${stat(poty || aw.length, poty ? 'Игрок года' : 'Награды года')}</div>
+        <div class="v84-hof-stats">${stat(x.maj, 'Major')}${stat(x.ti, 'Титулы')}${stat(x.mvp, 'MVP')}${stat(x.top, 'Top-20')}${stat(x.best ? '#' + x.best : '—', 'Лучшее')}${stat(poty, 'Игрок года')}</div>
         <div class="v84-hof-cups">${cups.map(t => `<span title="${esc(t.n)}${t.team ? ' · ' + esc(t.team) : ''}">${trophy(t.n, t.s, t.k)}</span>`).join('')}${enc ? `<span class="v84-hof-enc" title="Кубок наций × ${enc}">${trophy('eSports Nations Cup', 1, 'nations')}</span>` : ''}${!cups.length && !enc ? '<small class="hs-dim">Титулов Tier-1 нет</small>' : ''}</div>
         ${teams.length ? `<div class="v84-hof-teams">${teams.map(tn => `<span>${logo(tn, 'xs')} ${esc(tn)}</span>`).join('')}</div>` : ''}
       </button>`;
@@ -234,7 +234,7 @@ H.PAGES.players = () => {
     const members = list.filter(x => !x.active), future = list.filter(x => x.active);
     listHtml = box('Hall of Fame', members.length ? `<div class="v84-hof-grid">${members.map(card).join('')}</div>` : empty('В Зал славы вводят после завершения карьеры — пока никто из легенд не ушёл со сцены'))
       + (future.length ? box('Будущие члены Зала славы (ещё играют)', `<div class="v84-hof-grid v84-hof-future">${future.map(card).join('')}</div>`) : '')
-      + '<p class="hs-note">Критерии зала славы: два и более Major, три и более попадания в Top 20 года или пять и более MVP турниров. Новых членов вводят ежегодно после HLTV Awards.</p>';
+      + '<p class="hs-note">Критерии зала славы: два и более Major, три и более попадания в Top 20 года или пять и более MVP турниров. Новых членов вводят ежегодно после HLTV Awards. «Титулы» — выигранные кубки Major, S-Tier и Tier-1, Кубок наций, Grand Slam, попадания в Top-20 и «Игрок года»; прочие награды года не считаются.</p>';
   } else if (f.tab === 'retired') {
     const list = moves().filter(m => m.type === 'retire');
     const fromNews = (window.V29News?.all() || []).filter(n => n.cat === 'player' && /завершает карьеру/.test(n.title) && n.player && !list.some(m => m.player === n.player)).map(n => ({ type: 'retire', player: n.player, from: n.team, ts: n.ts, reason: n.lead }));
@@ -247,9 +247,19 @@ H.PAGES.players = () => {
   const table = pg ? `<section class="hs-box" data-pg-anchor><table class="hs-tbl hs-stbl">${head(extraH)}<tbody>${pg.rows.map((x, i) => pRow(x, off + i + 1)).join('')}</tbody></table>${pg.html}</section><p class="hs-note">Уровень — сводная оценка навыков игрока в игре (огневая мощь, тактика, клатч, утилити). Rating 3.0 — по сыгранным картам, от 3 карт.</p>` : '';
   return `<div class="hs-head"><h1>Игроки</h1></div><div class="hs-filters hs-ptabs-row">${tabs}</div>${rows.length || ['active', 'young', 'fa', 'bench'].includes(f.tab) ? tools : ''}${table || listHtml || empty('Пусто')}`;
 };
+/* v97: «Титулы» в Зале славы — только выигранные кубки (Major, S-Tier, Tier-1), Кубок наций (ENC), Grand Slam,
+   попадания в Top-20 года и «Игрок года». Остальные награды года (снайпер года и т. п.) титулами не считаются. */
+function grandSlamsOf(nick) { try { return (window.V33Awards?.playerSlams?.(nick) || []).length; } catch (e) { return 0; } }
+function hofTitles(nick, r) {
+  const ti = r.ti || [], cups = ti.filter(t => ['major', 'elite', 'regular'].includes(t.k) && !t.nations).length;
+  const enc = ti.filter(t => t.k === 'nations' || t.nations).length, poty = (r.aw || []).filter(a => a.type === 'poty').length;
+  const gs = grandSlamsOf(nick), top = (r.top || []).length;
+  return { total: cups + enc + gs + top + poty, cups, enc, gs, top, poty };
+}
+H.hofTitles = hofTitles;
 function hallOfFame() {
   const A = H.awards();
-  return Object.entries(A).map(([nick, r]) => ({ nick, maj: (r.ti || []).filter(x => x.k === 'major').length, ti: (r.ti || []).filter(x => x.k !== 'nations' && !x.nations).length, mvp: (r.mvp || []).length, top: (r.top || []).length, best: (r.top || []).length ? Math.min(...r.top.map(x => x.r)) : 0, active: !!H.playerNow(nick) }))
+  return Object.entries(A).map(([nick, r]) => { const T = hofTitles(nick, r); return { nick, maj: (r.ti || []).filter(x => x.k === 'major').length, ti: T.total, tiParts: T, mvp: (r.mvp || []).length, top: (r.top || []).length, best: (r.top || []).length ? Math.min(...r.top.map(x => x.r)) : 0, active: !!H.playerNow(nick) }; })
     .filter(x => x.maj >= 2 || x.top >= 3 || x.mvp >= 5).sort((a, b) => b.maj - a.maj || b.top - a.top || b.mvp - a.mvp);
 }
 H.hallOfFame = hallOfFame;
@@ -360,7 +370,7 @@ function teamPage(name) {
   if (tab === 'overview') {
     const tr = moves().filter(m => m.to === name || m.from === name).slice(0, 6);
 
-    body = `<div class="hs-grid2"><div class="hs-col">${box('Позиция в рейтинге', rankChart(name))}
+    body = `<div class="hs-grid2"><div class="hs-col">${box('Позиция в рейтинге', (H.rankChartV97 || rankChart)(name))}
       ${box('Последние матчи', ms.slice(0, 8).map(m => H.matchRow(m, name)).join('') || empty('Матчей в архиве нет'), '<button type="button" class="hs-more" data-ttab="matches">все →</button>', 'flush')}</div>
       <div class="hs-col">${box('Маппул', mapRows.slice(0, 7).map(([k, v]) => `<div class="hs-mprow" data-tip="${v.w}-${v.n - v.w} · раунды ${v.rw}:${v.rl}"><span class="n">${esc(k)}</span><span class="hs-bar big"><i style="width:${f1(v.w / v.n * 100)}%"></i></span><b>${f1(v.w / v.n * 100)}%</b><small>${v.n}</small></div>`).join('') || empty('Нет сыгранных карт'))}
       ${box('Последние трансферы', tr.length ? `<div class="tm-mv">${tr.map(m => `<div><span class="mv-t mv-${esc(m.type)}">${esc(MT[m.type] || m.type)}</span> <b>${esc(m.player)}</b> <span class="hs-dim">${m.to === name ? 'из ' + esc(m.from || '—') : 'в ' + esc(m.to || '—')} · ${m.ts > 0 ? fdate(m.ts) : ''}</span></div>`).join('')}</div>` : empty('Состав без изменений'), '<button type="button" class="hs-more" data-ttab="transfers">все →</button>')}
@@ -408,17 +418,39 @@ H.PAGES.team = teamPage;
 H.CLICKS.push(['[data-bootcamp]', el => { try { if (typeof window.runManualBootcamp === 'function') window.runManualBootcamp(el.dataset.bootcamp); } catch (e) { console.warn(e); } H.render(); }]);
 
 /* ------------------------------------------------------------ трансферы */
-H.S.trf = { tab: 'all', team: '', page: 1 };
+H.S.trf = { tab: 'all', team: '', page: 1, period: 'cur' };
+/* v97: трансферы по периодам. Межсезонье перед сезоном N — с 1 декабря предыдущего года по 31 января года сезона;
+   «по ходу сезона» — с 1 февраля по 30 ноября. По умолчанию — текущий период, а не все сделки за всё время. */
+function trfPeriods() {
+  const yr = s => H.yearOf(s), U = (y, m) => Date.UTC(y, m, 1), cur = ST().currentSeason || 1, out = [];
+  for (let s = cur; s >= 1; s--) {
+    const y = yr(s);
+    out.push({ key: 'off:' + s, label: `Межсезонье ${y - 1}/${String(y).slice(-2)}`, from: U(y - 1, 11), to: U(y, 1) });
+    out.push({ key: 'in:' + s, label: `Сезон ${s} (${y}) — по ходу сезона`, from: U(y, 1), to: U(y, 11) });
+  }
+  // межсезонье после текущего сезона (декабрь) — показываем, только когда оно уже идёт
+  const y = yr(cur), now = H.nowMs();
+  if (now >= U(y, 11)) out.unshift({ key: 'off:' + (cur + 1), label: `Межсезонье ${y}/${String(y + 1).slice(-2)}`, from: U(y, 11), to: U(y + 1, 1) });
+  return out;
+}
+function trfPeriod(key) {
+  const ps = trfPeriods(), now = H.nowMs();
+  if (key === 'all') return { key: 'all', label: 'Всё время' };
+  // по умолчанию — последнее начавшееся межсезонье (идущее сейчас или только что закончившееся)
+  return ps.find(p => p.key === key) || ps.find(p => /^off:/.test(p.key) && now >= p.from) || ps[0];
+}
+H.trfPeriod = trfPeriod;
 H.PAGES.transfers = () => {
-  const f = H.S.trf, all = moves();
+  const f = H.S.trf, per = trfPeriod(f.period || 'cur'), inPer = m => per.key === 'all' || ((Number(m.ts) || 0) >= per.from && (Number(m.ts) || 0) < per.to), all = moves().filter(inPer);
   const TABS = [['all', 'Все сделки'], ['transfer', 'Трансферы'], ['signing', 'Подписания'], ['rumor', 'Слухи'], ['loan', 'Аренды'], ['standin', 'Стенд-ины'], ['promotion', 'Академия → основа'], ['coach', 'Тренеры'], ['release', 'Уходы и скамейка'], ['fa', 'Свободные агенты']];
-  const cnt = k => k === 'rumor' ? (window.V29News?.all() || []).filter(n => n.cat === 'rumor').length : k === 'fa' ? (TS().freeAgents || []).length : k === 'all' ? all.length : all.filter(m => m.type === k || (k === 'loan' && m.type === 'loan-return') || (k === 'release' && ['release', 'bench'].includes(m.type))).length;
+  const cnt = k => k === 'rumor' ? (window.V29News?.all() || []).filter(n => n.cat === 'rumor' && inPer(n)).length : k === 'fa' ? (TS().freeAgents || []).length : k === 'all' ? all.length : all.filter(m => m.type === k || (k === 'loan' && m.type === 'loan-return') || (k === 'release' && ['release', 'bench'].includes(m.type))).length;
   const tabs = TABS.map(([k, l]) => `<button type="button" class="hs-chip${f.tab === k ? ' on' : ''}" data-trtab="${k}">${l} <small>${cnt(k)}</small></button>`).join('');
   const teamsList = [...new Set(all.flatMap(m => [m.from, m.to]).filter(n => n && H.teamBy(n)))].sort();
+  const perSel = `<select class="hs-inp sm" data-trperiod aria-label="Период">${trfPeriods().map(p => `<option value="${p.key}"${per.key === p.key ? ' selected' : ''}>${esc(p.label)}</option>`).join('')}<option value="all"${per.key === 'all' ? ' selected' : ''}>Всё время</option></select>`;
   const sel = `<select class="hs-inp sm" data-trteam><option value="">Все команды</option>${teamsList.map(t => `<option${f.team === t ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select>`;
   let body;
   if (f.tab === 'rumor') {
-    const list = (window.V29News?.all() || []).filter(n => n.cat === 'rumor' && (!f.team || n.team === f.team || n.from === f.team));
+    const list = (window.V29News?.all() || []).filter(n => n.cat === 'rumor' && inPer(n) && (!f.team || n.team === f.team || n.from === f.team));
     body = box('Слухи и переговоры', list.map(n => H.newsLine(n)).join('') || empty('Слухов нет'), '', 'flush') + '<p class="hs-note">Слух остаётся слухом, пока сделка не состоится (подтверждено) или переговоры не сорвутся (опровергнуто).</p>';
   } else if (f.tab === 'fa') {
     const st = H.stats(), list = (TS().freeAgents || []).slice().sort((a, b) => pow(b) - pow(a));
@@ -430,11 +462,11 @@ H.PAGES.transfers = () => {
     const pg = H.paginate(list, 'trf', 40);
     body = `<section class="hs-box" data-pg-anchor>${list.length ? movesTable(pg.rows) + pg.html : empty('Сделок по этому фильтру нет')}</section>`;
   }
-  const season = ST().currentSeason, thisSeason = all.filter(m => m.season === season && m.type !== 'coach').length;
-  return `<div class="hs-head"><h1>Трансферы</h1><div class="hs-filters">${sel}<span class="hs-sub">В сезоне ${season}: ${thisSeason} перемещений игроков</span></div></div><div class="hs-filters hs-ptabs-row">${tabs}</div>${body}`;
+  const nMoves = all.filter(m => m.type !== 'coach').length;
+  return `<div class="hs-head"><h1>Трансферы</h1><div class="hs-filters">${perSel}${sel}<span class="hs-sub">${esc(per.label)}: ${nMoves} перемещений игроков</span></div></div><div class="hs-filters hs-ptabs-row">${tabs}</div>${body}`;
 };
 H.CLICKS.push(['[data-trtab]', el => { H.S.trf.tab = el.dataset.trtab; H.S.trf.page = 1; H.render(); }]);
-document.addEventListener('change', e => { if (e.target.matches?.('#hs-root [data-trteam]')) { H.S.trf.team = e.target.value; H.S.trf.page = 1; H.render(); } });
+document.addEventListener('change', e => { if (e.target.matches?.('#hs-root [data-trteam]')) { H.S.trf.team = e.target.value; H.S.trf.page = 1; H.render(); } if (e.target.matches?.('#hs-root [data-trperiod]')) { H.S.trf.period = e.target.value; H.S.trf.page = 1; H.render(); } });
 
 /* ------------------------------------------------------------ награды, трофеи, архив */
 const origAwards = H.PAGES.awards;
@@ -458,7 +490,9 @@ function champions(includeMarkers = false) {
 }
 
 H.PAGES.awards = () => {
-  const f = H.S.aw, tabs = [['year', 'Награды года'], ['cabinet', 'Кабинет наград и отметок'], ['majors', 'Победители Major'], ['champs', 'Чемпионы по годам'], ['teams', 'Трофеи команд'], ['hof', 'Hall of Fame']]
+  // v97: вкладки «Кабинет наград и отметок» и «Трофеи команд» убраны (трофеи команды — на её странице)
+  if (H.S.aw.tab === 'cabinet' || H.S.aw.tab === 'teams') H.S.aw.tab = 'year';
+  const f = H.S.aw, tabs = [['year', 'Награды года'], ['majors', 'Победители Major'], ['champs', 'Чемпионы по годам'], ['hof', 'Hall of Fame']]
     .map(([k, l]) => `<button type="button" class="hs-chip${f.tab === k ? ' on' : ''}" data-awtab="${k}">${l}</button>`).join('');
   let body = '';
   if (f.tab === 'year') return origAwards().replace('<div class="hs-head"><h1>Награды</h1><div class="hs-filters">', `<div class="hs-head"><h1>Награды</h1><div class="hs-filters">${tabs}</div></div><div class="hs-filters" style="margin-bottom:12px">`);

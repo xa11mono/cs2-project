@@ -79,17 +79,19 @@
   })();
 
   // эпоха на странице команды
-  const H = W.HS;
+  const H = W.HS, SHOWN = new Set(['dominance', 'return', 'crisis']);
   if (H && Array.isArray(H.AFTER)) H.AFTER.push(page => {
     if (page !== 'team') return;
     try {
       // название — из адреса страницы: в заголовке рядом с ним кнопка «☆ Стать фанатом»
       const root = document.getElementById('hs-page'), name = (H.S && H.S.arg ? decodeURIComponent(String(H.S.arg).split('/')[0]) : '');
       const t = teams.find(x => x.name === name); if (!t || t.isAcademy || root.querySelector('.v93-era')) return;
-      const cur = S().cur[name], hist = S().hist[name] || []; if (!cur) return;
+      // v97: блок эпохи — только когда она есть: доминирование, возвращение на вершину или кризис. «Стабильность»,
+      // «перестройка» и «молодёжь» — не эпоха; раньше блок «Эпоха: …» висел в профиле каждой команды всегда.
+      const cur = S().cur[name], hist = (S().hist[name] || []).filter(x => SHOWN.has(x.key)); if (!cur || !SHOWN.has(cur.key)) return;
       const f = ms => { try { return H.fdate(ms); } catch (e) { return new Date(ms).toLocaleDateString('ru-RU'); } };
       const html = `<section class="hs-box v93-era"><header class="hs-box-h"><h3>Эпоха: ${H.esc(L[cur.key])}</h3><span class="hs-sub">с ${f(cur.since)}${cur.why ? ' · ' + H.esc(cur.why) : ''}</span></header>
-        ${hist.length > 1 ? `<div class="hs-box-b"><ul>${hist.slice(1, 8).map(x => `<li>${H.esc(L[x.key])} — ${f(x.from)}${x.to ? '–' + f(x.to) : ''}${x.why ? ' · ' + H.esc(x.why) : ''}</li>`).join('')}</ul></div>` : ''}</section>`;
+        ${hist.length > 1 ? `<div class="hs-box-b"><ul>${hist.filter(x => x.from !== cur.since).slice(0, 7).map(x => `<li>${H.esc(L[x.key])} — ${f(x.from)}${x.to ? '–' + f(x.to) : ''}${x.why ? ' · ' + H.esc(x.why) : ''}</li>`).join('')}</ul></div>` : ''}</section>`;
       const head = root.querySelector('.hs-head') || root.firstElementChild; if (head) head.insertAdjacentHTML('afterend', html); else root.insertAdjacentHTML('afterbegin', html);
     } catch (e) {}
   });

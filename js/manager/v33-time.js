@@ -7,6 +7,7 @@ let run = null;
 const $ = id => document.getElementById(id);
 function label(t) { const l = $('pt-skip-l'); if (l) l.textContent = t; }
 function yieldToBrowser() {
+  if (window.CS2Yield && window.CS2Yield.frame) return window.CS2Yield.frame();   // v97: кадр не чаще раза в 40 мс
   return new Promise(resolve => {
     try {
       if (document.visibilityState !== 'hidden' && typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(() => resolve());
@@ -32,7 +33,7 @@ async function skipDays(n) {
   const previousIdleMs = window.__CS2_FAST_FORWARD_IDLE_MS;
   // 90-day runs use a deliberately low CPU duty cycle; responsiveness matters more than raw throughput.
   // v84: work is sliced by a 10 ms budget; the old artificial idle gaps only stretched wall time.
-  window.__CS2_BATCH_CPU_BUDGET_MS = 10;
+  window.__CS2_BATCH_CPU_BUDGET_MS = 16;   // v97: 10 → 16 мс (уступка теперь без пустого ожидания кадра)
   window.__CS2_FAST_FORWARD_IDLE_MS = 0;
   window.__CS2_BATCH_CPU_RESET = true;
   window.__CS2_BATCH_TRAINING_MAP_STATS = null;

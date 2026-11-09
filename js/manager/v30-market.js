@@ -505,10 +505,18 @@ function contracts() {
 /* ------------------------------------------------------------ v89: лучший кандидат из всех источников
    Академия, свободные агенты, игроки других клубов и аренда сравниваются в одном списке по усилению позиции.
    Раньше порядок веток был случайным (академия — первой с шансом 35%), и выбирался первый подходящий, а не лучший. */
+/* v97: игрок академии не сыграет в основе так же, как в академии: уровень соперников выше, давление, страх ошибки.
+   Его усиление при выборе считается со скидкой: чем выше клуб в рейтинге и моложе игрок, тем больше (1.5–4 пункта). */
+function academyStepUp(t, p) {
+  const r = rankOf(t), age = +p.age || 19;
+  const base = r <= 5 ? 4 : r <= 10 ? 3.2 : r <= 20 ? 2.5 : r <= 40 ? 2 : 1.5;
+  return Math.round(base * (age <= 18 ? 1.15 : age >= 21 ? 0.85 : 1) * 10) / 10;
+}
+window.CS2AcademyStepUp = academyStepUp;
 function candidates(t, w) {
   const out = [];
   const add = f => { try { const x = f(); if (x) out.push(x); } catch (e) { console.warn('[v89 market]', e); } };
-  add(() => findAcademy(t, w));
+  add(() => { const c = findAcademy(t, w); if (c) { c.stepUp = academyStepUp(t, c.p); c.gain = Math.round((c.gain - c.stepUp) * 10) / 10; } return c; });   // v97: скидка на переход из академии
   add(() => findFA(t, w.p));
   add(() => findBuy(t, w));
   if (rankOf(t) >= 15) add(() => findLoan(t, w));

@@ -34,7 +34,8 @@ teams[0].vrsLedger = {
 };
 VRS.recalcAll(teams);
 assert(teams[0].pts >= 400 && teams[0].pts <= 2000, 'VRS points stay inside the Valve 400–2000 range');
-assert(Math.abs(teams[0].vrsBreakdown.h2h) <= 200 && teams[0].vrsBreakdown.coverage === 1, 'full evidence uses result-based points; head-to-head adjustment is bounded');
+// v97: при полной истории результаты дают vrs.resultShare (0.65) итога, остальное — память клуба (стартовые очки)
+assert(Math.abs(teams[0].vrsBreakdown.h2h) <= 200 && Math.abs(teams[0].vrsBreakdown.coverage - 0.65) < 1e-9, 'full evidence: results give 65% of the score (club memory 35%); head-to-head adjustment is bounded');
 
 // One even match should produce a modest, predictable preview rather than a massive point swing.
 const preview = VRS.delta(teams[1], teams[0], { name: 'Test Match', prizePool: 0, online: true });

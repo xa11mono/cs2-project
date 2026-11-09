@@ -289,7 +289,7 @@ function addTo(o, x) {
   o.maps++; if (x.won) o.mw++; o.R += x.R; o.k += x.k; o.d += x.d; o.a += x.a; o.dmg += x.adr * x.R; o.hsk += x.hsk; o.kastR += x.kast * x.R / 100; o.rt += x.rating * x.R; o.imp += x.impact * x.R;
   o.ok += x.ok_; o.od += x.od; o.k2 += x.k2; o.k3 += x.k3; o.k4 += x.k4; o.k5 += x.k5; o.clA += x.clA; o.clW += x.clW;
 }
-let STATS = null, STATS_KEY = '', STATS_TURN_KEY = null;
+let STATS = null, STATS_KEY = '', STATS_TURN_KEY = null, STATS_BUILT_AT = 0;
 const LINE_MEMO = new Map(); // v84: кэш строк карт с архивными составами (составы и счёт не меняются)
 function stats() {
   // Build the cache key from cheap revisions/signatures before filtering the archive.
@@ -310,6 +310,10 @@ function stats() {
   }
   const key = `${ARCH_KEY}|${sideKey}`;
   if (STATS && STATS_KEY === key) { STATS.ms = allMatches(); return STATS; }
+  // v97: при перемотке статистика пересобиралась целиком (все карты архива) после каждой еженедельной тренировки — из-за
+  // округлённых атрибутов в ключе кэша. Если новых карт в архиве нет (меняются только атрибуты), внутри перемотки
+  // пересборка — не чаще раза в 3 с. Новые сыгранные карты (награды, MVP) всегда дают точную пересборку.
+  if (STATS && window.v57BatchCalendarSkip && ARCH_KEY && STATS_KEY.startsWith(`${ARCH_KEY}|`) && Date.now() - STATS_BUILT_AT < 3000) { STATS.ms = allMatches(); return STATS; }
   const ms = archived.filter(m => m.kind !== 'show'); // v84: Кубок наций считается только в статистике самого турнира (byEv), не в рейтинге игрока/клуба // шоу-матчи и Кубок наций — только в истории, не в рейтинге игроков/команд
   ZP = null;
   const P = {}, T = {}, M = {};
@@ -365,7 +369,7 @@ function stats() {
   });
   // текущий клуб / данные игрока — по нынешним составам и рынку свободных агентов
   Object.values(P).forEach(o => { const now = playerNow(o.nick); if (now) { o.team = now.t?.name || 'Свободный агент'; o.p = now.p; } });
-  STATS = { P, T, M, ms: allMatches() }; STATS_KEY = key;
+  STATS = { P, T, M, ms: allMatches() }; STATS_KEY = key; STATS_BUILT_AT = Date.now();
   return STATS;
 }
 function line(o) { // сумма → средние

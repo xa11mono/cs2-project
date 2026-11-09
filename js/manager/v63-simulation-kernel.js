@@ -218,7 +218,7 @@
   }
   async function flushMaintenanceCooperative(){
     const wall=Date.now(), tasks=window.CS2SimulationTasks||{}, results=[];
-    const yieldFrame=()=>new Promise(resolve=>{
+    const yieldFrame=()=>window.CS2Yield&&window.CS2Yield.frame?window.CS2Yield.frame():new Promise(resolve=>{
       try{
         if(document.visibilityState!=='hidden' && typeof requestAnimationFrame==='function') requestAnimationFrame(()=>resolve());
         else setTimeout(resolve,4);

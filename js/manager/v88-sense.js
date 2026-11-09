@@ -297,7 +297,7 @@
       const st = orig.apply(this, arguments) || [];
       const L = (ledger()[nick] || []).filter(x => x && x[1]); if (!L.length) return st;
       // время каждого турнирного отрезка — по архиву
-      const evs = arch().filter(s => s && s.rost).map(s => ({ ts: Number(s.ts) || 0, name: s.name, team: Object.keys(s.rost).find(t => (s.rost[t] || []).some(p => p.nick === nick)) })).filter(x => x.team);
+      const evs = arch().filter(s => s && s.rost).map(s => ({ ts: Number(s.ge || s.gs) || Number(s.ts) || 0, /* v97: игровая дата турнира (ts — реальное время записи) */ name: s.name, team: Object.keys(s.rost).find(t => (s.rost[t] || []).some(p => p.nick === nick)) })).filter(x => x.team);
       st.forEach(s => { const e = evs.filter(x => x.team === s.team && (x.name === s.firstEv || x.name === s.lastEv)).map(x => x.ts).filter(Boolean); s.at = e.length ? Math.min(...e) : null; });
       const out = st.slice();
       L.forEach((x, i) => {

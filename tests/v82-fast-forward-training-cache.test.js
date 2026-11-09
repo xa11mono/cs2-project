@@ -9,10 +9,10 @@ assert(/function getTrainingMatches\(\)[\s\S]*?window\.HS\.matchIndex\(\)/.test(
 assert(/const st = trainingMapStats \? \(trainingMapStats\[t\.name\] \|\| \{\}\)/.test(career),'AI plan must use the provided training index, including teams with no history');
 assert(/async function weekTrainingCooperative\(\)/.test(career) && /await buildTrainingMapStatsCooperative\(\)/.test(career),'weekly training must yield while building the index and processing teams');
 assert(/syncClockCooperative: syncCareerClockCooperative/.test(career) && /syncClockCooperative/.test(calendar),'day skip must await cooperative weekly career catch-up');
-assert(/__CS2_BATCH_CPU_BUDGET_MS = 10/.test(batch) && /__CS2_FAST_FORWARD_IDLE_MS = 0/.test(batch),'v84: skips use 10 ms work slices without artificial idle gaps');
+assert(/__CS2_BATCH_CPU_BUDGET_MS = 16/.test(batch) && /__CS2_FAST_FORWARD_IDLE_MS = 0/.test(batch),'v97: skips use 16 ms work slices without artificial idle gaps');
 assert(/window\.__CS2_BATCH_TRAINING_MAP_STATS = null/.test(batch) && /delete window\.__CS2_BATCH_TRAINING_MAP_STATS/.test(batch),'batch historical map index is scoped to one skip');
 assert(/window\.CS2SimulationPerf\.lastBatch/.test(batch) && /training: window\.V31\?\.trainingDiagnostics/.test(batch),'lastBatch exposes training diagnostics');
-assert(html.includes('v17-smart-calendar-skip.js?v=95') && html.includes('v31-career-core.js?v=95') && html.includes('v33-time.js?v=95') && html.includes('v27-hltv-site.js?v=95'),'changed scripts bypass browser cache');
+assert(html.includes('v17-smart-calendar-skip.js?v=97') && html.includes('v31-career-core.js?v=97') && html.includes('v33-time.js?v=97') && html.includes('v27-hltv-site.js?v=97'),'changed scripts bypass browser cache');
 assert(site.includes('CS2 Manager <i class="pt-ver">v86</i>'),'visible version is v82');
 
 const matches=[

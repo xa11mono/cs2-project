@@ -296,15 +296,13 @@ async function buildTrainingMapStatsCooperative() {
     addTrainingMatch(byTeam, matches[i]);
     if ((i + 1) % 300 === 0 && i + 1 < matches.length) {
       v31TrainingDiagnostics.cooperativeYields++;
-      await new Promise(resolve => {
-        try { if (document.visibilityState !== 'hidden' && typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(() => resolve()); else setTimeout(resolve, 4); }
-        catch (e) { setTimeout(resolve, 4); }
-      });
+      await v31YieldFrame();
     }
   }
   return finishTrainingMapBuild(byTeam, matches, started, key);
 }
 function v31YieldFrame() {
+  if (window.CS2Yield && window.CS2Yield.frame) return window.CS2Yield.frame();   // v97: кадр не чаще раза в 40 мс
   return new Promise(resolve => {
     try { if (document.visibilityState !== 'hidden' && typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(() => resolve()); else setTimeout(resolve, 4); }
     catch (e) { setTimeout(resolve, 4); }

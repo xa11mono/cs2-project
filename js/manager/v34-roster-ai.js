@@ -89,6 +89,24 @@ function formOf(nick, n) { // Rating 3.0 за последние n карт
     for (const m of o.matches) { if (maps >= n) break; Object.keys(z).forEach(k => { z[k] += m.z[k] || 0; }); maps += m.z.maps || 1; }
     return maps >= n * .6 ? { r: H.line(z).rating, maps } : null; } catch (e) { return null; }
 }
+// v97: поправка рейтинга по роли — средний Rating 3.0 роли минус средний по всем игрокам (от 20 карт). Пересчёт — не чаще
+// раза в игровой день; при малой выборке — стандартные значения.
+const ROLE_ADJ_D = { AWPer: .07, Rifler: .01, 'Entry-fragger': 0, Lurker: -.04, IGL: -.14, Support: -.17 };
+let roleAdjCache = null, roleAdjDay = -1;
+function roleAdj(role) {
+  const day = Math.floor(now() / DAY);
+  if (!roleAdjCache || roleAdjDay !== day) {
+    roleAdjDay = day; roleAdjCache = Object.assign({}, ROLE_ADJ_D);
+    try {
+      const P = H.stats().P, by = {}, all = [];
+      teams.forEach(t => (t.players || []).forEach(p => { const o = P[p.nick]; if (!o || o.all.maps < 20) return; const r = H.line(o.all).rating; all.push(r); (by[p.role] = by[p.role] || []).push(r); }));
+      const mean = a => a.reduce((x, y) => x + y, 0) / a.length, m = all.length >= 60 ? mean(all) : null;
+      if (m != null) Object.keys(by).forEach(k => { if (by[k].length >= 12) roleAdjCache[k] = Math.round((mean(by[k]) - m) * 1000) / 1000; });
+    } catch (e) {}
+  }
+  return roleAdjCache[role] || 0;
+}
+window.CS2RoleRatingAdj = roleAdj;
 const ROLE_ATTR = { AWPer: 'firepower', IGL: 'tacticalIQ', Support: 'utility', 'Entry-fragger': 'firepower', Lurker: 'clutch', Rifler: 'firepower' };
 function signals(t) {
   const out = [], name = t.name, d = dna(name);
@@ -97,12 +115,14 @@ function signals(t) {
   const prThr = CFG.resultsPressure - (d.trophies - .5) * .15 + (d.patience - .5) * .2;
   if (pr > prThr) out.push({ k: 'results', w: 1, t: `результаты ниже ожиданий (давление ${pr.toFixed(2)})` });
   // 2. длительная форма игроков
-  const forms = (t.players || []).map(p => ({ p, f: formOf(p.nick, CFG.minMapsForm) })).filter(x => x.f);
+  // v97: рейтинг сравнивается со средним по роли. В симуляции средний Rating 3.0: AWPer ~1.09, Rifler/Entry ~1.02,
+  // Lurker ~0.97, IGL ~0.87, Support ~0.84 — саппорт или игрок, отдавший позиции молодым, по «сырым» цифрам всегда
+  // выглядел в спаде (раньше поблажку имел только капитан). Теперь сигнал — только если игрок ниже нормы своей роли.
+  const forms = (t.players || []).map(p => ({ p, f: formOf(p.nick, CFG.minMapsForm) })).filter(x => x.f).map(x => ({ p: x.p, f: { r: x.f.r - roleAdj(x.p.role), raw: x.f.r, maps: x.f.maps } }));
   const avg = forms.length ? forms.reduce((s, x) => s + x.f.r, 0) / forms.length : 1;
-  // v86: у капитана рейтинг ниже по природе роли — его не меняют за «цифры», пока он не проседает сильно
-  const low = forms.filter(x => { const igl = x.p.role === 'IGL', thr = igl ? CFG.lowRating - .1 : CFG.lowRating; return x.f.r < thr && x.f.r < avg - CFG.gapToTeam - (igl ? .08 : 0); });
+  const low = forms.filter(x => x.f.r < CFG.lowRating && x.f.r < avg - CFG.gapToTeam);
   if (low.length >= CFG.collectiveCount) out.push({ k: 'collective', w: 1, t: `${low.length} игрока в спаде одновременно — общая проблема (тактика/тренер)`, players: low.map(x => x.p.nick) });
-  else if (low.length) out.push({ k: 'form', w: 1, t: `длительный спад: ${low.map(x => `${x.p.nick} (${x.f.r.toFixed(2)} за ${x.f.maps} карт)`).join(', ')}`, players: low.map(x => x.p.nick) });
+  else if (low.length) out.push({ k: 'form', w: 1, t: `длительный спад: ${low.map(x => `${x.p.nick} (${x.f.raw.toFixed(2)} за ${x.f.maps} карт, ниже нормы роли ${x.p.role || ''})`).join(', ')}`, players: low.map(x => x.p.nick) });
   // 3. соответствие роли: ключевой атрибут роли заметно ниже среднего состава
   const attrAvg = k => (t.players || []).reduce((s, p) => s + (+p[k] || 0), 0) / Math.max(1, (t.players || []).length);
   const misfit = (t.players || []).filter(p => { const k = ROLE_ATTR[p.role] || 'firepower'; return (+p[k] || 0) < attrAvg(k) - 7; });

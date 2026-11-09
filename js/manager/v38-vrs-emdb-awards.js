@@ -99,7 +99,9 @@
         t.vrsLedger.rosterKey = key;
         t.vrsRosterChange = { at:vrsNow(), retained:overlap, rule:'3-of-5 continuity: результаты сохранены' };
       } else {
-        const newBase = Math.round(400 + (current - 400) * 0.35);
+        // v97: было 0.35 — топ-команда с 1900 очками после смены трёх игроков падала до ~925 (≈30-е место) и ещё полгода
+        // поднималась обратно; тир-2 команды в это время «влетали» в топ. Теперь сохраняется 65% очков сверх базы.
+        const newBase = Math.round(400 + (current - 400) * CF('vrs.newRosterKeep', 0.65));
         t.vrsLedger = { version:1, rosterKey:key, basePts:newBase, matches:[], earnings:[], startedAt:vrsNow() };
         invalidateOfferedReference();
         t.pts = newBase; t.vrsShown = newBase; t.vrsShownAt = vrsNow();
@@ -181,7 +183,10 @@
     const factors=[curve(Math.min(m.offeredRaw,offeredRef),offeredRef),rel(m.collectedRaw,R.collected),rel(m.network,R.network),rel(m.lan,R.lan)];
     const average=factors.reduce((a,b)=>a+b,0)/4;
     const seed=clamp(team.vrsLedger?.basePts ?? team.pts ?? 500,400,2000);
-    const coverage=clamp(m.evidence,0,1);
+    // v97: результаты дают не больше vrs.resultShare итога; остальное — память клуба (seed), которая сама медленно
+    // подтягивается к опубликованным очкам (driftSeeds). Раньше через полгода стартовые очки исчезали полностью, и
+    // рейтинг определялся одними результатами последних месяцев: за одно межсезонье тир-2 команда оказывалась в топ-10.
+    const coverage=clamp(m.evidence,0,1)*clamp(CF('vrs.resultShare',0.65),0,1);
     const resultPts=400+1600*average;
     const startPts=clamp(seed*(1-coverage)+resultPts*coverage,400,2000);
     const hc=CF('vrs.h2hClamp',200), h2h=clamp(m.h2h,-hc,hc);
@@ -211,12 +216,23 @@
     result.refs=refs;
     return result;
   }
+  // v97: память клуба — стартовые очки (basePts) догоняют опубликованные с постоянной времени vrs.seedTauDays
+  function driftSeeds(list, now) {
+    const tau = Math.max(10, CF('vrs.seedTauDays', 150));
+    list.forEach(t => { const l = t && t.vrsLedger; if (!l) return;
+      const at = Number(l.seedAt); if (!Number.isFinite(at) || now < at) { l.seedAt = now; return; }
+      const dt = (now - at) / DAY; if (dt < 1) return;
+      const target = clamp(t.pts || l.basePts || 500, 400, 2000);
+      l.basePts = Math.round(clamp((Number(l.basePts) || target) + (target - (Number(l.basePts) || target)) * (1 - Math.exp(-dt / tau)), 400, 2000));
+      l.seedAt = now; });
+  }
   function recalcAll(list = liveTeams(), now=vrsNow()) {
     const safeList = [...new Set((Array.isArray(list) ? list : []).map(resolveTeam).filter(Boolean))];
     safeList.forEach(ensureTeam);
     const scores = computeScores(safeList,now);
     if (scores.refs) lastRefs = scores.refs;   // v94: опорные значения факторов — те же, что в полном пересчёте (превью и пошаговый счёт совпадают)
     safeList.forEach(t => publish(t, scores.get(t.name), now));
+    driftSeeds(safeList, now);
     const raw=rawTeams();
     lastGlobalRecalcDay=Math.floor(Number(now||0)/DAY);
     lastGlobalRecalcTeamsRef=raw;

@@ -172,6 +172,7 @@
   function v17YieldToBrowser(){
     return new Promise(resolve => {
       const finish = () => { try { window.CS2Yield?.reset?.(); } catch(e) {} resolve(); }; // v84: no artificial idle gap
+      if (window.CS2Yield && window.CS2Yield.frame) { window.CS2Yield.frame().then(finish); return; }   // v97: кадр не чаще раза в 40 мс
       try { if (document.visibilityState !== 'hidden' && typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(finish); else setTimeout(finish,4); }
       catch (e) { setTimeout(finish,4); }
     });

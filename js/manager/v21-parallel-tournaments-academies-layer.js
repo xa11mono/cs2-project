@@ -611,6 +611,7 @@
     return out;
   }
   function v21YieldBatchFrame(){
+    if(window.CS2Yield && window.CS2Yield.frame) return window.CS2Yield.frame();   // v97: кадр не чаще раза в 40 мс
     return new Promise(resolve=>{
       try{
         if(document.visibilityState!=='hidden' && typeof requestAnimationFrame==='function') requestAnimationFrame(()=>resolve());

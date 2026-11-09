@@ -18,7 +18,7 @@ const autosave=fs.readFileSync(path.join(root,'js/manager/v56-autosave.js'),'utf
 assert(autosave.includes('window.__CS2_PARALLEL_CATCHUP') && autosave.includes('bulkSimulationOwnsThread()'), 'full autosave snapshots must pause while overdue matches are batch-resolving');
 assert(v63.includes('api.reconcileImportedSave=reconcileImportedSave'),'kernel must expose import reconciliation');
 assert(core.includes('reconcile(\'save import\')'),'save importer must trigger reconciliation after state replacement');
-assert(html.includes('auto_script_1.js?v=95') && html.includes('v21-parallel-tournaments-academies-layer.js?v=95') && html.includes('v63-simulation-kernel.js?v=95') && html.includes('v56-autosave.js?v=95') && html.includes('v38-vrs-emdb-awards.js?v=95'),'updated scripts must bypass stale browser cache');
+assert(html.includes('auto_script_1.js?v=97') && html.includes('v21-parallel-tournaments-academies-layer.js?v=97') && html.includes('v63-simulation-kernel.js?v=97') && html.includes('v56-autosave.js?v=97') && html.includes('v38-vrs-emdb-awards.js?v=97'),'updated scripts must bypass stale browser cache');
 console.log('PASS v78: importing save invalidates stale parallel wake index');
 console.log('PASS v78: overdue parallel matches catch up in small yielding batches');
 console.log('PASS v78: ordinary scheduler timers cannot overlap save-import reconciliation');

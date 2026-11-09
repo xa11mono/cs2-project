@@ -524,8 +524,12 @@
     const suffix = (seed % 9000) + 1000;
     return { name: `Coach ${team.name} ${suffix}`, flag: '🌍', generated: true };
   }
+  let lastCoachSig = '';
   function ensureUniqueCoaches() {
     if (typeof teams === 'undefined' || !Array.isArray(teams)) return { changed: 0, duplicates: 0 };
+    // v97: вызывается при каждом saveTeams — если тренеры с прошлой проверки не менялись, проверка не нужна
+    let sig = String(teams.length); for (let i = 0; i < teams.length; i++) { const t = teams[i]; sig += '|' + (t && t.name) + ':' + (t && t.coach && t.coach.name); }
+    if (sig === lastCoachSig) return { changed: 0, duplicates: 0 };
     const list = teams.slice().sort((a, b) => {
       const ac = typeof COACHES_2026 !== 'undefined' && COACHES_2026[a.name] ? 1 : 0;
       const bc = typeof COACHES_2026 !== 'undefined' && COACHES_2026[b.name] ? 1 : 0;
@@ -546,6 +550,7 @@
       used.add(norm(coach.name)); changed++;
     });
     if (changed) { try { localStorage.setItem('cs2_season_teams_v61', JSON.stringify(teams)); } catch (e) {} }
+    lastCoachSig = String(teams.length); teams.forEach(t => { lastCoachSig += '|' + (t && t.name) + ':' + (t && t.coach && t.coach.name); });
     return { changed, duplicates: duplicates.size };
   }
   window.v59EnsureUniqueCoaches = ensureUniqueCoaches;

@@ -135,7 +135,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   });
   assert(pg.control && pg.org && pg.decisions && pg.board, 'страницы: ' + JSON.stringify(pg));
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  assert(['v91-clubs.js?v=95', 'v91-expectations.js?v=95', 'v91-board.js?v=95'].every(x => html.includes(x)) && !html.includes('?v=93'), 'модули v91 подключены');
+  assert(['v91-clubs.js?v=97', 'v91-expectations.js?v=97', 'v91-board.js?v=97'].every(x => html.includes(x)) && !html.includes('?v=93'), 'модули v91 подключены');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v91: pages render, contract box shown, modules wired, no page errors');
   await ctx.close(); console.log('v91 stage 1 tests passed');

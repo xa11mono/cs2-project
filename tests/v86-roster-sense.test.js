@@ -156,7 +156,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
 
   // 8. все скрипты грузятся с новой версией кэша
   const html = fs.readFileSync(path.resolve(__dirname, '..', 'index.html'), 'utf8');
-  assert(!/\?v=8[5-7]\b/.test(html) && /v84-trophy-forge\.js\?v=95/.test(html), 'scripts must bypass the v85 browser cache');
+  assert(!/\?v=8[5-7]\b/.test(html) && /v84-trophy-forge\.js\?v=97/.test(html), 'scripts must bypass the v85 browser cache');
   console.log('PASS v86: cache version bumped');
 
   assert(!errs.length, 'page errors: ' + errs.slice(0, 3).join(' | '));

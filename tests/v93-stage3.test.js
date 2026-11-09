@@ -114,14 +114,23 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   const pg = await p.evaluate(async () => {
     const t = teams.filter(x => !x.isAcademy).sort((a, b) => b.pts - a.pts)[2];
     HS.nav('team', t.name); await new Promise(r => setTimeout(r, 400));
-    const era = !!document.querySelector('#hs-page .v93-era'), fans = !!document.querySelector('#hs-page .v93-fans');
+    // v97: блок эпохи — только у команды с эпохой (доминирование, возвращение, кризис); у «стабильной» его нет
+    const E = seasonState.v93Eras, prev = E.cur[t.name];
+    const shown = ['dominance', 'return', 'crisis'].includes((prev || {}).key);
+    let era = !!document.querySelector('#hs-page .v93-era') === shown;
+    E.cur[t.name] = { key: 'stable', since: Date.now(), why: '' }; HS.render(); await new Promise(r => setTimeout(r, 200));
+    era = era && !document.querySelector('#hs-page .v93-era');
+    E.cur[t.name] = { key: 'dominance', since: Date.now(), why: 'тест' }; HS.render(); await new Promise(r => setTimeout(r, 200));
+    era = era && !!document.querySelector('#hs-page .v93-era');
+    E.cur[t.name] = prev;
+    const fans = !!document.querySelector('#hs-page .v93-fans');
     const tier = !!document.querySelector('#hs-page .v84-tier'), strat = !!document.querySelector('#hs-page .v91-strat');
     HS.nav('player', t.players[0].nick); await new Promise(r => setTimeout(r, 400));
     return { era, fans, tier, strat, career: !!document.querySelector('#hs-page .v93-career') };
   });
   assert(pg.era && pg.fans && pg.career && pg.tier && pg.strat, 'страницы: ' + JSON.stringify(pg));
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  assert(['v93-careers.js?v=95', 'v93-eras.js?v=95', 'v93-fans.js?v=95'].every(x => html.includes(x)) && !html.includes('?v=93'), 'модули v93 подключены');
+  assert(['v93-careers.js?v=97', 'v93-eras.js?v=97', 'v93-fans.js?v=97'].every(x => html.includes(x)) && !html.includes('?v=93'), 'модули v93 подключены');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v93: team page shows era, fans, Tier status and strategy; player page shows career; modules wired; no page errors');
   await ctx.close(); console.log('v93 stage 3 tests passed');
