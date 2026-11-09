@@ -167,7 +167,7 @@
     let cap = capFor(powerRank(p.nick));
     if (!fromTeam && p.v84FaSince) { const months = Math.max(0, (now() - p.v84FaSince) / (30 * DAY)); cap += Math.floor(months * 3); }
     if (!isStarter(p) && fromTeam) cap += 10;                // запасной соглашается на клуб пониже
-    if ((+p.age || 25) >= 32) cap += 15;                     // ветеран — тоже
+    if ((+p.age || 25) >= 32) cap = 999;                     // ветеран 32+ сам выбирает, где доиграть (в т. ч. Tier-2)
     if (rt > cap && !(fromTeam && rt <= rf + 2)) return { code: 'LEVEL', text: `${p.nick} (№${powerRank(p.nick)} по уровню) не пойдёт в клуб №${rt}` };
     return null;
   }

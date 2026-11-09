@@ -125,8 +125,9 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
 
   // 6. рабочее место и досье игрока
   await p.evaluate(() => window.HS.nav('desk')); await p.waitForTimeout(600);
-  const desk = await p.evaluate(() => { const r = document.getElementById('hs-page'); return { h: r.querySelector('h1').textContent, boxes: Array.from(r.querySelectorAll('.hs-box-h h3')).map(x => x.textContent), kpis: r.querySelectorAll('.v95-kpis > div').length, sec: r.querySelectorAll('.v95-sec button').length, todo: r.querySelectorAll('.v95-todo li').length }; });
-  assert(/Рабочее место/.test(desk.h) && desk.kpis === 4 && desk.sec === 12 && desk.boxes.some(b => /Требуют решения/.test(b)) && desk.boxes.includes('Последний результат') && desk.boxes.includes('В сезоне'), 'рабочее место: ' + JSON.stringify(desk));
+  // v98: «Рабочее место» — то же главное окно тренера (панели: матч, соперник, календарь, задачи, финансы, состав, рейтинг)
+  const desk = await p.evaluate(() => { const r = document.getElementById('hs-page'); return { h: r.querySelector('h1').textContent, boxes: Array.from(r.querySelectorAll('.v98-p > header h3')).map(x => x.textContent), roster: r.querySelectorAll('.v98-roster tbody tr').length, todo: r.querySelectorAll('.v98-tasks li').length }; });
+  assert(desk.boxes.includes('Следующий матч') && desk.boxes.some(b => /Задачи и решения/.test(b)) && desk.boxes.includes('Финансы') && desk.boxes.includes('Состав') && desk.boxes.includes('Мировой рейтинг') && desk.roster >= 5, 'рабочее место: ' + JSON.stringify(desk));
   const nick = await p.evaluate(() => teams.find(x => x.name === window.CS2Control.team()).players[0].nick);
   await p.evaluate(n => window.HS.nav('player', n), nick); await p.waitForTimeout(900);
   const dos = await p.evaluate(() => { const r = document.getElementById('hs-page'); const tabs = Array.from(r.querySelectorAll('.hs-ptabs .hs-ptab')).map(x => x.textContent); return { tabs }; });
@@ -138,7 +139,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   await p.evaluate(() => window.HS.nav('home')); await p.waitForTimeout(500);
   const home = await p.evaluate(() => !!document.querySelector('#hs-page .v95-home'));
   assert(home, 'сводка рабочего места на главной');
-  pass(`v95: manager desk — ${desk.kpis} KPIs, ${desk.todo} items to decide, 12 sections; player dossier tabs: ${dos.tabs.join(' / ')}`);
+  pass(`v95: manager desk = coach hub — ${desk.boxes.length} panels, ${desk.todo} items to decide, ${desk.roster} players; player dossier tabs: ${dos.tabs.join(' / ')}`);
 
   // 7. смена поколений: приток талантов, ценность потенциала у клубов вне топ-12, дисциплина зарплат
   const gen = await p.evaluate(() => {

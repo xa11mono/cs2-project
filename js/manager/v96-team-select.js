@@ -158,7 +158,8 @@ const SORTS = [['rank', 'По рейтингу'], ['power', 'По силе со�
     return `<div class="v96-hero">
         <div class="v96-hero-logo">${logo(r.name, 'xl')}</div>
         <div class="v96-hero-tx"><h2>${esc(r.name)}</h2><p>${esc(subtitle)}</p>
-          <div class="v96-tags">${r.style ? `<span>Стиль: ${esc(STYLE_L[r.style] || r.style)}</span>` : ''}${strat ? `<span>Стратегия: ${esc(strat)}</span>` : ''}${t.coach && t.coach.name ? `<span>Тренер: ${esc(t.coach.name)}</span>` : ''}</div></div>
+          <div class="v96-tags">${r.style ? `<span>Стиль: ${esc(STYLE_L[r.style] || r.style)}</span>` : ''}${strat ? `<span>Стратегия: ${esc(strat)}</span>` : ''}${t.coach && t.coach.name ? `<span>Тренер: ${esc(t.coach.name)}</span>` : ''}</div>
+          ${same ? '' : `<button type="button" class="v96-go v98-hero-go" data-v96go="${esc(r.name)}">${switching ? 'Перейти в этот клуб' : 'Играть за эту команду'}</button>`}</div>
         <div class="v96-diff d${d.k}"><small>Сложность</small><b>${d.l}</b>${pips(d.k)}<em>${esc(d.hint)}</em></div></div>
       <div class="v96-kpis">
         ${kpi('Рейтинг', `#${r.rank}`, `${Math.round(t.pts || 0)} VRS`)}
@@ -232,7 +233,7 @@ const SORTS = [['rank', 'По рейтингу'], ['power', 'По силе со�
     if (W.CS2Control && W.CS2Control.take) W.CS2Control.take(name); else V.setManaged(name);
     try { if (first) V.careerLog(`Начало карьеры в ${name}`); } catch (e) {}
     try { saveSeasonState(); } catch (e) {}
-    H.nav ? H.nav('org') : H.render();
+    if (W.CS2HubAfterPick) W.CS2HubAfterPick(); else if (H.nav) H.nav('org'); else H.render();   // v98: сразу в главное окно
   }
 
   H.CLICKS.push(['[data-v96t]', el => { select(el.dataset.v96t); }]);

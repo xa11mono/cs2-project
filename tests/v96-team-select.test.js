@@ -33,12 +33,12 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     players: document.querySelectorAll('#v96-detail .v96-pl').length, kpis: document.querySelectorAll('#v96-detail .v96-kpi').length,
     goals: document.querySelectorAll('#v96-detail .v96-goals > div').length, pros: document.querySelectorAll('#v96-detail .v96-pros li').length,
     cons: document.querySelectorAll('#v96-detail .v96-cons li').length, photos: document.querySelectorAll('#v96-detail .v96-pl img').length,
-    ovr: [...document.querySelectorAll('#v96-detail .v96-pl-ovr')].map(x => +x.textContent), cta: document.querySelector('#v96-detail .v96-go').textContent.trim(),
+    ovr: [...document.querySelectorAll('#v96-detail .v96-pl-ovr')].map(x => +x.textContent), cta: document.querySelector('#v96-detail .v96-cta .v96-go, #v96-detail .v96-go:not(.v98-hero-go)').textContent.trim(), heroGo: !!document.querySelector('#v96-detail .v98-hero-go'),
     title: document.querySelector('#v96-detail .v96-cta-t b').textContent.trim(), name: document.querySelector('#v96-detail .v96-hero h2').textContent.trim() }));
   assert(d.players === 5 && d.kpis === 5, `состав ${d.players}, цифр ${d.kpis}`);
   assert(d.goals >= 3 && d.pros >= 1 && d.cons >= 1, `цели ${d.goals}, плюсы ${d.pros}, риски ${d.cons}`);
   assert(d.ovr.every(v => v > 40 && v <= 100), 'сила игроков в диапазоне: ' + d.ovr);
-  assert(/Возглавить клуб/.test(d.cta) && d.title === 'Возглавить ' + d.name, 'кнопка: ' + d.cta + ' / ' + d.title);
+  assert(/Возглавить клуб/.test(d.cta) && d.title === 'Возглавить ' + d.name && d.heroGo, 'кнопка: ' + d.cta + ' / ' + d.title + ' / в шапке: ' + d.heroGo);
   pass(`досье ${d.name}: 5 игроков, цели ${d.goals}, плюсы ${d.pros}, риски ${d.cons}`);
   await shot('01-default');
 
@@ -76,20 +76,20 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   assert(nxt.sel !== cur && nxt.sel === nxt.focus && nxt.h2 === nxt.sel, 'стрелка вниз: ' + JSON.stringify(nxt));
   pass('клавиатура: стрелки вверх/вниз по списку');
 
-  // 6. «Возглавить клуб» берёт клуб, экран сменяется штабом
+  // 6. «Возглавить клуб» берёт клуб, экран сменяется главным окном тренера (v98; раньше — штаб)
   const pickName = await p.evaluate(() => { const r = document.querySelectorAll('#v96-rows .v96-row')[11]; r.click(); return r.dataset.v96t; });
   await p.waitForTimeout(300); await shot('02-selected');
   await p.click('#v96-detail .v96-go'); await p.waitForTimeout(800);
   const taken = await p.evaluate(() => ({ me: V31.managed(), pick: !!document.querySelector('.v96-pick'), title: document.getElementById('gs-title').textContent.trim(), log: (V31.S().career.log || []).slice(-3).map(x => x.t || x.text || JSON.stringify(x)).join('|') }));
-  assert(taken.me === pickName && !taken.pick && /Штаб/.test(taken.title), 'клуб взят: ' + JSON.stringify(taken));
-  pass('кнопка «Возглавить клуб»: менеджер ведёт ' + taken.me + ', открыт штаб');
+  assert(taken.me === pickName && !taken.pick && /Главное окно/.test(taken.title), 'клуб взят: ' + JSON.stringify(taken));
+  pass('кнопка «Возглавить клуб»: менеджер ведёт ' + taken.me + ', открыто главное окно');
 
   // 7. смена клуба: #/pick при действующем клубе предлагает переход, старый клуб возвращается ИИ
   await go('#/pick');
   const sw = await p.evaluate(() => ({ cta: document.querySelector('#v96-detail .v96-go, #v96-detail .v96-cta [data-nav]').textContent.trim(), sel: document.querySelector('#v96-detail .v96-hero h2').textContent.trim() }));
   assert(sw.sel === pickName, 'в режиме смены выбран свой клуб: ' + sw.sel);
   await p.click('#v96-rows .v96-row:nth-child(2)'); await p.waitForTimeout(300);
-  const sw2 = await p.evaluate(() => ({ cta: document.querySelector('#v96-detail .v96-go').textContent.trim(), t: document.querySelector('#v96-detail .v96-cta-t b').textContent.trim(), note: document.querySelector('#v96-detail .v96-cta-t small').textContent.trim() }));
+  const sw2 = await p.evaluate(() => ({ cta: document.querySelector('#v96-detail .v96-cta .v96-go, #v96-detail .v96-go:not(.v98-hero-go)').textContent.trim(), heroGo: !!document.querySelector('#v96-detail .v98-hero-go'), t: document.querySelector('#v96-detail .v96-cta-t b').textContent.trim(), note: document.querySelector('#v96-detail .v96-cta-t small').textContent.trim() }));
   assert(/Перейти/.test(sw2.cta) && /ИИ/.test(sw2.note), JSON.stringify(sw2));
   await shot('03-switch');
   const target = await p.evaluate(() => document.querySelector('#v96-detail .v96-hero h2').textContent.trim());

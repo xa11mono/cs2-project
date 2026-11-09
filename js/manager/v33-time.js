@@ -125,6 +125,7 @@ async function skipDays(n) {
       // of batch tasks ahead of paint and make the page appear frozen.
       label(`Пропуск ${i}/${n}…`);
       // v84: Кубок наций не проскакиваем — останавливаемся в день турнира.
+      if (window.__v98MatchHalt) { me.stop = true; break; }   // v98: матч клуба менеджера — останавливаемся
       if (window.__v84NationsHalt) { me.nations = window.__v84NationsHalt; window.__v84NationsHalt = null; me.stop = true; break; }
       // v84: не проскакиваем окно Pick'Em — останавливаемся один раз на каждом открывшемся этапе.
       try {

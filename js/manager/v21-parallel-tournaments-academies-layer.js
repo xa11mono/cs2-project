@@ -465,6 +465,8 @@
       const a=teams.find(t=>t.name===m.t1), b=teams.find(t=>t.name===m.t2);
       if(!a||!b){ m.w=a?m.t1:m.t2; m.l=a?m.t2:m.t1; m.sc='w/o'; ch=true; continue; }
       if(!fastForward){ try{ const q=calcMatchOdds(m.t1,m.t2,false); if(q) m.o={c1:q.c1,c2:q.c2,p1:q.pct1,p2:q.pct2}; }catch(e){} }
+      // v98: матч клуба менеджера — время останавливается, игрок сам выбирает «смотреть / быстрый результат»
+      if(window.CS2MatchDay&&window.CS2MatchDay.holdBg&&window.CS2MatchDay.holdBg(ev,m)){ processed--; continue; }
       const res=v22Series(a,b);
       m.w=res.winner; m.l=res.loser; m.sc=res.score; m.maps=res.maps; ch=true;
       if(br.swiss&&(br.swissV!==2||v89IsSwissM(br,m))) v89SwissRecord(ev,m.w,m.l);
