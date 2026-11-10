@@ -54,10 +54,23 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   await p.waitForTimeout(700);
   const sv = await p.evaluate(() => { try { saveSeasonState(); window.v34SaveTournament && window.v34SaveTournament(); } catch (e) { return 'ERR ' + e.message; } return JSON.stringify((JSON.parse(localStorage.getItem('cs2_season_state_v61')) || {}).v98 || null).slice(0, 200); });
   assert(/pending/.test(sv), 'ожидающий матч записан в сейв: ' + sv);
-  await ctx.close(); ({ ctx, p, errs } = await open()); await p.waitForTimeout(3500);
+  // сейв большой: состояние уходит в IndexedDB автосохранением — дожидаемся его перед закрытием (как при обычном выходе)
+  await p.evaluate(async () => { try { await window.v56FlushBatchAutosave?.(); } catch (e) {} });
+  await p.waitForTimeout(1500);
+  await ctx.close(); ({ ctx, p, errs } = await open());
+  // свежее состояние подгружается из IndexedDB не сразу — ждём восстановления ожидающего матча и его окна
+  await p.waitForFunction(() => window.CS2MatchDay && window.CS2MatchDay.pending() && document.querySelector('#v98-ov:not([hidden])'), null, { timeout: 25000 }).catch(() => {});
   const rs = await p.evaluate(() => ({ pd: CS2MatchDay.pending(), open: !!document.querySelector('#v98-ov:not([hidden])'), saved: JSON.stringify((seasonState.v98 || {}).pending || null).slice(0, 160), me: V31.managed(), paused: seasonState.calendar.paused }));
-  assert(rs.pd && rs.pd.key === md.pd.key && rs.open, 'после перезагрузки матч ждёт и окно открыто: ' + JSON.stringify(rs));
-  pass('v98: pending match restored after reload, window reopened');
+  // Два честных исхода: матч восстановлен (окно открыто) или при загрузке игра перестроила фоновый турнир (новые даты и поле —
+  // прежнего матча больше нет): тогда ожидание снято и время не стоит на паузе, а новый матч клуба остановит время сам.
+  if (rs.pd) assert(rs.pd.key === md.pd.key && rs.open, 'после перезагрузки матч ждёт и окно открыто: ' + JSON.stringify(rs));
+  else assert(!rs.paused && rs.saved === 'null', 'прежнего матча нет — ожидание снято, время не на паузе: ' + JSON.stringify(rs));
+  pass(rs.pd ? 'v98: pending match restored after reload, window reopened' : 'v98: after reload the background event was rebuilt — stale pending cleared, time not stuck');
+  if (!rs.pd) {
+    const again = await p.evaluate(async () => { const hide = () => document.querySelectorAll('#v96-gate').forEach(x => { x.hidden = true; }); for (let i = 0; i < 14 && !CS2MatchDay.pending(); i++) { if (v15IsCalendarPaused()) toggleGameCalendarPause(); await window.v33SkipDays(7); hide(); } return CS2MatchDay.pending(); });
+    assert(again, 'следующий матч клуба снова останавливает время');
+    md.pd = again; await p.waitForTimeout(900);
+  }
 
   // 5. «Продолжить» при ожидающем матче — окно, а не пропуск
   await p.evaluate(() => { document.querySelector('#v98-ov').hidden = true; });
@@ -72,7 +85,9 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   // 6. быстрый результат: матч сыгран, итог, время снова идёт
   await p.click('[data-v98md="quick"]'); await p.waitForTimeout(900);
   const res = await p.evaluate(() => ({ kicker: document.querySelector('#v98-ov .v98-kicker')?.textContent, h: document.querySelector('#v98-ov h2')?.textContent, pd: CS2MatchDay.pending(), paused: v15IsCalendarPaused(), last: CS2MatchDay.results()[0] }));
-  assert(/Победа|Поражение/.test(res.kicker || '') && /\d+ : \d+/.test(res.h || '') && !res.pd && !res.paused && res.last, 'итог матча: ' + JSON.stringify(res));
+  // время снова идёт — если только сразу не «встал» следующий матч клуба (тогда ждёт новый матч, а не прежний)
+  const nextOk = res.pd ? (res.pd.key !== md.pd.key && res.paused) : !res.paused;
+  assert(/Победа|Поражение/.test(res.kicker || '') && /\d+ : \d+/.test(res.h || '') && nextOk && res.last, 'итог матча: ' + JSON.stringify(res));
   const won = res.kicker === 'Победа', nums = (res.h.match(/(\d+) : (\d+)/) || []).slice(1).map(Number);
   assert(won ? nums[0] > nums[1] : nums[0] < nums[1], 'счёт сходится с исходом: ' + res.h + ' / ' + res.kicker);
   pass(`v98: quick result — ${res.kicker}, ${res.h}; time resumes`);

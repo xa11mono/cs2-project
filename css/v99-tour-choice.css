@@ -1,0 +1,21 @@
+/* v99 — выбор турниров. Значения — токены css/v30-portal.css. */
+.v99-win { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-box); margin-bottom: var(--s-4); overflow: hidden; }
+.v99-win.clash { border-color: color-mix(in srgb, var(--c-action) 45%, var(--c-line)); }
+.v99-win > header { display: flex; align-items: baseline; gap: var(--s-3); padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--c-line); }
+.v99-win > header b { font-size: var(--t-h3); }
+.v99-win > header span { color: var(--c-text-3); font-size: var(--t-caption); }
+.v99-win.clash > header span { color: var(--c-action); font-weight: 600; }
+.v99-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--s-3); padding: var(--s-3) var(--s-4) var(--s-4); }
+.v99-opt { display: flex; flex-direction: column; gap: 6px; padding: var(--s-3); background: var(--c-surface-2); border: 1px solid var(--c-line); border-radius: var(--r-control); }
+.v99-opt.on { border-color: var(--c-action); box-shadow: 0 0 0 1px var(--c-action) inset; }
+.v99-opt > header { display: flex; gap: var(--s-2); align-items: center; }
+.v99-org { font-size: var(--t-micro); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--c-text-2); background: var(--c-raised); border-radius: var(--r-chip); padding: 2px 6px; }
+.v99-opt h4 { margin: 0; font-size: var(--t-h3); }
+.v99-meta { margin: 0; color: var(--c-text-3); font-size: var(--t-caption); }
+.v99-field { display: flex; flex-wrap: wrap; gap: 4px; min-height: 22px; }
+.v99-field span { cursor: pointer; }
+.v99-st { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; font-size: var(--t-small); }
+.v99-st .ok { color: var(--c-win); } .v99-st .warn { color: var(--c-gold); } .v99-st .gs { color: var(--c-gold); font-weight: 600; }
+.v99-opt footer { margin-top: auto; padding-top: var(--s-2); display: flex; gap: var(--s-2); align-items: center; }
+.v99-lock, .v99-chosen { font-size: var(--t-caption); color: var(--c-text-3); }
+.v99-chosen { color: var(--c-action); font-weight: 700; }

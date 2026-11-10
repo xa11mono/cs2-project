@@ -114,7 +114,7 @@
     W.__v98MatchHalt = pending;
     pauseTime();
     // ожидающий матч и «паузу ставили мы» — в сейв: после перезагрузки окно матча вернётся, а время не останется на паузе
-    const s = ST(); s.pending = pending; s.pausedByUs = pausedByUs;
+    const s = ST(); s.pending = pending; s.pausedByUs = pausedByUs; savePending();
     try { saveSeasonState(); } catch (e) {}
     try { W.v34SaveTournament && W.v34SaveTournament(); } catch (e) {}
     return true;
@@ -123,15 +123,27 @@
   function stillOpen(p) {
     if (!p) return false;
     if (p.kind === 'main') { const it = mainItem(me()); return !!it && mainKey(CT(), it.match) === p.key; }
-    const ev = (seasonState.parallelSchedule || []).find(e => e && e.id === p.evId), m = ev && ev.br && (ev.br.matches || []).find(x => x.id === p.mId);
-    return !!m && !m.w;
+    const name = me(), ev = (seasonState.parallelSchedule || []).find(e => e && e.id === p.evId);
+    const m = ev && ev.br && (ev.br.matches || []).find(x => x && !x.w && ((x.t1 === name && x.t2 === p.opp) || (x.t2 === name && x.t1 === p.opp)));
+    return !!m;
   }
   // восстановление после перезагрузки
+  // ожидающий матч — ещё и в отдельном маленьком ключе: сейв сезона большой, и его запись в localStorage может не пройти
+  // (тогда он попадает в IndexedDB только с ближайшим автосохранением) — после перезагрузки матч не должен теряться
+  const PKEY = 'cs2_v98_pending';
+  function savePending() { try { if (pending) localStorage.setItem(PKEY, JSON.stringify({ season: season(), team: me(), pending, pausedByUs })); else localStorage.removeItem(PKEY); } catch (e) {} }
+  function loadPending() { try { const x = JSON.parse(localStorage.getItem(PKEY) || 'null'); return x && x.season === season() && x.team === me() ? x : null; } catch (e) { return null; } }
+  let restoreTries = 0;
   setTimeout(function restore() {
     try {
+      if (pending) return;                                   // матч уже поставлен в этой сессии — восстанавливать нечего
       const s = ST();
+      if (!me() && ++restoreTries < 12) { setTimeout(restore, 1000); return; }   // клуб ещё не загрузился
+      if (!s.pending) { const x = loadPending(); if (x) { s.pending = x.pending; s.pausedByUs = x.pausedByUs; } }
       if (s.pending && me() && stillOpen(s.pending)) { pending = s.pending; W.__v98MatchHalt = pending; pausedByUs = !!s.pausedByUs; return; }
-      if (s.pending || s.pausedByUs) { pausedByUs = !!s.pausedByUs; s.pending = null; s.pausedByUs = false; resumeTime(); try { saveSeasonState(); } catch (e) {} }
+      // свежее состояние может ещё подгружаться из IndexedDB (сейв большой) — не сбрасываем матч до последней попытки
+      if (s.pending && ++restoreTries < 15) { setTimeout(restore, 1000); return; }
+      if (s.pending || s.pausedByUs) { pausedByUs = !!s.pausedByUs; s.pending = null; s.pausedByUs = false; resumeTime(); savePending(); try { saveSeasonState(); } catch (e) {} }
     } catch (e) { console.warn('[v98 restore]', e); }
   }, 2500);
   // фоновые турниры: вызывается из v22Advance перед розыгрышем матча
@@ -159,9 +171,12 @@
     W.instantMatch = w; try { instantMatch = w; } catch (e) {} // eslint-disable-line no-global-assign
   })();
   // пропуск дня и перемотка — помечаем, что время идёт по кнопке (тогда матч своей команды останавливает время)
+  // флажок «не останавливаться» включён, а матч уже ждёт — отпускаем его
+  function releaseIfAuto() { if (pending && auto()) { allow(pending.key); finishPending(); resumeTime(); closeOverlay(); } }
   function wrapSkip(name) {
     const f = W[name]; if (typeof f !== 'function' || f.__v98) return !!(f && f.__v98);
     const w = function () {
+      releaseIfAuto();
       skipping++;
       let r; try { r = f.apply(this, arguments); } catch (e) { skipping--; throw e; }
       if (r && typeof r.then === 'function') return r.finally(() => { skipping = Math.max(0, skipping - 1); });
@@ -248,22 +263,29 @@
       <footer class="v98-md-f"><button type="button" class="v98-btn v98-primary" data-v98md="close">Продолжить</button><button type="button" class="v98-btn ghost" data-v98md="hub">Главное окно</button></footer>`;
   }
   function openMatchDay() { if (!pending) return; overlay(matchDayHtml(pending), 'md'); }
-  function finishPending() { pending = null; W.__v98MatchHalt = null; const s = ST(); s.pending = null; s.pausedByUs = pausedByUs; }
+  function finishPending() { pending = null; W.__v98MatchHalt = null; const s = ST(); s.pending = null; s.pausedByUs = pausedByUs; savePending(); }
   function quick() {
     const p = pending; if (!p) return;
     allow(p.key); resumeTime();
+    // фоновые турниры на паузе календаря не разыгрываются — менеджер сам решил играть, пауза (Pick'Em и т. п.) снимается
+    if (isPaused() && typeof W.toggleGameCalendarPause === 'function') { try { W.toggleGameCalendarPause(); } catch (e) {} }
     let r = null;
     try {
       if (p.kind === 'main') {
         const it = mainItem(me());
         if (it) { W.instantMatch(it.match, it.callback); try { renderTournament(); } catch (e) {} const m = it.match; if (m.winner) r = { kind: 'main', ev: p.ev, a: m.t1, b: m.t2, w: m.winner, score: m.score }; }
       } else {
-        try { W.v21ProcessParallelNow && W.v21ProcessParallelNow({}); } catch (e) {}
-        const ev = (seasonState.parallelSchedule || []).find(e => e && e.id === p.evId), m = ev && ev.br && ev.br.matches.find(x => x.id === p.mId);
+        // только этот турнир и с запасом матчей: иначе бюджет прохода (8 матчей) уходит на просроченные матчи других турниров
+        // матч ищем по паре команд (сетку фонового турнира иногда перестраивают — идентификатор может смениться)
+        const name = me(), pair = x => x && ((x.t1 === name && x.t2 === p.opp) || (x.t2 === name && x.t1 === p.opp));
+        const ev = (seasonState.parallelSchedule || []).find(e => e && e.id === p.evId), mOf = () => ev && ev.br && (ev.br.matches.find(x => x.id === p.mId && pair(x)) || ev.br.matches.find(x => pair(x) && !x.w) || ev.br.matches.find(pair));
+        for (let k = 0; k < 4 && !(mOf() && mOf().w); k++) { try { W.v21ProcessParallelNow && W.v21ProcessParallelNow({ eventIds: [p.evId], matchBudget: 64 }); } catch (e) {} }
+        const m = mOf();
         if (m && m.w) r = { kind: 'bg', ev: ev.name, a: m.t1, b: m.t2, w: m.w, score: m.sc, maps: (m.maps || []).map(x => ({ map: x.map, s1: x.s1 != null ? x.s1 : x.t1Score, s2: x.s2 != null ? x.s2 : x.t2Score })) };
       }
     } catch (e) { console.warn('[v98 quick]', e); }
-    finishPending();
+    // пока разыгрывали, мог «встать» следующий матч клуба (новый ожидающий) — его не сбрасываем
+    if (pending === p) finishPending();
     try { saveTeams(); saveSeasonState(); } catch (e) {}
     try { W.v34SaveTournament && W.v34SaveTournament(); } catch (e) {}   // идущий турнир сохраняется сразу, а не через 12 с
     if (r) { if (r.kind === 'bg') noteResult(r); overlay(resultHtml(r), 'res'); } else closeOverlay();   // матч основного турнира уже записан в обёртке instantMatch
@@ -315,6 +337,7 @@
   setInterval(() => {
     try {
       if (!me()) { if (pending) { finishPending(); resumeTime(); } return; }
+      releaseIfAuto();
       // ожидающий матч всегда в сейве (seasonState могут пересоздавать другие системы — запись не должна теряться)
       { const s = ST(); if (pending && (!s.pending || s.pending.key !== pending.key)) { s.pending = pending; s.pausedByUs = pausedByUs; try { saveSeasonState(); } catch (e) {} } }
       if (pending && !isRunning() && !stillOpen(pending)) { finishPending(); resumeTime(); }
@@ -372,6 +395,7 @@
     const tired = starters(t).filter(p => (+p.fatigue || 0) >= 50); if (tired.length) items.push({ l: `${tired.map(p => p.nick).join(', ')}: сильная усталость`, d: 'восстановление в плане тренировок', nav: 'training', urgent: true });
     try { const k = W.CS2Board.contract(t.name); if (k && k.status === 'active' && k.warned) items.push({ l: 'Предупреждение руководства', d: 'доверие ниже порога', nav: 'org', urgent: true }); } catch (e) {}
     try { (W.CS2Press.promises() || []).filter(p => p.team === t.name && p.status === 'open').forEach(p => items.push({ l: `Обещание прессе: «${p.text}»`, d: 'проверка после турнира', nav: 'career' })); } catch (e) {}
+    try { if (W.CS2TourChoice && W.CS2TourChoice.tasks) W.CS2TourChoice.tasks().forEach(x => items.push(x)); } catch (e) {}   // v99: выбор турнира и регистрация на отбор
     return items;
   }
   function pTasks(t) {

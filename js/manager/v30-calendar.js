@@ -62,6 +62,7 @@ const ROT = {
 function rotate() {
   const st = seasonState, arr = st.seasonSchedule, s = Number(st.currentSeason) || 1;
   if (!Array.isArray(arr) || st.v30RotSeason === s) return;
+  if (window.CS2V99Calendar && window.CS2V99Calendar(s)) { st.v30RotSeason = s; return; }   // v99: календарь по квотам — свои названия, без ротации слотов
   const idx = Number(st.tournamentIndex) || 1, ct = typeof currentTournament !== 'undefined' ? currentTournament : null;
   const used = new Set();
   Object.entries(ROT).forEach(([slot, opts]) => {
@@ -133,6 +134,7 @@ function renameParallel() {
   const pools = { tier2: T2, tier3: T3, academy: AC }, k = { tier2: 0, tier3: 0, academy: 0 };
   list.sort((a, b) => a.startMs - b.startMs).forEach(ev => {
     if (ev.qual) return; // v35: у квалификаций своё название («… — Europe Closed Qualifier»)
+    if (ev.v99 || ev.v99q) return; // v99: параллельные турниры Tier-1 и их отборы — со своими названиями и составом
     const kind = ev.kind === 'academy' ? 'academy' : ev.tier === '2' ? 'tier2' : 'tier3', pool = pools[kind];
     if (kind === 'tier2' && T1_SERIES.some(re => re.test(String(ev.name || '').replace(/\s+\d{4}$/, '')))) { ev.v30n = 0; ev.name = ''; }
     const off = h32(kind + s + (seasonState.v29Salt || '')) % pool.length, name = `${pool[(off + k[kind]++) % pool.length]} ${ev.year || yearOf(ev.season)}`;

@@ -33,7 +33,7 @@
       const info = W.v35QualInfo?.(i);
       if (info && info.quals.length && info.quals.every(q => q.status === 'completed')) { const list = [...new Set([...info.invites, ...info.qualified, ...info.atLarge])]; return list.length >= need ? list.slice(0, need) : null; }
       // турнир только по приглашениям: состав фиксируется за 7 дней до старта
-      if (info && !info.quals.length && start && start - now <= 7 * DAY) { const list = (W.CS2InviteList ? W.CS2InviteList(need) : info.participants || []).slice(0, need); return list.length >= need ? list : null; }
+      if (info && !info.quals.length && start && start - now <= 7 * DAY) { const list = (W.CS2InviteList ? W.CS2InviteList(need, step) : info.participants || []).slice(0, need); /* v99: со шагом — без команд, выбравших параллельный турнир */ return list.length >= need ? list : null; }
     } catch (e) {}
     return null;
   }

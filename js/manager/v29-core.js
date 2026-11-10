@@ -383,6 +383,27 @@ const SLOTS = [ // [тип, название, день от 2 января, дл
   ['major', null, 326, 15, 'swiss', 'major']                                 // финал сезона: зимний Major (декабрь)
 ];
 const MID_MAJOR_SLOT = 8;
+/* v99: календарь по квотам операторов (с сезона seasonState.v99CalFrom; старые сейвы — со следующего сезона):
+   Valve — 2 Major; ESL — 3 IEM и один полный сезон ESL Pro League; BLAST — 3 турнира (Bounty, Open, Rivals).
+   Турниры других операторов (PGL, FISSURE, Esports World Cup, StarLadder) идут параллельно с основными (v99-tour-choice).
+   Названия IEM второго/третьего слота и города BLAST Open/Rivals меняются по сезонам. */
+const SLOTS_V99 = [
+  ['elite', 'IEM Katowice (Spodek Arena)', 25, 8, 'double', 'elite'],
+  ['elite', '@BOUNTY', 56, 7, 'bounty', 'elite'],
+  ['elite', 'ESL Pro League Season', 84, 14, 'gsl', 'elite'],
+  ['elite', '@OPEN', 122, 7, 'double', 'elite'],
+  ['elite', '@IEM2', 148, 7, 'double', 'elite'],
+  ['major', null, 172, 15, 'swiss', 'major'],                                // летний Major (июнь)
+  ['elite', '@RIVALS', 214, 7, 'gsl', 'elite'],
+  ['elite', '@IEM3', 252, 7, 'double', 'elite'],
+  ['major', null, 326, 15, 'swiss', 'major']                                 // зимний Major (декабрь)
+];
+const V99_ROT = { '@BOUNTY': ['BLAST Bounty Season 1'], '@OPEN': ['BLAST Open Lisbon', 'BLAST Open Rotterdam', 'BLAST Open Porto', 'BLAST Open Copenhagen'],
+  '@IEM2': ['IEM Dallas', 'IEM Melbourne', 'IEM Rio'], '@RIVALS': ['BLAST Rivals Hong Kong', 'BLAST Rivals Austin', 'BLAST Rivals London'], '@IEM3': ['IEM Chengdu', 'IEM Kraków', 'IEM Atlanta', 'IEM Beijing'] };
+const v99Cal = season => Number(seasonState.v99CalFrom) > 0 && season >= Number(seasonState.v99CalFrom);
+const slotsFor = season => v99Cal(season) ? SLOTS_V99 : SLOTS;
+window.CS2SeasonSlots = season => slotsFor(Number(season) || Number(seasonState.currentSeason) || 1).length;
+window.CS2V99Calendar = season => v99Cal(Number(season) || Number(seasonState.currentSeason) || 1);
 function seasonHasTwoMajors(season) {
   // v40: с 2026 года Valve проводит два Major в год (июнь и ноябрь–декабрь: Cologne 2026, Singapore 2026, Buenos Aires 2027)
   seasonState.v29TwoMajors = seasonState.v29TwoMajors || {};
@@ -410,8 +431,16 @@ function majorName(season, which) {
 }
 function eplSeason(year, fall) { return 23 + (Number(year) - 2026) * 2 + (fall ? 1 : 0); }
 window.CS2EplSeason = eplSeason;
-function slotDef(i, season) { // i = 1..14
-  const s = SLOTS[i - 1]; const y = 2026 + (season - 1);
+function slotDef(i, season) { // i = 1..14 (v99: 1..9)
+  const y = 2026 + (season - 1);
+  if (v99Cal(season)) {
+    const s = SLOTS_V99[i - 1];
+    if (s[0] === 'major') return { type: 'major', name: majorName(season, i === SLOTS_V99.length ? 'end' : 'mid'), format: 'swiss', field: 'major', day: s[2], dur: s[3] };
+    if (s[1] === 'ESL Pro League Season') return { type: 'elite', name: `ESL Pro League Season ${eplSeason(y, false)}`, format: s[4], field: s[5], day: s[2], dur: s[3] };
+    const rot = V99_ROT[s[1]], nm = rot ? rot[h32('v99rot|' + s[1] + '|' + season + '|' + (seasonState.v29Salt || '')) % rot.length] : s[1];
+    return { type: s[0], name: `${nm} ${y}`, format: s[4], field: s[5], day: s[2], dur: s[3] };
+  }
+  const s = SLOTS[i - 1];
   const two = seasonHasTwoMajors(season);
   if (i === SLOTS.length) return { type: 'major', name: majorName(season, 'end'), format: 'swiss', field: 'major', day: s[2], dur: s[3] };
   if (two && i === MID_MAJOR_SLOT) return { type: 'major', name: majorName(season, 'mid'), format: 'swiss', field: 'major', day: s[2], dur: 15 };
@@ -433,11 +462,16 @@ window.v29RewriteSchedule = () => rewriteSchedule(1, false);
 function rewriteSchedule(fromIdx, keepDates) {
   const arr = seasonState.seasonSchedule; if (!Array.isArray(arr) || arr.length < 3) return;
   const season = Number(seasonState.currentSeason) || 1;
-  for (let i = Math.max(1, fromIdx); i < arr.length && i <= SLOTS.length; i++) { if (!arr[i]) arr[i] = {}; applySlot(arr[i], slotDef(i, season), keepDates); }
-  arr.length = Math.min(arr.length, SLOTS.length + 1);
+  // v99: новая игра (ни одного сыгранного турнира в архиве) — календарь по квотам сразу
+  if (!(Number(seasonState.v99CalFrom) > 0) && fromIdx <= 1 && (Number(seasonState.tournamentIndex) || 1) <= 1 && !(window.hubArchiveCount && window.hubArchiveCount() > 0)) seasonState.v99CalFrom = season;
+  const SL = slotsFor(season);
+  for (let i = Math.max(1, fromIdx); i < arr.length && i <= SL.length; i++) { if (!arr[i]) arr[i] = {}; applySlot(arr[i], slotDef(i, season), keepDates); }
+  arr.length = Math.min(arr.length, SL.length + 1);
   seasonState.v29SchedSeason = season;
 }
 wrapGlobal('generateDynamicSeasonSchedule', orig => function () {
+  // v99: новый календарь — с первого сезона, который строится после обновления (новая игра — сразу)
+  if (!(Number(seasonState.v99CalFrom) > 0)) seasonState.v99CalFrom = Number(seasonState.currentSeason) || 1;
   const r = orig.apply(this, arguments);
   try { rewriteSchedule(1, false); saveSeasonState(); } catch (e) { console.warn('[v29] schedule', e); }
   return r;

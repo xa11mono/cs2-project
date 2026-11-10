@@ -466,7 +466,7 @@
       if(!a||!b){ m.w=a?m.t1:m.t2; m.l=a?m.t2:m.t1; m.sc='w/o'; ch=true; continue; }
       if(!fastForward){ try{ const q=calcMatchOdds(m.t1,m.t2,false); if(q) m.o={c1:q.c1,c2:q.c2,p1:q.pct1,p2:q.pct2}; }catch(e){} }
       // v98: матч клуба менеджера — время останавливается, игрок сам выбирает «смотреть / быстрый результат»
-      if(window.CS2MatchDay&&window.CS2MatchDay.holdBg&&window.CS2MatchDay.holdBg(ev,m)){ processed--; continue; }
+      if(typeof window!=='undefined'&&window.CS2MatchDay&&window.CS2MatchDay.holdBg&&window.CS2MatchDay.holdBg(ev,m)){ processed--; continue; }
       const res=v22Series(a,b);
       m.w=res.winner; m.l=res.loser; m.sc=res.score; m.maps=res.maps; ch=true;
       if(br.swiss&&(br.swissV!==2||v89IsSwissM(br,m))) v89SwissRecord(ev,m.w,m.l);
@@ -913,7 +913,9 @@
     const q=ev.qual, st=(seasonState.seasonSchedule||[])[q.step];
     if(st&&!Array.isArray(st.v35Invites)) st.v35Invites=v35Invites(q.step).list;
     const inv=new Set(st?.v35Invites||[]), same=(seasonState.parallelSchedule||[]).filter(e=>e.qual&&e.qual.step===q.step&&e.season===ev.season);
-    const pool=teams.filter(t=>!t.isAcademy&&!inv.has(t.name)&&v35Region(t)===q.region).sort((a,b)=>b.pts-a.pts).map(t=>t.name);
+    // v99: команда, выбравшая параллельный турнир Tier-1, и клуб менеджера без регистрации в отбор не попадают
+    const v99x=n=>{ try{ return !!(window.CS2TourChoice&&window.CS2TourChoice.excluded(q.step,n,'qual')); }catch(e){ return false; } };
+    const pool=teams.filter(t=>!t.isAcademy&&!inv.has(t.name)&&v35Region(t)===q.region&&!v99x(t.name)).sort((a,b)=>b.pts-a.pts).map(t=>t.name);
     let list;
     if(q.stage==='closed'){
       const op=same.find(e=>e.qual.feeds===ev.id), adv=op?(op.placements||[]).slice(0,op.qual.slots).filter(Boolean):[];
@@ -958,7 +960,8 @@
       const qualified=[...new Set(qs.filter(q=>q.qual.stage==='closed'&&q.status==='completed').flatMap(q=>(q.placements||[]).slice(0,q.qual.slots)))].filter(n=>!invites.includes(n));
       const used=new Set([...invites,...qualified]);
       const size=Number(st.size)||16;
-      const atLarge=teams.filter(t=>!t.isAcademy&&!used.has(t.name)).sort((a,b)=>(b.pts||0)-(a.pts||0)).slice(0,Math.max(0,size-invites.length-qualified.length)).map(t=>t.name);
+      const v99x=n=>{ try{ return !!(window.CS2TourChoice&&window.CS2TourChoice.excluded(Number(i),n,'atlarge')); }catch(e){ return false; } };
+      const atLarge=teams.filter(t=>!t.isAcademy&&!used.has(t.name)&&!v99x(t.name)).sort((a,b)=>(b.pts||0)-(a.pts||0)).slice(0,Math.max(0,size-invites.length-qualified.length)).map(t=>t.name);
       const participants=[...new Set([...invites,...qualified,...atLarge])].slice(0,size);
       st.v35Roster={version:1,lockedAt:now,invites,qualified:[...new Set(qualified)],atLarge,participants,
         pendingQualifiers:qs.filter(q=>q.status!=='completed').map(q=>q.id)};
@@ -1051,7 +1054,10 @@
     if(past.length){ past.forEach((s,j)=>v22SetStepDay(s,dayNow-(past.length-j)*3)); changed=true; }
     const nx=arr[idx];
     if(nx&&nx.calendar){
-      const target=dayNow+5, cur=Number(nx.calendar.dayOffset);
+      // v99: в календаре по квотам (9 турниров) паузы между турнирами запланированы (до ~70 дней перед зимним Major) —
+      // подтягиваем следующий турнир, только если пауза больше 75 дней; иначе сезон сжимался и кончался в октябре
+      const v99=Number(S.v99CalFrom)>0&&(Number(S.currentSeason)||1)>=Number(S.v99CalFrom);
+      const target=dayNow+(v99?75:5), cur=Number(nx.calendar.dayOffset);
       if(cur>target){
         const d=cur-target;
         for(let i=idx;i<arr.length;i++) if(arr[i]&&arr[i].calendar) v22SetStepDay(arr[i],Number(arr[i].calendar.dayOffset)-d);
@@ -1175,6 +1181,8 @@
     if(typeof v15DecorateSeasonSchedule==='function') v15DecorateSeasonSchedule(false);
     // v84: любое построение сезона (включая смену сезона и ремонт календаря) получает
     // единое расписание v29 (сезон = календарный год, реальные длительности) и ротацию названий v30.
+    // v99: новый сезон (не ремонт старого расписания) — с календарём по квотам операторов
+    if(!noParallel && !(Number(seasonState.v99CalFrom)>0)) seasonState.v99CalFrom=Number(seasonState.currentSeason)||1;
     try{ if(typeof window.v29RewriteSchedule==='function') window.v29RewriteSchedule(); }catch(e){ console.warn('[v84] schedule rewrite',e); }
     try{ seasonState.v30RotSeason=0; window.V30CalendarRefresh?.(); }catch(e){}
     try{saveSeasonState();}catch(e){}
@@ -1358,7 +1366,9 @@
   // Build the larger scene immediately and migrate old saves.
   v21NormalizeState();
   v21EnsureAcademies();
-  if(!Array.isArray(seasonState.seasonSchedule) || seasonState.seasonSchedule.length<14) v21GenerateTier1Schedule();
+  // v99: в сезонах с календарём по квотам (9 турниров) расписание короче — не перестраиваем его по старому шаблону
+  const v99Need=(Number(seasonState.v99CalFrom)>0&&(Number(seasonState.currentSeason)||1)>=Number(seasonState.v99CalFrom))?10:14;
+  if(!Array.isArray(seasonState.seasonSchedule) || seasonState.seasonSchedule.length<v99Need) v21GenerateTier1Schedule();
   try{ v22RepairTier1(); v22SyncTier1(); }catch(e){ console.warn('[v23] tier1 repair',e); }
   if(!Array.isArray(seasonState.parallelSchedule) || !seasonState.parallelSchedule.length) v21BuildParallelSchedule();
   try{saveTeams();saveSeasonState();}catch(e){}

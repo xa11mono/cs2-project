@@ -1932,6 +1932,7 @@ function buildTournamentRoster(size, profile = "open") {
 function applySeasonFieldProfiles() {
   if (!Array.isArray(seasonState.seasonSchedule)) return false;
   if (seasonState.seasonSchedule.length >= 14) return false; // v23: расписание v21 не переименовываем
+  if (Number(seasonState.v99CalFrom) > 0 && (Number(seasonState.currentSeason) || 1) >= Number(seasonState.v99CalFrom)) return false; // v99: календарь по квотам (9 турниров) — тоже
   let changed = false;
   const forced = { 2: "medium", 5: "medium", 7: "weak" };
   const mediumNames = [
@@ -2988,7 +2989,9 @@ function createTournament(customRoster = null) {
       : shuffleArray([...teams].sort((a,b) => (b.pts || 0) - (a.pts || 0)).slice(0, Math.min(32, teams.length))));
     size = roster.length;
 } else if (formatChoice === "bounty") {
-    const rankedAll = [...teams].sort((a, b) => (b.pts || 0) - (a.pts || 0));
+    // v99: команды параллельного турнира Tier-1 этого окна (и отказавшиеся) в Bounty не попадают
+    const v99okB = t => { try { return !(window.CS2TourChoice && window.CS2TourChoice.excluded(seasonState.tournamentIndex, t.name, 'atlarge')); } catch (e) { return true; } };
+    const rankedAll = [...teams].filter(v99okB).sort((a, b) => (b.pts || 0) - (a.pts || 0));
     const directInvites = rankedAll.slice(0, 28);
     const qualifierPool = rankedAll.slice(28);
     roster = [...directInvites];
@@ -3010,16 +3013,18 @@ function createTournament(customRoster = null) {
     try { if (typeof window.v35FinishQuals === 'function') window.v35FinishQuals(seasonState.tournamentIndex); } catch (e) { console.warn('[v35] quals', e); }
     const QS = typeof window.v35QualSlots === 'function' ? window.v35QualSlots(seasonState.tournamentIndex) : null;
     const byName = n => teams.find(t => t.name === n);
+    // v99: команды, выбравшие параллельный турнир Tier-1 этого окна (и клуб менеджера без регистрации), не добираются
+    const v99ok = t => { try { return !(window.CS2TourChoice && window.CS2TourChoice.excluded(seasonState.tournamentIndex, t.name, 'atlarge')); } catch (e) { return true; } };
     if (QS && Array.isArray(QS.participants) && QS.participants.length) {
       roster = QS.participants.map(byName).filter(Boolean).slice(0, size);
     } else {
       // Совместимость со старыми сохранениями без записей квалификаций: стабильный рейтинг-отбор,
       // а не случайная скрытая квалификация, победители которой не совпадают с интерфейсом.
-      roster = [...teams].filter(t => !t.isAcademy).sort((a,b)=>(b.pts||0)-(a.pts||0)).slice(0,size);
+      roster = [...teams].filter(t => !t.isAcademy && v99ok(t)).sort((a,b)=>(b.pts||0)-(a.pts||0)).slice(0,size);
     }
     if (roster.length < size) {
       const used = new Set(roster.map(t => t.name));
-      [...teams].filter(t => !t.isAcademy && !used.has(t.name)).sort((a,b)=>(b.pts||0)-(a.pts||0))
+      [...teams].filter(t => !t.isAcademy && !used.has(t.name) && v99ok(t)).sort((a,b)=>(b.pts||0)-(a.pts||0))
         .slice(0,size-roster.length).forEach(t => roster.push(t));
     }
     if (savedStep && QS) {

@@ -64,12 +64,18 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   const fin = await p.evaluate(() => ({ btn: document.querySelector('#v96-gate .v96-go').textContent.trim() }));
   // после последнего решения окно закрывается и пропуск выполняется
   await p.waitForTimeout(2500);
-  assert(!(await gateOpen()), 'окно закрыто после последнего решения');
+  // v99: в календаре по квотам «Продолжить» может перемотать несколько дней — за это время у клуба бывает новое событие,
+  // и окно открывается снова уже с ним. Проверяем: время пошло, а прежние решения в окне не висят.
+  const after = await p.evaluate(ids => ({ open: V31.S().events.filter(e => e.team === V31.managed() && e.status === 'open').map(e => e.id), t: seasonState.calendar.currentMs }), []);
+  assert(!(await gateOpen()) || (after.t > t0 + 36e5 && after.open.length >= 1), 'окно закрыто после последнего решения (или открыто с новым событием после хода времени)');
   assert(await nowMs() - t0 >= 864e5 * 0.5, 'после решений «Продолжить» выполнился: пропущены сутки+');
   assert(await p.evaluate(() => seasonState.v96.trainWeek >= 0), 'неделя тренировки подтверждена');
   pass('очередь: 2 события + тренировка решены (клавишами и кнопками), затем пропуск дня выполнен');
 
   // 4. «Решить позже» не блокирует следующий «Продолжить»
+  // v99: события, появившиеся за многодневную перемотку шага 3, к этой проверке не относятся — закрываем их
+  await p.evaluate(() => { V31.S().events.forEach(e => { if (e.team === V31.managed() && e.status === 'open') e.status = 'expired'; }); const g = document.getElementById('v96-gate'); if (g && !g.hidden) { const x = g.querySelector('[data-v96close]'); if (x) x.click(); } });
+  await p.waitForTimeout(300);
   if (await p.evaluate(() => window.v15IsCalendarPaused())) await p.evaluate(() => window.toggleGameCalendarPause());
   await p.evaluate(() => { const t = HS.teamBy(V31.managed()), c = t.players[2]; V31.ensurePerson(c); c.conf = 15; seasonState.v96.trainWeek = Math.floor(seasonState.calendar.currentMs / 864e5 / 7); V31.EV.confidence.check(t); });
   await p.waitForFunction(() => { const g = document.getElementById('v96-gate'); return g && !g.hidden; }, null, { timeout: 5000 });
