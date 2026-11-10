@@ -81,7 +81,11 @@
     this.defs.push(radial ? `<radialGradient id="${id}" cx="${x1}" cy="${y1}" r="${x2}">${st}</radialGradient>` : `<linearGradient id="${id}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">${st}</linearGradient>`);
     return (this.memo[key] = `url(#${id})`);
   };
-  Ctx.prototype.mH = function (m) { const c = METAL[m] || METAL.silver; return this.grad('h' + m, 0, 0, 1, 0, [[0, c[0]], [.15, c[1]], [.35, c[2]], [.47, c[3]], [.62, c[4]], [1, c[5]]]); };
+  // v97: металл с «студийным» отражением — тёмные кромки, широкий блик, резкая линия горизонта, отражённый свет справа
+  Ctx.prototype.mH = function (m) { const c = METAL[m] || METAL.silver; return this.grad('h' + m, 0, 0, 1, 0, [[0, c[0]], [.07, c[1]], [.2, c[2]], [.29, c[3]], [.35, c[2]], [.47, c[4]], [.56, c[1]], [.6, c[0]], [.66, c[1]], [.8, c[4]], [.9, c[2]], [.95, c[1]], [1, c[0]]]); };
+  // объём: сверху свет, снизу тень — накладывается поверх формы тем же контуром
+  Ctx.prototype.ao = function () { return this.grad('ao', 0, 0, 0, 1, [[0, '#fff', .2], [.28, '#fff', 0], [.6, '#000', 0], [1, '#000', .42]]); };
+  Ctx.prototype.warm = function () { return this.grad('warm', 0, 0, 0, 1, [[0, '#ff8a1f', 0], [.7, '#ff8a1f', 0], [1, '#ff8a1f', .22]]); };   // тёплый отсвет сцены снизу
   Ctx.prototype.mV = function (m) { const c = METAL[m] || METAL.silver; return this.grad('v' + m, 0, 0, 0, 1, [[0, c[3]], [.3, c[2]], [.7, c[1]], [1, c[0]]]); };
   Ctx.prototype.mR = function (m) { const c = METAL[m] || METAL.silver; return this.grad('r' + m, .35, .3, .75, 0, [[0, c[3]], [.3, c[2]], [.75, c[4]], [1, c[5]]], true); };
   const gc = t => GLASS[t] || (/^#[0-9a-f]{6}$/i.test(String(t)) ? t : GLASS.ice);
@@ -95,24 +99,39 @@
   const shine = (d, w) => `<path d="${d}" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="${w || 1}" stroke-linecap="round"/>`;
   const txt = (x, y, s, size, fill, extra) => `<text x="${x}" y="${y}" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="${size}" letter-spacing=".3" fill="${fill}"${extra || ''}>${esc(s)}</text>`;
 
+  // v97: объёмная деталь — металл + затенение + тёплый отсвет сцены
+  const vol = (c, d, fill, extra) => `<path d="${d}" fill="${fill}"${extra || ''}/><path d="${d}" fill="${c.ao()}"/><path d="${d}" fill="${c.warm()}"/>`;
+  // край чаши: светлый обод и тёмное нутро
+  const lip = (c, y, rx, m, ry) => { ry = ry || n(rx * .15); return `<ellipse cx="32" cy="${y}" rx="${rx}" ry="${ry}" fill="${c.mV(m)}"/><ellipse cx="32" cy="${n(y + ry * .12)}" rx="${n(rx - 1.3)}" ry="${n(ry * .62)}" fill="${c.grad('lipin', 0, 0, 0, 1, [[0, '#000', .78], [1, '#000', .35]])}"/>`; };
+  // ручка: тёмная подложка, металл, тонкий блик
+  const handle = (c, d, m, w) => `<path d="${d}" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="${n((w || 2.4) + .9)}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${c.mV(m)}" stroke-width="${w || 2.4}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="${n((w || 2.4) * .22)}" stroke-linecap="round"/>`;
+  // ножка с «яблоком» и расклёшенной стопой: от y0 (низ чаши) до y1 (верх постамента)
+  const stem = (c, m, y0, y1, w0, wf) => { const k = y0 + (y1 - y0) * .34, hw = w0 / 2, f = wf / 2;
+    return vol(c, `M${n(32 - hw)} ${y0}C${n(32 - hw * .7)} ${n(k - 2)} ${n(32 - hw * .7)} ${n(k + 2)} ${n(32 - hw * .85)} ${n(k + 3)}C${n(32 - hw)} ${n(y1 - 4)} ${n(32 - f * .7)} ${n(y1 - 1.6)} ${n(32 - f)} ${y1}H${n(32 + f)}C${n(32 + f * .7)} ${n(y1 - 1.6)} ${n(32 + hw)} ${n(y1 - 4)} ${n(32 + hw * .85)} ${n(k + 3)}C${n(32 + hw * .7)} ${n(k + 2)} ${n(32 + hw * .7)} ${n(k - 2)} ${n(32 + hw)} ${y0}z`, c.mH(m)) +
+      `<ellipse cx="32" cy="${n(k)}" rx="${n(hw * 1.75)}" ry="${n(hw * .62)}" fill="${c.mH(m)}"/><ellipse cx="32" cy="${n(k - hw * .2)}" rx="${n(hw * 1.5)}" ry="${n(hw * .28)}" fill="#fff" fill-opacity=".35"/>` +
+      `<ellipse cx="32" cy="${y1}" rx="${n(f)}" ry="${n(f * .16)}" fill="${c.mV(m)}"/>`; };
+
   // ---------------------------------------------------------------- постаменты
   function pedestal(c, kind, metal, w, label) {
     w = w || 26;
-    const x = 32 - w / 2;
-    let s = `<ellipse cx="32" cy="69.6" rx="${n(w * .62)}" ry="1.9" fill="${c.shadow()}"/>`;
+    const x = 32 - w / 2, lac = c.grad('lac', 0, 0, 1, 0, [[0, '#050608'], [.18, '#1c2128'], [.3, '#4a535e'], [.36, '#20252c'], [.62, '#0b0d10'], [.86, '#262c34'], [1, '#050608']]);
+    const top = c.grad('lactop', 0, 0, 0, 1, [[0, '#5d6772'], [1, '#191d23']]);
+    let s = `<ellipse cx="32" cy="69.7" rx="${n(w * .7)}" ry="2.1" fill="${c.shadow()}"/>`;
     if (kind === 'wood') {
-      s += `<rect x="${n(x)}" y="61" width="${w}" height="8.2" rx=".8" fill="${c.flat('#5a3418', 'wood')}"/>` +
-        `<rect x="${n(x + 2)}" y="57.6" width="${w - 4}" height="3.8" rx=".6" fill="${c.flat('#7a4a24', 'wood2')}"/>`;
+      const wd = c.grad('wood', 0, 0, 1, 0, [[0, '#2b1608'], [.2, '#6b3f1c'], [.34, '#8d5a2c'], [.5, '#5a3418'], [.8, '#7a4a24'], [1, '#2b1608']]);
+      s += `<path d="M${n(x)} 61.4h${w}v7.8h${-w}z" fill="${wd}"/><path d="M${n(x)} 61.4h${w}l-1.6-3.6h${n(-(w - 3.2))}z" fill="${c.flat('#8d5a2c', 'wood2')}"/>`;
     } else if (kind === 'round') {
-      s += `<path d="M${n(x)} 61v6.2a${n(w / 2)} 2.2 0 0 0 ${w} 0V61z" fill="${c.mH('black')}"/><ellipse cx="32" cy="61" rx="${n(w / 2)}" ry="2.2" fill="${c.mV('black')}"/>`;
+      s += `<path d="M${n(x)} 61.2v6.2a${n(w / 2)} 2.3 0 0 0 ${w} 0V61.2z" fill="${lac}"/><ellipse cx="32" cy="61.2" rx="${n(w / 2)}" ry="2.3" fill="${top}"/><ellipse cx="32" cy="61.2" rx="${n(w / 2 - 1.4)}" ry="1.5" fill="none" stroke="#fff" stroke-opacity=".14" stroke-width=".3"/>`;
     } else if (kind === 'slab') {
-      s += `<path d="M${n(x)} 69L${n(x + 2.5)} 57.5H${n(x + w - 2.5)}L${n(x + w)} 69z" fill="${c.mV('black')}"/>`;
+      s += `<path d="M${n(x)} 69.2L${n(x + 2.6)} 58.6H${n(x + w - 2.6)}L${n(x + w)} 69.2z" fill="${lac}"/><path d="M${n(x + 2.6)} 58.6H${n(x + w - 2.6)}l-1.4-1.3H${n(x + 4)}z" fill="${top}"/>`;
     } else {
-      s += `<rect x="${n(x)}" y="63" width="${w}" height="6.2" rx=".6" fill="${c.mV('black')}"/><rect x="${n(x + w * .14)}" y="58.4" width="${n(w * .72)}" height="4.8" rx=".5" fill="${c.mV('black')}"/>`;
+      s += `<path d="M${n(x)} 63.2h${w}v6h${-w}z" fill="${lac}"/><path d="M${n(x)} 63.2h${w}l-1.2-1.1H${n(x + 1.2)}z" fill="${top}"/>` +
+        `<path d="M${n(x + w * .14)} 58.8h${n(w * .72)}v3.4h${n(-w * .72)}z" fill="${lac}"/><path d="M${n(x + w * .14)} 58.8h${n(w * .72)}l-1-1H${n(x + w * .14 + 1)}z" fill="${top}"/>`;
     }
-    s += `<rect x="${n(32 - w * .24)}" y="${kind === 'round' ? 63.6 : 64.6}" width="${n(w * .48)}" height="2.6" rx=".4" fill="${c.mH(metal || 'gold')}"/>`;
-    if (label) s += txt(32, kind === 'round' ? 65.7 : 66.7, label, 1.9, '#1a1205');
-    s += shine(`M${n(x + 1)} ${kind === 'slab' ? 69 : 63.3}H${n(x + w - 1)}`, .4);
+    const py = kind === 'round' ? 63.5 : 64.5;
+    s += `<rect x="${n(32 - w * .25)}" y="${py}" width="${n(w * .5)}" height="2.9" rx=".35" fill="${c.mV(metal || 'gold')}" stroke="#000" stroke-opacity=".5" stroke-width=".2"/>`;
+    if (label) s += txt(32, py + 2.15, label, 1.9, '#1a1205');
+    else s += `<path d="M${n(32 - w * .17)} ${py + 1}h${n(w * .34)}M${n(32 - w * .12)} ${py + 1.9}h${n(w * .24)}" stroke="#000" stroke-opacity=".4" stroke-width=".3"/>`;
     return s;
   }
 
@@ -133,49 +152,60 @@
     s += shine(`M15 ${cy - 8}A19 19 0 0 1 27 ${cy - 19}`, 1.4);
     return o.bare ? bareDisc(c, s, cy) : s;
   };
-  D.ringChalice = (c, o) => { // IEM Cologne: стопка колец над круглой чашей, тонкая ножка, чёрная база
-    const m = o.metal || 'silver';
-    let s = `<ellipse cx="32" cy="69.6" rx="15" ry="1.9" fill="${c.shadow()}"/>` +
-      `<path d="M21 69.2V62.6C21 61.4 25.5 60.6 32 60.6S43 61.4 43 62.6V69.2z" fill="${c.mH('black')}"/><ellipse cx="32" cy="62.6" rx="11" ry="1.6" fill="${c.mV('black')}"/>` +
-      `<path d="M27 60.6C29.5 57.5 30.8 53 30.9 47H33.1C33.2 53 34.5 57.5 37 60.6z" fill="${c.mH(m)}"/>` +
-      `<path d="M15.5 33C15.5 42 22.5 48 32 48S48.5 42 48.5 33z" fill="${c.mH(m)}"/><ellipse cx="32" cy="41" rx="7" ry="2.2" fill="#fff" fill-opacity=".25"/>`;
-    const rows = 8;
-    for (let i = 0; i < rows; i++) {
-      const y = 4 + i * 3.6, w = 25 + i * .9;
-      s += `<path d="M${n(32 - w / 2)} ${n(y)}h${n(w)}v3.3h${n(-w)}z" fill="${c.mH(m)}"/>` +
-        `<path d="M${n(32 - w / 2)} ${n(y + 3.3)}h${n(w)}" stroke="${o.tint ? gc(o.tint) : '#000'}" stroke-opacity="${o.tint ? .8 : .35}" stroke-width=".6"/>`;
+  D.ringChalice = (c, o) => { // IEM Cologne/Katowice: кубок-«бокал» из стопки колец на тонкой ножке
+    const m = o.metal || 'silver', rows = 10, hw = i => { const t = i / (rows - 1); return 10.4 + 3.8 * Math.sin(Math.PI * (.1 + t * .6)) - (t > .7 ? Math.pow((t - .7) / .3, 1.6) * 5.2 : 0); };
+    let s = pedestal(c, 'round', m, 22) + stem(c, m, 46.6, 58.8, 3, 13.5);
+    for (let i = rows - 1; i >= 0; i--) {
+      const y = 4.2 + i * 3.62, w = hw(i);
+      s += `<rect x="${n(32 - w)}" y="${n(y)}" width="${n(w * 2)}" height="3.25" rx="1.5" fill="${c.mH(m)}"/>` +
+        `<rect x="${n(32 - w)}" y="${n(y)}" width="${n(w * 2)}" height="3.25" rx="1.5" fill="${c.grad('ring', 0, 0, 0, 1, [[0, '#fff', .34], [.38, '#fff', 0], [.62, '#000', 0], [1, '#000', .5]])}"/>`;
+      if (o.tint && i < rows - 1) s += `<path d="M${n(32 - w + 1.4)} ${n(y + 3.44)}h${n(w * 2 - 2.8)}" stroke="${gc(o.tint)}" stroke-opacity=".9" stroke-width=".45" stroke-linecap="round"/>`;
     }
-    s += `<circle cx="44" cy="30" r="1.6" fill="${c.mV('black')}"/>` + shine('M18.5 5V32', 1);
+    { const yb = n(4.2 + (rows - 1) * 3.62 + 3.4), wb = hw(rows - 1) - .6; s += vol(c, `M${n(32 - wb)} ${yb}C${n(32 - wb)} ${n(yb + 4.6)} ${n(32 - 3)} ${n(yb + 6.4)} 30.4 ${n(yb + 7)}H33.6C${n(32 + 3)} ${n(yb + 6.4)} ${n(32 + wb)} ${n(yb + 4.6)} ${n(32 + wb)} ${yb}z`, c.mH(m)); }
+    s += 
+      `<ellipse cx="32" cy="4.4" rx="${n(hw(0) - .6)}" ry="1.2" fill="#000" fill-opacity=".55"/>` + shine(`M${n(32 - hw(2) + 2.4)} 6V${n(4.2 + 8 * 3.62)}`, 1.1);
     return s;
   };
   D.eplSpire = (c, o) => { // витая колонна ESL Pro League
     let s = pedestal(c, 'round', o.metal, 18) +
-      `<path d="M25 58C22 44 25 30 29 16C30.5 10 34 6 38 3C37 14 40 28 39 40C38.5 47 39 53 39 58z" fill="${c.mH(o.body || 'black')}"/>` +
+      vol(c, 'M25 58C22 44 25 30 29 16C30.5 10 34 6 38 3C37 14 40 28 39 40C38.5 47 39 53 39 58z', c.mH(o.body || 'black')) +
       `<path d="M27.5 57C30 50 36 46 36.8 38C35 32 31 30 30.2 22C31 15 34 9 36.6 5C33.8 12 32.6 18 33.6 24C35 31 38.6 34 37.6 42C36.6 50 31 53 29.8 57z" fill="${c.mH(o.metal)}"/>` +
       txt(33.5, 30, 'ESL', 2.4, '#fff') + txt(33.5, 33.4, 'PRO', 2.6, '#fff') + txt(33.5, 36.6, 'LEAGUE', 1.9, '#fff') +
       shine('M28.6 50C27.4 40 28.6 28 31 18', .8);
     return s;
   };
-  D.blastTri = (c, o) => { // треугольник BLAST
-    const fill = o.glass ? c.gl(o.glass) : c.mH(o.metal), edge = o.glass ? c.mH('chrome') : c.mV(o.metal);
-    const big = o.big ? 1.08 : 1, top = 6 / big, L = 32 - 25 * big, R = 32 + 25 * big, B = 64;
-    let s = `<ellipse cx="32" cy="68.8" rx="22" ry="2" fill="${c.shadow()}"/>` +
-      `<path d="M32 ${n(top)}L${n(R)} ${B}H${n(L)}z" fill="${fill}" stroke="${edge}" stroke-width="1.2"/>` +
-      `<path d="M32 ${n(top + 22)}L${n(32 + 10.5)} ${B - 8}H${n(32 - 10.5)}z" fill="#0b0d12" fill-opacity=".85"/>` +
-      `<path d="M${n(32 - 7)} ${n(top + 14)}L${n(32 + 6)} ${n(top + 9)}" stroke="#0b0d12" stroke-opacity=".7" stroke-width="2.2"/>`;
-    if (o.stripes) for (let i = 1; i < 9; i++) s += `<path d="M${n(L + i * 5.6)} ${B}L${n(L + i * 5.6 + 9)} ${n(B - 16)}" stroke="#000" stroke-opacity=".22" stroke-width="1.1"/>`;
-    s += shine(`M${n(32 - 2)} ${n(top + 5)}L${n(L + 6)} ${B - 3}`, 1);
+  D.blastTri = (c, o) => { // BLAST: треугольная рамка из трёх брусьев с косыми разрывами
+    const big = o.big ? 1.04 : 1, A = [32, 6 / big], B = [32 + 24.4 * big, 63], C = [32 - 24.4 * big, 63];
+    const G = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3 + 3.2], inn = P => [G[0] + (P[0] - G[0]) * .44, G[1] + (P[1] - G[1]) * .44];
+    const a = inn(A), b = inn(B), cc = inn(C), L = (P, Q, t) => [P[0] + (Q[0] - P[0]) * t, P[1] + (Q[1] - P[1]) * t];
+    const poly = pts => 'M' + pts.map(p => `${n(p[0])} ${n(p[1])}`).join('L') + 'z';
+    const mt = o.glass ? null : o.metal, f1 = o.glass ? c.gl(o.glass) : c.mH(mt), f2 = o.glass ? c.glR(o.glass) : c.mV(mt), edge = o.glass ? c.mH('chrome') : c.mV(mt);
+    const P1 = poly([A, L(A, C, .93), L(a, cc, .9), a]);                       // левый брус
+    const P2 = poly([L(C, B, .09), B, b, L(cc, b, .12)]);                      // основание
+    const P3 = poly([B, L(B, A, .74), L(b, a, .66), b]);                       // правый брус
+    const P4 = poly([L(B, A, .81), A, a, L(b, a, .76)]);                       // вершина
+    let s = `<ellipse cx="32" cy="68.6" rx="${n(24 * big)}" ry="2.2" fill="${c.shadow()}"/>` +
+      `<path d="${poly([C, B, [B[0] - 1.2, 66.4], [C[0] + 1.2, 66.4]])}" fill="${c.mV('black')}"/>`;
+    [[P1, f1], [P2, f2], [P3, f1], [P4, f2]].forEach(([d, f]) => { s += `<path d="${d}" fill="${f}" stroke="${edge}" stroke-width=".5" stroke-linejoin="round"/><path d="${d}" fill="${c.ao()}"/>`; });
+    if (o.stripes) { // косая насечка на основании и правом брусе
+      for (let i = 1; i < 12; i++) { const p = L(L(C, B, .09), B, i / 12), q = L(L(cc, b, .12), b, Math.max(0, i / 12 - .08)); s += `<path d="M${n(p[0])} ${n(p[1])}L${n(q[0])} ${n(q[1])}" stroke="#000" stroke-opacity=".24" stroke-width=".7"/>`; }
+      for (let i = 1; i < 8; i++) { const p = L(B, L(B, A, .74), i / 8), q = L(b, L(b, a, .66), i / 8); s += `<path d="M${n(p[0])} ${n(p[1])}L${n(q[0])} ${n(q[1])}" stroke="#000" stroke-opacity=".2" stroke-width=".7"/>`; }
+    }
+    // фаски: свет по внешней кромке слева, по внутренней справа
+    s += `<path d="M${n(A[0] - .6)} ${n(A[1] + 2.2)}L${n(L(A, C, .86)[0] + 1.4)} ${n(L(A, C, .86)[1])}" stroke="#fff" stroke-opacity=".6" stroke-width=".9" stroke-linecap="round"/>` +
+      `<path d="M${n(a[0])} ${n(a[1] + 1)}L${n(L(a, cc, .8)[0])} ${n(L(a, cc, .8)[1])}" stroke="#000" stroke-opacity=".4" stroke-width=".6"/>` +
+      `<path d="M${n(L(cc, b, .16)[0])} ${n(b[1] - .3)}H${n(b[0] - 1)}" stroke="#fff" stroke-opacity=".35" stroke-width=".5"/>`;
     return s;
   };
-  D.pglClaw = (c, o) => { // коготь PGL
+  D.pglClaw = (c, o) => { // PGL: три изогнутых «лепестка» вокруг стеклянного клинка
     const m = o.metal, g = o.glass;
-    let s = pedestal(c, 'step', 'silver', 22, 'PGL') +
-      `<path d="M30 58C26 50 22 40 20 28C19 22 21 15 25 11C24 20 27 30 31 38z" fill="${c.mH(m)}"/>` +
-      `<path d="M34 58C38 50 42 40 44 28C45 22 43 15 39 11C40 20 37 30 33 38z" fill="${c.mH(m)}"/>` +
-      `<path d="M29.5 58C30 44 30 26 32 6C34 26 34 44 34.5 58z" fill="${g ? c.gl(g) : c.mV(m)}" stroke="${c.mH('chrome')}" stroke-width=".6"/>` +
-      `<path d="M23 34C27 38 37 38 41 34" fill="none" stroke="${c.mV(m)}" stroke-width="1.4"/>` +
-      shine('M22 26C22 20 23 15 25 12', .8);
-    return s;
+    const Lb = 'M30.4 58.6C23 50 16.4 39 18.6 25C19.8 17.6 23.6 11.4 28.4 7C25 16 24.8 26 27.6 35C29.6 42 31 50 31.6 58.6z';
+    const Rb = 'M33.6 58.6C41 50 47.6 39 45.4 25C44.2 17.6 40.4 11.4 35.6 7C39 16 39.2 26 36.4 35C34.4 42 33 50 32.4 58.6z';
+    return pedestal(c, 'step', 'silver', 22, 'PGL') +
+      vol(c, Lb, c.mH(m)) + vol(c, Rb, c.mH(m)) +
+      `<path d="M29.2 58.6C28.4 42 29.4 22 32 3C34.6 22 35.6 42 34.8 58.6z" fill="${g ? c.gl(g) : c.mV(m)}" stroke="${c.mH('chrome')}" stroke-width=".5"/><path d="M32 6V56" stroke="#fff" stroke-opacity=".45" stroke-width=".4"/>` +
+      `<ellipse cx="32" cy="52.6" rx="5.6" ry="1.5" fill="${c.mH(m)}"/><ellipse cx="32" cy="52.2" rx="4.6" ry=".7" fill="#fff" fill-opacity=".35"/>` +
+      shine('M20.6 27C21 20 23.2 14.4 26.2 10.4', .9) + shine('M43.4 27C43 20 40.8 14.4 37.8 10.4', .5);
   };
   D.majorCup = (c, o) => { // Major — главный трофей сезона: насыщенное золото, сияние, лавры, массивный постамент
     const m = o.metal || 'gold', acc = o.accent || '#b8202e';
@@ -207,15 +237,15 @@
     s += shine('M16.5 11C16.5 22 19 31 23.5 37.5', 1.4) + shine('M45 12C45 20 44 26 42 31', .6) + `<circle cx="20" cy="13" r="1.1" fill="#fff" opacity=".9"/>`;
     return s;
   };
-  D.mastersCup = (c, o) => { // DreamHack Masters
-    const m = o.metal;
-    let s = pedestal(c, 'round', m, 24) +
-      `<path d="M18 12C9 12 9 27 20 30" fill="none" stroke="${c.mH(m)}" stroke-width="2.4"/><path d="M46 12C55 12 55 27 44 30" fill="none" stroke="${c.mH(m)}" stroke-width="2.4"/>` +
-      `<path d="M17 8H47L44 26C42 34 37 37 32 37S22 34 20 26z" fill="${c.mH(m)}"/>` +
-      `<path d="M19 14H45" stroke="#000" stroke-opacity=".25" stroke-width="5"/>` + txt(32, 15.8, 'MASTERS', 3.2, '#fff') +
-      `<path d="M30 37L28.4 46H35.6L34 37z" fill="${c.mH(m)}"/><ellipse cx="32" cy="46" rx="6" ry="1.6" fill="${c.mV(m)}"/><path d="M27 47L25 58.4H39L37 47z" fill="${c.mH(m)}"/>` +
-      shine('M20 10C20 20 22 28 26 33', 1);
-    return s;
+  D.mastersCup = (c, o) => { // DreamHack Masters: широкая чаша с гравированным поясом, ручки-скобы
+    const m = o.metal, bowl = 'M16.5 8H47.5C47.5 20 43.5 32 34.6 37H29.4C20.5 32 16.5 20 16.5 8z';
+    return pedestal(c, 'round', m, 24) + stem(c, m, 36.8, 58.8, 5, 15) +
+      handle(c, 'M17 11C7.5 10 7 25 20 29.5', m, 2.6) + handle(c, 'M47 11C56.5 10 57 25 44 29.5', m, 2.6) +
+      vol(c, bowl, c.mH(m)) + lip(c, 8, 15.5, m) +
+      `<path d="M17.2 13.2Q32 17.4 46.8 13.2L46 18.6Q32 22.6 18 18.6z" fill="#06080b" fill-opacity=".62"/><path d="M17.2 13.2Q32 17.4 46.8 13.2M18 18.6Q32 22.6 46 18.6" fill="none" stroke="${c.mV(m)}" stroke-width=".4"/>` +
+      txt(32, 19.4, 'MASTERS', 3, '#fff', ' fill-opacity=".92"') +
+      `<path d="M24 26.5H40M25.4 29.4H38.6M27.4 32.2H36.6" stroke="#000" stroke-opacity=".22" stroke-width=".45"/>` +
+      shine('M19.4 10.5C19.6 20 22 28.6 27 34', 1.1);
   };
   D.glassBlock = (c, o) => { // DreamHack Open: стеклянный блок
     let s = pedestal(c, 'slab', 'chrome', 24) +
@@ -317,25 +347,19 @@
       `<ellipse cx="32" cy="23" rx="4.2" ry="9" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width=".5"/>` + txt(32, 38.5, 'ENC', 2.6, '#fff') + shine('M19 11V26', .9);
   };
   // ---- v84: дополнительные силуэты организаторов (у каждого турнира серии — своя постоянная форма)
-  D.iemClassic = (c, o) => { // IEM: классический серебряный кубок с крышкой и двумя большими ручками
-    const m = o.metal || 'silver';
-    let s = `<ellipse cx="32" cy="69.6" rx="16" ry="1.9" fill="${c.shadow()}"/>` +
-      `<path d="M20 69.2V64.6C20 63 24 62 32 62S44 63 44 64.6V69.2z" fill="${c.mH('black')}"/><ellipse cx="32" cy="64.6" rx="12" ry="1.8" fill="${c.mV('black')}"/>` +
-      `<path d="M23 62V59.4C23 58.2 27 57.4 32 57.4S41 58.2 41 59.4V62z" fill="${c.mH('black')}"/>` +
-      `<path d="M27.5 57.4C28.5 54 30.5 52 30.6 47H33.4C33.5 52 35.5 54 36.5 57.4z" fill="${c.mH(m)}"/><ellipse cx="32" cy="50.5" rx="2.6" ry="1" fill="${c.mV(m)}"/>` +
-      // большие ручки: от края чаши до её низа
-      `<path d="M19.5 16C9 15 6.5 22 8.5 31C10 37 15 41 22 42" fill="none" stroke="${c.mH(m)}" stroke-width="2.4" stroke-linecap="round"/>` +
-      `<path d="M44.5 16C55 15 57.5 22 55.5 31C54 37 49 41 42 42" fill="none" stroke="${c.mH(m)}" stroke-width="2.4" stroke-linecap="round"/>` +
-      // чаша-тюльпан
-      `<path d="M18.5 15H45.5L44 27C43 37 39 44 32 46.5C25 44 21 37 20 27z" fill="${c.mH(m)}"/>` +
-      `<ellipse cx="32" cy="15" rx="13.5" ry="1.9" fill="${c.mV(m)}"/>` +
-      // крышка с куполом и шишечкой
-      `<path d="M21 14.6C21 10.6 26 8.4 32 8.4S43 10.6 43 14.6z" fill="${c.mH(m)}"/><path d="M27 8.8C27 6.4 29 5 32 5S37 6.4 37 8.8z" fill="${c.mV(m)}"/><circle cx="32" cy="4.4" r="1.6" fill="${c.mR(m)}"/>` +
-      // гравировка: эмблема и строки победителей
-      `<circle cx="32" cy="20.5" r="2.4" fill="none" stroke="#000" stroke-opacity=".35" stroke-width=".5"/>` +
-      `<path d="M25 25.5H39M24.5 28H39.5M25 31H31M33 31H39M25.5 34H31M33 34H38.5M27 37H37" stroke="#000" stroke-opacity=".22" stroke-width=".5"/>` +
-      shine('M21.5 17C21.5 28 24 38 29 44', 1.2);
-    return s;
+  D.iemClassic = (c, o) => { // IEM: высокий серебряный кубок с крышкой, большими ручками и гравировкой победителей
+    const m = o.metal || 'silver', bowl = 'M18.5 15H45.5C45.5 28 42.5 40 33.6 46.6H30.4C21.5 40 18.5 28 18.5 15z';
+    return pedestal(c, 'round', m, 24) +
+      `<path d="M23.4 61.2V59.6C23.4 58.5 27 57.7 32 57.7S40.6 58.5 40.6 59.6V61.2z" fill="${c.mH('black')}"/>` + stem(c, m, 46.4, 57.9, 3.6, 10) +
+      handle(c, 'M19.2 16.5C9 15 6.4 22.5 8.6 31C10.2 37 15 40.6 22.2 41.6', m, 2.4) + handle(c, 'M44.8 16.5C55 15 57.6 22.5 55.4 31C53.8 37 49 40.6 41.8 41.6', m, 2.4) +
+      vol(c, bowl, c.mH(m)) + `<ellipse cx="32" cy="15" rx="13.5" ry="2" fill="${c.mV(m)}"/>` +
+      // крышка: купол, поясок, шишечка
+      vol(c, 'M20.6 14.8C20.6 10.4 25.6 8.2 32 8.2S43.4 10.4 43.4 14.8z', c.mH(m)) + `<path d="M21.4 13.2Q32 15.6 42.6 13.2" fill="none" stroke="#000" stroke-opacity=".3" stroke-width=".4"/>` +
+      `<path d="M27.4 8.6C27.4 6.4 29.2 5.2 32 5.2S36.6 6.4 36.6 8.6z" fill="${c.mV(m)}"/><circle cx="32" cy="4" r="1.7" fill="${c.mR(m)}"/>` +
+      // гравировка
+      `<circle cx="32" cy="21" r="2.5" fill="none" stroke="#000" stroke-opacity=".38" stroke-width=".5"/><path d="M30.6 22.2L33.4 19.8" stroke="#000" stroke-opacity=".38" stroke-width=".5"/>` +
+      `<path d="M24.6 26H39.4M24.4 28.5H39.6M25 31H31M33 31H39M25.8 33.5H31M33 33.5H38.2M27 36H37M28.4 38.4H35.6" stroke="#000" stroke-opacity=".2" stroke-width=".42"/>` +
+      shine('M21.4 17C21.4 28 24 38 29.4 44.2', 1.2) + shine('M43 18C42.8 25 41.6 31 39.6 36', .5);
   };
   D.spodekChalice = (c, o) => { // IEM Katowice: чаша-«тарелка» как крыша Сподека, на тонкой ножке
     const m = o.metal;
@@ -374,11 +398,12 @@
       `<rect x="27.6" y="37.6" width="8.8" height="3.8" rx=".5" fill="${c.mV('black')}" stroke="${c.mH(m)}" stroke-width=".3"/>` + txt(32, 40.6, 'EPL', 2.4, '#fff', ' letter-spacing=".5"') +
       shine('M28.4 15V44', .7);
   };
-  D.pglCrown = (c, o) => { // PGL: корона-кубок с когтями по краю
-    const m = o.metal, g = o.glass || 'blue';
-    return pedestal(c, 'step', 'silver', 22, 'PGL') + `<path d="M29 58.4L30 40H34L35 58.4z" fill="${c.mH(m)}"/>` +
-      `<path d="M14 10L19 18L24 8L29 18L32 6L35 18L40 8L45 18L50 10L47 30C45 37 39 41 32 41S19 37 17 30z" fill="${c.mH(m)}"/>` +
-      `<path d="M20 24H44L42.5 30C41 34 37 36.5 32 36.5S23 34 21.5 30z" fill="${c.gl(g)}"/>` + shine('M18 14C18 22 20 30 24 35', 1);
+  D.pglCrown = (c, o) => { // PGL: корона-кубок с зубцами по краю и стеклянной вставкой
+    const m = o.metal, g = o.glass || 'blue', crown = 'M14 10L19 18.5L24 8L29 18.5L32 5.6L35 18.5L40 8L45 18.5L50 10L47 30C45 37.4 39 41.4 32 41.4S19 37.4 17 30z';
+    return pedestal(c, 'step', 'silver', 22, 'PGL') + stem(c, m, 41, 58.6, 4, 13) +
+      vol(c, crown, c.mH(m)) + `<path d="${crown}" fill="none" stroke="${c.mV(m)}" stroke-width=".5" stroke-linejoin="round"/>` +
+      `<path d="M19.6 23.4H44.4L43 30C41.4 34.4 37 37 32 37S22.6 34.4 21 30z" fill="${c.glR(g)}" stroke="#000" stroke-opacity=".35" stroke-width=".3"/><path d="M22 25.2Q32 27.6 42 25.2" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width=".5"/>` +
+      shine('M17.6 14C17.8 22 20 30 24.4 35.4', 1);
   };
   D.cctFlag = (c, o) => { // CCT: стяг-вымпел на стойке
     const m = o.metal, acc = o.accent || '#2f6fe0';
@@ -394,7 +419,7 @@
   D.torch = (c, o) => { // FISSURE
     const m = o.metal;
     return pedestal(c, 'round', 'black', 20) +
-      `<path d="M28 58.4L26.5 30H37.5L36 58.4z" fill="${c.mH(m)}"/><path d="M24 28H40L38.5 32H25.5z" fill="${c.mV(m)}"/>` +
+      vol(c, 'M28.6 58.6C28.4 48 27.6 38 26.4 31H37.6C36.4 38 35.6 48 35.4 58.6z', c.mH(m)) + vol(c, 'M23.4 27.4H40.6L38.6 32.4H25.4z', c.mH(m)) + `<ellipse cx="32" cy="27.4" rx="8.6" ry="1.3" fill="${c.mV(m)}"/>` +
       `<path d="M32 4C36 12 42 15 40 23C39 27 35 28.5 32 28.5S25 27 24 23C22.5 17 28 15 28.5 10C30 13 31 13 32 4z" fill="${c.grad('flm', 0, 0, 0, 1, [[0, '#ffe36e'], [.45, '#ff7a1a'], [1, '#c4161c']])}"/>` +
       `<path d="M32 13C34 18 37 20 35.5 24.5C34.6 26.5 33.4 27 32 27S29 26 28.6 24C28 21 31 19 32 13z" fill="#fff3b0" fill-opacity=".85"/>` +
       `<path d="M26.6 38H37.4M26.9 46H37.1" stroke="${c.flat(o.accent || '#7a3fd0', 'tacc')}" stroke-width="1.6"/>`;
@@ -411,13 +436,14 @@
       `<circle cx="32" cy="25" r="17" fill="none" stroke="${c.mH(m)}" stroke-width="5"/><circle cx="32" cy="25" r="17" fill="none" stroke="#000" stroke-opacity=".2" stroke-width=".5"/>` +
       `<path d="M32 15L38 25L32 35L26 25z" fill="${c.gl(o.glass || 'blue')}"/>` + shine('M18 18A15 15 0 0 1 27 9.5', 1.1);
   };
-  D.classicCup = (c, o) => { // прочие организаторы Tier-1
-    const m = o.metal;
-    return pedestal(c, o.base || 'step', m, 26) +
-      `<path d="M19 13C10 12 10 28 21 30" fill="none" stroke="${c.mH(m)}" stroke-width="2"/><path d="M45 13C54 12 54 28 43 30" fill="none" stroke="${c.mH(m)}" stroke-width="2"/>` +
-      `<path d="M18 9H46L43 27C41 35 37 38 32 38S23 35 21 27z" fill="${c.mH(m)}"/><ellipse cx="32" cy="9" rx="14" ry="1.9" fill="${c.mV(m)}"/>` +
-      `<path d="M29.5 38L28.6 47H35.4L34.5 38z" fill="${c.mH(m)}"/><path d="M25 47H39L40.5 58.4H23.5z" fill="${c.mH(m)}"/>` +
-      `<circle cx="32" cy="21" r="4.5" fill="${c.flat(o.accent || '#2f6fe0', 'ca' + (o.accent || ''))}" stroke="${c.mV('pale')}" stroke-width=".8"/>` + shine('M21 11C21 20 23 28 27 33', 1);
+  D.classicCup = (c, o) => { // прочие организаторы Tier-1: чаша-тюльпан на ножке, две ручки, медальон
+    const m = o.metal, bowl = 'M18 9C18 21 21.5 31.5 29.6 36.6H34.4C42.5 31.5 46 21 46 9z';
+    return pedestal(c, o.base || 'step', m, 26) + stem(c, m, 36.4, 58.6, 4.6, 15) +
+      handle(c, 'M18.4 12.5C9 10.5 7.5 23 20.6 28.5', m, 2.2) + handle(c, 'M45.6 12.5C55 10.5 56.5 23 43.4 28.5', m, 2.2) +
+      vol(c, bowl, c.mH(m)) + lip(c, 9, 14, m) +
+      `<path d="M18.8 15.6Q32 19.4 45.2 15.6M19.8 19.4Q32 23 44.2 19.4" fill="none" stroke="#000" stroke-opacity=".28" stroke-width=".45"/>` +
+      `<circle cx="32" cy="26" r="4.3" fill="${c.mV(m)}" stroke="#000" stroke-opacity=".35" stroke-width=".3"/><circle cx="32" cy="26" r="3.3" fill="${c.flat(o.accent || '#2f6fe0', 'ca' + (o.accent || ''))}"/><path d="M29.8 24.6A2.6 2.6 0 0 1 33 23.5" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width=".5" stroke-linecap="round"/>` +
+      shine('M21 11.5C21 20 23.2 28 27.4 33.4', 1.1) + shine('M43.6 12C43.4 18 42.4 23 40.6 27', .5);
   };
   D.medallion = (c, o) => { // медальон-монета
     const m = o.metal, cy = 30;
@@ -451,6 +477,89 @@
   };
 
   // ---------------------------------------------------------------- выбор дизайна
+  // ================================================================ v97 — «ателье»: силуэты ближе к настоящим трофеям сцены
+  // Это не копии: взят узнаваемый характер формы (витая чёрная колонна, гравированный диск, гранёная чаша,
+  // акриловый осколок, кристалл), пропорции и детали свои; логотипов и надписей организаторов нет.
+  const P = pts => 'M' + pts.map(p => `${n(p[0])} ${n(p[1])}`).join('L') + 'z';
+  D.eplSpire = (c, o) => { // витая чёрная колонна, обвитая лентой металла
+    const m = o.metal || 'gold', body = o.body || 'black';
+    const col = 'M25.4 58.6C23.8 46 25.4 33 28 22C29.8 14.4 32.6 8 37.2 3.2C37.8 12 39.6 22 39.8 33C40 43 39.2 51 38.6 58.6z';
+    const r1 = 'M24.9 51C29.2 48 36.6 44 39.6 36.6C39.9 39.8 39.8 43 39.5 46C35.6 51.2 30 54.4 25.3 56.6z';
+    const r2 = 'M26.6 27.4C30.4 25.6 36 21 38.2 13.6C38.8 16.8 39.2 20 39.5 23.6C36.2 29.4 30.6 32.6 25.9 34z';
+    const tip = 'M37.2 3.2C36.4 6.6 34.2 10 31.4 12.8C33.8 12.2 36.4 10.6 37.9 8.6z';
+    return `<ellipse cx="32" cy="69.6" rx="13" ry="1.9" fill="${c.shadow()}"/>` +
+      `<path d="M21.5 63v4.4a10.5 2.1 0 0 0 21 0V63z" fill="${c.mH('black')}"/><ellipse cx="32" cy="63" rx="10.5" ry="2.1" fill="${c.mV('black')}"/>` +
+      `<path d="M24.6 58.6v3.6a7.4 1.6 0 0 0 14.8 0v-3.6z" fill="${c.mH(m)}"/><ellipse cx="32" cy="58.6" rx="7.4" ry="1.6" fill="${c.mV(m)}"/>` +
+      vol(c, col, c.mH(body)) +
+      `<path d="M29.6 55C28.2 44 29.4 31 31.8 20" stroke="#fff" stroke-opacity=".28" stroke-width="1.1" stroke-linecap="round" fill="none"/>` +
+      [r1, r2, tip].map(d => `<path d="${d}" fill="#000" fill-opacity=".5" transform="translate(.5 .9)"/><path d="${d}" fill="${c.mH(m)}"/><path d="${d}" fill="${c.ao()}"/>`).join('') +
+      `<circle cx="33.4" cy="40.6" r="2.7" fill="none" stroke="${c.mV(m)}" stroke-width=".7"/><path d="M32 41.6L33.4 39l1.4 2.6z" fill="${c.mV(m)}"/>` +
+      shine('M26.4 52.6C30 50.4 35.6 46.4 38.4 41.4', .6) + shine('M28 28.6C31.2 26.8 35.4 23 37.4 18', .6);
+  };
+  D.iemPlate = (c, o) => { // тяжёлый стеклянный диск с кольцами гравировки и эмблемой в центре
+    const g = o.glass, cy = 31, R = 23.5;
+    const rimG = c.grad('plrim', 0, 0, 1, 1, [[0, '#ffffff'], [.25, '#9aa4af'], [.5, '#f4f7fa'], [.72, '#59626d'], [1, '#dfe5ec']]);
+    const deep = c.grad('pldeep', .5, .5, .5, 0, [[0, '#070a0e', .78], [.62, '#0b1016', .5], [1, '#0b1016', 0]], true);
+    let s = (o.bare ? '' : pedestal(c, 'slab', o.metal, 20) + `<path d="M28 52L26 58H38L36 52z" fill="${c.mH('chrome')}"/>`) +
+      `<circle cx="32" cy="${cy}" r="${R + 1.3}" fill="${rimG}"/><circle cx="32" cy="${cy}" r="${R}" fill="${c.glR(g)}"/>` +
+      `<circle cx="32" cy="${cy}" r="${R - 1.2}" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width=".5"/>` +
+      `<circle cx="32" cy="${cy}" r="17.2" fill="${deep}"/>`;
+    // кольца «текста»: штрихи разной длины читаются как гравировка имён чемпионов
+    [[21, '2.2 .7 .9 .7 3.4 .9', .55], [18.6, '1.2 .6 2.8 .8 1.8 .6', .42], [16.2, '3 .8 1.1 .7', .34]].forEach(([r, da, op]) => { s += `<circle cx="32" cy="${cy}" r="${r}" fill="none" stroke="#fff" stroke-opacity="${op}" stroke-width="1.05" stroke-dasharray="${da}"/>`; });
+    s += `<circle cx="32" cy="${cy - 2.4}" r="4.1" fill="none" stroke="#fff" stroke-opacity=".9" stroke-width=".8"/>` +
+      `<path d="M29.4 ${cy - .6}l3.4-4.4M30.9 ${cy + .5}l3.5-4.5M32.6 ${cy + 1}l2.6-3.4" stroke="#fff" stroke-opacity=".9" stroke-width=".85" stroke-linecap="round"/>` +
+      txt(32, cy + 6.4, 'CHAMPIONS', 2.3, '#fff', ' fill-opacity=".92" letter-spacing=".6"');
+    if (o.sub) s += txt(32, cy + 9.8, o.sub, 1.9, '#fff', ' fill-opacity=".72"');
+    s += `<path d="M13.6 ${cy - 7}A19.6 19.6 0 0 1 26.4 ${cy - 19.2}" stroke="#fff" stroke-opacity=".7" stroke-width="1.6" stroke-linecap="round" fill="none"/>` +
+      `<path d="M50 ${cy + 8}A19.6 19.6 0 0 1 40 ${cy + 18}" stroke="#fff" stroke-opacity=".28" stroke-width="1" stroke-linecap="round" fill="none"/>`;
+    return o.bare ? bareDisc(c, s, cy) : s;
+  };
+  D.thunderSwirl = (c, o) => { // витой золотой ствол, на вершине — стеклянная молния
+    const m = o.metal || 'gold', g = o.glass || 'blue';
+    const a = 'M27 58.6C24.6 50 37.6 46.6 37 39.6C36.4 33 25.6 32.6 26.4 25.4C27 20 34 18.4 35.4 13.6C37.2 19.4 31.4 21.6 31.6 25.8C32 31.4 42.6 32.4 42.4 40C42.2 48 31.6 50.4 33 58.6z';
+    const b = 'M37 58.6C38.6 52.4 29.4 50 28.8 43.4C28.4 38.6 33.2 36.6 35.6 34C33.6 38.4 33.2 40.6 34.6 43.6C36.6 47.8 43.4 51.6 41 58.6z';
+    const bolt = 'M36.6 2.4L27.8 15.2H32.6L29.6 24.6L40.4 10.8H35.2z';
+    return pedestal(c, 'step', 'black', 22, 'WORLD') +
+      `<path d="${b}" fill="${c.mV(m)}"/><path d="${b}" fill="#000" fill-opacity=".28"/>` + vol(c, a, c.mH(m)) +
+      `<path d="${bolt}" fill="#000" fill-opacity=".45" transform="translate(.8 .8)"/><path d="${bolt}" fill="${c.gl(g)}" stroke="${c.mH('chrome')}" stroke-width=".5" stroke-linejoin="round"/>` +
+      `<path d="M35.6 4.4L29.6 13.6" stroke="#fff" stroke-opacity=".7" stroke-width=".6" stroke-linecap="round"/>` + shine('M27.6 29C27 25.6 29.6 23.2 32.4 21', .8) + shine('M29.6 55C28.4 51 33 48.6 36 46', .7);
+  };
+  D.ewcCup = (c, o) => { // гранёная чаша-«корона» на ножке-песочных часах
+    const m = o.metal || 'gold';
+    const bowl = [[15.5, 5], [24, 10.5], [32, 6.5], [40, 10.5], [48.5, 5], [42.4, 29], [32, 37.5], [21.6, 29]];
+    const fac = (pts, f, op) => `<path d="${P(pts)}" fill="${f}"/>${op ? `<path d="${P(pts)}" fill="#000" fill-opacity="${op}"/>` : ''}`;
+    return pedestal(c, 'block', m, 24, o.label || 'EWC') +
+      `<path d="M27.4 37.5H36.6L34 45.6L38.2 57.8H25.8L30 45.6z" fill="${c.mH(m)}"/><path d="M30 45.6H34" stroke="#fff" stroke-opacity=".5" stroke-width=".5"/>` +
+      fac([bowl[0], bowl[1], [26.4, 30.4], bowl[7]], c.mV(m), .12) + fac([bowl[1], bowl[2], [32, 37.5], [26.4, 30.4]], c.mH(m)) +
+      fac([bowl[2], bowl[3], [37.6, 30.4], [32, 37.5]], c.mH(m), .22) + fac([bowl[3], bowl[4], bowl[5], [37.6, 30.4]], c.mV(m), .38) +
+      fac([bowl[7], [26.4, 30.4], [32, 37.5]], c.mH(m), .3) + fac([[37.6, 30.4], bowl[5], [32, 37.5]], c.mH(m), .5) +
+      `<path d="${P(bowl)}" fill="none" stroke="${c.mV(m)}" stroke-width=".5" stroke-linejoin="round"/>` +
+      `<path d="M28.2 17.5H35.8L34.8 24H29.2z" fill="${o.glass ? c.gl(o.glass) : c.mV('black')}" stroke="${c.mH('pale')}" stroke-width=".45"/>` +
+      shine('M17.4 7.6L22.6 27.4', 1) + shine('M24.6 11.6L27.4 28.6', .5);
+  };
+  D.shardAward = (c, o) => { // акриловый «осколок» с металлическим клинком внутри
+    const g = o.glass || 'ice', m = o.metal || 'chrome', acc = o.accent || '#2f6fe0';
+    const slab = P([[21.5, 58.6], [18.6, 21], [33.5, 5], [45.6, 15.4], [42.5, 58.6]]), side = P([[45.6, 15.4], [48.2, 18], [45, 58.6], [42.5, 58.6]]);
+    const blade = P([[27.2, 55], [25.6, 25.4], [33.4, 13.6], [37, 30], [33.6, 55]]);
+    return pedestal(c, 'slab', m, 26, o.label) +
+      `<path d="${side}" fill="${c.gl('smoke')}"/><path d="${slab}" fill="${c.gl(g)}" stroke="${c.mH('chrome')}" stroke-width=".6" stroke-linejoin="round"/>` +
+      `<path d="${blade}" fill="${c.mH(m)}"/><path d="${blade}" fill="${c.ao()}"/>` +
+      `<path d="M33.4 13.6L37 30L33.6 55" fill="none" stroke="${c.flat(acc, 'sh' + acc)}" stroke-width="1.1" stroke-linejoin="round"/>` +
+      `<path d="M38.6 40H41.4M38.6 43H41.2M38.6 46H40.6" stroke="#fff" stroke-opacity=".5" stroke-width=".55"/>` +
+      shine('M20.4 23.4L22.6 55', 1) + shine('M33.2 6.8L21 20.2', .6);
+  };
+  D.crystalPrism = (c, o) => { // гранёный кристалл на двухъярусном постаменте
+    const g = o.glass || 'ice', m = o.metal || 'chrome';
+    const fx = (pts, f, op) => `<path d="${P(pts)}" fill="${f}"${op ? ` fill-opacity="${op}"` : ''}/>`;
+    return pedestal(c, 'step', m, 22, o.label) +
+      `<path d="M26.4 52H37.6L36.4 58.8H27.6z" fill="${c.mH(m)}"/>` +
+      fx([[32, 4], [42.6, 13], [42.6, 43.4], [32, 52.4], [21.4, 43.4], [21.4, 13]], c.gl(g)) +
+      fx([[32, 4], [42.6, 13], [32, 19.6]], c.glR(g)) + fx([[32, 19.6], [42.6, 13], [42.6, 43.4], [32, 52.4]], '#000', .2) +
+      fx([[21.4, 13], [32, 19.6], [32, 52.4], [21.4, 43.4]], '#fff', .12) +
+      `<path d="M32 4L21.4 13V43.4L32 52.4L42.6 43.4V13zM21.4 13L32 19.6L42.6 13M32 19.6V52.4" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width=".5" stroke-linejoin="round"/>` +
+      `<path d="M27.4 30.6H36.6M28.6 33.6H35.4" stroke="#fff" stroke-opacity=".55" stroke-width=".6"/>` + shine('M23.4 15.6V41.6', 1.1);
+  };
+
   const ORGS = [
     { key: 'Major', re: /\bmajor\b/i, pick: (r) => ({ d: 'majorCup', metal: 'gold', accent: ['#b8202e', '#1f4fb5', '#6b2fb3', '#0f8a6a'][r % 4] }) },
     { key: 'IEM-big', re: /^IEM\s+(?:Cologne|Katowice|Krak)|^ESL One/i, pick: (r) => iemPool(r) },
@@ -486,10 +595,10 @@
     // поэтому разные бренды получают разные сочетания формы/цвета, а один бренд — узнаваем.
     const brand = String(name || '').replace(/\s+20\d\d.*$/, '').split(/\s+/).slice(0, 2).join(' ').toUpperCase();
     const b = hash('brand|' + brand);
-    const forms = ['classicCup', 'coin', 'medallion', 'cheque', 'coin'];
+    const forms = ['classicCup', 'shardAward', 'medallion', 'crystalPrism', 'coin'];
     const accents = ['#2f6fe0', '#1f9e6e', '#d23b3b', '#e08a1f', '#0fa3b8', '#7a3fd0'];
     const d = forms[b % forms.length];
-    return { d, metal: ['silver', 'gold', 'chrome', 'rose', 'bronze'][(b >>> 3) % 5], accent: accents[(b >>> 5) % accents.length], base: ['step', 'round', 'slab'][r % 3],
+    return { d, metal: ['silver', 'gold', 'chrome', 'rose', 'bronze'][(b >>> 3) % 5], glass: GLASS_POOL[(b >>> 9) % GLASS_POOL.length], accent: accents[(b >>> 5) % accents.length], base: ['step', 'round', 'slab'][r % 3],
       label: brand.split(' ')[0].slice(0, 8), year: (String(name).match(/20\d\d/) || [''])[0], prize: '$' + ((r % 4) + 1) * 50 + 'K' };
   }
   function cupSpec(name, season, kind) {
