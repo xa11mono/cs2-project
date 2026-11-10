@@ -1,9 +1,9 @@
 /* v97 — «Командный центр и эфир»: дизайн окон менеджера и режима зрителя.
 
    Механика игры не меняется: модуль только перекладывает то, что уже считают другие модули.
-     • Боковое меню «Карьера» разбито на смысловые группы (у менеджера — Клуб / Команда / Рынок / Игра;
-       у наблюдателя — Эфир и «Стать менеджером», страницы клуба приглушены). Счётчик нерешённых событий
-       и метка LIVE на «Режиме зрителя».
+     • Боковое меню «Карьера» короткое (v98): у менеджера — рабочее место, события, состав, тренировки, тактика,
+       переговоры, финансы; у наблюдателя — эфир, сезон, выбор организации; остальное под «Ещё». Счётчик нерешённых
+       событий и метка LIVE на «Режиме зрителя».
      • Режим зрителя: табло эфира в цветах команд (счёт серии делениями, шансы на карту внутри табло),
        порядок блоков «ход карты → разбор раунда → динамика → лента»; когда эфира нет — экран ожидания
        с ближайшим турниром и повторами.
@@ -187,33 +187,33 @@
   /* ============================================================ боковое меню */
   // название пункта «Штаб» путалось со «Штабом организации»
   function relabel() { const b = document.querySelector('#hs-root .pt-menu[data-menu="game"] [data-nav="staff"]'); if (b && b.textContent.trim() === 'Штаб') b.textContent = 'Тренерский штаб'; }
-  const GROUPS_M = [
-    ['', ['desk', 'inbox', 'dm']],
-    ['Клуб', ['org', 'finance', 'staff', 'academy']],
-    ['Команда', ['training', 'tactics', 'scout']],
-    ['Рынок', ['negotiate']],
-    ['Игра', ['watch', 'season', 'manage', 'control', 'decisions', 'career', 'pick']]
-  ];
-  const GROUPS_S = [
-    ['Эфир', ['watch', 'season', 'manage', 'decisions']],
-    ['Стать менеджером', ['pick', 'control']],
-    ['Нужен клуб', ['desk', 'org', 'inbox', 'dm', 'training', 'tactics', 'staff', 'scout', 'negotiate', 'academy', 'finance', 'career']]
-  ];
+  // v98: короткое меню — то, чем менеджер пользуется каждый день; остальное под «Ещё»
+  const MAIN_M = ['desk', 'inbox', 'squad', 'training', 'tactics', 'negotiate', 'finance'];
+  const MAIN_S = ['watch', 'season', 'pick'];
+  const CLUB_ONLY = { desk: 1, org: 1, inbox: 1, dm: 1, squad: 1, training: 1, tactics: 1, staff: 1, scout: 1, negotiate: 1, academy: 1, finance: 1, career: 1 };
+  const MORE_KEY = 'cs2.v97.more';
+  let moreOpen = false; try { moreOpen = localStorage.getItem(MORE_KEY) === '1'; } catch (e) {}
   function groupSide() {
     const sub = document.querySelector('#gs-side .gs-grp[data-gs-grp="game"] .gs-sub'); if (!sub) return;
     const mode = me() ? 'm' : 's';
     if (sub.dataset.v97 !== mode) {
-      const btn = {}; [...sub.querySelectorAll(':scope > [data-nav], :scope .v97-sec-items > [data-nav]')].forEach(b => { btn[b.dataset.nav] = b; });
-      const used = new Set(), frag = document.createDocumentFragment(), groups = mode === 'm' ? GROUPS_M : GROUPS_S;
-      const add = (cap, keys, cls) => { const items = keys.map(k => btn[k]).filter(Boolean); if (!items.length) return;
-        if (cap) { const c = document.createElement('div'); c.className = 'v97-cap' + (cls ? ' ' + cls : ''); c.textContent = cap; frag.appendChild(c); }
-        items.forEach(b => { used.add(b.dataset.nav); b.classList.toggle('v97-dim', cls === 'dim'); frag.appendChild(b); }); };
-      groups.forEach(([cap, keys], i) => add(cap, keys, mode === 's' && i === 2 ? 'dim' : ''));
-      const rest = Object.keys(btn).filter(k => !used.has(k)); if (rest.length) add('Ещё', rest, '');
+      const btn = {}; [...sub.querySelectorAll('[data-nav]')].forEach(b => { btn[b.dataset.nav] = b; });
+      const main = (mode === 'm' ? MAIN_M : MAIN_S).filter(k => btn[k]), rest = Object.keys(btn).filter(k => !main.includes(k));
+      const frag = document.createDocumentFragment();
+      main.forEach(k => { btn[k].classList.remove('v97-dim'); frag.appendChild(btn[k]); });
+      if (rest.length) {
+        const tg = document.createElement('button'); tg.type = 'button'; tg.className = 'gs-it sub v97-moretg'; tg.dataset.v97more = '1'; tg.innerHTML = `<span class="gs-lb">Ещё</span><i>${rest.length}</i>`;
+        const box = document.createElement('div'); box.className = 'v97-more';
+        rest.sort((a, b) => (mode === 's' ? (CLUB_ONLY[a] ? 1 : 0) - (CLUB_ONLY[b] ? 1 : 0) : 0)).forEach(k => { btn[k].classList.toggle('v97-dim', mode === 's' && !!CLUB_ONLY[k]); box.appendChild(btn[k]); });
+        frag.appendChild(tg); frag.appendChild(box);
+      }
       sub.textContent = ''; sub.appendChild(frag); sub.dataset.v97 = mode;
     }
+    const box = sub.querySelector('.v97-more'), tg = sub.querySelector('.v97-moretg');
+    if (box && tg) { const open = moreOpen || !!box.querySelector('.gs-it.on'); if (box.classList.contains('open') !== open) box.classList.toggle('open', open); tg.setAttribute('aria-expanded', String(open)); }
     badges();
   }
+  document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-v97more]'); if (!b) return; e.preventDefault(); e.stopPropagation(); moreOpen = !moreOpen; try { localStorage.setItem(MORE_KEY, moreOpen ? '1' : '0'); } catch (e2) {} groupSide(); }, true);
   function badges() {
     const side = $('gs-side'); if (!side) return;
     let n = 0; try { n = me() && W.V96Windows ? W.V96Windows.events().length : 0; } catch (e) {}
@@ -225,7 +225,7 @@
   }
 
   /* ============================================================ общий заголовок страниц карьеры */
-  const CAREER = { desk: 1, org: 1, inbox: 1, dm: 1, training: 1, tactics: 1, staff: 1, scout: 1, negotiate: 1, academy: 1, finance: 1, career: 1, control: 1, decisions: 1 };
+  const CAREER = { squad: 1, desk: 1, org: 1, inbox: 1, dm: 1, training: 1, tactics: 1, staff: 1, scout: 1, negotiate: 1, academy: 1, finance: 1, career: 1, control: 1, decisions: 1 };
   function after(page, arg, pg) {
     pg = pg || $('hs-page'); if (!pg) return;
     pg.dataset.pg = page || 'home';
