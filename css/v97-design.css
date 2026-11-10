@@ -162,7 +162,7 @@ html.gs-shell #hs-root .hs-box-b>.hs-note,html.gs-shell #hs-root .hs-page>.hs-no
 @media (max-width:640px){#hs-root .v97-coach header{flex-wrap:wrap}#hs-root .v97-coach header>div:nth-child(2){flex:1 1 calc(100% - 96px)}#hs-root .v97-fit{flex:1 1 100%}#hs-root .v97-rps table{font-size:var(--t-caption)}#hs-root .v97-fit{align-items:flex-start;text-align:left}#hs-root .v97-meters{grid-template-columns:minmax(0,1fr)}#hs-root .v97-market{grid-template-columns:minmax(0,1fr)}}
 
 /* --- тактика --- */
-#hs-root .v97-tac{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,400px);gap:var(--s-6);align-items:start}
+#hs-root .v97-tac{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,440px);gap:var(--s-6);align-items:start}
 #hs-root .v97-tac-t{min-width:0;overflow-x:auto}
 #hs-root .v97-tac-t .hs-tbl td{height:44px}
 #hs-root .v97-tac-t select.hs-inp{width:100%;min-width:176px;height:32px!important;font-size:var(--t-small)!important}

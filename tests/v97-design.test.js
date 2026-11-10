@@ -66,6 +66,15 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   assert(await p.evaluate(() => document.querySelectorAll('#hs-page .v98-row select[data-v98role]').length === 5 && document.querySelectorAll('#hs-page .v98-row.bench').length >= 1), 'страница «Состав»: 5 списков ролей и скамейка');
   pass('состав: смена капитана, замена с запасным, скамейка не распускается сама; ответ клуба — через игровые дни');
 
+  // 3в. схемы: профиль команды, круг тактик, полосы финансов, эффект тренировки
+  const viz = {};
+  viz.radar = await p.evaluate(() => !!document.querySelector('#hs-page .v99-radar polygon.m') && document.querySelectorAll('#hs-page .v99-prof-t tbody tr').length === 4);
+  await go('#/tactics'); viz.ring = await p.evaluate(() => document.querySelectorAll('#hs-page .v99-ring .nd').length === 6 && document.querySelectorAll('#hs-page .v99-ring .arc').length === 6 && document.querySelectorAll('#hs-page .v99-ring .cn').length >= 2);
+  await go('#/finance'); viz.fin = await p.evaluate(() => document.querySelectorAll('#hs-page .v99-fin .v99-div').length >= 5 && !!document.querySelector('#hs-page .v99-div i.neg') && !!document.querySelector('#hs-page .v99-div i.pos'));
+  await go('#/training'); viz.fx = await p.evaluate(() => document.querySelectorAll('#hs-page .v99-fx span').length >= 1);
+  assert(viz.radar && viz.ring && viz.fin && viz.fx, 'схемы: ' + JSON.stringify(viz));
+  pass('схемы: профиль команды, круг тактик (6 узлов), полосы финансов, эффект тренировки');
+
   // 4. тренерский штаб: карточки и рынок, кнопки «Нанять» в пределах экрана
   await go('#/staff');
   const st = await p.evaluate(() => { const bs = [...document.querySelectorAll('#hs-page [data-v92hire]')]; const vw = document.documentElement.clientWidth;
@@ -76,9 +85,9 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
 
   // 5. тактика: таблица «что чем бьётся» из CS2Tactics.M, выбор плана работает
   await go('#/tactics');
-  const tc = await p.evaluate(() => ({ rows: document.querySelectorAll('#hs-page .v97-rps tbody tr').length, sel: document.querySelectorAll('#hs-page select[data-v92tac]').length }));
+  const tc = await p.evaluate(() => ({ rows: document.querySelectorAll('#hs-page .v99-ring .nd').length, sel: document.querySelectorAll('#hs-page select[data-v92tac]').length }));
   assert(tc.rows >= 3 && tc.sel >= 10, JSON.stringify(tc));
-  pass('тактика: ' + tc.rows + ' строк «что чем бьётся», ' + tc.sel + ' списков');
+  pass('тактика: ' + tc.rows + ' узлов в круге «кто кого бьёт», ' + tc.sel + ' списков');
 
   // 6. все страницы карьеры рисуются и не шире окна (1672 и 390)
   for (const w of [1672, 390]) {

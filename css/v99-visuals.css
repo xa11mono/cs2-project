@@ -1,0 +1,73 @@
+/* v99 — схемы и диаграммы: профиль команды, круг тактик, полосы финансов, эффект тренировки.
+   Подключается после v98-squad.css. Новых цветов нет: свои данные — --c-action, сравнение — --c-text-3 пунктиром,
+   рост/падение — --c-win/--c-loss со знаком ▲/▼. */
+
+/* ---------- состав: профиль команды ---------- */
+#hs-root .v99-profile{padding-bottom:var(--s-4)}
+#hs-root .v99-prof{display:grid;grid-template-columns:300px minmax(220px,320px) minmax(0,1fr);gap:var(--s-6);align-items:center}
+#hs-root .v99-radar{display:block;width:300px;max-width:100%;height:auto}
+#hs-root .v99-radar .t{font:500 10px var(--f-num);fill:var(--c-text-3)}
+#hs-root .v99-radar .g{fill:none;stroke:var(--c-line-strong);stroke-width:1}
+#hs-root .v99-radar .r{fill:none;stroke:var(--c-text-3);stroke-width:1.5;stroke-dasharray:4 3}
+#hs-root .v99-radar .m{fill:var(--c-action);fill-opacity:.18;stroke:var(--c-action);stroke-width:2;stroke-linejoin:round}
+#hs-root .v99-radar .d{fill:var(--c-action);stroke:var(--c-surface);stroke-width:1.5}
+#hs-root .v99-radar text{font:600 12px var(--f-ui);fill:var(--c-text-2)}
+#hs-root .v99-prof-t table{width:100%;border-collapse:collapse;font-size:var(--t-small)}
+#hs-root .v99-prof-t th{padding:var(--s-2) 0;text-align:left;font-size:var(--t-small);font-weight:600;color:var(--c-text-2)}
+#hs-root .v99-prof-t thead th{font-size:var(--t-micro);font-weight:650;color:var(--c-text-3)}
+#hs-root .v99-prof-t :is(td,thead th:not(:first-child)){padding:var(--s-2) 0 var(--s-2) var(--s-4);text-align:right;font-variant-numeric:tabular-nums}
+#hs-root .v99-prof-t td{font:600 var(--t-small)/1.3 var(--f-num);color:var(--c-text)}
+#hs-root .v99-prof-t tbody tr{border-top:1px solid var(--c-line)}
+#hs-root .v99-prof-t td.up{color:var(--c-win)}#hs-root .v99-prof-t td.dn{color:var(--c-loss)}
+#hs-root .v99-leg{display:flex;flex-wrap:wrap;gap:var(--s-1) var(--s-4);margin:var(--s-3) 0 0;font-size:var(--t-caption);color:var(--c-text-3)}
+#hs-root .v99-leg span{display:inline-flex;align-items:center;gap:var(--s-2)}
+#hs-root .v99-leg i{flex:none;width:16px;height:0;border-top:2px solid var(--c-action)}
+#hs-root .v99-leg i.r{border-top:2px dashed var(--c-text-3)}
+#hs-root .v99-leg i.sq{width:12px;height:12px;border:1.5px solid var(--c-elite);border-radius:3px}
+#hs-root .v99-leg i.ci{width:12px;height:12px;border:1.5px solid var(--c-t1);border-radius:50%}
+#hs-root .v99-leg b{display:inline-grid;place-items:center;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--c-action);color:var(--c-on-action);font:700 10px/1 var(--f-num)}
+#hs-root .v99-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--s-4);align-self:stretch;align-content:center;padding-left:var(--s-6);border-left:1px solid var(--c-line)}
+#hs-root .v99-kpi small{display:block;font-size:var(--t-caption);color:var(--c-text-3)}
+#hs-root .v99-kpi b{display:block;margin-top:var(--s-1);font:700 24px/1.1 var(--f-num);color:var(--c-text)}
+#hs-root .v99-kpi i{display:block;height:6px;margin-top:var(--s-2);border-radius:3px;background:var(--v97-track);overflow:hidden}
+#hs-root .v99-kpi i em{display:block;height:100%;border-radius:3px;background:var(--c-action)}
+#hs-root .v99-roles{display:flex!important;flex-direction:column;gap:var(--s-1);font:600 var(--t-small)/1.3 var(--f-ui)!important}
+#hs-root .v99-roles .ok{color:var(--c-win)}#hs-root .v99-roles .no{color:var(--c-loss)}
+@media (max-width:1280px){#hs-root .v99-prof{grid-template-columns:300px minmax(0,1fr)}#hs-root .v99-kpi{grid-column:1 / -1;padding:var(--s-4) 0 0;border-left:0;border-top:1px solid var(--c-line)}}
+@media (max-width:640px){#hs-root .v99-prof{grid-template-columns:minmax(0,1fr);justify-items:center}#hs-root .v99-prof-t,#hs-root .v99-kpi{justify-self:stretch}}
+
+/* ---------- тактика: круг ---------- */
+#hs-root .v99-ring svg{display:block;width:100%;max-width:420px;height:auto;margin:0 auto}
+#hs-root .v99-ring .arc{fill:none;stroke:var(--c-text-3);stroke-width:1.5}
+#hs-root .v99-ring marker path{fill:var(--c-text-3)}
+#hs-root .v99-ring .nd :is(rect,circle){fill:var(--c-surface);stroke-width:1.5}
+#hs-root .v99-ring .nd.t rect{stroke:var(--c-elite)}#hs-root .v99-ring .nd.ct circle{stroke:var(--c-t1)}
+#hs-root .v99-ring .nd.on.t rect{fill:rgba(255,159,67,.2)}#hs-root .v99-ring .nd.on.ct circle{fill:rgba(90,169,255,.2)}
+#hs-root .v99-ring text{font-family:var(--f-ui)}
+#hs-root .v99-ring :is(.s,.mid,.cn text){text-anchor:middle}
+#hs-root .v99-ring .nd .cn circle{fill:var(--c-action);stroke:none}
+#hs-root .v99-ring .cn text{font:700 11px var(--f-num);fill:var(--c-on-action)}
+#hs-root .v99-ring .s{font:700 13px var(--f-num);fill:var(--c-text)}
+#hs-root .v99-ring .l{font-size:12.5px;font-weight:600;fill:var(--c-text-2)}
+#hs-root .v99-ring .c{font:700 11px var(--f-num);fill:var(--c-action)}
+#hs-root .v99-ring .mid{font-size:11px;fill:var(--c-text-3)}
+#hs-root .v99-ring .v99-leg{justify-content:center}
+#hs-root .hs-page[data-pg="tactics"] .v99-fine{font-size:var(--t-caption)!important;color:var(--c-text-3)!important}
+
+/* ---------- финансы: расходящиеся полосы ---------- */
+#hs-root .v99-fin td.v99-barc{width:46%;padding-left:var(--s-4);padding-right:var(--s-4)}
+#hs-root .v99-div{position:relative;display:block;height:10px;border-radius:2px;background:linear-gradient(90deg,transparent calc(50% - .5px),var(--c-line-strong) calc(50% - .5px),var(--c-line-strong) calc(50% + .5px),transparent calc(50% + .5px))}
+#hs-root .v99-div i{position:absolute;top:0;bottom:0;border-radius:2px}
+#hs-root .v99-div i.pos{left:50%;background:var(--c-win)}
+#hs-root .v99-div i.neg{right:50%;background:var(--c-loss)}
+#hs-root .v99-div.tot{height:14px}
+@media (max-width:820px){#hs-root .v99-fin td.v99-barc{display:none}}
+
+/* ---------- тренировки: эффект плана ---------- */
+:is(#hs-root,#v96-gate) .v99-fx{margin-top:var(--s-3)}
+:is(#hs-root,#v96-gate) .v99-fx small{display:block;margin-bottom:var(--s-2);font-size:var(--t-micro);font-weight:650;color:var(--c-text-3)}
+:is(#hs-root,#v96-gate) .v99-fx>div{display:flex;flex-wrap:wrap;gap:var(--s-1)}
+:is(#hs-root,#v96-gate) .v99-fx span{display:inline-flex;align-items:center;gap:var(--s-1);height:26px;padding:0 var(--s-2);border:1px solid var(--c-line-strong);border-radius:var(--r-chip);font-size:var(--t-small);font-weight:600;color:var(--c-text)}
+:is(#hs-root,#v96-gate) .v99-fx i{font-style:normal;font-size:10px}
+:is(#hs-root,#v96-gate) .v99-fx .up i{color:var(--c-win)}:is(#hs-root,#v96-gate) .v99-fx .dn i{color:var(--c-loss)}
+:is(#hs-root,#v96-gate) .v96-sum{display:none}
