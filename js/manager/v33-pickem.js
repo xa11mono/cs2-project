@@ -118,7 +118,7 @@ function openUnfilled() {
   return null;
 }
 window.V33Pickem = { openUnfilled, rankOf, isAvailable: pickemNavAvailable, canPick: () => pickemCanEdit(), canPickStage: i => pickemCanEditStage(Number(i)), canPickPlayoffs: () => pickemCanEditPlayoffs(), upcomingMajor: () => upcomingMajor(), publicContext,
-  sync: () => syncAfterCalendarAdvance(), refresh: () => { selectNextOpenStage(); rer(); window.hltvSiteRefreshPickemNav?.(); } };
+  sync: () => syncAfterCalendarAdvance(), refresh: () => { selectNextOpenStage(); if (/^(pickem|majorpath)$/.test(H.S.page)) rer(); window.hltvSiteRefreshPickemNav?.(); } }; // v99: не перерисовывать чужие страницы после каждого игрового дня
 
 // v84: прогнозы и очки принадлежат конкретному Major. Объект прошлого Major больше не
 // переносится в следующий (раньше медаль нового Major стартовала с уровня предыдущего).

@@ -245,7 +245,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   pass('v89: HLTV ranking gets background events, qualifier pays ' + misc.paid + ', owner category, training plan ' + JSON.stringify(misc.plan));
 
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  assert(html.includes('v89-fair.js?v=95') && !html.includes('?v=93'), 'cache version bumped');
+  assert(html.includes('v89-fair.js?v=99') && !html.includes('?v=93'), 'cache version bumped');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v89: no page errors, cache version bumped');
   await ctx.close(); console.log('v89 fair tests passed');

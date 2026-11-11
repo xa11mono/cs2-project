@@ -18,14 +18,24 @@
   const NAMES = ['saveTeams', 'saveTransferState', 'saveSeasonState'];
   const KEYS = /^(cs2_season_teams|cs2_transfer_market|cs2_season_state)/;
   const orig = {}, pending = new Set();
-  let scheduled = false, flushing = false, disabled = false;
+  let scheduled = false, flushing = false, disabled = false, lastWrite = 0, timer = 0;
   const stats = { requested: 0, written: 0, cancelled: 0 };
+  // v99: каждая запись — это JSON всего мира (~1.5 МБ). При «Продолжить» по дням и на скорости 16x она шла каждый
+  // игровой день. Теперь большие ключи пишутся не чаще раза в MIN_GAP мс; закрытие вкладки, перезагрузка и
+  // CS2Saves.flush() записывают сразу.
+  const MIN_GAP = 4000;
+  const NAME_OF_KEY = k => /^cs2_season_teams/.test(k) ? 'saveTeams' : /^cs2_transfer_market/.test(k) ? 'saveTransferState' : /^cs2_season_state/.test(k) ? 'saveSeasonState' : '';
+  function schedule() {
+    if (scheduled) return; scheduled = true;
+    const wait = MIN_GAP - (Date.now() - lastWrite);
+    if (wait <= 0) Promise.resolve().then(flush); else timer = setTimeout(flush, wait);
+  }
   function flush() {
-    scheduled = false;
+    scheduled = false; if (timer) { clearTimeout(timer); timer = 0; }
     if (disabled) { stats.cancelled += pending.size; pending.clear(); return; }
     if (!pending.size) return;
     const list = NAMES.filter(n => pending.has(n)); pending.clear();
-    flushing = true;
+    flushing = true; lastWrite = Date.now();
     try { list.forEach(n => { try { orig[n](); stats.written++; } catch (e) { console.warn('[v90 saves]', n, e); } }); }
     finally { flushing = false; }
   }
@@ -39,7 +49,7 @@
         if (disabled) return;
         stats.requested++;
         pending.add(name);
-        if (!scheduled) { scheduled = true; Promise.resolve().then(flush); }
+        schedule();
       };
       Object.keys(f).forEach(k => { try { w[k] = f[k]; } catch (e) {} });
       w.__v90coalesce = true; w.__orig = f;
@@ -52,11 +62,17 @@
   // сброс игры / импорт удаляют ключи сохранения — отложенная запись не должна их вернуть
   (function () {
     const S = Storage.prototype, rm = S.removeItem, clr = S.clear;
+    // прямая запись ключа снаружи (импорт сейва, v59) — у неё самые свежие данные: отложенная запись того же
+    // ключа не должна позже вернуть старое состояние
+    const set = S.setItem;
+    S.setItem = function (k, v) { if (!flushing && this === W.localStorage && KEYS.test(String(k))) { const n = NAME_OF_KEY(String(k)); if (n && pending.delete(n)) { stats.cancelled++; if (n === 'saveTeams') pending.add('saveTransferState'); } } return set.apply(this, arguments); };
     S.removeItem = function (k) { if (this === W.localStorage && KEYS.test(String(k))) { disabled = true; stats.cancelled += pending.size; pending.clear(); } return rm.apply(this, arguments); };
     S.clear = function () { if (this === W.localStorage) { disabled = true; stats.cancelled += pending.size; pending.clear(); } return clr.apply(this, arguments); };
   })();
   // закрытие вкладки — записать, если что-то ещё не записано
   W.addEventListener('pagehide', () => { try { flush(); } catch (e) {} });
+  W.addEventListener('beforeunload', () => { try { flush(); } catch (e) {} });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { try { flush(); } catch (e) {} } });
   if (!install()) setTimeout(install, 0);
   W.CS2Saves = { flush, stats: () => Object.assign({ pending: [...pending], disabled }, stats), install };
 })();

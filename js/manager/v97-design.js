@@ -216,7 +216,7 @@
   document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-v97more]'); if (!b) return; e.preventDefault(); e.stopPropagation(); moreOpen = !moreOpen; try { localStorage.setItem(MORE_KEY, moreOpen ? '1' : '0'); } catch (e2) {} groupSide(); }, true);
   function badges() {
     const side = $('gs-side'); if (!side) return;
-    let n = 0; try { n = me() && W.V96Windows ? W.V96Windows.events().length : 0; } catch (e) {}
+    let n = 0; try { n = me() && W.V96Windows ? W.V96Windows.blockers().length : 0; } catch (e) {}   // v99: тот же счёт, что и на «Продолжить» (события, разговоры, план тренировок)
     const inbox = side.querySelector('.gs-it[data-nav="inbox"]');
     if (inbox) { let b = inbox.querySelector('.v97-badge'); if (n) { if (!b) { b = document.createElement('i'); b.className = 'v97-badge'; inbox.appendChild(b); } const tx = n > 9 ? '9+' : String(n); if (b.textContent !== tx) b.textContent = tx; b.setAttribute('aria-label', 'нерешённых событий: ' + n); } else if (b) b.remove(); }
     let live = false; try { live = ((CT() && CT().broadcast && CT().broadcast.active) || []).some(i => i && i.match && i.state && !i.state.finished); } catch (e) {}

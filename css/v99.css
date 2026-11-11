@@ -1,0 +1,81 @@
+/* v99 — разговоры с игроками, разведка с погрешностью, скримы, выбор турниров, разбор матча, эфир.
+   Новых цветов нет: токены v30/v87/v97 (--c-*, --s-*, --r-*, --t-*). Значения — DESIGN.md, раздел v99. */
+
+/* ============================================================ разговор (окно «Требует решения», «Центр событий») */
+:is(#hs-root,#v96-gate) .v99-who{display:flex;align-items:center;gap:var(--s-3);margin:var(--s-2) 0 var(--s-1)}
+:is(#hs-root,#v96-gate) .v99-ph{flex:none;width:40px;height:40px;border-radius:50%;overflow:hidden;background:var(--c-surface-2)}
+:is(#hs-root,#v96-gate) .v99-ph img{width:100%;height:100%;object-fit:cover}
+:is(#hs-root,#v96-gate) .v99-wt{display:flex;flex-direction:column;min-width:0;flex:1}
+:is(#hs-root,#v96-gate) .v99-wt b{font-size:15px;font-weight:700;cursor:pointer}
+:is(#hs-root,#v96-gate) .v99-wt small{font-size:var(--t-caption);color:var(--c-text-3)}
+:is(#hs-root,#v96-gate,.v84-dm-h) .v99-trust{display:inline-flex;align-items:center;gap:6px;font-size:var(--t-caption);color:var(--c-text-3);white-space:nowrap}
+:is(#hs-root,#v96-gate) .v99-trust b{font-weight:650;color:var(--c-text-2)}
+:is(#hs-root,#v96-gate) .v99-tbar{display:inline-block;width:64px;height:6px;border-radius:3px;background:var(--v97-track,rgba(255,255,255,.09));overflow:hidden;vertical-align:middle}
+:is(#hs-root,#v96-gate) .v99-tbar i{display:block;height:100%;border-radius:3px;background:var(--c-action)}
+:is(#hs-root,#v96-gate) .v99-log{display:flex;flex-direction:column;gap:var(--s-2);margin:var(--s-3) 0;max-height:300px;overflow:auto;padding-right:2px}
+:is(#hs-root,#v96-gate) .v99-msg{max-width:82%;padding:var(--s-2) var(--s-3);border-radius:12px;background:var(--c-surface-2);font-size:var(--t-small);line-height:1.45}
+:is(#hs-root,#v96-gate) .v99-msg p{margin:0}
+:is(#hs-root,#v96-gate) .v99-msg.me{align-self:flex-end;background:rgba(var(--v97-a,90,169,255),.18);border:1px solid rgba(var(--v97-a,90,169,255),.28)}
+:is(#hs-root,#v96-gate) .v99-sys{margin:0;font-size:var(--t-caption);color:var(--c-text-3);text-align:center}
+:is(#hs-root,#v96-gate) .v99-done{display:flex;align-items:center;justify-content:space-between;gap:var(--s-3);margin-top:var(--s-3);padding-top:var(--s-3);border-top:1px solid var(--c-line);font-size:var(--t-small);color:var(--c-text-2)}
+#hs-root .v99-talk.inline{margin-bottom:var(--s-3)}
+
+/* «Переписка» */
+#hs-root .v99-dmopts{padding:var(--s-3) var(--s-4) 0;border-top:1px solid var(--c-line)}
+#hs-root .v99-dmopts h4{margin:0 0 var(--s-2);font-size:var(--t-caption);font-weight:650;color:var(--c-text-3)}
+#hs-root .v99-dmopts .v96-opts{display:grid;gap:var(--s-2)}
+#hs-root .v99-topics{display:flex;flex-wrap:wrap;align-items:center;gap:6px;width:100%;padding-bottom:var(--s-2);margin-bottom:var(--s-1);border-bottom:1px dashed var(--c-line)}
+#hs-root .v99-topics small{font-size:var(--t-caption);color:var(--c-text-3);margin-right:4px}
+
+/* состав: игрок вне игры, обещания */
+#hs-root .v99-out{color:var(--c-live);font-weight:650}
+#hs-root .v99-out.sub{color:var(--c-text-2);font-weight:500}
+#hs-root .v99-prom{margin-top:var(--s-4)}
+#hs-root .v99-plist{list-style:none;margin:0;padding:0}
+#hs-root .v99-plist li{display:grid;grid-template-columns:140px 1fr auto;gap:var(--s-3);padding:var(--s-2) 0;border-bottom:1px solid var(--c-line);font-size:var(--t-small)}
+#hs-root .v99-plist li:last-child{border-bottom:0}
+#hs-root .v99-plist small{color:var(--c-text-3)}
+
+/* ============================================================ разведка с погрешностью */
+#hs-root .v99-range{font-family:var(--f-num);white-space:nowrap}
+#hs-root .v99-range i{font-style:normal;color:var(--c-text-3)}
+#hs-root .v99-fog{display:inline-block;margin-left:6px;padding:0 6px;border-radius:var(--r-chip);background:rgba(255,255,255,.06);font:600 11px/18px var(--f-ui);color:var(--c-text-3);vertical-align:middle}
+
+/* ============================================================ общие блоки v99 на страницах карьеры */
+#hs-root .v99-page{display:flex;flex-direction:column;gap:var(--s-4)}
+#hs-root .v99-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,440px);gap:var(--s-4);align-items:start}
+@media (max-width:1100px){#hs-root .v99-cols{grid-template-columns:1fr}}
+#hs-root .v99-tbl{width:100%;border-collapse:collapse;font-size:var(--t-small)}
+#hs-root .v99-tbl th{padding:var(--s-2) var(--s-3);font-size:var(--t-caption);font-weight:650;color:var(--c-text-3);text-align:right;border-bottom:1px solid var(--c-line)}
+#hs-root .v99-tbl td{padding:var(--s-2) var(--s-3);text-align:right;border-bottom:1px solid var(--c-line);font-family:var(--f-num)}
+#hs-root .v99-tbl :is(th,td).l{text-align:left;font-family:inherit}
+#hs-root .v99-tbl tr.on td{background:rgba(255,255,255,.035)}
+#hs-root .v99-chip{display:inline-block;padding:0 7px;border-radius:var(--r-chip);font:650 11px/20px var(--f-ui);background:rgba(255,255,255,.07);color:var(--c-text-2);white-space:nowrap}
+#hs-root .v99-chip.ok{background:rgba(62,207,142,.14);color:var(--c-win)}
+#hs-root .v99-chip.bad{background:rgba(255,77,79,.14);color:var(--c-live)}
+#hs-root .v99-chip.warn{background:rgba(255,159,67,.14);color:var(--c-action)}
+#hs-root .v99-list{list-style:none;margin:0;padding:0}
+#hs-root .v99-list li{display:flex;align-items:flex-start;gap:var(--s-3);padding:var(--s-2) 0;border-bottom:1px solid var(--c-line);font-size:var(--t-small);line-height:1.45}
+#hs-root .v99-list li:last-child{border-bottom:0}
+#hs-root .v99-list li>b{flex:none;min-width:22px;font-family:var(--f-num)}
+#hs-root .v99-list li.good>b{color:var(--c-win)}
+#hs-root .v99-list li.bad>b{color:var(--c-live)}
+#hs-root .v99-list li.mid>b{color:var(--c-text-3)}
+#hs-root .v99-actions{display:flex;flex-wrap:wrap;gap:var(--s-2);align-items:center}
+#hs-root .v99-kv{display:grid;grid-template-columns:auto 1fr;gap:6px var(--s-4);font-size:var(--t-small)}
+#hs-root .v99-kv dt{color:var(--c-text-3)}
+#hs-root .v99-kv dd{margin:0;text-align:right;font-family:var(--f-num)}
+
+/* ============================================================ эфир: таблица игроков */
+#hs-root .v99-sb{width:100%;border-collapse:collapse;font-size:var(--t-small)}
+#hs-root .v99-sb th{padding:6px 8px;font-size:var(--t-caption);font-weight:650;color:var(--c-text-3);text-align:right}
+#hs-root .v99-sb td{padding:6px 8px;text-align:right;font-family:var(--f-num);border-top:1px solid var(--c-line)}
+#hs-root .v99-sb :is(td,th).l{text-align:left;font-family:inherit}
+#hs-root .v99-sb tr.tm td{padding-top:var(--s-3);font-family:inherit;font-weight:700;color:var(--c-text-2);border-top:0}
+#hs-root .v99-sb td.hi{color:var(--c-win);font-weight:700}
+
+/* ============================================================ рабочее место: следующий матч */
+#hs-root .v99-next{display:flex;align-items:center;gap:var(--s-4);flex-wrap:wrap}
+#hs-root .v99-next .vs{font:700 var(--t-caption)/1 var(--f-ui);color:var(--c-text-3)}
+#hs-root .v99-next b{font-size:18px}
+#hs-root .v99-next small{display:block;color:var(--c-text-3);font-size:var(--t-caption)}

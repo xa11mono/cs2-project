@@ -51,7 +51,7 @@ const htmlSource = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'ut
 assert.match(siteSource, /NAV_MORE = \[.*\['settings', 'Сейвы и базы'\]/, 'save/base settings should be directly discoverable under More');
 assert.match(uiSource, /Выбрать папку для автосейва/, 'folder picker must be present on the visible settings page');
 assert.match(uiSource, /v59-roster-file-page[\s\S]*?multiple/, 'roster importer should allow selecting multiple files');
-assert.match(htmlSource, /v59-database-import\.js\?v=95/, 'v59 database importer must be loaded with a cache-busting version');
+assert.match(htmlSource, /v59-database-import\.js\?v=99/, 'v59 database importer must be loaded with a cache-busting version');
 
 (async () => {
   // The real EMDB and legacy CS2_REAL JS assignment formats parse as passive objects.

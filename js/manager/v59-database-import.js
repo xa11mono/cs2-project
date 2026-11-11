@@ -534,6 +534,9 @@
     const used = new Set(), duplicates = new Set(); let changed = 0;
     list.forEach(team => {
       if (!team) return;
+      // v99: «без тренера» (v87: name '—', none) — осознанное состояние, а не пропуск; иначе каждый saveTeams
+      // заново «чинил» 42 клуба и писал в localStorage ещё ~1 МБ.
+      if (team.coach && team.coach.none) return;
       let coach = team.coach && typeof team.coach === 'object' ? team.coach : null;
       const placeholder = !coach || !String(coach.name || '').trim() || /^(?:coach|—|unknown|tbd)$/i.test(String(coach.name).trim());
       let name = placeholder ? '' : String(coach.name).trim();

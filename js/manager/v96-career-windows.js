@@ -78,8 +78,13 @@
   /* ------------------------------------------------------------ окно */
   let gate = null, pausedByMe = false;
   const deferredOk = ev => !S().later[ev.id] || left(ev) <= 2;
+  // v99: другие модули (разговоры с игроками) добавляют свои карточки в окно — провайдер
+  // { key, items() -> [id], fresh() -> [id] (ещё не показанные), card(id, {gate}) -> html, click(target) -> bool, later(id), seen(id) }
+  const PROV = [];
+  const provBy = k => PROV.find(p => p.key === k);
   const blockers = () => {
     const out = events().filter(deferredOk).map(e => ({ k: 'ev', id: e.id }));
+    PROV.forEach(p => { try { (p.items() || []).forEach(id => out.push({ k: 'p', prov: p.key, id })); } catch (e) {} });
     if (needTraining()) out.push({ k: 'train' });
     return out;
   };
@@ -90,7 +95,7 @@
     if (gate) return;
     gate = { then: then || null, queue: blockers(), i: 0, result: null };
     if (!gate.queue.length) { gate = null; if (then) then(); return; }
-    gate.queue.forEach(it => { if (it.k === 'ev') S().seen[it.id] = 1; });
+    gate.queue.forEach(it => { if (it.k === 'ev') S().seen[it.id] = 1; else if (it.k === 'p') { try { provBy(it.prov).seen(it.id); } catch (e) {} } });
     let root = $('v96-gate'); if (!root) { root = document.createElement('div'); root.id = 'v96-gate'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Требует решения'); document.body.appendChild(root); }
     root.hidden = false; paint();
     setTimeout(() => { const b = root.querySelector('.v96-opt,.v96-tf.on,.v96-go'); if (b) b.focus(); }, 30);
@@ -121,6 +126,10 @@
     if (gate.result) {
       body = `<div class="v96-res"><span class="v96-kind ok">Решение принято</span><h3>${esc(gate.result.title)}</h3><p class="v96-ev-t">${esc(gate.result.text)}</p></div>`;
       foot = `<span></span><button type="button" class="v96-go" data-v96next>${last ? (gate.then ? 'Продолжить игру' : 'Готово') : 'Дальше'}</button>`;
+    } else if (cur.it.k === 'p') {
+      const pv = provBy(cur.it.prov);
+      body = pv ? pv.card(cur.it.id, { gate: true }) : '';
+      foot = `<small class="v96-hint">Клавиши 1–9 — выбрать ответ</small><button type="button" class="v96-later" data-v96plater="${esc(cur.it.prov)}|${esc(cur.it.id)}">Ответить позже</button>`;
     } else if (cur.it.k === 'ev') {
       body = eventCard(cur.ev);
       foot = `<small class="v96-hint">Клавиши 1–${cur.ev.options.length} — выбрать вариант</small><button type="button" class="v96-later" data-v96later="${esc(cur.ev.id)}">Решить позже</button>`;
@@ -160,6 +169,8 @@
     const root = $('v96-gate'); if (!root || root.hidden || !root.contains(e.target)) return;
     const t = e.target;
     let el;
+    if ((el = t.closest('[data-v96plater]'))) { const [k, id] = el.dataset.v96plater.split('|'); try { provBy(k).later(id); } catch (e2) {} next(); return; }
+    for (const pv of PROV) { try { if (pv.click(t)) { save(); paint(); focusFirst(); return; } } catch (e2) { console.warn('[v96 provider]', e2); } }
     if ((el = t.closest('[data-v96ev]'))) { const [id, k] = el.dataset.v96ev.split('|'); decide(id, k); return; }
     if ((el = t.closest('[data-v96tf]'))) { setTrain({ focus: el.dataset.v96tf }); refreshTrain(); return; }
     if ((el = t.closest('[data-v96ti]'))) { setTrain({ intensity: el.dataset.v96ti }); refreshTrain(); return; }
@@ -195,7 +206,8 @@
     const c = $('pt-skip'); const n = me() ? blockers().length : 0;
     if (c) { if (n) c.setAttribute('data-pending', n > 9 ? '9+' : String(n)); else c.removeAttribute('data-pending'); }
     if (!me() || gate || document.visibilityState === 'hidden') return;
-    const fresh = events().filter(ev => !S().seen[ev.id] && deferredOk(ev));
+    let fresh = events().filter(ev => !S().seen[ev.id] && deferredOk(ev));
+    PROV.forEach(p => { try { fresh = fresh.concat(p.fresh() || []); } catch (e) {} });
     if (!fresh.length || modalOpen()) return;
     if (isRunning()) { const b = $('pt-skip'); if (b) b.click(); }
     try { if (W.v15IsCalendarPaused && !W.v15IsCalendarPaused() && W.toggleGameCalendarPause) { W.toggleGameCalendarPause(); pausedByMe = true; } } catch (e) {}
@@ -228,6 +240,7 @@
           <h3 class="v96-ph sub">Практика карт</h3>${mp.length ? mp.map(([m, v]) => `<div class="v96-map-r"><span>${esc(m)}</span><span class="v96-bar"><i style="width:${Math.min(100, v * 10)}%"></i></span><b>+${v.toFixed(1)}</b></div>`).join('') : '<p class="v96-note">Нет натренированных карт.</p>'}</section></div></div>`;
   });
 
-  W.V96Windows = { open, blockers, events, eventCard, trainingPanel, needTraining, state: S };
+  W.V96Windows = { open, blockers, events, eventCard, trainingPanel, needTraining, state: S,
+    addProvider: p => { if (p && p.key && !provBy(p.key)) PROV.push(p); }, repaint: () => { if (gate) paint(); }, isOpen: () => !!gate };
   console.info('[v96] окна карьеры: решения перед «Продолжить», тренировки, события');
 })();

@@ -2236,6 +2236,15 @@ function renderRating() {
   saveTeams();
   document.getElementById("total-count").innerText = teams.length;
   const tbody = document.querySelector("#rating-table tbody");
+  // v99: старая таблица спрятана под порталом — не пересобирать её на каждом сохранении.
+  // Перестроится, когда станет видимой (v99-perf.js проверяет флаг stale).
+  if (!tbody.offsetParent && !window.__v99ForceRating) {
+    teams.forEach((t, i) => { if (t.seasonStartRank === null) t.seasonStartRank = i + 1; });
+    tbody.dataset.stale = '1';
+    updateAnalyticsDashboard();
+    return;
+  }
+  delete tbody.dataset.stale;
   tbody.innerHTML = "";
   teams.forEach((t, i) => {
     const curRank = i + 1;

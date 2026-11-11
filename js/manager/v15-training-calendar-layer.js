@@ -127,7 +127,7 @@
     // Batch skips persist once at the transaction boundary in v33-time.
     if(changed){
       if(window.v57BatchCalendarSkip) window.v57CalendarStateDirty=true;
-      else try{ localStorage.setItem('cs2_season_state_v61',JSON.stringify(seasonState)); }catch(e){}
+      else try{ if(typeof saveSeasonState==='function') saveSeasonState(); else localStorage.setItem('cs2_season_state_v61',JSON.stringify(seasonState)); }catch(e){} // v99: через объединённое сохранение
     }
     return changed;
   }

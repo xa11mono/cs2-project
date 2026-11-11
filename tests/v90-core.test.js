@@ -149,7 +149,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   const pg = await p.evaluate(async () => { const out = {}; for (const k of ['control', 'decisions']) { HS.nav(k); await new Promise(r => setTimeout(r, 150)); out[k] = !/Не удалось показать страницу/.test(document.getElementById('hs-page').innerHTML) && !!document.querySelector('#hs-page h1'); } return out; });
   assert(pg.control && pg.decisions, 'страницы: ' + JSON.stringify(pg));
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  assert(['v90-config.js?v=95', 'v90-roster-engine.js?v=95', 'v90-control.js?v=95'].every(s => html.includes(s)) && !html.includes('?v=93'), 'модули v90 подключены');
+  assert(['v90-config.js?v=99', 'v90-roster-engine.js?v=99', 'v90-control.js?v=99'].every(s => html.includes(s)) && !html.includes('?v=93'), 'модули v90 подключены');
   assert(html.indexOf('v90-config.js') < html.indexOf('v84-stature.js'), 'конфиг загружается раньше модулей, которые его читают');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v90: pages render, modules wired, no page errors');
