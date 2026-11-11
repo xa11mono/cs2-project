@@ -35,9 +35,9 @@ html.ax-on ::-webkit-scrollbar{width:10px;height:10px}html.ax-on ::-webkit-scrol
 #hs-root .ax-club:active{transform:scale(.985)}
 #hs-root .ax-club-logo{display:grid;place-items:center;width:64px;height:64px;filter:drop-shadow(0 10px 22px rgba(0,0,0,.6))}
 #hs-root .ax-club-logo img{width:62px;height:62px;object-fit:contain}
-#hs-root .ax-club-name{font:800 italic 21px/1.05 var(--f-ui);letter-spacing:-.01em;text-transform:uppercase;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#hs-root .ax-club-name{font:800 21px/1.05 var(--f-ui);letter-spacing:-.01em;text-transform:uppercase;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #hs-root .ax-club small{font-size:11.5px;font-weight:600;color:var(--c-text-3)}
-#hs-root .ax-mark{font:900 italic 26px/1 var(--f-ui);letter-spacing:-.02em;display:flex;flex-direction:column;align-items:center;background:var(--ax-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+#hs-root .ax-mark{font:900 26px/1 var(--f-ui);letter-spacing:-.02em;display:flex;flex-direction:column;align-items:center;background:var(--ax-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 #hs-root .ax-mark i{font-size:11px;letter-spacing:.32em;color:var(--c-text-2);-webkit-text-fill-color:var(--c-text-2);margin-top:4px;font-style:normal;font-weight:700}
 #hs-root .ax-nav{flex:1;min-height:0;overflow-y:auto;padding:4px 12px 10px;display:flex;flex-direction:column;gap:2px}
 #hs-root .ax-it{position:relative;display:flex;align-items:center;gap:12px;width:100%;height:40px;flex:none;padding:0 12px;border:0;border-radius:12px;background:transparent;color:var(--c-text-2);font:600 14px/1 var(--f-ui);cursor:pointer;text-align:left;transition:background .18s,color .18s}
@@ -130,7 +130,7 @@ html.ax-on #hs-root #pt-skip.gs-continue::after{content:"";position:absolute;ins
 #hs-root .ax-money{display:flex;align-items:center;gap:8px;height:40px;padding:0 14px 0 12px;border-radius:12px;background:rgba(47,210,123,.08);box-shadow:inset 0 0 0 1px rgba(47,210,123,.2);transition:background .18s}
 #hs-root .ax-money:hover{background:rgba(47,210,123,.14)}
 #hs-root .ax-money svg{width:18px;height:18px;color:var(--c-win)}
-#hs-root .ax-money b{font:750 14px/1 var(--f-num);color:#e8fff2}
+#hs-root .ax-money b{font:700 14px/1 var(--f-num);color:#e8fff2}
 #hs-root .ax-money.neg{background:rgba(255,79,98,.08);box-shadow:inset 0 0 0 1px rgba(255,79,98,.25)}#hs-root .ax-money.neg svg{color:var(--c-loss)}
 #hs-root .ax-money.ax-pick{background:rgba(255,122,26,.1);box-shadow:inset 0 0 0 1px rgba(255,122,26,.3)}#hs-root .ax-money.ax-pick svg{color:var(--ax-acc)}#hs-root .ax-money.ax-pick b{font-family:var(--f-ui);color:#ffd2b0}
 #hs-root .ax-burger{display:none;width:40px;height:40px;border:0;border-radius:12px;background:rgba(255,255,255,.04);color:var(--c-text);place-items:center;cursor:pointer;flex:none}
@@ -275,8 +275,8 @@ html.ax-on .v29-toast-t small{color:#ffb27a!important;letter-spacing:.06em}
 #hs-root .ax-hp.p1,#hs-root .ax-hp.p3{width:30%;filter:drop-shadow(0 18px 24px rgba(0,0,0,.65)) brightness(.88);z-index:1}
 #hs-root .ax-hp.p2{width:36%;max-height:98%;z-index:2}
 #hs-root .ax-hero-t{position:relative;padding:28px 30px;display:flex;flex-direction:column;align-items:flex-start;gap:12px;max-width:52%}
-#hs-root .ax-hero-name{margin:0;font:900 italic clamp(38px,4.2vw,64px)/.92 var(--f-ui);letter-spacing:-.03em;text-transform:uppercase;color:#fff;text-shadow:0 6px 30px rgba(0,0,0,.6)}
-#hs-root .ax-hero-sub{margin:0;font:500 italic 16px/1.4 var(--f-ui);color:#c9ccd3}
+#hs-root .ax-hero-name{margin:0;font:900 clamp(38px,4.2vw,64px)/.92 var(--f-ui);letter-spacing:-.03em;text-transform:uppercase;color:#fff;text-shadow:0 6px 30px rgba(0,0,0,.6)}
+#hs-root .ax-hero-sub{margin:0;font:500 16px/1.4 var(--f-ui);color:#c9ccd3}
 #hs-root .ax-hero-act{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
 
 /* следующий матч */
@@ -286,7 +286,7 @@ html.ax-on .v29-toast-t small{color:#ffb27a!important;letter-spacing:.06em}
 #hs-root .ax-vs-t img,#hs-root .ax-vs-t .ax-logo-f{width:72px;height:72px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.6));transition:transform .3s var(--ax-ease)}
 #hs-root .ax-vs-t:hover img{transform:scale(1.06) rotate(-2deg)}
 #hs-root .ax-vs-t b{font:800 15px/1.2 var(--f-ui);text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#hs-root .ax-vs-x{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:900 italic 14px/1 var(--f-ui);color:#ffb27a;background:rgba(255,122,26,.1);box-shadow:inset 0 0 0 1px rgba(255,122,26,.3)}
+#hs-root .ax-vs-x{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:900 14px/1 var(--f-ui);color:#ffb27a;background:rgba(255,122,26,.1);box-shadow:inset 0 0 0 1px rgba(255,122,26,.3)}
 #hs-root .ax-vs-ev{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;margin-bottom:16px;flex:1;justify-content:flex-end}
 #hs-root .ax-vs-ev span{font:600 12.5px/1 var(--f-ui);color:var(--c-text-3)}
 #hs-root .ax-vs-ev b{font:700 14px/1.3 var(--f-ui);color:var(--c-text)}
@@ -320,7 +320,7 @@ html.ax-on .v29-toast-t small{color:#ffb27a!important;letter-spacing:.06em}
 #hs-root .ax-chart circle{fill:#13151a;stroke:var(--ax-acc);stroke-width:2;vector-effect:non-scaling-stroke}
 #hs-root .ax-chart circle.last{fill:var(--ax-acc);filter:drop-shadow(0 0 6px var(--ax-acc))}
 #hs-root .ax-chart-cap{position:absolute;top:8px;right:10px;display:flex;align-items:baseline;gap:8px;font:600 11.5px/1 var(--f-ui);color:var(--c-text-3)}
-#hs-root .ax-chart-cap b{font:750 13px/1 var(--f-num);color:var(--c-text)}
+#hs-root .ax-chart-cap b{font:700 13px/1 var(--f-num);color:var(--c-text)}
 #hs-root .ax-goal{display:grid;grid-template-columns:1fr auto;gap:6px 8px;align-items:center;font-size:12.5px;color:var(--c-text-3);font-weight:600}
 #hs-root .ax-goal b{font-size:14px}
 #hs-root .ax-goal i{grid-column:span 2;height:4px;border-radius:2px;background:rgba(255,255,255,.07);position:relative;overflow:hidden}
@@ -335,7 +335,7 @@ html.ax-on .v29-toast-t small{color:#ffb27a!important;letter-spacing:.06em}
 #hs-root .ax-res img,#hs-root .ax-res .ax-logo-f{width:28px;height:28px}
 #hs-root .ax-res-n{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font:650 14px/1.2 var(--f-ui)}
 #hs-root .ax-res-n small{font-size:11.5px;color:var(--c-text-3);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#hs-root .ax-res b{font:750 15px/1 var(--f-num)}
+#hs-root .ax-res b{font:700 15px/1 var(--f-num)}
 #hs-root .ax-wl{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font:800 12px/1 var(--f-ui);font-style:normal}
 #hs-root .ax-wl.w{background:rgba(47,210,123,.16);color:#4be08f;box-shadow:inset 0 0 0 1px rgba(47,210,123,.35)}
 #hs-root .ax-wl.l{background:rgba(255,79,98,.14);color:#ff6b7a;box-shadow:inset 0 0 0 1px rgba(255,79,98,.35)}
@@ -752,3 +752,17 @@ html.ax-on[data-ax-page="finance"] #hs-root .hs-box.ax-fill>.hs-box-b{flex:1;dis
 html.ax-on[data-ax-page="finance"] #hs-root .hs-col>.ax-fin-charts{flex:1 1 auto;display:flex;flex-direction:column}
 html.ax-on[data-ax-page="finance"] #hs-root .ax-fin-charts .ax-fin-g{flex:1;align-content:center}
 #hs-root .ax-pc>img,#hs-root .ax-pc-ph{max-height:none!important}#hs-root .ax-bp-g{min-height:120px}
+
+/* v100.1 — шрифты: только встроенные Golos Text (400–900, без курсива) и IBM Plex Mono (400–700) */
+html.ax-on body,html.ax-on #hs-root,html.ax-on #hs-root button,html.ax-on #hs-root input,html.ax-on #hs-root select,html.ax-on .v29-toast,html.ax-on #ax-mode{font-family:var(--f-ui);font-synthesis:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+html.ax-on #hs-root :is(i,em,.ax-hero-name,.ax-club-name,.ax-mark){font-style:normal}
+html.ax-on #hs-root .ax-hero-name,html.ax-on #hs-root .ax-club-name{letter-spacing:-.02em}
+/* выбор клуба: секции с отступами, кнопка «Возглавить» всегда на виду */
+html.ax-on #hs-root .v96-sec{padding:16px 18px!important}
+html.ax-on #hs-root .v96-sec h3{margin:0 0 12px!important;align-items:center}
+html.ax-on #hs-root .v96-detail{max-height:calc(100vh - var(--gs-top) - 120px)!important}
+html.ax-on #hs-root .v96-cta{position:sticky;bottom:0;z-index:5;background:linear-gradient(180deg,rgba(19,21,26,.85),#13151a 40%)!important;backdrop-filter:blur(10px)}
+#hs-root .ax-take{display:flex;gap:8px;margin-top:14px}
+/* логотипы в превью новостей — квадратные, без растяжения */
+#hs-root .ax-nvis.tm img,#hs-root .ax-nvis.tm .ax-logo-f{width:auto!important;height:64%!important;max-height:none!important;aspect-ratio:1/1;object-fit:contain!important}
+#hs-root .ax-nvis.tm img,#hs-root .ax-nvis.tm .ax-logo-f{position:absolute!important;top:18%!important;left:50%!important;height:64%!important;width:auto!important;transform:translateX(-50%);margin:0!important}

@@ -515,6 +515,15 @@
     });
   }
 
+  // выбор клуба: «Возглавить клуб» дублируется в шапке карточки — видна без прокрутки на любом экране
+  function takeButton(root) {
+    const d = root.querySelector('#v96-detail'); if (!d) return;
+    const go = d.querySelector('.v96-cta [data-v96go]'), hero = d.querySelector('.v96-hero'); if (!go || !hero) return;
+    const ex = hero.querySelector('.ax-take'); if (ex && ex.dataset.team === go.dataset.v96go) return; if (ex) ex.remove();
+    hero.insertAdjacentHTML('beforeend', `<div class="ax-take" data-team="${esc(go.dataset.v96go)}"><button type="button" class="v96-go" data-v96go="${esc(go.dataset.v96go)}">Возглавить клуб</button></div>`);
+  }
+  let takeObs = null;
+  function watchTake() { const r = $('hs-page'); if (!r || takeObs) return; takeObs = new MutationObserver(() => { if (pageNow() === 'pick' || r.querySelector('#v96-detail')) takeButton(r); }); takeObs.observe(r, { childList: true, subtree: true }); }
   /* ================================================================ ПЛИТКИ ВЫБОРА: иконка в плашке + силуэт на фоне */
   const BARS = n => `<svg viewBox="0 0 24 24" aria-hidden="true">${[[4, 14, 6], [10, 10, 10], [16, 5, 15]].map(([x, y, h], i) => `<rect x="${x}" y="${y}" width="4.2" height="${h}" rx="1.4" fill="currentColor" opacity="${i < n ? 1 : .28}"/>`).join('')}</svg>`;
   const TILE_IC = {
@@ -669,7 +678,7 @@
   // «прожектор» под курсором на карточках
   D.addEventListener('pointermove', e => {
     const c = e.target.closest && e.target.closest('.ax-card, .hs-box, .ax-pc'); if (!c) return;
-    const r = c.getBoundingClientRect(); c.style.setProperty('--mx', (e.clientX - r.left) + 'px'); c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    const r = c.getBoundingClientRect(), k = c.offsetWidth ? r.width / c.offsetWidth : 1; c.style.setProperty('--mx', ((e.clientX - r.left) / k).toFixed(1) + 'px'); c.style.setProperty('--my', ((e.clientY - r.top) / k).toFixed(1) + 'px');
   }, { passive: true });
 
   /* ================================================================ ДИАГРАММЫ: кольца и «пончики» (SVG) */
@@ -808,6 +817,7 @@
       if (pg === 'finance') financeFix(root);
       contractYears(root); boardFix(root); decorTiles(root); decorKpis(root); decorKv(root); decorScenes(root); colorBars(root); decorMeters(root);
       if (pg === 'home') homeHero(root);
+      takeButton(root);
       if (pg === 'finance' && me()) { chartsFinance(root); budgetPath(root); }
       if (pg === 'org' || pg === 'control') chartsBoard(root);
       if (pg === 'squad') chartsSquad(root);
@@ -827,7 +837,7 @@
   function boot() {
     D.documentElement.classList.add('ax-on');
     if (!bindSide() || !D.querySelector('#hs-root .pt-top-in')) { setTimeout(boot, 400); return; }
-    paintTop(); bindToasts(); guardTitle();
+    paintTop(); bindToasts(); guardTitle(); watchTake();
     if (pageNow() === 'desk') try { H.render(); } catch (e) {}
   }
   boot();
