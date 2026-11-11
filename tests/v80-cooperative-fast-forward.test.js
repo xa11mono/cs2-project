@@ -23,12 +23,12 @@ assert(/skipGlobalMaintenance:true/.test(v21) && /eventIds:\[eventId\]/.test(v21
 assert(/lastCooperativeCatchup/.test(v21) && /maxSliceMs/.test(v21), 'scheduler diagnostics must expose cooperative slice timings');
 assert(/processOptions = Object\.assign/.test(v63) && /processParallel\(options\.forceParallel !== false, processOptions\)/.test(v63), 'kernel must pass match budget through to parallel scheduler');
 for (const [file, version] of [
-  ['v17-smart-calendar-skip.js', 99],
-  ['v18-calendar-match-sync.js', 99],
-  ['v21-parallel-tournaments-academies-layer.js', 99],
-  ['v27-hltv-site.js', 99],
-  ['v33-time.js', 99],
-  ['v63-simulation-kernel.js', 99]
+  ['v17-smart-calendar-skip.js', 101],
+  ['v18-calendar-match-sync.js', 101],
+  ['v21-parallel-tournaments-academies-layer.js', 101],
+  ['v27-hltv-site.js', 101],
+  ['v33-time.js', 101],
+  ['v63-simulation-kernel.js', 101]
 ]) assert(html.includes(`${file}?v=${version}`), `${file} must bypass browser cache`);
 
 // Exercise the real cooperative helper against a minimal deterministic overdue queue.

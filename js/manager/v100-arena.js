@@ -105,10 +105,10 @@
     ['desk', 'Главная', 'home'], ['career', 'Менеджер', 'crown'], ['squad', 'Команда', 'squad'], ['negotiate', 'Трансферы', 'transfer'],
     ['clubev', 'Соревнования', 'trophy'], ['calendar', 'Календарь', 'calendar'], ['org', 'Организация', 'org']
   ];
-  const WORLD_M = [['home', 'Портал HLTV', 'news'], ['matches', 'Матчи', 'matches'], ['events', 'Турниры', 'events'], ['ranking', 'Рейтинг', 'ranking'], ['players', 'Игроки', 'players'], ['teams', 'Команды', 'teams'], ['watch', 'Эфир', 'watch']];
+  const WORLD_M = [['home', 'Портал HLTV', 'news'], ['matches', 'Матчи', 'matches'], ['events', 'Турниры', 'events'], ['pickem', "Pick'Em", 'predict'], ['ranking', 'Рейтинг', 'ranking'], ['players', 'Игроки', 'players'], ['teams', 'Команды', 'teams'], ['watch', 'Эфир', 'watch']];
   const SPECTATOR = [
     ['home', 'Главная', 'home'], ['watch', 'Эфир', 'watch'], ['matches', 'Матчи', 'matches'], ['events', 'Турниры', 'events'],
-    ['calendar', 'Календарь', 'calendar'], ['ranking', 'Рейтинг', 'ranking'], ['news', 'Новости', 'news'], ['predict', 'Прогнозы', 'predict'],
+    ['calendar', 'Календарь', 'calendar'], ['ranking', 'Рейтинг', 'ranking'], ['news', 'Новости', 'news'], ['pickem', "Pick'Em", 'predict'], ['predict', 'Прогнозы', 'predict'],
     ['players', 'Игроки', 'players'], ['teams', 'Команды', 'teams'], ['transfers', 'Трансферы', 'transfer']
   ];
   // вкладки внутри разделов — не показываем в меню (раздел подсвечивается сам)
@@ -127,12 +127,18 @@
   const pageNow = () => (H.S && H.S.page) || 'home';
   const openGrp = new Set(store.get('cs2.ax.grp', []));
 
+  // v101: счётчик — то, что требует действия: нерешённые события, разговоры без ответа, непрочитанные письма (письма
+  // становятся прочитанными в «Центре событий»). Постоянные дела «Рабочего места» (план тренировок, контракт) в счёт не
+  // входят — раньше из-за них число не сбрасывалось никогда. Колокольчик и «Главная» показывают одно число.
+  function freshCount() {
+    let n = 0;
+    try { const V9 = W.V96Windows; if (V9) n += V9.events().length; } catch (e) {}          // нерешённые события (решили — ушли из счёта)
+    try { const T = W.V99Talks; if (T) n += T.open().length; } catch (e) {}                  // разговоры без ответа
+    try { if (W.V99Mail) n += W.V99Mail.unread().length; } catch (e) {}
+    return n;
+  }
   function badgeFor(k) {
-    try {
-      const m = me(); if (!m) return 0;
-      if (k === 'desk') { const t = team(m); return (t && W.CS2Desk ? W.CS2Desk.todo(t).length : 0) + (W.V99Mail && W.V99Mail.unread ? +W.V99Mail.unread() || 0 : 0); }
-      if (k === 'inbox') return W.V99Mail && W.V99Mail.unread ? +W.V99Mail.unread() || 0 : 0;
-    } catch (e) {}
+    try { if (!me()) return 0; if (k === 'desk') return freshCount(); } catch (e) {}
     return 0;
   }
   function activeKey(list) {
@@ -224,9 +230,11 @@
     new MutationObserver(() => { if (!side.querySelector('.ax-side-in')) renderSide(true); }).observe(side, { childList: true });
     side.addEventListener('click', e => {
       const t = e.target.closest('[data-ax-tog]');
+      // v101: в узком режиме (рельс) папка раскрывает меню поверх контента — иначе подменю пряталось в колонке 72 px
+      if (t && D.documentElement.classList.contains('gs-railed') && !side.classList.contains('gs-peek')) { e.stopPropagation(); const g = t.closest('.ax-grp'); g.classList.add('open'); t.setAttribute('aria-expanded', true); side.classList.add('gs-peek'); return; }
       if (t) { e.stopPropagation(); const g = t.closest('.ax-grp'); if (g.classList.contains('on') && g.classList.contains('open')) return; const o = !g.classList.contains('open'); g.classList.toggle('open', o); t.setAttribute('aria-expanded', o); if (o) openGrp.add(t.dataset.axTog); else openGrp.delete(t.dataset.axTog); store.set('cs2.ax.grp', [...openGrp]); return; }
       if (e.target.closest('[data-ax-snd]')) { e.stopPropagation(); SND.toggle(); renderSide(true); return; }
-      if (e.target.closest('[data-nav]')) D.documentElement.classList.remove('ax-drawer');
+      if (e.target.closest('[data-nav]')) { D.documentElement.classList.remove('ax-drawer'); side.classList.remove('gs-peek'); }
     });
     renderSide(true);
     return true;
@@ -237,7 +245,7 @@
     const club = me();
     if (club) {
       const t = team(club), o = (() => { try { return V.org(club); } catch (e) { return {}; } })();
-      const n = badgeFor('desk') + badgeFor('inbox'), rep = Math.round(+o.rep || 0), b = +o.budget || 0;
+      const n = badgeFor('desk'), rep = Math.round(+o.rep || 0), b = +o.budget || 0;
       return `<button type="button" class="ax-bell" data-nav="inbox" title="Центр событий${n ? ': ' + n + ' ' + plural(n, 'дело', 'дела', 'дел') : ' — всё решено'}" aria-label="Центр событий">${IC.bell}${n ? `<i>${n > 9 ? '9+' : n}</i>` : ''}</button>
         <button type="button" class="ax-me" data-nav="career" title="Карьера менеджера · репутация организации ${rep}/100">
           <span class="ax-ava">${t ? logoImg(club, 26) : IC.players}</span><span class="ax-me-t"><b>Менеджер</b><small>Репутация ${rep}</small><i style="--p:${clamp(rep, 0, 100)}%"></i></span>${IC.chev}</button>
@@ -533,8 +541,9 @@
   function takeButton(root) {
     const d = root.querySelector('#v96-detail'); if (!d) return;
     const go = d.querySelector('.v96-cta [data-v96go]'), hero = d.querySelector('.v96-hero'); if (!go || !hero) return;
-    const ex = hero.querySelector('.ax-take'); if (ex && ex.dataset.team === go.dataset.v96go) return; if (ex) ex.remove();
-    hero.insertAdjacentHTML('beforeend', `<div class="ax-take" data-team="${esc(go.dataset.v96go)}"><button type="button" class="v96-go" data-v96go="${esc(go.dataset.v96go)}">Возглавить клуб</button></div>`);
+    const label = go.textContent.trim() || 'Возглавить клуб';   // v101: при смене клуба — «Перейти в клуб», как на основной кнопке
+    const ex = hero.querySelector('.ax-take'); if (ex && ex.dataset.team === go.dataset.v96go && ex.textContent.trim() === label) return; if (ex) ex.remove();
+    hero.insertAdjacentHTML('beforeend', `<div class="ax-take" data-team="${esc(go.dataset.v96go)}"><button type="button" class="v96-go" data-v96go="${esc(go.dataset.v96go)}">${esc(label)}</button></div>`);
   }
   let takeObs = null;
   function watchTake() { const r = $('hs-page'); if (!r || takeObs) return; takeObs = new MutationObserver(() => { if (pageNow() === 'pick' || r.querySelector('#v96-detail')) takeButton(r); }); takeObs.observe(r, { childList: true, subtree: true }); }
@@ -659,7 +668,7 @@
 
   /* ================================================================ ПЕРВЫЙ ЗАПУСК: режим (UX №1) */
   function modeOverlay() {
-    if ($('ax-mode') || me() || store.get('cs2.ax.mode', '')) return;
+    if ($('ax-mode') || me() || store.get('cs2.ax.mode', '') || navigator.webdriver) return;   // v101: автотесты (webdriver) — без окна первого запуска, оно перекрывало клики
     const box = D.createElement('div'); box.id = 'ax-mode';
     const club = 'Team Spirit', c = tint(club);
     box.innerHTML = `<div class="ax-mode-card" role="dialog" aria-modal="true" aria-labelledby="ax-mode-h">
@@ -856,7 +865,11 @@
   }
   boot();
   const every = (W.CS2Loop && W.CS2Loop.every) || ((f, ms) => setInterval(f, ms));
-  every(() => { try { renderSide(); paintTop(); bindToasts(); const g = $('v96-gate'); if (g) decorTiles(g); } catch (e) {} }, 1500, 'v100-arena');
+  // v101: окно «Требует решения» перерисовывается целиком (выбор плитки, ответ) — плитки оформляем сразу при изменении,
+  // а не раз в 1.5 с (раньше старый вид мелькал до следующего тика)
+  let gateObs = null;
+  function bindGate() { const g = $('v96-gate'); if (!g || gateObs) return; gateObs = new MutationObserver(() => { try { decorTiles(g); } catch (e) {} }); gateObs.observe(g, { childList: true, subtree: true }); decorTiles(g); }
+  every(() => { try { renderSide(); paintTop(); bindToasts(); bindGate(); } catch (e) {} }, 1500, 'v100-arena');
   D.addEventListener('keydown', e => { if (e.key === 'Escape') D.documentElement.classList.remove('ax-drawer'); });
   D.addEventListener('click', e => { if (D.documentElement.classList.contains('ax-drawer') && !e.target.closest('#gs-side, .ax-burger')) D.documentElement.classList.remove('ax-drawer'); });
 

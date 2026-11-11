@@ -105,7 +105,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   const pg = await p.evaluate(async () => { HS.nav('finance'); await new Promise(r => setTimeout(r, 300)); const h = document.getElementById('hs-page').innerHTML; return { ok: !/Не удалось показать страницу/.test(h), forecast: /Прогноз сезона/.test(h), partner: /Генеральный партнёр/.test(h) }; });
   assert(pg.ok && pg.forecast && pg.partner, 'страница финансов: ' + JSON.stringify(pg));
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  assert(html.includes('v94-economy.js?v=99') && !html.includes('?v=93'), 'модуль v94 подключён');
+  assert(html.includes('v94-economy.js?v=101') && !html.includes('?v=93'), 'модуль v94 подключён');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v94: finance page shows the season forecast and the partner; module wired; no page errors');
   await ctx.close(); console.log('v94 stage 4 tests passed');

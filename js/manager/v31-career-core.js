@@ -70,9 +70,17 @@ function salaryOf(p, team) { // зарплата за сезон: уровень
   const tier = !rk || rk <= 10 ? 1.15 : rk <= 30 ? 1 : rk <= 60 ? CF('econ.wageMid', 0.7) : CF('econ.wageLow', 0.5);
   return Math.round(clamp((30000 + Math.pow(Math.max(0, lv - 72) / 20, 2.6) * 560000) * tier * ac, 15000, 1400000) / 1000) * 1000;
 }
-const valueOf = p => { // ориентир выкупа: уровень, возраст, контракт
+// v101: стоимость — уровень + часть оставшегося потенциала (у молодых), возрастная кривая, форма, контракт, академия.
+// Растёт вместе с развитием игрока и падает с возрастом, спадом формы и истечением контракта (история — v101-economy).
+const valueOf = p => {
   const lv = pow(p), age = +p.age || 24, yrs = Math.max(0, (+p.contractUntil || season()) - season());
-  return Math.round(clamp(Math.pow(Math.max(0, lv - 70) / 20, 2.4) * 1800000 * (age <= 23 ? 1.25 : age >= 30 ? .7 : 1) * (0.55 + 0.25 * Math.min(2, yrs)), 20000, 3500000) / 1000) * 1000;
+  const pot = Math.max(lv, +p.pot || lv), grow = age <= 19 ? .6 : age <= 21 ? .45 : age <= 23 ? .3 : age <= 25 ? .12 : 0;
+  const eff = lv + (pot - lv) * grow + clamp(((+p.form || 100) - 100) * .06, -1.2, 1.2);
+  const ageK = age <= 21 ? 1.3 : age <= 24 ? 1.15 : age <= 27 ? 1 : age <= 29 ? .85 : age <= 31 ? .65 : .45;
+  const t = (p.v31team && teams.find(x => x.name === p.v31team)) || null;
+  const acad = (t && t.isAcademy) || p.isProspect || p.academy ? .55 : 1;             // ещё не доказал на про-сцене
+  const con = yrs <= 0 ? .45 : .55 + .25 * Math.min(2, yrs);                          // истекающий контракт — дёшево
+  return Math.round(clamp(Math.pow(Math.max(0, eff - 68) / 22, 2.6) * 2300000 * ageK * acad * con, 15000, 6000000) / 1000) * 1000;
 };
 
 /* ------------------------------------------------------------ организация */

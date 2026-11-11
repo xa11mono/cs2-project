@@ -175,6 +175,11 @@
       if (pg === 'desk') {
         if (root.querySelector('.v99-maildesk')) return;
         const l = MS().list.filter(x => x.team === me()); if (!l.length) return;
+        const dash = root.querySelector('.ax-dash');
+        if (dash) {   // v101: «Главная» v100 — карточка дашборда (раньше блок без ширины ломал сетку)
+          dash.insertAdjacentHTML('beforeend', `<section class="ax-card ax-mail v99-maildesk"><header class="ax-h"><h3>Почта клуба</h3>${unread().length ? `<span class="ax-new">${unread().length} новых</span>` : ''}<button type="button" class="ax-link" data-nav="inbox">вся почта</button></header>${mailList(4)}</section>`);
+          return;
+        }
         const html = `<section class="hs-box v99-maildesk"><header class="hs-box-h"><h3>Почта клуба${unread().length ? ` · ${unread().length} новых` : ''}</h3><button type="button" class="hs-more" data-nav="inbox">вся почта →</button></header><div class="hs-box-b">${mailList(3)}</div></section>`;
         const nb = root.querySelector('.v99-nextbox'); if (nb) nb.insertAdjacentHTML('afterend', html); else { const kp = root.querySelector('.pt-kpis'); if (kp) kp.insertAdjacentHTML('afterend', html); }
       }

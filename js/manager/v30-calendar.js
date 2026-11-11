@@ -20,13 +20,14 @@ const LIB = [
   [/iem katowice/i, 'Intel Extreme Masters', 'ESL', 'Катовице', 'Европа', true], [/iem cologne/i, 'Intel Extreme Masters', 'ESL', 'Кёльн', 'Европа', true],
   [/iem dallas/i, 'Intel Extreme Masters', 'ESL', 'Даллас', 'Северная Америка', true], [/iem chengdu/i, 'Intel Extreme Masters', 'ESL', 'Чэнду', 'Азия', true],
   [/iem rio/i, 'Intel Extreme Masters', 'ESL', 'Рио-де-Жанейро', 'Южная Америка', true], [/iem atlanta/i, 'Intel Extreme Masters', 'ESL', 'Атланта', 'Северная Америка', true], [/iem beijing|iem china/i, 'Intel Extreme Masters', 'ESL', 'Пекин', 'Азия', true],
-  [/iem krak/i, 'Intel Extreme Masters', 'ESL', 'Краков', 'Европа', true], [/iem/i, 'Intel Extreme Masters', 'ESL', '', 'Мир', true],
+  [/iem melbourne/i, 'Intel Extreme Masters', 'ESL', 'Мельбурн', 'Океания', true], [/iem krak/i, 'Intel Extreme Masters', 'ESL', 'Краков', 'Европа', true], [/iem/i, 'Intel Extreme Masters', 'ESL', '', 'Мир', true],
   [/blast.*bounty/i, 'BLAST Bounty', 'BLAST', 'Мальта', 'Европа', true], [/blast.*world final/i, 'BLAST World Final', 'BLAST', 'Абу-Даби', 'Ближний Восток', true],
-  [/blast.*rivals/i, 'BLAST Rivals', 'BLAST', 'Гонконг', 'Азия', true], [/blast open/i, 'BLAST Open', 'BLAST', 'Лиссабон', 'Европа', true], [/blast/i, 'BLAST Premier', 'BLAST', 'Копенгаген', 'Европа', true],
+  [/blast.*rivals/i, 'BLAST Rivals', 'BLAST', 'Гонконг', 'Азия', true], [/blast open rotterdam/i, 'BLAST Open', 'BLAST', 'Роттердам', 'Европа', true], [/blast open copenhagen/i, 'BLAST Open', 'BLAST', 'Копенгаген', 'Европа', true], [/blast open london/i, 'BLAST Open', 'BLAST', 'Лондон', 'Европа', true], [/blast open porto/i, 'BLAST Open', 'BLAST', 'Порту', 'Европа', true], [/blast open/i, 'BLAST Open', 'BLAST', 'Лиссабон', 'Европа', true], [/blast/i, 'BLAST Premier', 'BLAST', 'Копенгаген', 'Европа', true],
   [/esl pro league/i, 'ESL Pro League', 'ESL', 'Сент-Джулианс', 'Европа', true], [/pgl bucharest/i, 'PGL', 'PGL', 'Бухарест', 'Европа', true], [/pgl astana/i, 'PGL', 'PGL', 'Астана', 'Азия', true],
-  [/pgl cluj/i, 'PGL', 'PGL', 'Клуж-Напока', 'Европа', true], [/pgl masters/i, 'PGL Masters', 'PGL', 'Бухарест', 'Европа', true], [/pgl/i, 'PGL', 'PGL', '', 'Европа', true],
+  [/pgl lodz/i, 'PGL', 'PGL', 'Лодзь', 'Европа', true], [/pgl belgrade/i, 'PGL', 'PGL', 'Белград', 'Европа', true], [/pgl wallachia/i, 'PGL Wallachia', 'PGL', 'Бухарест', 'Европа', true],
+    [/pgl cluj/i, 'PGL', 'PGL', 'Клуж-Напока', 'Европа', true], [/pgl masters/i, 'PGL Masters', 'PGL', 'Бухарест', 'Европа', true], [/pgl/i, 'PGL', 'PGL', '', 'Европа', true],
   [/esports world cup/i, 'Esports World Cup', 'EWC', 'Эр-Рияд', 'Ближний Восток', true], [/asian champions league/i, 'Asian Champions League', 'ESL FACEIT Group', 'Шанхай', 'Азия', true], [/xse pro league/i, 'XSE Pro League', 'XSE', '', 'Азия', true], [/forge of legends/i, 'Forge of Legends', 'Forge', '', 'Европа', true], [/thunderpick/i, 'Thunderpick World Championship', 'Thunderpick', 'Мальта', 'Европа', true],
-  [/fissure/i, 'FISSURE Playground', 'FISSURE', 'Белград', 'Европа', true], [/starladder|starseries/i, 'StarLadder StarSeries', 'StarLadder', 'Будапешт', 'Европа', true],
+  [/perfect world/i, 'Perfect World', 'Perfect World', 'Шанхай', 'Азия', true], [/fissure/i, 'FISSURE Playground', 'FISSURE', 'Белград', 'Европа', true], [/starladder|starseries/i, 'StarLadder StarSeries', 'StarLadder', 'Будапешт', 'Европа', true],
   [/cs asia/i, 'CS Asia Championships', 'Perfect World', 'Шанхай', 'Азия', true], [/perfect world/i, 'Perfect World', 'Perfect World', 'Шанхай', 'Азия', true],
   [/cct season finals/i, 'CCT', 'Grid', 'Белград', 'Европа', true], [/cct north america/i, 'CCT', 'Grid', '', 'Северная Америка', false], [/cct south america/i, 'CCT', 'Grid', '', 'Южная Америка', false],
   [/cct/i, 'CCT', 'Grid', '', 'Европа', false], [/esl challenger league/i, 'ESL Challenger League', 'ESL', '', 'Регион', false], [/esl challenger/i, 'ESL Challenger', 'ESL', 'Мельбурн', 'Мир', true],
@@ -50,34 +51,48 @@ window.V30Series = { meta, LIB };
 
 /* ------------------------------------------------------------ Tier-1: ротация слотов */
 // слот (номер в расписании v29) → варианты [название, формат]; первый вариант — исходный
-const ROT = {
-  // третий параметр — класс события; при ротации Tier-1/S-Tier не теряет свой уровень
-  2: [['BLAST Premier Spring Groups', 'single', 'regular'], ['BLAST Open Lisbon', 'double', 'elite'], ['BLAST Open Rotterdam', 'double', 'elite'], ['BLAST Bounty Season 1', 'bounty', 'elite'], ['BLAST Rivals Spring', 'gsl', 'elite']],
-  4: [['PGL Bucharest', 'swiss', 'elite'], ['PGL Astana', 'swiss', 'elite'], ['PGL Cluj-Napoca', 'swiss', 'elite'], ['PGL Masters Bucharest', 'swiss', 'elite'], ['PGL Masters', 'gsl', 'elite']],
-  6: [['CCT Season Finals Europe', 'single', 'regular'], ['Elisa Masters Espoo', 'gsl', 'regular'], ['FISSURE Playground 3', 'double', 'regular'], ['FISSURE Playground 4', 'double', 'regular'], ['StarLadder StarSeries Fall', 'swiss', 'regular'], ['CS Asia Championships', 'double', 'elite'], ['Asian Champions League', 'swiss', 'elite']],
-  9: [['BLAST Premier Fall Groups', 'single', 'regular'], ['Esports World Cup', 'swiss', 'elite'], ['IEM Kraków', 'gsl', 'elite'], ['IEM Rio', 'double', 'elite'], ['BLAST Open Porto', 'double', 'elite']],
-  11: [['IEM Chengdu', 'double', 'elite'], ['IEM Beijing', 'double', 'elite'], ['IEM Atlanta', 'double', 'elite'], ['PGL Masters', 'gsl', 'elite'], ['YaLLa Compass Masters', 'double', 'elite'], ['CS Asia Championships', 'double', 'elite']],
-  12: [['Thunderpick World Championship', 'swiss', 'regular'], ['Esports World Cup', 'swiss', 'elite'], ['Tipsport Masters Prague', 'gsl', 'regular'], ['BLAST Rivals Fall', 'gsl', 'elite'], ['BLAST Bounty Season 2', 'bounty', 'elite'], ['StarLadder StarSeries S-Tier', 'swiss', 'regular']]
+// v101: организатор каждого свободного турнира Tier-1 выбирается заново каждый сезон по частоте, как на реальной
+// сцене: BLAST, ESL/IEM и PGL — основа календаря, Esports World Cup — не больше одного раза в сезон, редкие организаторы
+// (StarLadder, FISSURE, CS Asia, Thunderpick, YaLLa) — 0–2 раза. ESL Pro League (весна/осень) и Мейджоры не трогаются.
+const ORG = {
+  ESL: { w: 26, list: [['IEM Kraków', 'gsl'], ['IEM Katowice', 'double'], ['IEM Dallas', 'double'], ['IEM Melbourne', 'double'], ['IEM Chengdu', 'double'], ['IEM Rio', 'double']] },
+  BLAST: { w: 30, list: [['BLAST Open Lisbon', 'double'], ['BLAST Open Rotterdam', 'double'], ['BLAST Open Copenhagen', 'double'], ['BLAST Open London', 'double'], ['BLAST Open Porto', 'double'], ['BLAST Bounty Season 1', 'bounty'], ['BLAST Bounty Season 2', 'bounty'], ['BLAST Rivals Spring', 'gsl'], ['BLAST Rivals Fall', 'gsl']] },
+  PGL: { w: 28, list: [['PGL Cluj-Napoca', 'swiss'], ['PGL Bucharest', 'swiss'], ['PGL Astana', 'swiss'], ['PGL Lodz', 'swiss'], ['PGL Belgrade', 'swiss'], ['PGL Wallachia', 'swiss'], ['PGL Masters', 'swiss']] },
+  EWC: { w: 0, max: 1, list: [['Esports World Cup', 'swiss']] },   // Esports World Cup — каждый сезон один раз
+  RARE: { w: 26, max: 2, regular: true, list: [['StarLadder StarSeries Fall', 'swiss'], ['FISSURE Playground', 'double'], ['CS Asia Championships', 'double'], ['Thunderpick World Championship', 'swiss'], ['Perfect World Shanghai Masters', 'double'], ['YaLLa Compass Masters', 'double']] }
 };
+const MIN_EACH = { ESL: 2, BLAST: 2, PGL: 2, EWC: 1 };   // основные организаторы — не меньше двух турниров, EWC — ровно один
+const isFixed = e => !e || e.type === 'major' || /ESL Pro League/i.test(String(e.name || ''));
 function rotate() {
   const st = seasonState, arr = st.seasonSchedule, s = Number(st.currentSeason) || 1;
   if (!Array.isArray(arr) || st.v30RotSeason === s) return;
   const idx = Number(st.tournamentIndex) || 1, ct = typeof currentTournament !== 'undefined' ? currentTournament : null;
+  const slots = []; arr.forEach((e, i) => { if (i < 1 || isFixed(e) || i < idx || (i === idx && ct && !ct.completed)) return; slots.push(i); });
+  if (!slots.length) { st.v30RotSeason = s; return; }
+  const rnd = k => h32('org|' + s + '|' + k + '|' + (st.v29Salt || '')) / 4294967296;
+  // 1) организаторы по весам с минимумами и максимумами
+  const plan = [], cnt = {};
+  Object.entries(MIN_EACH).forEach(([o, n]) => { for (let j = 0; j < n && plan.length < slots.length; j++) plan.push(o); });
+  for (let k = 0; plan.length < slots.length; k++) {
+    const opts = Object.entries(ORG).filter(([o, d]) => d.w > 0 && (!d.max || plan.filter(x => x === o).length < d.max));
+    const sum = opts.reduce((a, [, d]) => a + d.w, 0); let r = rnd('w' + k) * sum, pick = opts[0][0];
+    for (const [o, d] of opts) { r -= d.w; if (r <= 0) { pick = o; break; } }
+    plan.push(pick);
+  }
+  // перемешиваем порядок, чтобы организаторы не шли блоками
+  for (let i = plan.length - 1; i > 0; i--) { const j = Math.floor(rnd('sh' + i) * (i + 1)); [plan[i], plan[j]] = [plan[j], plan[i]]; }
+  // 2) конкретный турнир организатора, без повторов в сезоне
   const used = new Set();
-  Object.entries(ROT).forEach(([slot, opts]) => {
-    const i = +slot, e = arr[i]; if (!e || e.type === 'major' || i < idx || (i === idx && ct && !ct.completed)) return;
-    const base = String(e.name || '').replace(/\s*\b(19|20)\d\d\b\s*$/, '');
-    if (!opts.some(o => o[0] === base)) return;          // слот уже переименован или занят другим событием
-    let k = h32('rot|' + s + '|' + i + '|' + (st.v29Salt || '')) % opts.length, o = opts[k];
-    for (let j = 0; j < opts.length && used.has(o[0]); j++) o = opts[(k + j) % opts.length];
-    used.add(o[0]);
-    e.name = `${o[0]} ${yearOf(s)}`; e.format = o[1];
-    if (o[2]) {
-      e.type = o[2]; e.fieldProfile = o[2] === 'elite' ? 'elite' : 'open';
-      e.min = o[2] === 'elite' ? 450 : 250; e.max = 2000;
-    }
+  slots.forEach((i, n) => {
+    const o = plan[n], d = ORG[o], e = arr[i];
+    let k = Math.floor(rnd('t' + i) * d.list.length), t = d.list[k];
+    for (let j = 0; j < d.list.length && used.has(t[0]); j++) t = d.list[(k + j) % d.list.length];
+    used.add(t[0]); cnt[o] = (cnt[o] || 0) + 1;
+    e.name = `${t[0]} ${yearOf(s)}`; e.format = t[1]; e.organizer = o;
+    const tp = d.regular ? 'regular' : 'elite';
+    e.type = tp; e.fieldProfile = tp === 'elite' ? 'elite' : 'open'; e.min = tp === 'elite' ? 450 : 250; e.max = 2000;
   });
-  st.v30RotSeason = s;
+  st.v30RotSeason = s; st.v30OrgMix = st.v30OrgMix || {}; st.v30OrgMix[s] = cnt;
   try { saveSeasonState(); } catch (e) {}
   try { if (typeof updateTournamentSuggestion === 'function') updateTournamentSuggestion(); } catch (e) {}
 }

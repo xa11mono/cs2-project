@@ -226,7 +226,10 @@ function strength(name) {
   if (!t) return 30;
   try { ensurePlayerLayer(t); } catch (e) {}
   const pts = (window.CS2Realism && window.CS2Realism.matchStrength(t)) || Number(getTeamCurrentPts(name)) || Number(t.pts) || 600; // v40: сила в симуляции отделена от рейтинга VRS
-  const R = 330 * Math.tanh((pts - 650) / 330);                     // рейтинг — с убывающей отдачей
+  // v101: центр шкалы — 1000 очков, ширина 500. Было tanh((pts−650)/330): выше ~1300 очков вклад насыщался (1905 и 1290
+  // отличались на 14 из 330), топ-25 для движка были равны по рейтингу, фаворит выигрывал ~66% в любой паре, и
+  // команды из третьего-четвёртого десятка за полгода поднимались в топ-10.
+  const R = 300 * Math.tanh((pts - 1000) / 500);
   const pl = t.playerLayer || {};
   const P = ((Number(pl.power) || 84) - 85) * 14;                    // уровень игроков
   const F = (clamp(Number(t.form) || 100, 85, 115) - 100) * 2.5;
@@ -365,21 +368,22 @@ function developPlayers(season) {
    =================================================================== */
 const MAJOR_NAMES = ['FiRe Major Buenos Aires', 'PGL Major Singapore', 'IEM Cologne Major', 'StarLadder Major Budapest', 'Perfect World Shanghai Major', 'BLAST.tv Austin Major', 'PGL Major Copenhagen', 'IEM Rio Major', 'PGL Major Stockholm', 'Perfect World Major Chengdu', 'BLAST.tv Major Madrid', 'ESL One Rio Major'];
 const SLOTS = [ // [тип, название, день от 2 января, длительность (дн.), формат, профиль]
-  // v84: длительности соответствуют реальному объёму матчей (Major — три Swiss-стадии + плей-офф ≈ 2 недели),
-  // последний Major заканчивается до середины декабря: сезон = календарный год.
-  ['elite', 'IEM Katowice (Spodek Arena)', 18, 8, 'double', 'elite'],
-  ['regular', 'BLAST Premier Spring Groups', 42, 5, 'single', 'open'],
-  ['elite', 'ESL Pro League Season', 64, 9, 'gsl', 'elite'],
-  ['regular', 'PGL Bucharest', 90, 7, 'swiss', 'open'],
-  ['elite', 'BLAST Premier Spring Final', 112, 7, 'double', 'elite'],
-  ['regular', 'CCT Season Finals Europe', 134, 5, 'single', 'open'],
-  ['elite', 'IEM Dallas', 152, 7, 'double', 'elite'],
-  ['elite', 'IEM Cologne (Lanxess Arena)', 172, 15, 'double', 'elite'],     // слот летнего Major (июнь)
-  ['regular', 'BLAST Premier Fall Groups', 204, 5, 'single', 'open'],
-  ['elite', 'ESL Pro League Fall', 226, 9, 'gsl', 'elite'],
-  ['elite', 'IEM Chengdu', 252, 7, 'double', 'elite'],
-  ['regular', 'Thunderpick World Championship', 274, 7, 'swiss', 'open'],
-  ['elite', 'BLAST Premier World Final', 300, 7, 'double', 'elite'],
+  // v101: организаторы и месяцы — как в реальном календаре HLTV (2026–2027): на 12 турниров Tier-1 — ESL/IEM 4
+  // (IEM зимой и весной, ESL Pro League весной и осенью), PGL 3, BLAST 3, Esports World Cup и один слот «прочих»
+  // (CS Asia, FISSURE, StarLadder, Thunderpick, YaLLa — по очереди, v30). Мейджоры — июнь и декабрь.
+  ['elite', 'IEM Kraków', 24, 9, 'gsl', 'elite'],                          // конец января
+  ['elite', 'PGL Cluj-Napoca', 42, 8, 'swiss', 'elite'],                   // февраль
+  ['elite', 'ESL Pro League Season', 63, 10, 'gsl', 'elite'],              // март
+  ['elite', 'BLAST Open Lisbon', 84, 7, 'double', 'elite'],                // конец марта
+  ['elite', 'PGL Astana', 104, 7, 'swiss', 'elite'],                       // апрель
+  ['elite', 'BLAST Rivals Spring', 124, 6, 'gsl', 'elite'],                // май
+  ['elite', 'IEM Dallas', 142, 7, 'double', 'elite'],                      // конец мая
+  ['elite', 'IEM Cologne (Lanxess Arena)', 160, 15, 'double', 'elite'],    // слот летнего Major (июнь)
+  ['elite', 'Esports World Cup', 196, 8, 'swiss', 'elite'],                // июль
+  ['regular', 'CS Asia Championships', 226, 7, 'double', 'open'],          // август — «прочие» по очереди
+  ['elite', 'PGL Masters', 248, 7, 'swiss', 'elite'],                      // сентябрь
+  ['elite', 'ESL Pro League Fall', 266, 10, 'gsl', 'elite'],               // конец сентября
+  ['elite', 'BLAST Open Porto', 292, 7, 'double', 'elite'],                // октябрь
   ['major', null, 326, 15, 'swiss', 'major']                                 // финал сезона: зимний Major (декабрь)
 ];
 const MID_MAJOR_SLOT = 8;

@@ -568,6 +568,8 @@
       // история разговоров
       const done = S().convs.filter(c => c.team === me() && c.st !== 'open').slice(0, 12);
       const hist = root.querySelectorAll('.v96-panel')[1];
+      // v101: открытый «Центр событий» = всё просмотрено (счётчик в меню и колокольчике сбрасывается)
+      try { list.forEach(c => { S().seen[c.id] = 1; }); const V9 = W.V96Windows; if (V9) { const st = V9.state(); V9.events().forEach(e => { st.seen[e.id] = 1; }); } setTimeout(() => { try { if (W.V99Mail) W.V99Mail.unread().forEach(m => { m.read = true; }); } catch (e) {} }, 0); } catch (e) {}   // письма — после отрисовки, чтобы новые были видны выделенными
       if (hist && done.length) hist.insertAdjacentHTML('beforeend', `<h3 class="v96-ph sub">Разговоры с игроками</h3><ul class="v96-hist">${done.map(c => `<li><time>${esc(fdate(c.doneAt || c.ts))}</time><b>${esc(c.nick)} · ${esc(val(SC[c.key].title, ctx(c)) || '')}</b><span>${esc(c.res || '')}</span></li>`).join('')}</ul>`);
     }
     if (pg === 'squad' && me()) {

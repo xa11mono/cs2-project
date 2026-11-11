@@ -315,6 +315,11 @@
         const first = root.querySelector('.v96-panel.wide'); if (first) first.insertAdjacentHTML('afterend', scrimPanel());
       }
       if (pg === 'desk') {
+        const dash = root.querySelector('.ax-dash'), lastD = S().deb.list[0];
+        if (dash) {   // v101: «Главная» v100 — разбор последнего матча карточкой дашборда
+          if (lastD && !dash.querySelector('.ax-deb')) dash.insertAdjacentHTML('beforeend', `<section class="ax-card ax-deb v99-debbox"><header class="ax-h"><h3>Разбор последнего матча</h3><button type="button" class="ax-link" data-nav="debrief">все разборы</button></header>${debCard(lastD, false)}</section>`);
+          return;
+        }
         if (root.querySelector('.v99-nextbox')) return;
         const nm = nextMatch(), last = S().deb.list[0];
         const next = nm ? `<div class="v99-next">${H.logo(me(), 'md')}<b>${esc(me())}</b><span class="vs">VS</span><b data-team="${esc(nm.opp)}">${esc(nm.opp)}</b>${H.logo(nm.opp, 'md')}<div><small>${esc(nm.ev || '')}${nm.stage ? ' · ' + esc(nm.stage) : ''}</small><small>${nm.live ? '<span class="hs-live">LIVE</span> идёт сейчас' : nm.at ? esc(fdate(nm.at)) : 'по расписанию турнира'} · соперник #${rank(nm.opp)}</small></div><span class="v99-actions"><button type="button" class="hs-btn ghost sm" data-nav="scout">Подготовка</button><button type="button" class="hs-btn ghost sm" data-nav="tactics">Тактика</button></span></div>` : '<p class="hs-note">Ближайшего матча в сетках нет. Расписание — в «Турнирах клуба».</p>';

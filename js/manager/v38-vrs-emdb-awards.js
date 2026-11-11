@@ -47,16 +47,39 @@
     return days <= 30 ? 1 : days >= 180 ? 0 : (180 - days) / 150;
   };
   const eventPool = ev => Math.max(0, Number(ev?.prizePool ?? ev?.prize ?? ev?.prizeMoney) || 0);
+  // v101: вес события ограничен его уровнем (pointsMult: Tier-2 — 0.35, академии — 0.18, Tier-3 — 0.12, открытые
+  // отборы — 0.12, закрытые — 0.3; прочие отборы — не выше 0.25). Раньше уровень учитывался только в личных встречах, а
+  // «сила побеждённых», «сеть соперников» и «победы на LAN» брали вес из призового фонда: десяток побед на LAN Tier-2
+  // давал тот же максимум, что победы на Tier-1, и команды без призовых (100 Thieves: $4k против $160k у MOUZ)
+  // поднимались в топ-10.
+  const tierCap = ev => {
+    const m = Number(ev?.pointsMult); if (Number.isFinite(m) && m > 0 && m < 1) return m;
+    if (ev && (ev.qual || ev.isQualifier || /qualifier|квалиф|отбор/i.test(String(ev.name || ev.tournament || '')))) return 0.25;
+    const tier = String(ev?.tier ?? ''), kind = String(ev?.kind || '');
+    if (tier === '3' || /tier3/i.test(kind)) return 0.12;
+    if (/academy/i.test(kind)) return 0.18;
+    if (tier === '2' || /tier2/i.test(kind)) return 0.35;
+    return 1;
+  };
   const eventWeight = ev => {
+    const cap = tierCap(ev);
     const explicit = Number(ev?.vrsEventWeight ?? ev?.eventWeight);
-    if (Number.isFinite(explicit) && explicit > 0) return clamp(explicit, 0, 1);
+    if (Number.isFinite(explicit) && explicit > 0) return clamp(Math.min(explicit, cap), 0, 1);
     const pool = eventPool(ev);
     // Valve publishes an Event Weight per match/event but does not publish
     // the complete event-weight calculator. Use a continuous prize-pool proxy
     // when the game event has no manually specified VRS weight.
     if (!pool) return 0;
-    return clamp(Math.sqrt(Math.min(pool, 1000000) / 1000000), 0.05, 1);
+    return clamp(Math.min(Math.sqrt(Math.min(pool, 1000000) / 1000000), cap), 0.02, 1);
   };
+  // v101: уже записанные результаты старых сохранений — тот же предел (у записи фонового турнира есть sig = значимость)
+  function migrateLedgerWeights() {
+    try {
+      if (typeof seasonState === 'undefined' || !seasonState || seasonState.v101VrsW) return;
+      rawTeams().forEach(t => (t?.vrsLedger?.matches || []).forEach(x => { if (x && x.low && Number(x.sig) > 0 && Number(x.sig) < 1 && Number(x.eventWeight) > Number(x.sig)) x.eventWeight = Number(x.sig); }));
+      seasonState.v101VrsW = 1;
+    } catch (e) {}
+  }
   const isLan = ev => {
     if (ev?.isLAN === true || ev?.lan === true || ev?.offline === true) return true;
     if (ev?.isLAN === false || ev?.lan === false || ev?.online === true) return false;
@@ -212,6 +235,7 @@
     return result;
   }
   function recalcAll(list = liveTeams(), now=vrsNow()) {
+    migrateLedgerWeights();
     const safeList = [...new Set((Array.isArray(list) ? list : []).map(resolveTeam).filter(Boolean))];
     safeList.forEach(ensureTeam);
     const scores = computeScores(safeList,now);

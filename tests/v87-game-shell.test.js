@@ -47,7 +47,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   console.log('PASS v87: ranking lineups, roster cards and player condition rings');
 
   // 4. карьера: клуб менеджера в меню и карточки состава в штабе
-  const career = await p.evaluate(async () => { const me = HS.ranked()[2].name; V31.setManaged(me); HS.nav('org'); await new Promise(r => setTimeout(r, 400)); return { brand: document.querySelector('#gs-side .gs-who b')?.textContent, me, cards: document.querySelectorAll('#hs-page .gs-staff .gs-card').length, chips: document.querySelectorAll('#hs-page .gs-staff .gs-st').length }; });
+  const career = await p.evaluate(async () => { const me = HS.ranked()[2].name; V31.setManaged(me); HS.nav('org'); await new Promise(r => setTimeout(r, 400)); return { brand: (document.querySelector('#gs-side .ax-club-name') || document.querySelector('#gs-side .gs-who b'))?.textContent   /* v100: шапка меню — .ax-club-name */, me, cards: document.querySelectorAll('#hs-page .gs-staff .gs-card').length, chips: document.querySelectorAll('#hs-page .gs-staff .gs-st').length }; });
   assert(career.brand === career.me, 'sidebar brand shows the managed club');
   assert(career.cards >= 5 && career.chips >= 5, 'org page shows the starting five with status chips');
   console.log('PASS v87: managed club in the sidebar, staff cards on the org page');
@@ -56,10 +56,10 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   await p.setViewportSize({ width: 1024, height: 768 }); await p.waitForTimeout(300);
   const rail = await p.evaluate(() => ({ railed: document.documentElement.classList.contains('gs-railed'), w: document.getElementById('gs-side').getBoundingClientRect().width }));
   assert(rail.railed && rail.w <= 80, 'sidebar collapses to a rail below 1100px');
-  await p.click('#gs-side [data-gs-tog="major"]'); await p.waitForTimeout(350);
+  await p.click('#gs-side [data-ax-tog="hist"], #gs-side [data-gs-tog="major"]');   /* v100: папка «История» */ await p.waitForTimeout(350);
   const peek = await p.evaluate(() => document.getElementById('gs-side').getBoundingClientRect().width);
   assert(peek > 200, 'folder opens the menu over the content in rail mode');
-  await p.click('#gs-side .gs-grp[data-gs-grp="major"] .gs-sub [data-nav]'); await p.waitForTimeout(300);
+  await p.click('#gs-side .ax-grp.open .ax-sub [data-nav], #gs-side .gs-grp[data-gs-grp="major"] .gs-sub [data-nav]'); await p.waitForTimeout(300);
   assert(await p.evaluate(() => !document.getElementById('gs-side').classList.contains('gs-peek')), 'choosing a page closes the overlay');
   console.log('PASS v87: rail and overlay menu on narrow screens');
 

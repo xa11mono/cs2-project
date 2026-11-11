@@ -58,9 +58,10 @@ setTimeout(() => { try { if (!rankStore().snaps.length) takeRankSnap('init'); } 
 function rankChart(name) { // позиция команды по снимкам (лучше — выше)
   const S = rankStore().snaps.filter(x => x.n.includes(name)).slice(-40); if (S.length < 2) return empty('История рейтинга появится через пару игровых недель');
   const W = 640, Hh = 170, pl = 30, pr = 10, pt = 10, pb = 22, vals = S.map(x => rankAt(name, x)), lo = 1, hi = Math.max(10, ...vals) + 1;
-  const X = i => pl + i * (W - pl - pr) / (S.length - 1), Y = v => pt + (v - lo) / (hi - lo) * (Hh - pt - pb);
+  // v101: логарифмическая шкала — разница между #1 и #10 важнее, чем между #60 и #70; одна далёкая точка больше не сжимает график
+  const lg = v => Math.log(Math.max(1, v)), X = i => pl + i * (W - pl - pr) / (S.length - 1), Y = v => pt + (lg(v) - lg(lo)) / (lg(hi) - lg(lo)) * (Hh - pt - pb);
   const path = vals.map((v, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1)).join('');
-  const grid = [1, 5, 10, 20, 30].filter(v => v < hi).map(v => `<line class="cg" x1="${pl}" x2="${W - pr}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/><text class="cy" x="${pl - 6}" y="${(Y(v) + 3).toFixed(1)}">#${v}</text>`).join('');
+  const grid = [1, 3, 10, 20, 50, 100, 200].filter(v => v < hi).map(v => `<line class="cg" x1="${pl}" x2="${W - pr}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/><text class="cy" x="${pl - 6}" y="${(Y(v) + 3).toFixed(1)}">#${v}</text>`).join('');
   const seasons = []; S.forEach((x, i) => { if (!i || S[i - 1].s !== x.s) seasons.push(`<text class="cy" x="${X(i).toFixed(1)}" y="${Hh - 4}" text-anchor="start">С${x.s}</text>`); });
   return `<svg class="hs-chart" viewBox="0 0 ${W} ${Hh}">${grid}${seasons.join('')}<path class="cline" d="${path}"/>${vals.map((v, i) => `<circle class="cdot up" cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3.5" data-tip="#${v} · ${S[i].p[S[i].n.indexOf(name)]} очков · ${fdate(S[i].ts)}"/>`).join('')}</svg>`;
 }

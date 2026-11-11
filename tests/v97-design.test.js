@@ -17,10 +17,11 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   // 1. наблюдатель: меню по группам, страницы клуба приглушены, но остаются в меню
   await go('#/watch');
   const s1 = await p.evaluate(() => ({ mode: document.documentElement.dataset.v97Mode, pg: document.getElementById('hs-page').dataset.pg,
-    caps: [...document.querySelectorAll('#gs-side .gs-grp[data-gs-grp="game"] .gs-sub > .gs-it[data-nav]')].map(x => x.dataset.nav), more: !!document.querySelector('#gs-side .v97-moretg'), dim: document.querySelectorAll('#gs-side .gs-it.v97-dim').length,
+    caps: [...document.querySelectorAll('#gs-side .ax-nav > .ax-it[data-nav]')].map(x => x.dataset.nav), more: !!document.querySelector('#gs-side .v97-moretg'), dim: document.querySelectorAll('#gs-side .gs-it.v97-dim').length,
     org: !!document.querySelector('#gs-side .gs-it[data-nav="org"]'), off: !!document.querySelector('#hs-page .v97-off'), nav: !!document.querySelector('#hs-page .v97-off [data-nav="matches"]') }));
   assert(s1.mode === 'spectator' && s1.pg === 'watch', JSON.stringify(s1));
-  assert(s1.caps.join() === 'watch,season,pick' && !s1.more && s1.dim === 0, 'меню наблюдателя: три раздела, без «Ещё» (v99.1) ' + JSON.stringify(s1));
+  // v100: меню наблюдателя — эфир, матчи, турниры, Pick'Em, прогнозы…; страниц клуба в нём нет
+  assert(['home', 'watch', 'matches', 'pickem', 'predict'].every(k => s1.caps.includes(k)) && !s1.caps.includes('squad') && !s1.more && s1.dim === 0, 'меню наблюдателя: ' + JSON.stringify(s1));
   assert(s1.off && s1.nav, 'экран ожидания эфира');
   pass('наблюдатель: меню ' + s1.caps.join(' / ') + ', экран ожидания эфира');
 
@@ -33,16 +34,17 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   // 3. менеджер: группы, счётчик событий, заголовки страниц
   const me = await p.evaluate(() => { const n = HS.ranked().filter(t => !t.isAcademy)[11].name; V31.setManaged(n); V31.S(); try { V31.setAuto('training', true); } catch (e) {} return n; });
   await go('#/training');
-  const m1 = await p.evaluate(() => ({ mode: document.documentElement.dataset.v97Mode, caps: [...document.querySelectorAll('#gs-side .gs-grp[data-gs-grp="game"] .gs-sub > .gs-it[data-nav]')].map(x => x.dataset.nav), h1: !!document.querySelector('#hs-page h1'),
-    fin: (() => { const b = document.querySelector('#gs-side .gs-it[data-nav="finance"]'), s = document.getElementById('gs-side'); if (!b) return false; b.scrollIntoView({ block: 'center' }); const r = b.getBoundingClientRect(); return r.height > 20 && document.elementFromPoint(r.left + 60, r.top + r.height / 2)?.closest('[data-nav]') === b; })() }));
-  assert(m1.mode === 'manager' && m1.caps.join() === 'desk,squad,scout,negotiate,finance,watch', JSON.stringify(m1));
-  assert(await p.evaluate(() => [...document.querySelectorAll('#hs-page .v99-tabs .v99-tab')].map(x => x.dataset.nav).join() === 'squad,training,tactics,staff,academy' && !!document.querySelector('#hs-page .v99-tab.on[data-nav="training"]') && !!document.querySelector('#gs-side .gs-it.on[data-nav="squad"]')), 'v99.1: «Тренировки» — вкладка раздела «Команда»');
-  assert(m1.h1, 'у страницы «Тренировки» есть заголовок'); assert(m1.fin, 'раздел «Клуб» (финансы) виден в меню');
+  const m1 = await p.evaluate(() => ({ mode: document.documentElement.dataset.v97Mode, caps: [...document.querySelectorAll('#gs-side .ax-nav > .ax-it[data-nav]')].map(x => x.dataset.nav), h1: !!document.querySelector('#hs-page h1'),
+    fin: (() => { const b = document.querySelector('#gs-side .ax-it[data-nav="org"], #gs-side .gs-it[data-nav="finance"]'), s = document.getElementById('gs-side'); if (!b) return false; b.scrollIntoView({ block: 'center' }); const r = b.getBoundingClientRect(); return r.height > 20 && document.elementFromPoint(r.left + 60, r.top + r.height / 2)?.closest('[data-nav]') === b; })() }));
+  // v100: меню менеджера — Главная, Менеджер, Команда, Трансферы, Соревнования, Календарь, Организация (+ «Мир CS2»)
+  assert(m1.mode === 'manager' && ['desk', 'squad', 'negotiate', 'clubev', 'org'].every(k => m1.caps.includes(k)), JSON.stringify(m1));
+  assert(await p.evaluate(() => [...document.querySelectorAll('#hs-page .v99-tabs .v99-tab')].map(x => x.dataset.nav).join() === 'squad,training,tactics,staff,academy' && !!document.querySelector('#hs-page .v99-tab.on[data-nav="training"]') && !!document.querySelector('#gs-side .ax-it.on[data-nav="squad"], #gs-side .gs-it.on[data-nav="squad"]')), 'v99.1: «Тренировки» — вкладка раздела «Команда»');
+  assert(m1.h1, 'у страницы «Тренировки» есть заголовок'); assert(m1.fin, 'раздел «Организация» виден в меню');
   await p.evaluate(() => { const t = HS.teamBy(V31.managed()), a = t.players[1]; V31.ensurePerson(a); a.conf = 20; V31.EV.confidence.check(t); });
   await p.waitForTimeout(1500);
   if (await p.$('#v96-gate:not([hidden]) .v96-x')) await p.click('#v96-gate .v96-x');
   await p.waitForTimeout(1200);
-  const badge = await p.evaluate(() => document.querySelector('#gs-side .gs-it[data-nav="desk"] .v97-badge')?.textContent || '');
+  const badge = await p.evaluate(() => (document.querySelector('#gs-side .ax-it[data-nav="desk"] .ax-badge') || document.querySelector('#gs-side .gs-it[data-nav="desk"] .v97-badge'))?.textContent || '');
   assert(badge === '1', 'счётчик событий в меню: ' + badge);
   pass('менеджер: меню ' + m1.caps.join(' / ') + ', счётчик событий ' + badge);
 
@@ -95,7 +97,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   pass('страницы карьеры и эфира: без ошибок, содержимое не шире окна на 1672 и 390 px');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  assert(html.includes('css/v97-design.css?v=99') && html.includes('js/manager/v97-design.js?v=99'), 'v97 подключён');
+  assert(html.includes('css/v97-design.css?v=101') && html.includes('js/manager/v97-design.js?v=101'), 'v97 подключён');
   console.log('v97 design: all checks passed');
   await ctx.close();
 })().catch(e => { console.error('FAIL', e.message); process.exit(1); });

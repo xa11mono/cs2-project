@@ -6,10 +6,11 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
 (async () => {
   const dir = path.resolve(__dirname, '..');
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  ['v99-perf.js?v=99', 'v99-talks.js?v=99', 'v99-transfers.js?v=99', 'v99-manager.js?v=99', 'v99-spectator.js?v=99', 'v99.css?v=99'].forEach(f => assert(html.includes(f), 'подключён ' + f));
+  ['v99-perf.js?v=101', 'v99-talks.js?v=101', 'v99-transfers.js?v=101', 'v99-manager.js?v=101', 'v99-spectator.js?v=101', 'v99.css?v=101'].forEach(f => assert(html.includes(f), 'подключён ' + f));
   const ctx = await chromium.launchPersistentContext(fs.mkdtempSync(path.join(os.tmpdir(), 'cs2-v99-')), { viewport: { width: 1600, height: 900 } });
   const p = ctx.pages()[0] || await ctx.newPage(); const errs = [];
   p.on('pageerror', e => errs.push(e.message)); p.on('dialog', d => d.accept());
+  await p.addInitScript(() => { try { localStorage.setItem('cs2.ax.mode', 'manager'); } catch (e) {} });   // v100: без окна выбора режима
   await p.goto('file://' + dir + '/index.html'); await p.waitForTimeout(3500);
   const lg = await p.$('#v84-legacy-modal [data-lg="history"]'); if (lg) { await lg.click(); await p.waitForTimeout(500); }
   await p.waitForFunction(() => window.V99Talks && window.V99Scout && window.V99Spec && window.HS, null, { timeout: 30000 });

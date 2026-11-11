@@ -126,7 +126,9 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   // 6. рабочее место и досье игрока
   await p.evaluate(() => window.HS.nav('desk')); await p.waitForTimeout(600);
   const desk = await p.evaluate(() => { const r = document.getElementById('hs-page'); return { h: r.querySelector('h1').textContent, boxes: Array.from(r.querySelectorAll('.hs-box-h h3')).map(x => x.textContent), kpis: r.querySelectorAll('.v95-kpis > div').length, sec: r.querySelectorAll('.v95-sec button').length, todo: r.querySelectorAll('.v95-todo li').length }; });
-  assert(/Рабочее место/.test(desk.h) && desk.kpis === 4 && desk.sec === 12 && desk.boxes.some(b => /Требуют решения/.test(b)) && desk.boxes.includes('Последний результат') && desk.boxes.includes('В сезоне'), 'рабочее место: ' + JSON.stringify(desk));
+  // v100: «Рабочее место» менеджера — дашборд «Главная» (герой, следующий матч, обзор клуба, задачи, календарь)
+  const dash = await p.evaluate(() => { const r = document.getElementById('hs-page'); return { dash: !!r.querySelector('.ax-dash'), parts: ['.ax-hero', '.ax-next-card', '.ax-overview', '.ax-tasks', '.ax-cal'].filter(s => r.querySelector(s)).length }; });
+  assert(dash.dash ? dash.parts === 5 : (/Рабочее место/.test(desk.h) && desk.kpis === 4 && desk.boxes.some(b => /Требуют решения/.test(b))), 'рабочее место: ' + JSON.stringify(Object.assign(desk, dash)));
   const nick = await p.evaluate(() => teams.find(x => x.name === window.CS2Control.team()).players[0].nick);
   await p.evaluate(n => window.HS.nav('player', n), nick); await p.waitForTimeout(900);
   const dos = await p.evaluate(() => { const r = document.getElementById('hs-page'); const tabs = Array.from(r.querySelectorAll('.hs-ptabs .hs-ptab')).map(x => x.textContent); return { tabs }; });

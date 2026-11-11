@@ -16,7 +16,7 @@ assert(hub.includes('if (archiveDbOk) {'),'archive must avoid sync localStorage 
 const autosave=read('js/manager/v56-autosave.js');
 assert(autosave.includes('const canonical = /^(?:cs2_season_state_v61') && autosave.includes('if (key == null || canonical.test(key)) continue'),'autosave must not duplicate canonical save data in localStorageSnapshot');
 const html=read('index.html');
-for(const f of ['auto_script_1.js?v=99','v25-hltv-hub.js?v=99','v56-autosave.js?v=99']) assert(html.includes(f),'cache bust '+f);
+for(const f of ['auto_script_1.js?v=101','v25-hltv-hub.js?v=101','v56-autosave.js?v=101']) assert(html.includes(f),'cache bust '+f);
 console.log('PASS v77: no full-team synchronous write during startup');
 console.log('PASS v77: O(n+m) legacy team lookup and one-pass roster supplementation');
 console.log('PASS v77: archive migration writes in yielding batches');
