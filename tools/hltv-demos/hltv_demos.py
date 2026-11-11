@@ -2,7 +2,7 @@
 HLTV demo downloader.
 
 Открывает настоящий браузер (свой Chromium/Chrome или твой Brave через порт 9222),
-ищет на HLTV матчи с демками на нужных картах за нужные годы и по уровню (звёздам),
+ищет на HLTV матчи с демками на нужных картах за нужные годы и по уровню команд (рейтинг HLTV),
 и скачивает демки в выбранную папку. Один и тот же матч никогда не качается дважды,
 даже если в Bo3 сыграно две нужные карты (история хранится в downloaded.json).
 
@@ -11,6 +11,7 @@ HLTV demo downloader.
 
 Или сразу аргументами:
     python hltv_demos.py --maps mirage,inferno --years 2023-2024 --tiers 1,2 --out D:\\demos
+    (tier по умолчанию = место команд в рейтинге HLTV на момент матча: 1 = топ-30, 2 = 31-80, 3 = ниже)
 """
 
 import argparse
@@ -53,12 +54,19 @@ MAPS = {
 }
 MAP_ALIASES = {"d2": "dust2", "dust 2": "dust2", "de_dust2": "dust2", "cbble": "cobblestone"}
 
-# Уровень турнира -> сколько звёзд у матча на HLTV (звёзды ставятся по рейтингу команд)
-TIERS = {
-    1: (3, 5),  # tier-1: 3-5 звёзд (топ-команды, крупные турниры)
-    2: (1, 2),  # tier-2: 1-2 звезды
-    3: (0, 0),  # tier-3: 0 звёзд
+# Tier по умолчанию считается по месту команд в мировом рейтинге HLTV на момент матча
+# (World rank на странице матча). Пороги меняются флагами --t1 / --t2.
+DEFAULT_T1 = 30   # tier-1: место 1..30
+DEFAULT_T2 = 80   # tier-2: место 31..80, всё что ниже или без рейтинга - tier-3
+UNRANKED = 9999
+
+# Старый режим (--tier-mode stars): tier по звёздам матча
+STAR_TIERS = {
+    1: (3, 5),
+    2: (1, 2),
+    3: (0, 0),
 }
+TIERS = STAR_TIERS
 
 
 # ----------------------------------------------------------------- утилиты
@@ -102,7 +110,28 @@ def parse_tiers(text: str):
 
 
 def stars_allowed(stars: int, tiers) -> bool:
-    return any(lo <= stars <= hi for lo, hi in (TIERS[t] for t in tiers))
+    return any(lo <= stars <= hi for lo, hi in (STAR_TIERS[t] for t in tiers))
+
+
+def team_tier(rank: int, t1: int, t2: int) -> int:
+    if rank <= t1:
+        return 1
+    if rank <= t2:
+        return 2
+    return 3
+
+
+def match_tier(ranks, args) -> int:
+    """Tier матча по рейтингу команд.
+    rule=worst: по более слабой команде (обе команды должны быть этого уровня);
+    rule=best:  по более сильной команде (хватит одной команды этого уровня)."""
+    ranks = list(ranks) + [UNRANKED] * (2 - len(ranks))
+    tiers = [team_tier(r, args.t1, args.t2) for r in ranks[:2]]
+    return max(tiers) if args.rule == "worst" else min(tiers)
+
+
+def fmt_rank(r):
+    return f"#{r}" if r and r < UNRANKED else "без рейтинга"
 
 
 def load_state(out_dir):
@@ -255,7 +284,18 @@ def parse_match_page(soup):
             pass
 
     teams = [clean(t.text) for t in soup.select(".teamsBox .teamName")][:2]
+
+    # Мировой рейтинг команд на момент матча: блок lineups -> "World rank: #5"
+    ranks = []
+    for el in soup.select(".lineups .lineup .teamRanking, .teamRanking"):
+        m = re.search(r"#\s*(\d+)", el.get_text(" "))
+        ranks.append(int(m.group(1)) if m else UNRANKED)
+        if len(ranks) == 2:
+            break
+    ranks += [UNRANKED] * (2 - len(ranks))
+
     return {
+        "ranks": ranks,
         "maps": played,
         "demo_link": demo_link,
         "event": clean(event_el.text) if event_el else "",
@@ -376,7 +416,13 @@ def get_settings():
     ap = argparse.ArgumentParser(description="Скачивание демок с HLTV по картам, годам и уровню турниров")
     ap.add_argument("--maps", help="карты через запятую: mirage,inferno,...")
     ap.add_argument("--years", help="годы: 2024 или 2022-2024 или 2021,2023")
-    ap.add_argument("--tiers", help="уровни через запятую: 1,2,3 (1=3-5★, 2=1-2★, 3=0★)")
+    ap.add_argument("--tiers", help="уровни через запятую: 1,2,3")
+    ap.add_argument("--tier-mode", choices=["rank", "stars"], default="rank",
+                    help="rank = по месту команд в рейтинге HLTV (по умолчанию), stars = по звёздам матча")
+    ap.add_argument("--t1", type=int, default=DEFAULT_T1, help=f"tier-1 = топ-N рейтинга (по умолч. {DEFAULT_T1})")
+    ap.add_argument("--t2", type=int, default=DEFAULT_T2, help=f"tier-2 = до места N (по умолч. {DEFAULT_T2})")
+    ap.add_argument("--rule", choices=["worst", "best"],
+                    help="worst = tier по более слабой команде, best = по более сильной")
     ap.add_argument("--out", help="папка для демок")
     ap.add_argument("--limit", type=int, help="максимум новых матчей за запуск (0 = без лимита)")
     ap.add_argument("--per-event", type=int, help="максимум матчей с одного турнира (0 = без лимита)")
@@ -393,8 +439,19 @@ def get_settings():
     if not args.years:
         args.years = ask("Какие годы (2024, 2022-2024, 2021,2023)", str(datetime.now().year))
     if not args.tiers:
-        print(" Tier: 1 = 3-5★ (топ), 2 = 1-2★, 3 = 0★")
+        if args.tier_mode == "rank":
+            print(f" Tier по рейтингу HLTV на момент матча: 1 = топ-{args.t1}, "
+                  f"2 = места {args.t1 + 1}-{args.t2}, 3 = ниже / без рейтинга")
+        else:
+            print(" Tier по звёздам: 1 = 3-5★, 2 = 1-2★, 3 = 0★")
         args.tiers = ask("Какие tier (через запятую)", "1")
+    if args.tier_mode == "rank" and not args.rule:
+        print(" Как считать tier матча:")
+        print("   worst - обе команды должны быть этого уровня (напр. #3 vs #25 при t1=30 -> tier-1)")
+        print("   best  - достаточно одной команды этого уровня")
+        args.rule = ask("worst / best", "worst").lower()
+        if args.rule not in ("worst", "best"):
+            args.rule = "worst"
     if not args.out:
         args.out = ask("Папка для демок", os.path.abspath("hltv_demos"))
     if args.limit is None:
@@ -421,8 +478,11 @@ def main():
     os.makedirs(args.out, exist_ok=True)
     state = load_state(args.out)
     done = state["matches"]
+    checked = state.setdefault("checked", {})  # кэш уже просмотренных матчей (карты, рейтинг) - повторно не открываем
 
-    print(f"\n[*] Карты: {args.maps} | Годы: {args.years} | Tier: {args.tiers} | Папка: {args.out}")
+    tier_desc = (f"по рейтингу (t1<=#{args.t1}, t2<=#{args.t2}, правило {args.rule})"
+                 if args.tier_mode == "rank" else "по звёздам")
+    print(f"\n[*] Карты: {args.maps} | Годы: {args.years} | Tier: {args.tiers} {tier_desc} | Папка: {args.out}")
     print(f"[*] Уже скачано раньше: {len(done)} матчей (они будут пропущены)\n")
 
     per_event = {}
@@ -462,15 +522,33 @@ def main():
                             if mid in done or mid in seen_now:
                                 continue
                             seen_now.add(mid)
-                            if not stars_allowed(row["stars"], args.tiers):
+                            if args.tier_mode == "stars" and not stars_allowed(row["stars"], args.tiers):
                                 continue
 
                             title = " vs ".join(row["teams"]) or mid
-                            print(f"  -> {title} | {row['event']} | {row['stars']}★")
-                            msoup = open_page(page, row["url"])
-                            if msoup is None:
-                                continue
-                            info = parse_match_page(msoup)
+                            cached = checked.get(mid)
+                            if cached is not None:
+                                info = cached
+                            else:
+                                msoup = open_page(page, row["url"])
+                                if msoup is None:
+                                    continue
+                                info = parse_match_page(msoup)
+                                if info["demo_link"]:
+                                    checked[mid] = info
+
+                            if args.tier_mode == "rank":
+                                tier = match_tier(info["ranks"], args)
+                                ranks_txt = " vs ".join(fmt_rank(r) for r in info["ranks"])
+                                if tier not in args.tiers:
+                                    if cached is None:
+                                        print(f"  .. {title} | {ranks_txt} -> tier-{tier}, пропуск")
+                                    continue
+                                print(f"  -> {title} | {row['event']} | {ranks_txt} -> tier-{tier}")
+                            else:
+                                tier = None
+                                print(f"  -> {title} | {row['event']} | {row['stars']}★")
+
                             wanted = [m for m in info["maps"] if m in args.maps]
                             if not wanted:
                                 print("     нужная карта не сыграна - пропуск")
@@ -507,6 +585,8 @@ def main():
                                 "event_id": ev,
                                 "date": info["date"],
                                 "stars": row["stars"],
+                                "ranks": info["ranks"],
+                                "tier": tier,
                                 "maps": wanted,
                                 "files": [os.path.basename(f) for f in files],
                             }
@@ -517,6 +597,7 @@ def main():
                             print(f"     [+] готово ({downloaded_now}): {', '.join(os.path.basename(f) for f in files)}")
                             time.sleep(2)
 
+                        save_state(args.out, state)
                         if len(rows) < 100:
                             break
                         offset += 100
