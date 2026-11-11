@@ -814,3 +814,8 @@ html.ax-on #hs-root .mrow{grid-template-columns:minmax(80px,1fr) 56px minmax(80p
 html.ax-on #hs-root .mrow{grid-template-columns:minmax(max-content,1fr) 56px minmax(max-content,1fr) minmax(0,100px) minmax(110px,165px)!important}html.ax-on #hs-root .mrow-t{overflow:visible!important}
 html.ax-on #hs-root .mrow{grid-template-columns:minmax(145px,1fr) 56px minmax(145px,1fr) minmax(0,90px) minmax(110px,160px)!important}html.ax-on #hs-root .mrow-t{overflow:hidden!important}
 html.ax-on #hs-root .mrow{grid-template-columns:minmax(130px,1fr) 56px minmax(130px,1fr) minmax(72px,100px) minmax(100px,150px)!important}
+/* v100.4 — сетка турниров на «Матчах»: кладка без дыр под короткими блоками */
+html.ax-on #hs-root .gs-mgrid{display:block!important;columns:2 520px;column-gap:16px}
+html.ax-on #hs-root .gs-mgrid>.hs-box{break-inside:avoid;display:inline-block;width:100%;margin:0 0 16px!important}
+html.ax-on #hs-root .v84-grid2{align-items:start!important}
+html.ax-on #hs-root .mrow-e .hs-kind,html.ax-on #hs-root .mrow-e [class*="tier"],html.ax-on #hs-root .mrow-e span:first-child{flex:none;white-space:nowrap}html.ax-on #hs-root .v84-grid2 .mrow{grid-template-columns:minmax(120px,1fr) 56px minmax(120px,1fr) minmax(0,auto) minmax(90px,130px)!important}

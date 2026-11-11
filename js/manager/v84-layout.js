@@ -22,8 +22,11 @@
   if (baseMatches) H.PAGES.matches = function () {
     const html = baseMatches.apply(this, arguments);
     if ((H.S.mt?.view || 'live') !== 'live') return html;
-    const res = recentT1(10).map(m => H.matchRow(m)).join('');
-    return html + `<div class="v84-grid2">${box('Последние результаты Tier-1', res ? `<div class="mrows">${res}</div>` : empty('Матчей Tier-1 пока не было'), '<button type="button" class="hs-more" data-mtview="results">все →</button>')}${box('Турниры впереди', upcomingEvents(6) || empty('Календарь пуст'), '<button type="button" class="hs-more" data-nav="calendar">календарь →</button>')}</div>`;
+    // v100.4: пока Tier-1 не сыгран, показываем последние результаты любых турниров (без пустой заглушки)
+    let t1 = recentT1(10), title = 'Последние результаты Tier-1';
+    if (!t1.length) { try { t1 = (H.allMatches() || []).filter(m => m && m.w && Array.isArray(m.mp)).sort((a, b) => (b.ts || 0) - (a.ts || 0)).slice(0, 10); } catch (e) { t1 = []; } title = 'Последние результаты'; }
+    const res = t1.map(m => H.matchRow(m)).join('');
+    return html + `<div class="v84-grid2">${box(title, res ? `<div class="mrows">${res}</div>` : empty('Матчей пока не было'), '<button type="button" class="hs-more" data-mtview="results">все →</button>')}${box('Турниры впереди', upcomingEvents(6) || empty('Календарь пуст'), '<button type="button" class="hs-more" data-nav="calendar">календарь →</button>')}</div>`;
   };
 
   // ---------------------------------------------------------------- «Трансферы»: свободные агенты, слухи, окно
