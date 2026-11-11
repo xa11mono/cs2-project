@@ -106,8 +106,10 @@ applyPlayerTransfer = function (fromTeam, toTeam, player, reason) { // eslint-di
   if (outIdx < 0) return false;
   if (toTeam.players.some(p => lc(p.nick) === lc(player.nick))) return false;   // уже в составе
   const run = Number(transferState.marketRuns) || 0;
-  if (toTeam.lastBuyRun != null && run - toTeam.lastBuyRun < 2) return false;     // покупает не чаще раза в два окна
-  if (player.joinedRun != null && run - player.joinedRun < 3) return false;       // только что купленного не перепродают
+  // v99.2: ограничения частоты — для ИИ. Сделка менеджера идёт по своим правилам (v99-transfers): проверка при старте,
+  // сроки ответа и регистрации; раньше эти правила всплывали только в момент подписания после всех дней ожидания.
+  if (!window.__v31UserDeal && toTeam.lastBuyRun != null && run - toTeam.lastBuyRun < 2) return false;     // покупает не чаще раза в два окна
+  if (!window.__v31UserDeal && player.joinedRun != null && run - player.joinedRun < 3) return false;       // только что купленного не перепродают
   const targetOut = outFor(toTeam, player);
   if (!targetOut) return false;
   if (!roleOk(toTeam, targetOut, player.role)) return false;

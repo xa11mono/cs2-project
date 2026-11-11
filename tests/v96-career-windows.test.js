@@ -55,7 +55,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   await p.click('#v96-gate .v96-go'); await p.waitForTimeout(300);
   await p.keyboard.press('2'); await p.waitForTimeout(300); await p.click('#v96-gate .v96-go'); await p.waitForTimeout(300);
   const tr = await p.evaluate(() => ({ kind: document.querySelector('#v96-gate .v96-kind').textContent, focus: document.querySelectorAll('#v96-gate .v96-tf').length, ints: document.querySelectorAll('#v96-gate .v96-ti').length }));
-  assert(tr.kind === 'Тренировка' && tr.focus >= 8 && tr.ints === 3, JSON.stringify(tr));
+  assert(tr.kind === 'Тренировка' && tr.focus === 6 && tr.ints === 3, JSON.stringify(tr));
   await shot('w3-training');
   await p.click('#v96-gate [data-v96tf="utility"]'); await p.click('#v96-gate [data-v96ti="high"]');
   const plan = await p.evaluate(() => { const o = V31.org(V31.managed()); return o.train.focus + '/' + o.train.intensity + '/' + o.train.auto; });

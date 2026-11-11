@@ -123,7 +123,9 @@
 
   /* ============================================================ переговоры по времени */
   // сроки ответа в игровых днях: клуб думает дольше при дорогом игроке, агент отвечает быстрее, регистрация контракта — 2–3 дня
-  const WAIT = { offer: n => 2 + hash('o' + n.nick + n.rounds) % 3, terms: n => 1 + hash('t' + n.nick + (n.tries || 0)) % 2, sign: n => 2 + hash('s' + n.nick) % 2 };
+  // v99.2: по ходу сезона клуб отвечает дольше (3–6 дней), в межсезонье — 2–4; диапазон виден менеджеру, точный день — нет
+  const RANGE = n => (W.V99Transfers && W.V99Transfers.offerRange(n)) || [2, 4];
+  const WAIT = { offer: n => { const r = RANGE(n); return r[0] + hash('o' + n.nick + n.rounds) % (r[1] - r[0] + 1); }, terms: n => 1 + hash('t' + n.nick + (n.tries || 0)) % 2, sign: n => 2 + hash('s' + n.nick) % 2 };
   const WAIT_L = { offer: 'Клуб рассматривает предложение', terms: 'Агент обсуждает условия с игроком', sign: 'Контракт регистрируется' };
   const negs = () => { try { return N.negs(); } catch (e) { return []; } };
   function queue(id, kind, args) {
@@ -131,7 +133,8 @@
     if ((kind === 'offer' && n.st !== 'offer') || (kind === 'terms' && n.st !== 'terms') || (kind === 'sign' && n.st !== 'ready')) return false;
     const days = WAIT[kind](n);
     n.wait = { kind, args, since: now(), due: now() + days * DAY };
-    n.log.push(kind === 'offer' ? `Предложение ${money(args[0])} отправлено. Ответ клуба — до ${fdate(n.wait.due)}.`
+    const rg = RANGE(n);
+    n.log.push(kind === 'offer' ? `Предложение ${money(args[0])} отправлено. Клуб ответит ориентировочно через ${rg[0]}–${rg[1]} дн. (${fdate(n.wait.since + rg[0] * DAY)} — ${fdate(n.wait.since + rg[1] * DAY)}).`
       : kind === 'terms' ? `Условия (${money(args[0])} за сезон, ${args[1]} сез.) переданы агенту. Ответ — до ${fdate(n.wait.due)}.`
         : `Документы поданы. Игрок присоединится ${fdate(n.wait.due)}.`);
     save(); return true;
@@ -140,10 +143,14 @@
     if (!N) return 0; let done = 0;
     negs().forEach(n => {
       const w = n.wait; if (!w || now() < w.due) return;
+      // v99.2: регистрация не проходит, пока клуб играет турнир (ростер-лок) — переносится на день после турнира
+      if (w.kind === 'sign' && W.V99Transfers) { const lock = W.V99Transfers.lockUntil(n); if (lock > now()) { w.due = lock; if (!w.locked) { w.locked = 1; n.log.push(`Регистрация перенесена: идёт турнир, состав заморожен. Игрок присоединится ${fdate(lock)}.`); try { W.V99Transfers.mail(n, 'lock'); } catch (e) {} } return; } }
       delete n.wait;
+      const st0 = n.st;
       try { if (w.kind === 'offer') N.offer(n.id, w.args[0]); else if (w.kind === 'terms') N.terms(n.id, w.args[0], w.args[1]); else { N.sign(n.id); if (n.st === 'signed') keepBench(); } } catch (e) { console.warn('[v98 nego]', e); }
       done++;
       try { V.careerLog && w.kind === 'sign' && n.st === 'signed' && V.careerLog(`Трансфер завершён: ${n.nick}`); } catch (e) {}
+      try { W.V99Transfers && W.V99Transfers.settled(n, w, st0); } catch (e) { console.warn('[v99 transfers]', e); }
     });
     if (done) { save(); if (H.S.page === 'negotiate' || H.S.page === 'squad' || H.S.page === 'desk') { try { H.render(); } catch (e) {} } }
     return done;

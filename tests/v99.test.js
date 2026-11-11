@@ -6,7 +6,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
 (async () => {
   const dir = path.resolve(__dirname, '..');
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  ['v99-perf.js?v=99', 'v99-talks.js?v=99', 'v99-manager.js?v=99', 'v99-spectator.js?v=99', 'v99.css?v=99'].forEach(f => assert(html.includes(f), 'подключён ' + f));
+  ['v99-perf.js?v=99', 'v99-talks.js?v=99', 'v99-transfers.js?v=99', 'v99-manager.js?v=99', 'v99-spectator.js?v=99', 'v99.css?v=99'].forEach(f => assert(html.includes(f), 'подключён ' + f));
   const ctx = await chromium.launchPersistentContext(fs.mkdtempSync(path.join(os.tmpdir(), 'cs2-v99-')), { viewport: { width: 1600, height: 900 } });
   const p = ctx.pages()[0] || await ctx.newPage(); const errs = [];
   p.on('pageerror', e => errs.push(e.message)); p.on('dialog', d => d.accept());
@@ -96,6 +96,29 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   }
   assert(await p.evaluate(() => { location.hash = '#/desk'; return true; }) && (await p.waitForTimeout(700), await p.evaluate(() => !!document.querySelector('.v99-nextbox'))), 'рабочее место: блок «Следующий матч»');
   pass('страницы менеджера v99 рисуются, рабочее место показывает следующий матч');
+
+  // 3б. v99.2: шесть фокусов тренировки; трансфер с правилами при старте, письмами и паузой не ломает «Продолжить»
+  const tr = await p.evaluate(async () => {
+    const out = { keys: Object.keys(V31.TRAIN), alias: V31.trainKey('eventprep') === 'mental' && V31.trainKey('tside') === 'entry' };
+    const n = V31.managed(); V31.org(n).budget = 9e6;
+    const star = HS.ranked().filter(t => !t.isAcademy)[0].players.slice().sort((a, b) => V31.pow(b) - V31.pow(a))[0];
+    const blocked = V99Transfers.start(star.nick); out.blocked = blocked && blocked.st === 'failed' && blocked.log.length > 1;
+    const seller = HS.ranked().filter(x => !x.isAcademy && x.name !== n)[25], pl = seller.players.find(x => x.role !== 'AWPer' && x.role !== 'IGL');
+    const ng = V99Transfers.start(pl.nick); out.started = ng && ng.st === 'offer';
+    const m0 = V99Mail.list().length; V98Squad.queue(ng.id, 'offer', [ng.ask]);
+    for (let i = 0; i < 8 && ng.wait; i++) { skipGameCalendarDay(); await new Promise(r => setTimeout(r, 0)); V98Squad.settle(); }
+    out.mail = V99Mail.list().length > m0;
+    out.pausedByMail = v15IsCalendarPaused();                                  // ответ клуба ставит время на паузу
+    if (!v15IsCalendarPaused()) toggleGameCalendarPause();
+    const d0 = seasonState.calendar.currentMs;
+    for (let i = 0; i < 4 && seasonState.calendar.currentMs === d0; i++) { await new Promise(r => setTimeout(r, 150)); skipGameCalendarDay(); }
+    out.skipPaused = seasonState.calendar.currentMs > d0 && v15IsCalendarPaused();
+    toggleGameCalendarPause();
+    return out; });
+  assert(tr.keys.length === 6 && tr.alias, 'тренировки: 6 фокусов, старые ключи сводятся к новым ' + JSON.stringify(tr.keys));
+  assert(tr.blocked && tr.started && tr.mail, 'трансфер: запрет с причиной при старте, переговоры, письмо об ответе клуба ' + JSON.stringify(tr));
+  assert(tr.pausedByMail && tr.skipPaused, '«Продолжить» сдвигает день и при паузе (ответ клуба ставит паузу) ' + JSON.stringify(tr));
+  pass('v99.2: 6 фокусов тренировки, правила трансфера при старте, почта клуба, «Продолжить» на паузе');
 
   // 4. зритель: прогноз, расчёт очков, таблица игроков
   const sp = await p.evaluate(async () => {

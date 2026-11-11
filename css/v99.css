@@ -103,3 +103,19 @@
 #hs-root .v99-tab.on::after{content:"";position:absolute;left:var(--s-3);right:var(--s-3);bottom:-1px;height:2px;border-radius:2px;background:var(--c-action)}
 #hs-root .v99-tab:focus-visible{outline:2px solid var(--c-focus);outline-offset:-2px;border-radius:var(--r-control)}
 #hs-root .v99-tabn{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--c-live);color:#fff;font:700 11px/18px var(--f-num);font-style:normal;text-align:center}
+
+/* ============================================================ v99.2 почта клуба */
+#hs-root .v99-mail{list-style:none;margin:0;padding:0}
+#hs-root .v99-mail li{border-bottom:1px solid var(--c-line)}
+#hs-root .v99-mail li:last-child{border-bottom:0}
+#hs-root .v99-mail button{display:flex;gap:var(--s-3);width:100%;padding:var(--s-2) 0;border:0;background:none;color:var(--c-text);text-align:left;font:inherit;cursor:pointer}
+#hs-root .v99-mail .ic{flex:none;width:24px;text-align:center}
+#hs-root .v99-mail .tx{display:flex;flex-direction:column;gap:2px;min-width:0}
+#hs-root .v99-mail b{font-size:var(--t-small);font-weight:600;color:var(--c-text-2)}
+#hs-root .v99-mail li.new b{color:var(--c-text);font-weight:700}
+#hs-root .v99-mail li.new .ic::after{content:"";display:inline-block;width:6px;height:6px;margin-left:2px;border-radius:50%;background:var(--c-action);vertical-align:top}
+#hs-root .v99-mail small{font-size:var(--t-caption);color:var(--c-text-3)}
+#hs-root .v99-mail em{font-style:normal;font-size:var(--t-caption);color:var(--c-text-3)}
+#hs-root .v99-mailbox{margin-bottom:var(--s-4)}
+/* v99.2: шесть фокусов тренировки — подпись в две строки, а не обрезанная одна */
+#hs-root .v96-tfs .v96-tf small,#v96-gate .v96-tfs .v96-tf small{white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-overflow:clip}

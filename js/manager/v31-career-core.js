@@ -218,19 +218,18 @@ function afterMatch(w, l, big) { // уверенность меняется по
 }
 
 /* ------------------------------------------------------------ тренировки */
+// v99.2: шесть фокусов вместо пятнадцати. Похожие упражнения объединены, эффекты — суммарно те же направления.
+// Старые ключи из сейвов и решений ИИ сводятся к новым через TRAIN_ALIAS.
 const TRAIN = {
-  entry: { l: 'Выход на точку (entry)', attrs: { firepower: 1 }, roles: ['Entry-fragger', 'Entry', 'Rifler'], hint: 'огневая мощь энтри и рифлеров' },
-  utility: { l: 'Утилити', attrs: { utility: 1 }, hint: 'утилити всех игроков' },
-  retake: { l: 'Ретейки', attrs: { tacticalIQ: .5, clutch: .5 }, hint: 'тактика и клатч' },
-  clutch: { l: 'Клатчи', attrs: { clutch: 1 }, hint: 'клатч' },
-  trading: { l: 'Размены', attrs: { tacticalIQ: .6 }, chem: 6, hint: 'тактика + сыгранность' },
-  mapcontrol: { l: 'Контроль карты', map: 1.2, hint: 'сила на выбранной карте' },
-  comm: { l: 'Коммуникация', chem: 14, hint: 'сыгранность' },
-  economy: { l: 'Экономика', attrs: { tacticalIQ: .7 }, hint: 'тактика' },
-  tside: { l: 'T-сторона', map: .8, attrs: { firepower: .3 }, hint: 'карта + огневая мощь' },
-  ctside: { l: 'CT-сторона', map: .8, attrs: { utility: .3 }, hint: 'карта + утилити' },
-  mental: { l: 'Ментальная подготовка', conf: 6, hint: 'уверенность и восстановление морали' }
+  entry: { l: 'Стрельба и выходы', attrs: { firepower: .8, clutch: .2 }, hint: 'огневая мощь всех, немного клатча' },
+  utility: { l: 'Утилити и раунды', attrs: { utility: .6, tacticalIQ: .4 }, hint: 'гранаты, ретейки, экономика' },
+  mapcontrol: { l: 'Карты и анти-страты', map: 1.2, attrs: { tacticalIQ: .2 }, hint: 'выбранная карта, T и CT, анти-страты' },
+  comm: { l: 'Сыгранность', chem: 14, attrs: { tacticalIQ: .2 }, hint: 'коммуникация, размены, капитан' },
+  mental: { l: 'Психология и клатчи', conf: 6, attrs: { clutch: .5 }, hint: 'уверенность, клатчи, турниры' },
+  recovery: { l: 'Восстановление', conf: 2, hint: 'снимает усталость всей команды' }
 };
+const TRAIN_ALIAS = { retake: 'utility', clutch: 'mental', trading: 'comm', economy: 'utility', tside: 'entry', ctside: 'utility', igl: 'comm', antistrat: 'mapcontrol', eventprep: 'mental' };
+const trainKey = k => (TRAIN[k] ? k : TRAIN_ALIAS[k]) || 'comm';
 const INTENS = { low: { k: .6, fat: -4 }, normal: { k: 1, fat: 2 }, high: { k: 1.45, fat: 9 } };
 const v31TrainingDiagnostics = { indexBuilds: 0, cacheHits: 0, cooperativeYields: 0, lastMatchCount: 0, lastBuildMs: 0, lastTeamCount: 0, lastTrainingTeams: 0, lastTrainingWorkMs: 0, lastTrainingYields: 0 };
 let v31TrainingMapCache = null;
@@ -340,15 +339,17 @@ function aiTrainingPlan(t, trainingMapStats = null) { // AI выбирает ф�
   if (chemistry(t) < CF('training.chemLow', .45) && t.v89commWeek !== week - 1) focus = 'comm';
   else if (teamConf(t) < 45) focus = 'mental';
   else if (fat > CF('training.fatigueRecovery', 50) && TRAIN.recovery) { focus = 'recovery'; intensity = 'low'; }
-  else if (soon) { focus = TRAIN.eventprep ? 'eventprep' : attrFocus; intensity = 'low'; }   // перед турниром не ломаем карты и не перегружаем
+  else if (soon) { focus = 'mental'; intensity = 'low'; }   // v99.2: перед турниром — психология и клатчи (бывшая «подготовка к турниру»)   // перед турниром не ломаем карты и не перегружаем
   else if (weakMap && wr(weakMap[1]) < CF('training.mapSideWr', .45) && fat <= CF('training.fatigueLow', 35) && t.v89mapWeek !== week - 1) {
     const sideFocus = avg('firepower') < avg('utility') - 1 ? 'tside' : 'ctside';
-    focus = wr(weakMap[1]) < CF('training.mapControlWr', .38) ? 'mapcontrol' : sideFocus; map = weakMap[0];
+    focus = 'mapcontrol'; void sideFocus; map = weakMap[0];   // v99.2: T/CT-стороны вошли в «Карты и анти-страты»
   } else focus = attrFocus;
-  return { focus, map, intensity, mapWork: ['mapcontrol', 'tside', 'ctside'].includes(focus), commWork: focus === 'comm' };
+  focus = trainKey(focus);   // v99.2
+  return { focus, map, intensity, mapWork: focus === 'mapcontrol', commWork: focus === 'comm' };
 }
 function trainTeamRow(t, o, s, trainingMapStats) {
   if (!o.train || (!isManaged(t.name) || auto('training'))) { if (!isManaged(t.name) || auto('training') || !o.train) { o.train = Object.assign(aiTrainingPlan(t, trainingMapStats), { auto: true }); const wk = Math.floor(calNow() / DAY / 7); if (o.train.mapWork) t.v89mapWeek = wk; if (o.train.commWork) t.v89commWeek = wk; } }
+  if (o.train && !TRAIN[o.train.focus]) o.train.focus = trainKey(o.train.focus);   // v99.2: старые фокусы из сейвов
   const tr = TRAIN[o.train.focus]; if (!tr) return;
   const I = INTENS[o.train.intensity] || INTENS.normal, fac = facMul(t.name, 'training', .22);
   (t.players || []).forEach(p => {
@@ -826,7 +827,7 @@ function sellProspect(teamName, nick) { // продажа таланта в ко
     if (isManaged(toTeam.name) && !auto('market') && !window.__v31UserDeal && window.__v31ForceBuy !== toTeam.name) return false;   // за управляемую команду AI не покупает
     if (isManaged(fromTeam.name) && !auto('market') && !window.__v31UserDeal && !player.v31listed) return false;                     // и не продаёт её игроков без разрешения
     ensurePerson(player);
-    const fee = window.__v31UserDeal?.fee ?? Math.round(valueOf(player) * (player.v31listed ? .8 : 1) / 1000) * 1000;
+    const fee = window.__v31UserDeal?.fee ?? Math.round(valueOf(player) * (player.v31listed ? .8 : 1) * (window.__v99FeeMul || 1) / 1000) * 1000;   // v99.2: выкуп по ходу сезона дороже
     if (org(toTeam.name).budget - fee < -300000) return false;
     const ok = f.apply(this, arguments);
     if (ok) {
@@ -952,7 +953,7 @@ window.V31SyncParallelPrizes = syncParallelPrizes;
 (globalThis.CS2Loop?.every || ((f, ms) => (typeof setInterval === "function" ? setInterval : window.setInterval)(f, ms)))(() => { if(!window.v57BatchCalendarSkip && !document.hidden) syncParallelPrizes(); }, 8000);
 setTimeout(() => { try { S(); stampTenure(); teams.forEach(t => (t.players || []).forEach(ensurePerson)); pro().forEach(t => org(t.name)); computeRivals(); } catch (e) { console.warn('[v31 init]', e); } }, 900);
 
-window.V31 = { S, org, FAC, FAC_COST, FAC_UPKEEP, upgrade, downgrade, TRAIN, INTENS, TRAIT_L, CALLS, MODES, scout, setPrep, prepMod, chemistry, teamConf, careerMod, teamMod, ensurePerson, valueOf, salaryOf, wageBill, facUpkeep,
+window.V31 = { S, org, FAC, FAC_COST, FAC_UPKEEP, upgrade, downgrade, TRAIN, TRAIN_ALIAS, trainKey, INTENS, TRAIT_L, CALLS, MODES, scout, setPrep, prepMod, chemistry, teamConf, careerMod, teamMod, ensurePerson, valueOf, salaryOf, wageBill, facUpkeep,
   setManaged: n => { const c = S(); c.career.team = n || ''; c.career.since = c.career.since || {}; if (n && !c.career.since[n]) c.career.since[n] = { ts: calNow(), s: season() }; },
   userTimeout, chooseHalf, halfReport, resolve, EV, estPot, promoteProspect, sellProspect, rivalOf, computeRivals, GOALS, careerLog, money, managed, isManaged, rankOf, pow, auto, book, week, payPrizes, aiTrainingPlan,
   syncClock: syncCareerClock,

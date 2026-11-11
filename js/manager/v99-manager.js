@@ -76,7 +76,7 @@
   }
   function scoutTick() {
     const s = S();
-    s.tasks.forEach(x => { if (x.st === 'open' && x.due <= now()) { x.st = 'done'; s.rep[x.nick] = { at: now(), until: now() + 150 * DAY }; log(`Готов отчёт скаута: ${x.nick}`); toast('Отчёт скаута', `${x.nick}: потенциал и характер известны точно`); } });
+    s.tasks.forEach(x => { if (x.st === 'open' && x.due <= now()) { x.st = 'done'; s.rep[x.nick] = { at: now(), until: now() + 150 * DAY }; log(`Готов отчёт скаута: ${x.nick}`); if (W.V99Mail) W.V99Mail.add({ team: me(), icon: '🔎', from: 'Скаутский отдел', title: `Отчёт по ${x.nick} готов`, text: 'Потенциал и характер теперь известны точно.', nav: 'player/' + encodeURIComponent(x.nick), btn: 'Профиль игрока' }); else toast('Отчёт скаута', `${x.nick}: потенциал и характер известны точно`); } });
     if (s.tasks.length > 40) s.tasks = s.tasks.filter(x => x.st === 'open').concat(s.tasks.filter(x => x.st !== 'open').slice(-20));
   }
   H.CLICKS.push(['[data-v99scout]', el => { const r = sendScout(el.dataset.v99scout); if (!r.ok) alert(r.why); H.render(); }]);
@@ -190,11 +190,11 @@
     const ranks = list.map(rank).sort((a, b2) => a - b2), myR = rank(m), median = ranks[Math.floor(ranks.length / 2)], worst = ranks[ranks.length - 1];
     S().ev.applied[id] = now();
     const accepted = myR <= median || (myR <= worst + 5 && u01('app' + id + m) < .6);
-    if (!accepted) { log(`Заявка на ${ev.name} отклонена`); save(); return { ok: false, why: `Организаторы отказали: поле сильнее (ваше место #${myR}, худшее в поле #${worst})` }; }
+    if (!accepted) { log(`Заявка на ${ev.name} отклонена`); try { W.V99Mail && W.V99Mail.add({ team: m, icon: '⛔', from: ev.name, title: `Заявка на ${ev.name} отклонена`, text: `Поле сильнее: ваше место #${myR}, худшее в поле #${worst}.`, nav: 'clubev', btn: 'Турниры клуба' }); } catch (e) {} save(); return { ok: false, why: `Организаторы отказали: поле сильнее (ваше место #${myR}, худшее в поле #${worst})` }; }
     const weakest = list.slice().sort((a, b2) => rank(b2) - rank(a))[0];
     ev.participants = list.filter(n => n !== weakest).concat([m]);
     rebuild(ev);
-    log(`Заявка принята: ${ev.name} (вместо ${weakest})`);
+    log(`Заявка принята: ${ev.name} (вместо ${weakest})`); try { W.V99Mail && W.V99Mail.add({ team: m, icon: '📝', from: ev.name, title: `Вы в сетке ${ev.name}`, text: `Старт ${fdate(+ev.startMs)}.`, nav: 'clubev', btn: 'Турниры клуба' }); } catch (e) {}
     try { W.V29News && W.V29News.add({ cat: 'tournament', icon: '📝', imp: 3, title: `${m} сыграют на ${ev.name}`, lead: `Клуб подал заявку и занял место ${weakest}.`, body: [], tags: [{ t: 'team', v: m }] }); } catch (e) {}
     try { W.saveSeasonState && W.saveSeasonState(); } catch (e) {}
     return { ok: true, out: weakest };

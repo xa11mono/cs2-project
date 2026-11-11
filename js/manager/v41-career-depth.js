@@ -148,7 +148,7 @@
     if (plan.focus !== 'balanced') p.fatigue = clamp((+p.fatigue || 0) + 1.5, 0, 85); // персональная нагрузка
   }
   function installTraining() {
-    const T = V() && V().TRAIN; if (!T || T.igl) return;
+    const T = V() && V().TRAIN; if (!T || T.igl || T.recovery) return;   // v99.2: фокусы объединены в ядре (v31) — дополнительные не добавляем
     T.igl = { l: 'Работа с IGL', attrs: { tacticalIQ: .4 }, chem: 10, hint: 'тактика и сыгранность вокруг капитана' };
     T.antistrat = { l: 'Анти-страты соперника', map: 1.0, attrs: { tacticalIQ: .3 }, hint: 'карта и тактика под ближайшего соперника' };
     T.eventprep = { l: 'Подготовка к турниру', attrs: { clutch: .3 }, conf: 4, chem: 5, hint: 'уверенность и сыгранность перед важным событием' };

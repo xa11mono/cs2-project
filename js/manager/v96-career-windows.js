@@ -51,7 +51,7 @@
   /* ------------------------------------------------------------ тренировки */
   const TRAIN = () => V.TRAIN || {};
   const INT_L = { low: ['Лёгкая', 'Рост навыков ×0.6, усталость −4: команда отдыхает'], normal: ['Обычная', 'Рост навыков ×1, усталость +2'], high: ['Интенсивная', 'Рост навыков ×1.45, усталость +9: сила в матчах падает'] };
-  const curPlan = () => { const o = V.org(me()); return o.train || V.aiTrainingPlan(team()); };
+  const curPlan = () => { const o = V.org(me()); if (o.train && V.trainKey && !(V.TRAIN || {})[o.train.focus]) o.train.focus = V.trainKey(o.train.focus); return o.train || V.aiTrainingPlan(team()); };   // v99.2: старые фокусы
   const recPlan = () => { try { return V.aiTrainingPlan(team()); } catch (e) { return null; } };
   const needTraining = () => { try { return !V.auto('training') && S().trainWeek !== weekNo(); } catch (e) { return false; } };
   const mapsList = () => (typeof MAP_POOL !== 'undefined' ? MAP_POOL : []);
