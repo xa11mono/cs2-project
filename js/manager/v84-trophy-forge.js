@@ -201,7 +201,7 @@
     const m = o.metal, g = o.glass;
     const Lb = 'M30.4 58.6C23 50 16.4 39 18.6 25C19.8 17.6 23.6 11.4 28.4 7C25 16 24.8 26 27.6 35C29.6 42 31 50 31.6 58.6z';
     const Rb = 'M33.6 58.6C41 50 47.6 39 45.4 25C44.2 17.6 40.4 11.4 35.6 7C39 16 39.2 26 36.4 35C34.4 42 33 50 32.4 58.6z';
-    return pedestal(c, 'step', 'silver', 22, 'PGL') +
+    return pglBase(c) +
       vol(c, Lb, c.mH(m)) + vol(c, Rb, c.mH(m)) +
       `<path d="M29.2 58.6C28.4 42 29.4 22 32 3C34.6 22 35.6 42 34.8 58.6z" fill="${g ? c.gl(g) : c.mV(m)}" stroke="${c.mH('chrome')}" stroke-width=".5"/><path d="M32 6V56" stroke="#fff" stroke-opacity=".45" stroke-width=".4"/>` +
       `<ellipse cx="32" cy="52.6" rx="5.6" ry="1.5" fill="${c.mH(m)}"/><ellipse cx="32" cy="52.2" rx="4.6" ry=".7" fill="#fff" fill-opacity=".35"/>` +
@@ -398,12 +398,14 @@
       `<rect x="27.6" y="37.6" width="8.8" height="3.8" rx=".5" fill="${c.mV('black')}" stroke="${c.mH(m)}" stroke-width=".3"/>` + txt(32, 40.6, 'EPL', 2.4, '#fff', ' letter-spacing=".5"') +
       shine('M28.4 15V44', .7);
   };
-  D.pglCrown = (c, o) => { // PGL: корона-кубок с зубцами по краю и стеклянной вставкой
-    const m = o.metal, g = o.glass || 'blue', crown = 'M14 10L19 18.5L24 8L29 18.5L32 5.6L35 18.5L40 8L45 18.5L50 10L47 30C45 37.4 39 41.4 32 41.4S19 37.4 17 30z';
-    return pedestal(c, 'step', 'silver', 22, 'PGL') + stem(c, m, 41, 58.6, 4, 13) +
-      vol(c, crown, c.mH(m)) + `<path d="${crown}" fill="none" stroke="${c.mV(m)}" stroke-width=".5" stroke-linejoin="round"/>` +
-      `<path d="M19.6 23.4H44.4L43 30C41.4 34.4 37 37 32 37S22.6 34.4 21 30z" fill="${c.glR(g)}" stroke="#000" stroke-opacity=".35" stroke-width=".3"/><path d="M22 25.2Q32 27.6 42 25.2" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width=".5"/>` +
-      shine('M17.6 14C17.8 22 20 30 24.4 35.4', 1);
+  D.pglCrown = (c, o) => { // PGL: стеклянная капля в хромированном вертикальном кольце (своя форма, общая подставка PGL)
+    const m = o.metal || 'chrome', g = o.glass || 'blue';
+    const drop = 'M32 9C36.6 16 40 22 40 28.6C40 34 36.4 38 32 38S24 34 24 28.6C24 22 27.4 16 32 9z';
+    return pglBase(c) +
+      vol(c, 'M29.2 58.6C29.8 54 30.4 50 30.8 46.6H33.2C33.6 50 34.2 54 34.8 58.6z', c.mH(m)) + `<ellipse cx="32" cy="46.6" rx="5.4" ry="1.3" fill="${c.mV(m)}"/>` +
+      `<ellipse cx="32" cy="26.6" rx="14" ry="20.4" fill="none" stroke="${c.mH(m)}" stroke-width="3"/><ellipse cx="32" cy="26.6" rx="14" ry="20.4" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width=".5" stroke-dasharray="40 200" stroke-dashoffset="-8"/>` +
+      `<path d="${drop}" fill="${c.glR(g)}" stroke="${c.mV(m)}" stroke-width=".6"/><path d="M28.4 20C27 23.4 26.6 27 27.4 30.6" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width=".8" stroke-linecap="round"/>` +
+      `<circle cx="32" cy="6.2" r="1.6" fill="${c.mR(m)}"/><circle cx="32" cy="47" r="1.2" fill="${c.mR(m)}"/>`;
   };
   D.cctFlag = (c, o) => { // CCT: стяг-вымпел на стойке
     const m = o.metal, acc = o.accent || '#2f6fe0';
@@ -575,11 +577,11 @@
     { key: 'Thunderpick', re: /^Thunderpick/i, pick: (r) => ({ d: r % 3 === 2 ? 'boltSpire' : 'thunderSwirl', metal: 'gold', glass: ['blue', 'cyan'][r % 2] }) },
     { key: 'PW', re: /^Perfect World|^CS Asia/i, pick: (r) => ({ d: 'orbBowl', metal: ['gold', 'silver', 'chrome'][r % 3], glass: ['blue', 'cyan', 'ice'][r % 3] }) },
     { key: 'EWC', re: /^Esports World Cup|^EWC\b/i, pick: (r) => [{ d: 'ewcObelisk', glass: 'amber' }, { d: 'ewcPlate', metal: 'gold' }, { d: 'ewcCup', metal: 'gold' }, { d: 'ewcPlate', metal: 'pale', glass: 'amber', bare: true }, { d: 'ewcCup', metal: 'gold', glass: 'ice' }, { d: 'ewcPlate', metal: 'gold', bare: true }, { d: 'ewcObelisk', glass: 'ice' }][(r >>> 2) % 7] },
-    { key: 'Nations', re: /nations cup|national cup|кубок наций/i, pick: (r) => [{ d: 'nationsGlobe', metal: 'gold', glass: 'blue' }, { d: 'nationsCup', metal: 'gold', glass: 'blue' }, { d: 'nationsGlobe', metal: 'pale', glass: 'cyan', base: 'round' }, { d: 'nationsCup', metal: 'pale', glass: 'cyan' }][(r >>> 3) % 4] },
+    { key: 'Nations', re: /nations cup|national cup|кубок наций/i, pick: (r) => [{ d: 'nationsGlobe', metal: 'gold', glass: 'blue' }, { d: 'nationsCup', metal: 'gold', glass: 'blue' }, { d: 'nationsStars', metal: 'gold', glass: 'blue' }, { d: 'nationsCup', metal: 'pale', glass: 'cyan' }][(r >>> 3) % 4] },
     { key: 'FiRe', re: /^FiRe\b|fireleague/i, pick: (r) => ({ d: 'fireFlame', metal: 'gold', accent: ['#6cace4', '#e0533b', '#6cace4'][r % 3] }) },
-    { key: 'FISSURE', re: /^FISSURE/i, pick: (r) => ({ d: 'torch', metal: ['copper', 'chrome', 'gold'][r % 3], accent: ['#7a3fd0', '#d23b3b', '#e08a1f'][r % 3] }) },
-    { key: 'BetBoom', re: /^BetBoom|^Dacha/i, pick: (r) => ({ d: 'gemClaw', metal: ['chrome', 'gold'][r % 2], glass: ['mint', 'cyan', 'ice'][r % 3] }) },
-    { key: 'CCT', re: /^CCT\b/i, pick: (r) => ({ d: r % 2 ? 'cctFlag' : 'hoop', metal: ['silver', 'chrome', 'gold'][r % 3], glass: ['blue', 'cyan'][r % 2], accent: ['#2f6fe0', '#1f9e6e', '#d23b3b', '#7a3fd0'][(r >>> 3) % 4] }) }
+    { key: 'FISSURE', re: /^FISSURE/i, pick: (r) => ({ d: 'fissure', metal: ['copper', 'chrome', 'gold'][r % 3], accent: ['#7a3fd0', '#d23b3b', '#e08a1f'][r % 3] }) },
+    { key: 'BetBoom', re: /^BetBoom|^Dacha/i, pick: (r) => ({ d: 'bbBurst', metal: ['chrome', 'gold'][r % 2], glass: ['mint', 'cyan', 'ice'][r % 3] }) },
+    { key: 'CCT', re: /^CCT\b/i, pick: (r) => ({ d: r % 2 ? 'cctPortal' : 'cctChevron', metal: ['silver', 'chrome', 'gold'][r % 3], glass: ['blue', 'cyan'][r % 2], accent: ['#2f6fe0', '#1f9e6e', '#d23b3b', '#7a3fd0'][(r >>> 3) % 4] }) }
   ];
   const series = name => hash('series|' + String(name || '').replace(/\s*(?:season\s+\d+|20\d\d)\s*/ig, ' ').trim().toLowerCase());
   // v84: у всех турниров IEM (Katowice, Cologne, Kraków, Chengdu, Rio, Melbourne…) общий пул кубков:
@@ -595,7 +597,7 @@
     // поэтому разные бренды получают разные сочетания формы/цвета, а один бренд — узнаваем.
     const brand = String(name || '').replace(/\s+20\d\d.*$/, '').split(/\s+/).slice(0, 2).join(' ').toUpperCase();
     const b = hash('brand|' + brand);
-    const forms = ['classicCup', 'shardAward', 'medallion', 'crystalPrism', 'coin'];
+    const forms = ['classicCup', 'shardAward', 'medallion', 'crystalPrism', 'coin', 'wingCup', 'spire', 'ringStack', 'arcGate', 'prismCrown'];
     const accents = ['#2f6fe0', '#1f9e6e', '#d23b3b', '#e08a1f', '#0fa3b8', '#7a3fd0'];
     const d = forms[b % forms.length];
     return { d, metal: ['silver', 'gold', 'chrome', 'rose', 'bronze'][(b >>> 3) % 5], glass: GLASS_POOL[(b >>> 9) % GLASS_POOL.length], accent: accents[(b >>> 5) % accents.length], base: ['step', 'round', 'slab'][r % 3],
@@ -834,6 +836,82 @@
     const label = k === 'qual' ? 'Квалификация' : k === 'tier2' ? 'Tier-2 результат' : 'Tier-3 результат';
     return c.svg(s, '0 0 64 72', `tw-placeholder tw-placeholder-${k}`, label);
   }
+
+
+  /* ---------- v101: новые силуэты ---------- */
+  // фирменная подставка PGL: широкая плита с крупной табличкой — одинаковая у всех кубков PGL
+  function pglBase(c) {
+    const lac = c.grad('pgllac', 0, 0, 1, 0, [[0, '#050608'], [.25, '#2a3038'], [.5, '#0d0f12'], [.8, '#2a3038'], [1, '#050608']]);
+    return `<ellipse cx="32" cy="69.7" rx="19" ry="2.1" fill="${c.shadow()}"/><path d="M14 69.2L16 60.4H48L50 69.2z" fill="${lac}"/><path d="M16 60.4H48L46.6 58.6H17.4z" fill="${c.mV('chrome')}"/>` +
+      `<rect x="21.5" y="62.3" width="21" height="5" rx=".8" fill="${c.mH('chrome')}" stroke="#000" stroke-opacity=".5" stroke-width=".25"/>` + txt(32, 66.1, 'PGL', 3.9, '#0b0d10', ' letter-spacing="1.4"');
+  }
+  D.nationsStars = (c, o) => { // Кубок наций: сфера на тонкой колонне под аркой из звёзд стран
+    const m = o.metal || 'gold', g = o.glass || 'blue';
+    let s = pedestal(c, 'block', m, 24, 'NATIONS') +
+      vol(c, 'M29.6 58.4C30.2 50 30.6 42 30.8 34H33.2C33.4 42 33.8 50 34.4 58.4z', c.mH(m)) +
+      `<ellipse cx="32" cy="34" rx="4.6" ry="1.2" fill="${c.mV(m)}"/><path d="M27.4 34Q32 37.4 36.6 34" fill="none" stroke="${c.mH(m)}" stroke-width="1"/>` +
+      `<circle cx="32" cy="25.4" r="8.4" fill="${c.glR(g)}" stroke="${c.mV(m)}" stroke-width=".7"/>` +
+      `<ellipse cx="32" cy="25.4" rx="3.8" ry="8.4" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width=".45"/><path d="M23.6 25.4H40.4M25 21H39M25 29.8H39" stroke="#fff" stroke-opacity=".3" stroke-width=".4"/>` +
+      `<path d="M14.6 33.6A17.6 17.6 0 0 1 49.4 33.6" fill="none" stroke="${c.mH(m)}" stroke-width="2.2" stroke-linecap="round"/><path d="M15.6 32.4A16.4 16.4 0 0 1 48.4 32.4" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width=".4"/>`;
+    for (let i = 0; i < 9; i++) { const a = Math.PI * (1 - i / 8), x = 32 + Math.cos(a) * 17.6, y = 33.6 - Math.sin(a) * 17.6; s += glyph('star', n(x), n(y), i === 4 ? 2.6 : 1.7, '#fff3c4'); }
+    return s + shine('M26.6 20A7 7 0 0 1 30.4 17.4', .9);
+  };
+  D.fissure = (c, o) => { // FISSURE: две грани, расколотые светящейся трещиной
+    const m = o.metal || 'chrome', acc = o.accent || '#7a3fd0';
+    const L = 'M30.6 58.4L20.4 27L26.6 4.4L30.9 25.4z', R = 'M33.4 58.4L43.6 28.4L37.6 8L33.1 26.6z';
+    const glow = c.grad('fsg' + acc, 0, 0, 0, 1, [[0, '#ffffff'], [.35, acc], [1, acc, .2]]);
+    return pedestal(c, 'round', 'black', 22, 'FISSURE') +
+      `<path d="M30.9 25.4L32 2.5L33.1 26.6L32 58.4z" fill="${glow}"/><path d="M32 6V56" stroke="#fff" stroke-opacity=".7" stroke-width=".4"/>` +
+      vol(c, L, c.mH(m)) + vol(c, R, c.mH(m)) + `<path d="M26.6 4.4L24.4 28L30.6 58.4" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width=".45"/><path d="M37.6 8L39.6 29L33.4 58.4" fill="none" stroke="#000" stroke-opacity=".25" stroke-width=".45"/>` +
+      shine('M23 26L26 8', .8);
+  };
+  D.cctChevron = (c, o) => { // CCT: три шеврона «вверх» на колонне
+    const m = o.metal || 'silver';
+    let s = pedestal(c, 'slab', m, 22, 'CCT') + stem(c, m, 41, 58.4, 4, 10);
+    [[37, 14], [27, 11.5], [17, 9]].forEach(([y, w], i) => { const d = `M${32 - w} ${y + 5}L32 ${y}L${32 + w} ${y + 5}V${y + 9}L32 ${y + 4}L${32 - w} ${y + 9}z`; s += vol(c, d, c.mH(m)) + `<path d="M${32 - w} ${y + 5}L32 ${y}L${32 + w} ${y + 5}" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width=".4"/>`; });
+    return s + `<path d="M32 4L35.6 10L32 15.4L28.4 10z" fill="${c.gl(o.glass || 'blue')}" stroke="${c.mV(m)}" stroke-width=".4"/>`;
+  };
+  D.cctPortal = (c, o) => { // CCT: арка-портал с диском внутри
+    const m = o.metal || 'silver', d = 'M18 58.4V24A14 14 0 0 1 46 24V58.4H40.4V24A8.4 8.4 0 0 0 23.6 24V58.4z';
+    return pedestal(c, 'slab', m, 32, 'CCT') + vol(c, d, c.mH(m)) + `<path d="M19.6 56V24A12.4 12.4 0 0 1 32 11.6" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width=".6"/>` +
+      `<circle cx="32" cy="27" r="5.6" fill="${c.glR(o.glass || 'cyan')}" stroke="${c.mV(m)}" stroke-width=".6"/><path d="M32 32.6V58.4" stroke="${c.mH(m)}" stroke-width="1.4"/>`;
+  };
+  D.bbBurst = (c, o) => { // BetBoom: «взрыв» — лучистая звезда со сферой в центре
+    const m = o.metal || 'chrome';
+    const p = []; for (let i = 0; i < 24; i++) { const a = -Math.PI / 2 + i * Math.PI / 12, r = i % 2 ? 9.6 : (i % 4 ? 15 : 17.6); p.push(`${n(32 + Math.cos(a) * r)} ${n(23 + Math.sin(a) * r)}`); }
+    return pedestal(c, 'step', m, 22, 'BOOM') + stem(c, m, 38, 58.4, 4, 11) +
+      vol(c, 'M' + p.join('L') + 'z', c.mH(m)) + `<circle cx="32" cy="23" r="10.4" fill="none" stroke="#000" stroke-opacity=".3" stroke-width=".4"/>` +
+      `<circle cx="32" cy="23" r="7.2" fill="${c.glR(o.glass || 'mint')}" stroke="${c.mV(m)}" stroke-width=".7"/>` + shine('M27.6 19A5.4 5.4 0 0 1 31 17.4', .8);
+  };
+  // новые организаторы (впервые в карьере)
+  D.wingCup = (c, o) => {
+    const m = o.metal || 'silver', W1 = 'M23 15C15 9 9 12 7.4 19C11 17.4 14.4 18 16.4 20C12.6 21 10.4 24 10.6 27.6C14.4 25 18.4 24.6 23.4 24.4z';
+    return pedestal(c, o.base || 'step', m, 22, o.label) + stem(c, m, 36, 58.4, 4, 11) +
+      vol(c, W1, c.mH(m)) + `<g transform="matrix(-1 0 0 1 64 0)">${vol(c, W1, c.mH(m))}</g>` +
+      vol(c, 'M21.6 11H42.4L40 27C38.6 33 35.6 36.4 32 36.4S25.4 33 24 27z', c.mH(m)) + `<ellipse cx="32" cy="11" rx="10.4" ry="1.7" fill="${c.mV(m)}"/>` + shine('M24.6 14C25 22 26.6 29 29 33', 1);
+  };
+  D.spire = (c, o) => {
+    const m = o.metal || 'silver';
+    return pedestal(c, o.base || 'step', m, 20, o.label) + vol(c, 'M32 2.6L38.4 40L34.4 58.4H29.6L25.6 40z', c.mH(m)) +
+      `<path d="M32 2.6L32 58.4M25.6 40H38.4" stroke="#000" stroke-opacity=".28" stroke-width=".45"/><path d="M32 2.6L27.6 40" stroke="#fff" stroke-opacity=".55" stroke-width=".5"/>` +
+      `<ellipse cx="32" cy="40" rx="7.4" ry="1.6" fill="${c.mV(m)}"/><path d="M30 14L32 9L34 14L32 26z" fill="${c.gl(o.glass || 'ice')}"/>`;
+  };
+  D.ringStack = (c, o) => {
+    const m = o.metal || 'silver';
+    let s = pedestal(c, o.base || 'round', m, 22, o.label) + `<path d="M30.4 58.4V10H33.6V58.4z" fill="${c.mH(m)}"/>`;
+    [[50, 12], [40, 10.4], [30, 8.6], [20, 6.6]].forEach(([y, rx]) => { s += `<ellipse cx="32" cy="${y}" rx="${rx}" ry="${n(rx * .3)}" fill="none" stroke="${c.mH(m)}" stroke-width="2.4"/><ellipse cx="32" cy="${y - .6}" rx="${rx}" ry="${n(rx * .3)}" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width=".4"/>`; });
+    return s + `<circle cx="32" cy="8" r="4" fill="${c.glR(o.glass || 'blue')}" stroke="${c.mV(m)}" stroke-width=".5"/>`;
+  };
+  D.arcGate = (c, o) => {
+    const m = o.metal || 'silver', A = 'M30.6 58.4C20 48 15 32 22 8C21 26 25 42 32.6 52z';
+    return pedestal(c, o.base || 'slab', m, 24, o.label) + vol(c, A, c.mH(m)) + `<g transform="matrix(-1 0 0 1 64 0)">${vol(c, A, c.mH(m))}</g>` +
+      glyph('star', 32, 24, 5.6, '#fff4cc') + `<circle cx="32" cy="24" r="8.4" fill="none" stroke="${c.mV(m)}" stroke-width=".7"/>`;
+  };
+  D.prismCrown = (c, o) => {
+    const m = o.metal || 'silver';
+    return pedestal(c, o.base || 'step', m, 22, o.label) + `<path d="M24 58.4V22L32 18L40 22V58.4L32 62z" fill="${c.gl(o.glass || 'ice')}" stroke="${c.mV(m)}" stroke-width=".5"/><path d="M32 18V62M24 22L32 26L40 22" stroke="#fff" stroke-opacity=".45" stroke-width=".4" fill="none"/>` +
+      vol(c, 'M22.4 20L22 9L26.4 14L32 5L37.6 14L42 9L41.6 20Q32 23 22.4 20z', c.mH(m)) + `<circle cx="32" cy="5" r="1.4" fill="${c.mR(m)}"/>`;
+  };
 
   window.CS2TrophyForge = Object.freeze({ cup, cupSpec, award, marker, organizers: ORGS.map(o => o.key), awardTypes: Object.keys(AWARDS) });
 })();
