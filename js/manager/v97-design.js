@@ -187,37 +187,50 @@
   /* ============================================================ боковое меню */
   // название пункта «Штаб» путалось со «Штабом организации»
   function relabel() { const b = document.querySelector('#hs-root .pt-menu[data-menu="game"] [data-nav="staff"]'); if (b && b.textContent.trim() === 'Штаб') b.textContent = 'Тренерский штаб'; }
-  // v98: короткое меню — то, чем менеджер пользуется каждый день; остальное под «Ещё»
-  const MAIN_M = ['desk', 'inbox', 'squad', 'training', 'tactics', 'negotiate', 'finance'];
-  const MAIN_S = ['watch', 'season', 'pick'];
-  const CLUB_ONLY = { desk: 1, org: 1, inbox: 1, dm: 1, squad: 1, training: 1, tactics: 1, staff: 1, scout: 1, negotiate: 1, academy: 1, finance: 1, career: 1 };
-  const MORE_KEY = 'cs2.v97.more';
-  let moreOpen = false; try { moreOpen = localStorage.getItem(MORE_KEY) === '1'; } catch (e) {}
+  // v99.1: шесть разделов у менеджера, три у наблюдателя. Остальные страницы — вкладки внутри раздела (полоса
+  // вкладок сверху страницы), без «Ещё». Раздел подсвечен, когда открыта любая его вкладка.
+  const GROUPS_M = [
+    { k: 'desk', l: 'Рабочее место', tabs: [['desk', 'Обзор'], ['inbox', 'События'], ['dm', 'Переписка'], ['debrief', 'Разборы матчей']] },
+    { k: 'squad', l: 'Команда', tabs: [['squad', 'Состав'], ['training', 'Тренировки'], ['tactics', 'Тактика'], ['staff', 'Тренерский штаб'], ['academy', 'Академия']] },
+    { k: 'scout', l: 'Матчи и турниры', tabs: [['scout', 'Подготовка к сопернику'], ['clubev', 'Турниры клуба']] },
+    { k: 'negotiate', l: 'Рынок', tabs: [['negotiate', 'Переговоры'], ['decisions', 'Решения клубов']] },
+    { k: 'finance', l: 'Клуб', tabs: [['finance', 'Финансы'], ['org', 'Штаб организации'], ['career', 'Карьера и наследие'], ['control', 'Режим игры'], ['pick', 'Сменить клуб'], ['manage', 'Управление турнирами']] },
+    { k: 'watch', l: 'Эфир и сезон', tabs: [['watch', 'Режим зрителя'], ['season', 'Сезон и карьера']] }
+  ];
+  const GROUPS_S = [
+    { k: 'watch', l: 'Режим зрителя', tabs: [['watch', 'Эфир'], ['manage', 'Управление турнирами']] },
+    { k: 'season', l: 'Сезон и карьера', tabs: [['season', 'Сезон и карьера'], ['decisions', 'Решения клубов']] },
+    { k: 'pick', l: 'Возглавить клуб', tabs: [['pick', 'Выбор организации'], ['control', 'Режим игры']] }
+  ];
+  const groups = () => (me() ? GROUPS_M : GROUPS_S);
+  const groupOf = page => groups().find(g => g.tabs.some(t => t[0] === page)) || null;
   function groupSide() {
     const sub = document.querySelector('#gs-side .gs-grp[data-gs-grp="game"] .gs-sub'); if (!sub) return;
     const mode = me() ? 'm' : 's';
     if (sub.dataset.v97 !== mode) {
       const btn = {}; [...sub.querySelectorAll('[data-nav]')].forEach(b => { btn[b.dataset.nav] = b; });
-      const main = (mode === 'm' ? MAIN_M : MAIN_S).filter(k => btn[k]), rest = Object.keys(btn).filter(k => !main.includes(k));
       const frag = document.createDocumentFragment();
-      main.forEach(k => { btn[k].classList.remove('v97-dim'); frag.appendChild(btn[k]); });
-      if (rest.length) {
-        const tg = document.createElement('button'); tg.type = 'button'; tg.className = 'gs-it sub v97-moretg'; tg.dataset.v97more = '1'; tg.innerHTML = `<span class="gs-lb">Ещё</span><i>${rest.length}</i>`;
-        const box = document.createElement('div'); box.className = 'v97-more';
-        rest.sort((a, b) => (mode === 's' ? (CLUB_ONLY[a] ? 1 : 0) - (CLUB_ONLY[b] ? 1 : 0) : 0)).forEach(k => { btn[k].classList.toggle('v97-dim', mode === 's' && !!CLUB_ONLY[k]); box.appendChild(btn[k]); });
-        frag.appendChild(tg); frag.appendChild(box);
-      }
+      groups().forEach(g => { let b = btn[g.k]; if (!b) { b = document.createElement('button'); b.type = 'button'; b.className = 'gs-it sub'; b.dataset.nav = g.k; b.innerHTML = '<span class="gs-lb"></span>'; }
+        b.classList.remove('v97-dim'); const lb = b.querySelector('.gs-lb') || b; lb.textContent = g.l; b.title = g.l; frag.appendChild(b); });
       sub.textContent = ''; sub.appendChild(frag); sub.dataset.v97 = mode;
     }
-    const box = sub.querySelector('.v97-more'), tg = sub.querySelector('.v97-moretg');
-    if (box && tg) { const open = moreOpen || !!box.querySelector('.gs-it.on'); if (box.classList.contains('open') !== open) box.classList.toggle('open', open); tg.setAttribute('aria-expanded', String(open)); }
+    const g = groupOf(H.S && H.S.page);
+    sub.querySelectorAll('.gs-it[data-nav]').forEach(b => { const on = !!g && b.dataset.nav === g.k; if (b.classList.contains('on') !== on) b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    if (g) { const grp = sub.closest('.gs-grp'); if (grp && !grp.classList.contains('on')) grp.classList.add('on', 'open'); }
     badges();
   }
-  document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-v97more]'); if (!b) return; e.preventDefault(); e.stopPropagation(); moreOpen = !moreOpen; try { localStorage.setItem(MORE_KEY, moreOpen ? '1' : '0'); } catch (e2) {} groupSide(); }, true);
+  // полоса вкладок раздела — над содержимым страницы
+  function tabStrip(page, pg) {
+    const g = groupOf(page); if (!g || !pg || pg.querySelector(':scope > .v99-tabs')) return;
+    const nav = document.createElement('nav'); nav.className = 'v99-tabs'; nav.setAttribute('aria-label', g.l);
+    nav.innerHTML = g.tabs.map(([k, l]) => `<button type="button" class="v99-tab${k === page ? ' on' : ''}" data-nav="${k}"${k === page ? ' aria-current="page"' : ''}>${esc(l)}${k === 'inbox' ? '<i class="v99-tabn" data-v99tabn></i>' : ''}</button>`).join('');
+    pg.prepend(nav);
+    const n = nav.querySelector('[data-v99tabn]'); if (n) { let c = 0; try { c = me() && W.V96Windows ? W.V96Windows.blockers().length : 0; } catch (e) {} if (c) n.textContent = c > 9 ? '9+' : String(c); else n.remove(); }
+  }
   function badges() {
     const side = $('gs-side'); if (!side) return;
     let n = 0; try { n = me() && W.V96Windows ? W.V96Windows.blockers().length : 0; } catch (e) {}   // v99: тот же счёт, что и на «Продолжить» (события, разговоры, план тренировок)
-    const inbox = side.querySelector('.gs-it[data-nav="inbox"]');
+    const inbox = side.querySelector('.gs-it[data-nav="desk"]');   // v99.1: события — вкладка «Рабочего места»
     if (inbox) { let b = inbox.querySelector('.v97-badge'); if (n) { if (!b) { b = document.createElement('i'); b.className = 'v97-badge'; inbox.appendChild(b); } const tx = n > 9 ? '9+' : String(n); if (b.textContent !== tx) b.textContent = tx; b.setAttribute('aria-label', 'нерешённых событий: ' + n); } else if (b) b.remove(); }
     let live = false; try { live = ((CT() && CT().broadcast && CT().broadcast.active) || []).some(i => i && i.match && i.state && !i.state.finished); } catch (e) {}
     const watch = side.querySelector('.gs-it[data-nav="watch"]');
@@ -237,12 +250,13 @@
       pg.prepend(h);
     }
     relabel(); groupSide();
+    try { tabStrip(page, pg); } catch (e) {}
   }
   if (H.AFTER) H.AFTER.push(after);
   relabel();
   [0, 500, 1600, 4200].forEach(t => setTimeout(() => { try { relabel(); if (W.CS2Shell && t) W.CS2Shell.refresh(); groupSide(); } catch (e) {} }, t));
   setInterval(() => { try { if (!document.hidden) groupSide(); } catch (e) {} }, 900);
 
-  W.V97Design = { groupSide, tint, refresh: () => after(H.S && H.S.page) };
+  W.V97Design = { groupSide, groups, groupOf, tint, refresh: () => after(H.S && H.S.page) };
   console.info('[v97] дизайн: окна менеджера и режим зрителя');
 })();

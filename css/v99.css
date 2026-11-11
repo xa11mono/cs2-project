@@ -93,3 +93,13 @@
 #hs-root .v99-uplist li{flex-wrap:wrap;justify-content:space-between;align-items:center}
 #hs-root .v99-uplist li>span:first-child{flex:1 1 160px;min-width:0}
 #hs-root .v99-scroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* ============================================================ v99.1 вкладки раздела «Карьеры» */
+#hs-root .v99-tabs{display:flex;gap:var(--s-1);margin:0 0 var(--s-4);border-bottom:1px solid var(--c-line);overflow-x:auto;scrollbar-width:none}
+#hs-root .v99-tabs::-webkit-scrollbar{display:none}
+#hs-root .v99-tab{position:relative;flex:none;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 var(--s-3);border:0;background:none;color:var(--c-text-2);font:600 var(--t-small)/1 var(--f-ui);cursor:pointer;white-space:nowrap;transition:color var(--m-micro) var(--ease)}
+#hs-root .v99-tab:hover{color:var(--c-text)}
+#hs-root .v99-tab.on{color:var(--c-text)}
+#hs-root .v99-tab.on::after{content:"";position:absolute;left:var(--s-3);right:var(--s-3);bottom:-1px;height:2px;border-radius:2px;background:var(--c-action)}
+#hs-root .v99-tab:focus-visible{outline:2px solid var(--c-focus);outline-offset:-2px;border-radius:var(--r-control)}
+#hs-root .v99-tabn{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--c-live);color:#fff;font:700 11px/18px var(--f-num);font-style:normal;text-align:center}

@@ -20,7 +20,8 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     return { navs, oldNavVisible, left: s.getBoundingClientRect().width };
   });
   assert(side, 'sidebar must exist');
-  ['home', 'news', 'matches', 'events', 'ranking', 'players', 'teams', 'transfers', 'stats', 'org', 'settings'].forEach(k => assert(side.navs.includes(k), 'sidebar must contain ' + k));
+  // v99.1: у наблюдателя в «Карьере» три раздела; вход в игру — «Возглавить клуб» (pick), а не «Штаб организации»
+  ['home', 'news', 'matches', 'events', 'ranking', 'players', 'teams', 'transfers', 'stats', 'pick', 'settings'].forEach(k => assert(side.navs.includes(k), 'sidebar must contain ' + k));
   assert(!side.oldNavVisible, 'old tab bar must be hidden');
   assert(side.left >= 200, 'sidebar is expanded at 1600px');
   await p.click('#gs-side .gs-it[data-nav="ranking"]'); await p.waitForTimeout(400);

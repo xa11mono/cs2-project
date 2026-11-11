@@ -20,9 +20,9 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     caps: [...document.querySelectorAll('#gs-side .gs-grp[data-gs-grp="game"] .gs-sub > .gs-it[data-nav]')].map(x => x.dataset.nav), more: !!document.querySelector('#gs-side .v97-moretg'), dim: document.querySelectorAll('#gs-side .gs-it.v97-dim').length,
     org: !!document.querySelector('#gs-side .gs-it[data-nav="org"]'), off: !!document.querySelector('#hs-page .v97-off'), nav: !!document.querySelector('#hs-page .v97-off [data-nav="matches"]') }));
   assert(s1.mode === 'spectator' && s1.pg === 'watch', JSON.stringify(s1));
-  assert(s1.caps.join() === 'watch,season,pick' && s1.more && s1.dim >= 8 && s1.org, 'меню наблюдателя: ' + JSON.stringify(s1));
+  assert(s1.caps.join() === 'watch,season,pick' && !s1.more && s1.dim === 0, 'меню наблюдателя: три раздела, без «Ещё» (v99.1) ' + JSON.stringify(s1));
   assert(s1.off && s1.nav, 'экран ожидания эфира');
-  pass('наблюдатель: короткое меню ' + s1.caps.join(' / ') + ' + «Ещё», экран ожидания эфира');
+  pass('наблюдатель: меню ' + s1.caps.join(' / ') + ', экран ожидания эфира');
 
   // 2. «Режим игры»: два режима, текущий отмечен, вход на выбор клуба
   await go('#/control');
@@ -35,13 +35,14 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   await go('#/training');
   const m1 = await p.evaluate(() => ({ mode: document.documentElement.dataset.v97Mode, caps: [...document.querySelectorAll('#gs-side .gs-grp[data-gs-grp="game"] .gs-sub > .gs-it[data-nav]')].map(x => x.dataset.nav), h1: !!document.querySelector('#hs-page h1'),
     fin: (() => { const b = document.querySelector('#gs-side .gs-it[data-nav="finance"]'), s = document.getElementById('gs-side'); if (!b) return false; b.scrollIntoView({ block: 'center' }); const r = b.getBoundingClientRect(); return r.height > 20 && document.elementFromPoint(r.left + 60, r.top + r.height / 2)?.closest('[data-nav]') === b; })() }));
-  assert(m1.mode === 'manager' && m1.caps.join() === 'desk,inbox,squad,training,tactics,negotiate,finance', JSON.stringify(m1));
-  assert(m1.h1, 'у страницы «Тренировки» есть заголовок'); assert(m1.fin, '«Финансы» видны в меню (раньше обрезались)');
+  assert(m1.mode === 'manager' && m1.caps.join() === 'desk,squad,scout,negotiate,finance,watch', JSON.stringify(m1));
+  assert(await p.evaluate(() => [...document.querySelectorAll('#hs-page .v99-tabs .v99-tab')].map(x => x.dataset.nav).join() === 'squad,training,tactics,staff,academy' && !!document.querySelector('#hs-page .v99-tab.on[data-nav="training"]') && !!document.querySelector('#gs-side .gs-it.on[data-nav="squad"]')), 'v99.1: «Тренировки» — вкладка раздела «Команда»');
+  assert(m1.h1, 'у страницы «Тренировки» есть заголовок'); assert(m1.fin, 'раздел «Клуб» (финансы) виден в меню');
   await p.evaluate(() => { const t = HS.teamBy(V31.managed()), a = t.players[1]; V31.ensurePerson(a); a.conf = 20; V31.EV.confidence.check(t); });
   await p.waitForTimeout(1500);
   if (await p.$('#v96-gate:not([hidden]) .v96-x')) await p.click('#v96-gate .v96-x');
   await p.waitForTimeout(1200);
-  const badge = await p.evaluate(() => document.querySelector('#gs-side .gs-it[data-nav="inbox"] .v97-badge')?.textContent || '');
+  const badge = await p.evaluate(() => document.querySelector('#gs-side .gs-it[data-nav="desk"] .v97-badge')?.textContent || '');
   assert(badge === '1', 'счётчик событий в меню: ' + badge);
   pass('менеджер: меню ' + m1.caps.join(' / ') + ', счётчик событий ' + badge);
 
