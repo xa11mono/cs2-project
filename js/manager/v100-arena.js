@@ -86,7 +86,9 @@
     coffee: svg('<path d="M4.5 9h12v5a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5z"/><path d="M16.5 10.5h1.5a2.5 2.5 0 0 1 0 5h-1.6M8 3.5c0 1 1 1.3 1 2.5M11.5 3.5c0 1 1 1.3 1 2.5"/>'),
     mic: svg('<rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/>'),
     eye: svg('<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>'),
-    flag: svg('<path d="M5 21V4.5M5 4.5h11l-2 4 2 4H5"/>')
+    flag: svg('<path d="M5 21V4.5M5 4.5h11l-2 4 2 4H5"/>'),
+    history: svg('<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4.5V9H8"/><path d="M12 7.5V12l3 2"/>'),
+    community: svg('<path d="M4 5.5h12v8.5H9l-4 3.5V14H4z"/><path d="M16 9h4v8h-1.5v2.8L15 17h-4.5"/>')
   };
 
   /* ---------- общий вид команды ---------- */
@@ -98,18 +100,23 @@
   const flagOf = p => { try { return H.pFlag(p) || ''; } catch (e) { return ''; } };
 
   /* ================================================================ БОКОВОЕ МЕНЮ */
+  // v100.2: в меню только «входы» в разделы; страницы, которые открываются вкладками внутри раздела, в меню не дублируются
   const MANAGER = [
-    ['desk', 'Главная', 'home'], ['squad', 'Состав', 'squad'], ['negotiate', 'Трансферы', 'transfer'], ['tactics', 'Тактика', 'tactics'],
-    ['training', 'Тренировки', 'training'], ['calendar', 'Календарь', 'calendar'], ['clubev', 'Соревнования', 'trophy'],
-    ['finance', 'Финансы', 'finance'], ['org', 'Организация', 'org'], ['inbox', 'Входящие', 'inbox']
+    ['desk', 'Главная', 'home'], ['career', 'Менеджер', 'crown'], ['squad', 'Команда', 'squad'], ['negotiate', 'Трансферы', 'transfer'],
+    ['clubev', 'Соревнования', 'trophy'], ['calendar', 'Календарь', 'calendar'], ['org', 'Организация', 'org']
   ];
-  const WORLD_M = [['home', 'Портал HLTV', 'news'], ['matches', 'Матчи', 'matches'], ['events', 'Все турниры', 'events'], ['ranking', 'Рейтинг', 'ranking'], ['players', 'Игроки', 'players'], ['watch', 'Эфир', 'watch']];
+  const WORLD_M = [['home', 'Портал HLTV', 'news'], ['matches', 'Матчи', 'matches'], ['events', 'Турниры', 'events'], ['ranking', 'Рейтинг', 'ranking'], ['players', 'Игроки', 'players'], ['teams', 'Команды', 'teams'], ['watch', 'Эфир', 'watch']];
   const SPECTATOR = [
     ['home', 'Главная', 'home'], ['watch', 'Эфир', 'watch'], ['matches', 'Матчи', 'matches'], ['events', 'Турниры', 'events'],
     ['calendar', 'Календарь', 'calendar'], ['ranking', 'Рейтинг', 'ranking'], ['news', 'Новости', 'news'], ['predict', 'Прогнозы', 'predict'],
     ['players', 'Игроки', 'players'], ['teams', 'Команды', 'teams'], ['transfers', 'Трансферы', 'transfer']
   ];
-  const HIDE_MORE = new Set(['settings', 'desk', 'gs', 'veto']);
+  // вкладки внутри разделов — не показываем в меню (раздел подсвечивается сам)
+  const TAB_PAGES = new Set(['training', 'tactics', 'staff', 'academy', 'finance', 'control', 'manage', 'pick', 'inbox', 'dm', 'debrief', 'decisions', 'scout', 'season', 'settings', 'gs', 'veto', 'desk']);
+  const GROUPS = [
+    ['hist', 'История', 'history', ['majorpath', 'majors', 'awards', 'hof', 'records', 'eras', 'rivalries', 'archive', 'nations', 'stats']],
+    ['comm', 'Фан-зона', 'community', ['news', 'transfers', 'predict', 'community', 'forum', 'fantasy', 'fpl', 'betting', 'cards', 'stickers', 'fan']]
+  ];
   const labelOf = b => { const c = b.cloneNode(true); c.querySelectorAll('i,b,small,.gs-badge,svg').forEach(n => n.remove()); return c.textContent.replace(/\s+/g, ' ').trim(); };
   function allNav() {   // все разделы, которые модули зарегистрировали в старой навигации
     const out = new Map(), root = $('hs-root'); if (!root) return out;
@@ -118,12 +125,12 @@
   }
   const has = k => !!(H.PAGES && H.PAGES[k]);
   const pageNow = () => (H.S && H.S.page) || 'home';
-  let openMore = store.get('cs2.ax.more', false);
+  const openGrp = new Set(store.get('cs2.ax.grp', []));
 
   function badgeFor(k) {
     try {
       const m = me(); if (!m) return 0;
-      if (k === 'desk') { const t = team(m); return t && W.CS2Desk ? W.CS2Desk.todo(t).length : 0; }
+      if (k === 'desk') { const t = team(m); return (t && W.CS2Desk ? W.CS2Desk.todo(t).length : 0) + (W.V99Mail && W.V99Mail.unread ? +W.V99Mail.unread() || 0 : 0); }
       if (k === 'inbox') return W.V99Mail && W.V99Mail.unread ? +W.V99Mail.unread() || 0 : 0;
     } catch (e) {}
     return 0;
@@ -161,10 +168,16 @@
     const list = (club ? MANAGER : SPECTATOR).filter(x => has(x[0]) || map.has(x[0]));
     const world = club ? WORLD_M.filter(x => has(x[0]) || map.has(x[0])) : [];
     const used = new Set([...list, ...world].map(x => x[0]));
-    const more = [...map.entries()].filter(([k]) => !used.has(k) && !HIDE_MORE.has(k) && !(club && k === 'pick')).map(([k, l]) => [k, l, 'more']);
+    const MGR_ONLY = new Set(['org', 'squad', 'negotiate', 'clubev', 'career', 'finance', 'training', 'tactics', 'staff', 'academy', 'desk']);
+    const avail = [...map.entries()].filter(([k]) => !used.has(k) && !TAB_PAGES.has(k) && (club || !MGR_ONLY.has(k)));
+    if (club && map.has('transfers')) map.set('transfers', 'Трансферы мира');
+    const placed = new Set();
+    const groups = GROUPS.map(([gk, gl, gi, keys]) => [gk, gl, gi, keys.filter(k => map.has(k) && !used.has(k)).map(k => (placed.add(k), [k, map.get(k), 'more']))]);
+    const rest = avail.filter(([k]) => !placed.has(k)).map(([k, l]) => [k, l, 'more']);
+    if (rest.length) groups[1][3].push(...rest);
+    const more = groups.flatMap(g => g[3]);
     const on = activeKey(list.concat(world, more));
-    const moreOn = more.some(x => x[0] === on);
-    const s = season(), y = yearOf(s);
+        const s = season(), y = yearOf(s);
     let brand;
     if (club) {
       const t = team(club), c = tint(club), rk = rankOf(club);
@@ -186,9 +199,9 @@
       <nav class="gs-nav ax-nav" aria-label="Разделы">
         ${list.map(x => it(x, x[0] === on)).join('')}
         ${world.length ? `<div class="gs-cap ax-cap">Мир CS2</div>${world.map(x => it(x, x[0] === on)).join('')}` : ''}
-        ${more.length ? `<div class="ax-grp${openMore || moreOn ? ' open' : ''}${moreOn ? ' on' : ''}">
-          <button type="button" class="gs-it ax-it ax-gh" data-ax-tog aria-expanded="${!!(openMore || moreOn)}"><span class="gs-ic">${IC.more}</span><span class="gs-lb">Ещё</span><span class="ax-chev">${IC.chev}</span></button>
-          <div class="ax-sub">${more.map(x => it(x, x[0] === on, true)).join('')}</div></div>` : ''}
+        ${groups.filter(g => g[3].length).map(([gk, gl, gi, items]) => { const gOn = items.some(x => x[0] === on), open = gOn || openGrp.has(gk);
+          return `<div class="ax-grp${open ? ' open' : ''}${gOn ? ' on' : ''}"><button type="button" class="gs-it ax-it ax-gh" data-ax-tog="${gk}" aria-expanded="${open}"><span class="gs-ic">${IC[gi]}</span><span class="gs-lb">${gl}</span><span class="ax-chev">${IC.chev}</span></button>
+          <div class="ax-sub">${items.map(x => it(x, x[0] === on, true)).join('')}</div></div>`; }).join('')}
       </nav>
       ${widget ? `<div class="ax-widget">${widget}</div>` : ''}
       <div class="gs-foot ax-foot">${it(['settings', 'Настройки', 'settings'], on === 'settings' || pageNow() === 'settings')}
@@ -203,6 +216,7 @@
     const html = sideHtml(), sig = html.replace(/\s+/g, ' ');
     if (!force && sig === sideSig && side.querySelector('.ax-side-in')) return;
     sideSig = sig; side.classList.add('ax-side'); side.innerHTML = html;
+    const onEl = side.querySelector('.ax-sub .ax-it.on'); if (onEl) requestAnimationFrame(() => onEl.scrollIntoView({ block: 'nearest' }));
   }
   function bindSide() {
     const side = $('gs-side'); if (!side || side.dataset.ax) return !!side;
@@ -210,7 +224,7 @@
     new MutationObserver(() => { if (!side.querySelector('.ax-side-in')) renderSide(true); }).observe(side, { childList: true });
     side.addEventListener('click', e => {
       const t = e.target.closest('[data-ax-tog]');
-      if (t) { e.stopPropagation(); const g = t.closest('.ax-grp'); if (g.classList.contains('on') && g.classList.contains('open')) return; const o = !g.classList.contains('open'); g.classList.toggle('open', o); t.setAttribute('aria-expanded', o); openMore = o; store.set('cs2.ax.more', o); return; }
+      if (t) { e.stopPropagation(); const g = t.closest('.ax-grp'); if (g.classList.contains('on') && g.classList.contains('open')) return; const o = !g.classList.contains('open'); g.classList.toggle('open', o); t.setAttribute('aria-expanded', o); if (o) openGrp.add(t.dataset.axTog); else openGrp.delete(t.dataset.axTog); store.set('cs2.ax.grp', [...openGrp]); return; }
       if (e.target.closest('[data-ax-snd]')) { e.stopPropagation(); SND.toggle(); renderSide(true); return; }
       if (e.target.closest('[data-nav]')) D.documentElement.classList.remove('ax-drawer');
     });

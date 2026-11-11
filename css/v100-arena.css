@@ -766,3 +766,16 @@ html.ax-on #hs-root .v96-cta{position:sticky;bottom:0;z-index:5;background:linea
 /* логотипы в превью новостей — квадратные, без растяжения */
 #hs-root .ax-nvis.tm img,#hs-root .ax-nvis.tm .ax-logo-f{width:auto!important;height:64%!important;max-height:none!important;aspect-ratio:1/1;object-fit:contain!important}
 #hs-root .ax-nvis.tm img,#hs-root .ax-nvis.tm .ax-logo-f{position:absolute!important;top:18%!important;left:50%!important;height:64%!important;width:auto!important;transform:translateX(-50%);margin:0!important}
+/* v100.2 — компактное меню: всё помещается по высоте */
+#hs-root .ax-it{height:36px!important}
+#hs-root .ax-it.sub{height:31px!important}
+#hs-root .ax-cap{margin:10px 12px 4px!important}
+#hs-root .ax-brand{padding:12px 14px 8px!important}
+#hs-root .ax-club{padding:10px 8px!important;gap:4px!important}
+#hs-root .ax-club-logo{width:52px!important;height:52px!important}#hs-root .ax-club-logo img{width:50px!important;height:50px!important}
+#hs-root .ax-club-name{font-size:18px!important}
+#hs-root .ax-next{padding:9px 12px!important}
+#hs-root .ax-foot{padding:6px 12px 10px!important}
+#hs-root .ax-grp{margin-top:2px}
+@media (max-height:820px){#hs-root .ax-widget{display:none}}
+#hs-root .ax-it{height:34px!important}#hs-root .ax-nav{gap:1px!important}
