@@ -118,7 +118,7 @@
       const sg = v => (v > 0 ? '+' : '') + v;
       const rows = log.map(e => `<tr><td>сезон ${e.s}</td><td>${e.age}</td><td>${sg(e.d.firepower)}</td><td>${sg(e.d.tacticalIQ)}</td><td>${sg(e.d.clutch)}</td><td>${sg(e.d.utility)}</td><td class="l"><small>${H.esc(e.why.join('; '))}</small></td></tr>`).join('');
       const tr = p.v31tg ? `<p class="hs-note">Тренировки в этом сезоне: +${(+p.v31tg.sum || 0).toFixed(2)} (предел +3 за сезон).</p>` : '';
-      const html = `<section class="hs-box v92-dev"><header class="hs-box-h"><h3>Развитие</h3><span class="hs-sub">${H.esc(pr.label)} · пик ~${pr.peak} лет${Number.isFinite(pot) ? ` · потенциал ${pot.toFixed(0)} (сейчас ${pow(p).toFixed(1)})` : ''}</span></header><div class="hs-box-b">
+      const html = `<section class="hs-box v92-dev"><header class="hs-box-h"><h3>Развитие</h3><span class="hs-sub">${H.esc(pr.label)} · пик ~${pr.peak} лет${Number.isFinite(pot) ? ` · потенциал ${(W.V99Scout && W.V99Scout.fog(p)) ? `<span class="v99-range">${W.V99Scout.fog(p).pot}</span><span class="v99-fog">оценка скаута</span>` : pot.toFixed(0)} (сейчас ${pow(p).toFixed(1)})` : ''}</span></header><div class="hs-box-b">
         ${rows ? `<table class="hs-tbl"><thead><tr><th>Сезон</th><th>Возраст</th><th>Огонь</th><th>Тактика</th><th>Клатч</th><th>Утилити</th><th class="l">Почему</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="hs-note">Годовых изменений ещё не было — они считаются в конце сезона.</p>'}${tr}</div></section>`;
       const anchor = root.querySelector('.hs-box:last-of-type') || root.lastElementChild; if (anchor) anchor.insertAdjacentHTML('afterend', html);
     } catch (e) {}

@@ -79,3 +79,17 @@
 #hs-root .v99-next .vs{font:700 var(--t-caption)/1 var(--f-ui);color:var(--c-text-3)}
 #hs-root .v99-next b{font-size:18px}
 #hs-root .v99-next small{display:block;color:var(--c-text-3);font-size:var(--t-caption)}
+
+/* скримы: подходы — своя карточка (без иконок фокусов тренировки, текст переносится) */
+#hs-root .v99-tfs{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:var(--s-2)}
+#hs-root .v99-tf{position:relative;display:flex;flex-direction:column;gap:4px;padding:var(--s-3) var(--s-4);border:1px solid var(--c-line-strong);border-radius:var(--r-box);background:var(--c-surface-2);color:var(--c-text);text-align:left;font:inherit;cursor:pointer;transition:border-color var(--m-micro) var(--ease),background var(--m-micro) var(--ease)}
+#hs-root .v99-tf:hover:not(:disabled){border-color:#4a5868}
+#hs-root .v99-tf b{font-size:15px;font-weight:700;padding-right:22px}
+#hs-root .v99-tf small{font-size:var(--t-caption);line-height:1.4;color:var(--c-text-3)}
+#hs-root .v99-tf.on{border-color:var(--c-action);background:rgba(255,159,67,.07)}
+#hs-root .v99-tf.on::after{content:"";position:absolute;top:10px;right:10px;width:16px;height:16px;border-radius:50%;background:var(--c-action) var(--v97-ck) center/12px no-repeat}
+#hs-root .v99-tf:disabled{cursor:default;opacity:.55}
+#hs-root .v99-tf:focus-visible{outline:2px solid var(--c-focus);outline-offset:2px}
+#hs-root .v99-uplist li{flex-wrap:wrap;justify-content:space-between;align-items:center}
+#hs-root .v99-uplist li>span:first-child{flex:1 1 160px;min-width:0}
+#hs-root .v99-scroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}

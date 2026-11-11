@@ -20,7 +20,8 @@
   const T1 = ['major', 'elite', 'regular'];
   const ranked = () => H.ranked().filter(t => !t.isAcademy);
   const rankOf = n => { const i = ranked().findIndex(t => t.name === n); return i < 0 ? 99 : i + 1; };
-  const favTeam = () => S()?.favTeam || (typeof teams !== 'undefined' ? teams.find(t => t.isFan)?.name : '') || '';
+  // v99: менеджер, не отметивший любимую команду, видит в «Моей ленте» свой клуб
+  const favTeam = () => S()?.favTeam || (typeof teams !== 'undefined' ? teams.find(t => t.isFan)?.name : '') || (() => { try { return W.V31?.managed?.() || ''; } catch (e) { return ''; } })() || '';
   const favPlayer = () => S()?.favPlayer || '';
   const legend = n => { try { return !!W.CS2Legend?.(n); } catch (e) { return false; } };
   const popular = n => !!n && (rankOf(n) <= 10 || legend(n) || n === favTeam());

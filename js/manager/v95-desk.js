@@ -36,7 +36,7 @@
       const inv = (st.v35Roster && st.v35Roster.participants) || st.v45Participants || (st.v95Major && st.v95Major.direct) || st.v35Invites || [];
       if (inv.includes(name)) out.push({ name: st.name, start });
     });
-    (seasonState.parallelSchedule || []).forEach(e => { if (e && e.status !== 'completed' && (e.participants || []).includes(name) && (e.startMs || 0) >= t0 - 3 * DAY) out.push({ name: e.name, start: e.startMs }); });
+    (seasonState.parallelSchedule || []).forEach(e => { if (e && e.status !== 'completed' && (e.participants || []).includes(name) && (e.startMs || 0) >= t0 - 3 * DAY) out.push({ name: e.name, start: e.startMs, live: e.status === 'live' }); });   // v99: идущий отбор — «идёт», а не прошедшая дата
     out.sort((a, b) => a.start - b.start);
     return out[0] || null;
   }
@@ -119,8 +119,9 @@
     V.ensurePerson(p);
     let pr = null; try { pr = W.CS2Develop.profile(p); } catch (e) {}
     const lv = V.pow(p), pot = +p.pot || lv;
-    const dev = `<table class="hs-tbl"><tbody><tr><td class="l">Уровень сейчас</td><td><b>${lv.toFixed(1)}</b></td></tr><tr><td class="l">Потенциал (оценка)</td><td>${pot.toFixed(1)}</td></tr>
-      ${pr ? `<tr><td class="l">Тип развития</td><td>${esc(pr.label)}, пик около ${pr.peak} лет</td></tr><tr><td class="l">Реализация потенциала</td><td>${Math.round(pr.real * 100)}%</td></tr>` : ''}
+    const fg = W.V99Scout && W.V99Scout.fog(p);   // v99: менеджер видит чужого игрока с погрешностью скаута
+    const dev = `<table class="hs-tbl"><tbody><tr><td class="l">Уровень сейчас</td><td><b>${lv.toFixed(1)}</b></td></tr><tr><td class="l">Потенциал (оценка)</td><td>${fg ? `<span class="v99-range">${fg.pot}</span><span class="v99-fog">±${Math.round(fg.err / 2)}</span>` : pot.toFixed(1)}</td></tr>
+      ${pr ? `<tr><td class="l">Тип развития</td><td>${esc(pr.label)}, пик около ${pr.peak} лет</td></tr><tr><td class="l">Реализация потенциала</td><td>${fg ? (fg.real === '?' ? '<span class="v99-fog">неизвестно — нужен отчёт скаута</span>' : `<span class="v99-range">${fg.real}</span>`) : Math.round(pr.real * 100) + '%'}</td></tr>` : ''}
       <tr><td class="l">Возраст</td><td>${p.age || '—'}</td></tr><tr><td class="l">Уверенность</td><td>${Math.round(+p.conf || 60)} / 100</td></tr></tbody></table>
       <p class="hs-note">${(+p.age || 24) < (pr ? pr.peak : 25) ? 'Игрок ещё растёт: тренировки и игровое время важнее всего.' : (+p.age || 24) <= (pr ? pr.peak : 25) + 3 ? 'Пиковые годы: уровень держится, рост — от тренировок и штаба.' : 'После пика: опыт помогает, но скорость и реакция понемногу уходят.'}</p>`;
     let market = 0; try { market = V.salaryOf(p, t); } catch (e) {}
@@ -129,7 +130,7 @@
       <tr><td class="l">Рыночная зарплата</td><td>${money(market)}${market && (+p.salary || 0) < market * 0.6 ? ' <span class="dn">— недоплачивают</span>' : ''}</td></tr><tr><td class="l">Контракт до сезона</td><td>${p.contractUntil || '—'}${(+p.contractUntil || 99) <= season() ? ' <span class="dn">истекает</span>' : ''}</td></tr>
       <tr><td class="l">Оценка стоимости</td><td>${money(value)}</td></tr><tr><td class="l">Мораль</td><td>${Math.round(+p.morale || 85)}</td></tr></tbody></table>`;
     const TL = V.TRAIT_L || {}, bar = v => `<span class="v95-bar"><i style="width:${Math.round(v / 20 * 100)}%"></i></span>`;
-    const chr = `<table class="hs-tbl"><tbody>${Object.keys(TL).map(k => `<tr><td class="l">${esc(TL[k])}</td><td>${bar(+p.pers[k] || 10)} ${+p.pers[k] || 10}</td></tr>`).join('')}</tbody></table>
+    const chr = `<table class="hs-tbl"><tbody>${Object.keys(TL).map(k => { const tf = W.V99Scout && W.V99Scout.trait(p, k); return `<tr><td class="l">${esc(TL[k])}</td><td>${bar(tf ? tf.mid : (+p.pers[k] || 10))} ${tf ? tf.txt : (+p.pers[k] || 10)}</td></tr>`; }).join('')}</tbody></table>
       <p class="hs-note">Характер влияет на события в клубе: амбициозные просят больше денег и трофеев, лидеры спорят с тренером, стрессоустойчивые лучше держат давление прессы.</p>`;
     return [box('Развитие', dev, '', 'v95-x v95-dev'), box('Контракт', con, '', 'v95-x v95-con'), box('Характер', chr, '', 'v95-x v95-chr')];
   }

@@ -315,7 +315,7 @@ H.PAGES.player = nick => {
   if ((H.S.ptab || 'overview') !== 'overview') return html;
   const now = H.playerNow(nick); if (!now) return html;
   const p = V.ensurePerson(now.p), mineTeam = me();
-  const traits = Object.entries(V.TRAIT_L).map(([k, l]) => `<div class="cr-row"><span>${l}</span>${bar(p.pers[k], 20)}<b>${p.pers[k]}</b></div>`).join('');
+  const traits = Object.entries(V.TRAIT_L).map(([k, l]) => { const tf = window.V99Scout && window.V99Scout.trait(p, k); return `<div class="cr-row"><span>${l}</span>${bar(tf ? tf.mid : p.pers[k], 20)}<b>${tf ? tf.txt : p.pers[k]}</b></div>`; }).join('');   // v99: чужой характер — оценка скаута
   const est = mineTeam && (+p.age || 25) <= 23 ? V.estPot(mineTeam, p) : null;
   const extra = `<div class="hs-ovgrid b">${box('Характер', traits + `<div class="cr-row"><span>Уверенность сейчас</span>${bar(p.conf, 100)}<b>${Math.round(p.conf)}</b></div><p class="hs-note">Характер влияет на рост (профессионализм), трансферы (амбиции и лояльность), игру под давлением в финалах и соперничествах, сыгранность (коммуникация, лидерство).</p>`)}
     ${box('Контракт', `<div class="cr-row"><span>Зарплата</span><b>${money(p.salary)} / сезон</b></div><div class="cr-row"><span>Контракт до</span><b>сезона ${p.contractUntil || '—'}</b></div><div class="cr-row"><span>Ориентир стоимости</span><b>${money(V.valueOf(p))}</b></div>${est ? `<div class="cr-row"><span>Потенциал (оценка вашего скаута)</span><b>${est.lo}–${est.hi}</b></div>` : ''}${p.academyGrad ? `<div class="cr-row"><span>Воспитанник</span><b>${esc(p.academyGrad)}</b></div>` : ''}
