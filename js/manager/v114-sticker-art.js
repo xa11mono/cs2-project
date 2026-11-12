@@ -703,5 +703,17 @@
     } catch (e) {}
   }
   installUi();
-  W.CS2StickerArt = { ensureFonts, eventSticker, teamSticker, autograph, coin, landmarkOf, inspect, styleOf, SIG, DISPLAY };
+  // v125.1: CSS игры (`* {font-family…}`, `body.ui27 * {…}`) перебивает атрибут font-family у SVG-текста —
+  // переносим шрифт в style (он сильнее правил без !important); textPath/tspan наследуют шрифт своего <text>
+  function fontsInline(svg) {
+    return String(svg || '').replace(/<(text|textPath|tspan)\b([^>]*?)(\/?)>/g, (m, tag, attrs, sc) => {
+      const f = /\sfont-family="([^"]*)"/.exec(attrs);
+      const ff = f ? f[1] : 'inherit';
+      let a = f ? attrs.replace(f[0], '') : attrs;
+      a = /\sstyle="/.test(a) ? a.replace(/\sstyle="/, ` style="font-family:${ff};`) : a + ` style="font-family:${ff}"`;
+      return `<${tag}${a}${sc}>`;
+    });
+  }
+  const inl = fn => function () { ensureFonts(); return fontsInline(fn.apply(this, arguments)); };
+  W.CS2StickerArt = { ensureFonts, eventSticker: inl(eventSticker), teamSticker: inl(teamSticker), autograph: inl(autograph), coin: inl(coin), fontsInline, landmarkOf, inspect, styleOf, SIG, DISPLAY };
 })();

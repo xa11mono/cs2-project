@@ -71,7 +71,21 @@
   function render(build, th, finish, seed, label) { const D = new Defs(); const inner = build(D); return frame(D, th, finish, seed, inner, label); }
 
   // ---------------------------------------------------------------- виды стикеров
-  function logoUrl(team) { try { return W.V31Media?.url?.('team', team) || ''; } catch (e) { return ''; } }
+  // v125.1: логотип ищется и по вариантам названия («Vitality» ↔ «Team Vitality», «Natus Vincere» ↔ «NAVI»),
+  // чтобы на стикере был логотип, а не инициалы, если в сохранении команда названа иначе, чем в базе медиа
+  const ALIAS = { natusvincere: 'navi', ninjasinpyjamas: 'nip', mousesports: 'mouz', faze: 'faze', fazeclan: 'faze', thieves100: '100thieves' };
+  const lnorm = x => String(x || '').toLowerCase().replace(/[^a-z0-9а-я]/g, '').replace(/^team/, '').replace(/(esports?|gaming|club|clan)$/, '');
+  let logoIdx = null;
+  function logoUrl(team) {
+    try {
+      const M = W.V31Media; if (!M || !M.url) return '';
+      const t = String(team || ''), direct = M.url('team', t) || M.url('team', 'Team ' + t) || M.url('team', t.replace(/^team\s+/i, ''));
+      if (direct) return direct;
+      if (!logoIdx) { logoIdx = {}; Object.keys(W.CS2_MEDIA?.teams || {}).forEach(n => { const k = lnorm(n); if (k && !logoIdx[k]) logoIdx[k] = n; }); }
+      const k = lnorm(t), hit = logoIdx[k] || logoIdx[ALIAS[k] || ''];
+      return hit ? (M.url('team', hit) || '') : '';
+    } catch (e) { return ''; }
+  }
   // v125: художественные стикеры из v114-sticker-art.js (рамки с вырубкой, городские символы, шрифты автографов);
   // если генератор не загрузился — рисуем прежним способом
   const ART = () => W.CS2StickerArt;
