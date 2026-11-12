@@ -935,8 +935,8 @@ function createPlayerFromNick(t, nick, index){
   const meta = playerMetaForNick(nick);
   const seed = playerBaseSeed(t,{nick},index);
   const role = meta.role || defaultPlayerRole(index);
-  const styleBoost = t.style === "Aggressive" ? 3 : t.style === "Tactical" ? 2 : 1;
-  const tierBoost = Math.round(((Number(t.pts)||500)-500)/80);
+  // v114: клубные очки и стиль не являются индивидуальными навыками игрока.
+  // Специализация задаётся ролью и её оценкой, а не скрытым повышением четырёх базовых атрибутов.
   const roleBias = role === "AWPer" ? 2 : role === "Entry-fragger" ? 3 : role === "IGL" ? -1 : role === "Support" ? -2 : 0;
   const realName = meta.realName || "";
   // v33: если известен уровень игрока (0–100), характеристики тянутся к нему наполовину
@@ -953,10 +953,10 @@ function createPlayerFromNick(t, nick, index){
     language: meta.language || "—",
     role,
     status: PLAYER_STATUS_2026[nick] || "STARTER",
-    firepower: clampNumber(mix(76 + tierBoost + styleBoost + roleBias + (seed % 15), roleBias), 68, 99),
-    tacticalIQ: clampNumber(mix(74 + tierBoost + (seed % 12) + (role === "IGL" ? 9 : 0) + (role === "Support" ? 4 : 0), (role === "IGL" ? 6 : 0) - 2), 65, 99),
-    clutch: clampNumber(mix(72 + tierBoost + (seed % 13) + (role === "Lurker" ? 5 : 0), -3), 65, 98),
-    utility: clampNumber(mix(72 + tierBoost + (seed % 11) + (role === "Support" ? 11 : 0) + (role === "IGL" ? 5 : 0), (role === "Support" ? 6 : 0) - 3), 64, 99),
+    firepower: clampNumber(mix(76 + roleBias + (seed % 15), roleBias), 68, 99),
+    tacticalIQ: clampNumber(mix(74 + (seed % 12) + (role === "IGL" ? 9 : 0) + (role === "Support" ? 4 : 0), (role === "IGL" ? 6 : 0) - 2), 65, 99),
+    clutch: clampNumber(mix(72 + (seed % 13) + (role === "Lurker" ? 5 : 0), -3), 65, 98),
+    utility: clampNumber(mix(72 + (seed % 11) + (role === "Support" ? 11 : 0) + (role === "IGL" ? 5 : 0), (role === "Support" ? 6 : 0) - 3), 64, 99),
     form: clampNumber((Number(t.form)||100) + ((seed % 9)-4), 85, 115),
     morale: clampNumber(88 + ((seed % 15)-7), 60, 100),
     fatigue: clampNumber((Number(t.fatigue)||0) + (seed % 5), 0, 85)
