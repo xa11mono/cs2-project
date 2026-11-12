@@ -174,7 +174,6 @@
     // журнал решений
     'journal.max':          { v: 800,  kind: 'design', note: 'сколько записей хранит журнал решений (v90)' },
     'journal.followupDays': { v: 56,   kind: 'design', note: 'через сколько дней оценивается результат решения (v90)' },
-  };
     // сила игроков (v114): базовые веса унаследованы от текущей формулы; ролевые профили — design, требуют калибровки матчами.
     'power.base.firepower': { v: 0.40, kind: 'legacy', note: 'базовый Overall: Firepower, прежняя общая формула (v101)' },
     'power.base.tacticalIQ': { v: 0.25, kind: 'legacy', note: 'базовый Overall: Tactical IQ, прежняя общая формула (v101)' },
@@ -209,6 +208,7 @@
     'power.role.Lurker.tacticalIQ': { v: 0.30, kind: 'design', note: 'ролевой профиль Lurker: Tactical IQ; проектный вес' },
     'power.role.Lurker.clutch': { v: 0.25, kind: 'design', note: 'ролевой профиль Lurker: Clutch; проектный вес' },
     'power.role.Lurker.utility': { v: 0.10, kind: 'design', note: 'ролевой профиль Lurker: Utility; проектный вес' },
+  };
   const KEY = 'cs2.config.v90';
   let over = {};
   try { over = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { over = {}; }
