@@ -1,0 +1,14 @@
+CS2 Manager v127 — календарь Tier-1
+===================================
+
+- Новый вид «Год» в разделе «Календарь»: 12 месяцев сезона сеткой 4×3 (как на HLTV), оформление — карточки,
+  чипы и цвета портала игры. В месяце — турниры Tier-1 и HLTV Awards с логотипом организатора и датами;
+  идущий турнир — с меткой LIVE, Мейджор подсвечен золотом, текущий месяц отмечен «сейчас».
+- «Показать все» раскрывает месяцы, где больше четырёх турниров; «Свернуть» — обратно.
+- Фильтр регионов: все / Европа / Америка / Азия (по городу проведения).
+- Прежний календарь по дням — вкладка «По дням».
+- Логотипы: ESL Pro League, BLAST Bounty, BLAST Open, FISSURE — файлы assets/media/events/*.webp;
+  PGL, IEM, BLAST Rivals, Thunderpick, Esports World Cup, StarLadder, HLTV Awards, Perfect World, FiRe, CCT —
+  встроенные значки. Чтобы заменить значок своим файлом: положить webp в assets/media/events
+  (pgl.webp, iem.webp, blastrivals.webp, thunderpick.webp, ewc.webp, starladder.webp) и добавить имя в HAVE
+  в js/manager/v127-tier-calendar.js.

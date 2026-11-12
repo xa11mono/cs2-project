@@ -1,0 +1,35 @@
+/* v127 — календарь Tier-1: сетка 12 месяцев на компонентах портала (hs-box, hs-chip, hs-live) и токенах темы */
+#hs-root .ttc-regs{align-items:center;margin-bottom:var(--s-4)}
+#hs-root .ttc-regs .hs-sub{margin-left:auto;color:var(--c-text-3);font-size:var(--t-caption)}
+#hs-root .ttc-days-sw{margin-bottom:var(--s-3)}
+#hs-root .ttc-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:var(--s-4)!important}
+@media (max-width:1180px){#hs-root .ttc-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media (max-width:820px){#hs-root .ttc-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media (max-width:520px){#hs-root .ttc-grid{grid-template-columns:1fr!important}}
+#hs-root .ttc-grid>.hs-box+.hs-box{margin-top:0}
+#hs-root .ttc-mon{display:flex;flex-direction:column;min-height:236px}
+#hs-root .ttc-mon .hs-box-h{display:flex;align-items:center;justify-content:space-between;gap:var(--s-2)}
+#hs-root .ttc-mon .hs-box-h .hs-sub{color:var(--c-text-3);font-size:var(--t-caption);font-variant-numeric:tabular-nums}
+#hs-root .ttc-mon.past .hs-box-h h3{color:var(--c-text-2)!important}
+#hs-root .ttc-mon.now{box-shadow:inset 0 0 0 1px rgba(255,122,26,.35),var(--sh-box,none)!important}
+#hs-root .ttc-now{font-size:var(--t-micro);font-weight:750;letter-spacing:.04em;text-transform:uppercase;color:var(--c-action);background:rgba(255,122,26,.12);border-radius:999px;padding:2px 8px}
+#hs-root .ttc-list{flex:1;display:flex!important;flex-direction:column;gap:6px;padding:var(--s-3)!important;overflow:visible!important}
+#hs-root .ttc-ev{display:flex!important;align-items:center;gap:var(--s-2);width:100%;min-height:36px;padding:7px 10px!important;border-radius:10px!important;background:rgba(255,255,255,.035)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);color:var(--c-text)!important;font:600 13px/1.2 var(--f-ui,inherit)!important;text-align:left;transition:background .15s,box-shadow .15s,transform .15s}
+#hs-root .ttc-ev:hover{background:rgba(255,255,255,.07)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+#hs-root .ttc-ev:focus-visible{outline:2px solid var(--c-focus);outline-offset:2px}
+#hs-root .ttc-ev.major{background:linear-gradient(90deg,rgba(255,197,61,.16),rgba(255,197,61,.05))!important;box-shadow:inset 3px 0 0 var(--c-gold),inset 0 0 0 1px rgba(255,197,61,.22)}
+#hs-root .ttc-ev.major:hover{background:linear-gradient(90deg,rgba(255,197,61,.24),rgba(255,197,61,.08))!important}
+#hs-root .ttc-ev.major .ttc-name{color:#ffe2a0}
+#hs-root .ttc-ev.live{box-shadow:inset 3px 0 0 var(--c-live),inset 0 0 0 1px rgba(255,59,78,.28)}
+#hs-root .ttc-ev.done .ttc-name,#hs-root .ttc-ev.done .ttc-date{color:var(--c-text-3)}
+#hs-root .ttc-ev.done .ttc-logo{opacity:.6}
+#hs-root .ttc-logo{flex:0 0 20px;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center}
+#hs-root .ttc-logo img,#hs-root .ttc-logo svg{width:20px;height:20px;object-fit:contain;display:block}
+#hs-root .ttc-name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hs-root .ttc-date{flex:0 0 auto;font-size:var(--t-micro);font-weight:650;color:var(--c-text-2);font-variant-numeric:tabular-nums}
+#hs-root .ttc-ev .hs-live{margin-left:0;flex:0 0 auto}
+#hs-root .ttc-more{margin-top:auto!important;width:100%;justify-content:center;height:32px}
+#hs-root .ttc-foot{justify-content:center;margin-top:var(--s-4)}
+#hs-root .ttc-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--c-text-3);opacity:.75}
+#hs-root .ttc-empty b{font-size:24px;font-weight:700}
+#hs-root .ttc-empty span{font-size:var(--t-caption);font-weight:600}
