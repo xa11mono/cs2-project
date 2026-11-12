@@ -58,15 +58,26 @@
       if (host) { if (host.matches('h4, b')) host.insertAdjacentHTML('beforebegin', `<div class="v111-src-row">${chip(s, thumb)}</div>`); else host.insertAdjacentHTML('afterbegin', chip(s, thumb)); }
     });
     (root || document).querySelectorAll('[data-v111pub]').forEach(el => { try { thumbLogo(el, SRC[el.getAttribute('data-v111pub')]); } catch (e) {} });
+    // v112: новости «Топ-20 игроков» / «HLTV Awards» выделяются в ленте — золотая рамка и значок места на превью
+    (root || document).querySelectorAll('[data-art]:not([data-v112t20])').forEach(el => {
+      el.setAttribute('data-v112t20', '1');
+      const it = N.get ? N.get(el.dataset.art) : null, d = it && cardData(it); if (!d) return;
+      el.classList.add('v112-t20row');
+      const box = el.querySelector(BOX);
+      let badge = ''; try { badge = W.TW && W.TW.top20Svg ? W.TW.top20Svg(d.r, d.year) : ''; } catch (e) {}
+      if (box && badge) { box.classList.add('v112-t20box'); box.insertAdjacentHTML('beforeend', `<span class="v112-t20badge" title="HLTV Top 20 · №${d.r}">${badge}</span>`); }
+      const k = el.querySelector('.nl-k, .hs-news-k, .ax-nw-k'); if (k && !k.querySelector('.v112-t20tag')) k.insertAdjacentHTML('afterbegin', `<span class="v112-t20tag">HLTV TOP 20 · №${d.r}</span>`);
+    });
   }
   // уведомление о новости подписывает v29-news (V111News.srcOf)
 
   /* ------------------------------------------------------------ 2. карточка «HLTV Top 20» */
-  const TOP_RE = /Топ-20 игроков (\d{4}): №(\d+) — (.+)$/, AW_RE = /^HLTV Awards (\d{4}): (.+?) — лучший игрок года/;
+  const TOP_RE = /Топ-20 игроков (\d{4}): №(\d+) — (.+)$/, AW_RE = /^HLTV Awards (\d{4}): (.+?) — лучший игрок года/, BEST_RE = /^Лучший игрок (\d{4}) года — (.+?)!?$/;
   function cardData(it) {
     let m = TOP_RE.exec(it.title || ''), year, r, nick;
     if (m) { year = +m[1]; r = +m[2]; nick = m[3].trim(); }
     else if ((m = AW_RE.exec(it.title || ''))) { year = +m[1]; r = 1; nick = m[2].trim(); }
+    else if ((m = BEST_RE.exec(it.title || ''))) { year = +m[1]; r = 1; nick = m[2].trim(); }   // v112: так v33 называет №1
     else return null;
     return { year, r, nick };
   }

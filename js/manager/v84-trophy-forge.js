@@ -609,9 +609,10 @@
     { key: 'IEM-big', re: /^IEM\s+(?:Cologne|Katowice|Krak)|^ESL One/i, pick: (r) => iemPool(r) },
     { key: 'IEM', re: /^IEM\b|^Intel Extreme|^ESL Challenger/i, pick: (r, name) => Object.assign(iemPool(r), { sub: (String(name).replace(/^IEM\s+/i, '').replace(/\s*\(.*\)/, '').replace(/\s+20\d\d$/, '').toUpperCase()).slice(0, 14) }) },
     { key: 'EPL', re: /^ESL Pro League|^EPL\b/i, pick: (r) => ({ d: 'eplTower', metal: ['gold', 'pale', 'gold', 'rose'][r % 4] }) },
-    { key: 'BLAST', re: /^BLAST/i, pick: (r, name) => /spring final|fall final/i.test(name) ? { d: 'blastTri', metal: ['gold', 'silver', 'pale'][r % 3], big: true } : /world final/i.test(name)
+    // v112: BLAST — в основном яркое цветное стекло (синий, фиолетовый, бирюзовый, красный, зелёный, янтарный, розовый); металл — реже
+    { key: 'BLAST', re: /^BLAST/i, pick: (r, name) => /spring final|fall final/i.test(name) ? [{ d: 'blastTri', glass: 'blue', big: true }, { d: 'blastTri', glass: 'violet', big: true }, { d: 'blastTri', metal: 'gold', big: true }, { d: 'blastTri', glass: 'red', big: true }][r % 4] : /world final/i.test(name)
       ? { d: 'blastTri', metal: 'gold', big: true }
-      : [{ d: 'blastTri', metal: 'gold', stripes: true }, { d: 'blastTri', metal: 'silver', stripes: true }, { d: 'blastTri', glass: 'blue' }, { d: 'blastTri', glass: 'violet' }, { d: 'blastTri', metal: 'black' }, { d: 'blastTri', metal: 'pale' }][r % 6] },
+      : [{ d: 'blastTri', glass: 'blue' }, { d: 'blastTri', glass: 'violet' }, { d: 'blastTri', glass: 'cyan' }, { d: 'blastTri', metal: 'gold', stripes: true }, { d: 'blastTri', glass: 'red' }, { d: 'blastTri', glass: 'green' }, { d: 'blastTri', metal: 'silver', stripes: true }, { d: 'blastTri', glass: 'amber' }, { d: 'blastTri', glass: 'pink' }][r % 9] },
     { key: 'PGL', re: /^PGL/i, pick: (r, name) => [{ metal: 'gold', glass: 'blue' }, { metal: 'silver', glass: 'ice' }, { metal: 'rose', glass: 'pink' }, { metal: 'chrome', glass: 'violet' }].map(x => ({ d: ['pglLattice', 'pglCrown2', 'pglPlaque'][series(name) % 3], ...x }))[r % 4] },
     { key: 'DHM', re: /^DreamHack Masters/i, pick: (r) => ({ d: 'mastersCup', metal: ['silver', 'chrome', 'rose'][r % 3] }) },
     { key: 'DH', re: /^DreamHack/i, pick: (r) => ({ d: 'glassBlock', glass: ['ice', 'smoke', 'amber'][r % 3] }) },
@@ -694,6 +695,8 @@
     const v = hash('duo|' + name + '|' + season), place = placeOf(name);
     const D3 = DUOS[v % DUOS.length], pair = place || { metal: D3[0], second: D3[1], metal2: D3[2] };
     const greyOrg = spec.org === 'IEM' || spec.org === 'IEM-big'; // IEM — серые металлы, золото редко; металл не перекрашиваем
+    const blastGlass = spec.org === 'BLAST' && spec.glass && !spec.metal;   // v112: стеклянный BLAST остаётся цветным стеклом
+    if (blastGlass) { spec.accent = GLASS[spec.glass]; spec.second = spec.glass; spec.place = !!place; if (place) spec.ribbon = place.ribbon; return spec; }
     if (!keepMetal && !greyOrg && (place || (v >>> 7) % 2 === 0)) { spec.metal = pair.metal; if (pair.metal2) spec.metal2 = pair.metal2; }
 
     const sec = pair.second;
@@ -703,7 +706,7 @@
     if (spec.org === 'EPL') { spec.metal = 'gold'; spec.metal2 = null; spec.body = EPL_BODIES[(v >>> 4) % EPL_BODIES.length]; }
     spec.place = !!place; spec.second = sec; if (place) spec.ribbon = place.ribbon;
     // BLAST, CS Asia Championships, XSE — можно и сочные анодированные металлы / голограмму
-    if (['BLAST', 'CAC', 'XSE'].includes(spec.org) && !place && (v >>> 11) % 3 === 0) {
+    if (['BLAST', 'CAC', 'XSE'].includes(spec.org) && (spec.org === 'BLAST' ? (v >>> 11) % 3 !== 0 : !place && (v >>> 11) % 3 === 0)) {   // v112: BLAST — чаще яркие анодированные металлы
       const V2 = VIVID[(v >>> 13) % VIVID.length]; spec.metal = V2[0]; spec.metal2 = null; spec.second = V2[1]; if (spec.glass) spec.glass = V2[1]; spec.accent = GLASS[V2[1]];
     }
     return spec;
@@ -743,24 +746,54 @@
     if (spec.major) {
       // v111: отделка Мейджора — разные благородные металлы (золото — один из вариантов) со сдержанными вставками; IEM — обычные металлы
       const grey = spec.org === 'IEM' || spec.org === 'IEM-big';
-      const MJ = grey ? [['silver'], ['titanium'], ['chrome'], ['steel'], ['silver'], ['gold'], ['gunmetal'], ['titanium']]
-        : [['silver', 'blue'], ['chrome', 'ice'], ['gold'], ['pale', 'amber'], ['rose', 'violet'], ['titanium', 'amber'], ['silver', 'red'], ['gold', 'blue'], ['chrome', 'red'], ['pale', 'navy'], ['rose', 'red'], ['titanium', 'cyan']]; // золото — лишь один из вариантов
-      const f = MJ[(v >>> 3) % MJ.length], golden = f[0] === 'gold' || f[0] === 'pale';
+      // v112: палитра Мейджоров шире — классические металлы и яркие анодированные; 'mono' — одноцветный кубок
+      // (внутренняя часть PGL того же цвета, что и внешняя), иначе — двухцветный (металл + вставка другого цвета)
+      const MJ = grey ? [['silver'], ['chrome'], ['gold'], ['cobalt'], ['titanium'], ['blackgold'], ['ruby'], ['violet'], ['emerald'], ['silver']]
+        : [['gold', 'mono'], ['silver', 'blue'], ['ruby', 'mono'], ['cobalt', 'mono'], ['emerald', 'mono'], ['violet', 'mono'], ['teal', 'mono'], ['gold', 'red'],
+           ['chrome', 'violet'], ['rose', 'mono'], ['holo', 'mono'], ['blackgold', 'amber'], ['silver', 'red'], ['cobalt', 'amber'], ['ruby', 'amber'], ['emerald', 'yellow'], ['pale', 'navy'], ['silver', 'mono']];
+      const MONO = { gold: 'amber', pale: 'amber', silver: 'ice', chrome: 'ice', ruby: 'ruby', cobalt: 'blue', emerald: 'mint', violet: 'violet', teal: 'cyan', rose: 'pink', holo: 'cyan', blackgold: 'amber', titanium: 'smoke' };
+      const fRaw = MJ[hash('mjpal|' + name + '|' + season) % MJ.length];
+      const f = fRaw[1] === 'mono' ? [fRaw[0], MONO[fRaw[0]] || 'amber'] : fRaw;
+      const golden = f[0] === 'gold' || f[0] === 'pale';
       spec.metal = f[0];
       if (spec.org === 'BLAST' && golden) spec.glass = null; // золотой треугольник BLAST — металлом
       if (spec.glass) spec.glass = f[1] || (grey ? null : ['amber', 'ice', 'blue'][(v >>> 5) % 3]);
       if (f[1]) spec.second = f[1];
       if (spec.d === 'pglLattice' || spec.d === 'pglCrown2') spec.glass = spec.second = f[1] || ['blue', 'blue', 'violet', 'cyan'][(v >>> 5) % 4];
-      if (placeOf(name) && !grey) applyDuo(spec, name, season, false); // своё сочетание города: металл, камень и лента цвета флага
+      if (placeOf(name) && !grey && (v >>> 9) % 3 === 0) applyDuo(spec, name, season, false); // v112: цвета флага города — лишь иногда, а не каждый раз (Austin больше не всегда синий)
+      if (spec.org === 'BLAST') {   // v112: Мейджор BLAST — яркий анодированный металл, свой в каждом сезоне
+        const BRM = ['gold', 'ruby', 'cobalt', 'emerald', 'violet', 'teal', 'holo', 'copper', 'gold'];
+        spec.metal = BRM[hash('mjcol|' + name + '|' + season) % BRM.length]; spec.glass = null; spec.metal2 = null; spec.smooth = true; spec.stripes = false;
+      }
       if (spec.d === 'orbBowl') { // кристалл Perfect World: цвет кристалла — от отделки, цвет страны остаётся на ленте
-        const PWG = { gold: 'amber', pale: 'amber', silver: 'blue', chrome: 'ice', rose: 'pink', titanium: 'violet' };
-        spec.ribbon = spec.ribbon || spec.second; spec.glass = f[1] && !placeOf(name) ? f[1] : (PWG[f[0]] || 'blue');
+        const PWG = { gold: 'amber', pale: 'amber', silver: 'blue', chrome: 'ice', rose: 'pink', titanium: 'violet', ruby: 'ruby', cobalt: 'blue', emerald: 'mint', violet: 'violet', teal: 'cyan', holo: 'cyan', blackgold: 'amber' };
+        spec.ribbon = spec.ribbon || spec.second; void PWG; const PWP = ['blue', 'violet', 'ruby', 'mint', 'amber', 'cyan', 'pink']; spec.glass = PWP[hash('pwglass|' + name + '|' + season) % PWP.length];   // v112: свой цвет кристалла в каждом сезоне (Шанхай больше не всегда синий)
       }
       if (!spec.second) spec.second = grey ? 'navy' : 'red';
       return spec;
     }
+    // v112: BLAST — яркие анодированные цвета (как у настоящих трофеев BLAST): бирюза, изумруд, рубин, кобальт, голограмма,
+    // фиолетовый, реже золото/медь; гладкий или «карбоновый» в полоску. Бледных серебряных и прозрачных больше нет.
+    if (spec.org === 'BLAST' && !/world final/i.test(name)) {
+      // у каждой серии BLAST в сезоне — свой цвет (без повторов внутри сезона), каждый сезон палитра сдвигается
+      const BR = ['ruby', 'copper', 'gold', 'emerald', 'teal', 'holo', 'cobalt', 'violet'];   // 8 разных оттенков по кругу
+      const SERIES = [/bounty season 1|bounty spring/i, /bounty season 2|bounty fall/i, /rivals spring/i, /rivals fall/i, /spring final/i, /fall final/i];
+      const CITIES = ['copenhagen', 'lisbon', 'rotterdam', 'london', 'porto', 'paris', 'madrid', 'austin', 'hong kong', 'singapore'];
+      let si = SERIES.findIndex(re => re.test(name));
+      if (si < 0 && /open/i.test(name)) { const c = CITIES.findIndex(x => name.toLowerCase().includes(x)); si = 6 + (c >= 0 ? c : hash('blastcity|' + name) % 10); }
+      if (si < 0) si = hash('blastser|' + name.replace(/\s*20\d\d.*$/, '')) % 16;
+      const ci = (si * 3 + (Number(season) || 1) * 5) % BR.length;   // ×3 взаимно просто с 8: соседние серии сезона — разные цвета
+      spec.metal = BR[ci]; spec.metal2 = null; spec.glass = null;
+      const smooth = ((si + (Number(season) || 1)) % 3) === 0 || /final/i.test(name); spec.smooth = smooth; spec.stripes = !smooth;
+      const SEC = { teal: 'amber', emerald: 'yellow', ruby: 'white', cobalt: 'cyan', holo: 'violet', violet: 'pink', gold: 'red', copper: 'cyan', blackgold: 'amber', rose: 'pink' };
+      spec.second = SEC[spec.metal] || 'amber'; spec.accent = GLASS[spec.second] || '#ffb347';
+      const pl = placeOf(name); spec.place = !!pl; if (pl) spec.ribbon = pl.ribbon;
+      return spec;
+    }
     if (spec.metal && !(spec.org === 'BLAST' && spec.glass)) spec.metal = pool[v % pool.length];
-    if (spec.glass && !/^IEM|^Nations/.test(spec.org) && (spec.org === 'BLAST' || (v >>> 4) % 3 === 0)) spec.glass = GLASS_POOL[(v >>> 7) % GLASS_POOL.length];
+    const BLAST_BRIGHT = ['blue', 'violet', 'cyan', 'red', 'green', 'amber', 'pink'];   // v112: у BLAST — только яркие стёкла
+    if (spec.glass && spec.org === 'BLAST') spec.glass = BLAST_BRIGHT[(v >>> 7) % BLAST_BRIGHT.length];
+    else if (spec.glass && !/^IEM|^Nations/.test(spec.org) && (v >>> 4) % 3 === 0) spec.glass = GLASS_POOL[(v >>> 7) % GLASS_POOL.length];
     if (spec.org === 'BLAST' && /world final/i.test(name)) { spec.metal = ['gold', 'pale', 'gold'][v % 3]; spec.glass = null; }
     if (spec.org === 'IEM-big' && (v >>> 9) % 2) spec.tint = GLASS_POOL[(v >>> 11) % GLASS_POOL.length];
     if (spec.org !== 'Nations' && (spec.org !== 'ENC' || placeOf(name))) applyDuo(spec, name, season, false); // ENC — фирменная палитра (фиолетовый)
@@ -914,18 +947,21 @@
     mvp: ['MVP', 'MAJOR'], poty: ['PLAYER', 'OF THE YEAR'], awper: ['SNIPER', 'OF THE YEAR'], rifler: ['RIFLER', 'OF THE YEAR'],
     entry: ['ENTRY', 'OF THE YEAR'], igl: ['IGL', 'OF THE YEAR'], captain: ['CAPTAIN', 'OF THE YEAR'], rookie: ['ROOKIE', 'OF THE YEAR'],
     youngstar: ['YOUNG STAR', 'OF THE YEAR'], clutch: ['CLUTCH', 'MASTER'], support: ['SUPPORT', 'OF THE YEAR'], defender: ['DEFENDER', 'OF THE YEAR'],
-    breakout: ['BREAKOUT', 'OF THE YEAR'], mostimproved: ['MOST', 'IMPROVED'], lurker: ['LURKER', 'OF THE YEAR'], anchor: ['ANCHOR', 'OF THE YEAR'], utility: ['UTILITY', 'MASTER']
+    breakout: ['BREAKOUT', 'OF THE YEAR'], mostimproved: ['MOST', 'IMPROVED'], lurker: ['LURKER', 'OF THE YEAR'], anchor: ['ANCHOR', 'OF THE YEAR'], utility: ['UTILITY', 'MASTER'],
+    team: ['TEAM', 'OF THE YEAR'], teamseason: ['TEAM', 'OF THE SEASON']   // v112: «Команда года» — такая же статуэтка, как у игрока года
   };
   // силуэты оружия для таблички (в единицах ширины 1)
   const RIFLE_ICON = 'M0 .42H.18L.2 .36H.62L.66 .3H.72L.74 .36H1V.44H.78L.74 .5H.62L.58 .62H.5L.52 .5H.36L.3 .7H.2L.24 .5H.16L.04 .56H0z';
   const AWP_ICON = 'M0 .44H.14L.16 .38H.3V.32H.52V.38H1V.45H.56L.52 .5H.42L.38 .66H.3L.33 .5H.2L.06 .56H0zM.33 .32V.26H.5V.32z';
+  const CROWN_ICON = 'M.02 .66L.08 .2L.3 .44L.5 .06L.7 .44L.92 .2L.98 .66zM.04 .72H.96V.82H.04z';
   function statueAward(type, year, o) {
     o = o || {};
     const c = new Ctx(), lines = PLAYER_AWARDS[type] || PLAYER_AWARDS.poty;
-    const key = o.model || (hash('st|' + type) % 2 ? 'statueBeret' : 'statueHelmet');
+    const key = o.model || (type === 'team' || type === 'teamseason' ? 'statueHelmet' : hash('st|' + type) % 2 ? 'statueBeret' : 'statueHelmet');
     const { body } = art(c, key, { metal: o.metal || 'gold', metal3: o.metal3 || 'silver' });
     const [x0, y0, x1, y1] = STATUE_PLATE[key], w = x1 - x0, cx = n((x0 + x1) / 2), gold = sampleStops(metalStops(o.metal || 'gold'), .78);
-    const icon = type === 'awper' ? AWP_ICON : RIFLE_ICON, iw = w * .62;
+    const team = type === 'team' || type === 'teamseason';
+    const icon = type === 'awper' ? AWP_ICON : team ? CROWN_ICON : RIFLE_ICON, iw = w * (team ? .42 : .62);
     let t = `<g transform="translate(${n(+cx - iw / 2)} ${n(y0 + (y1 - y0) * .02)}) scale(${n(iw)})"><path d="${icon}" fill="${gold}"/></g>`;
     const ly = (k) => n(y0 + (y1 - y0) * k);
     t += fitTxt(cx, ly(.4), 'HLTV', w * .22, w * .8, gold) + fitTxt(cx, ly(.55), lines[0], w * .2, w * .86, gold) +

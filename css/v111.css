@@ -68,3 +68,11 @@ html.ax-on #hs-root .v111-t20 .v111-bar.v111-bar>i,#hs-root .v111-bar>i{backgrou
 #hs-root .v111-src.bare{padding-left:7px}
 #hs-root .v111-t20-box .v111-t20-pl ul{grid-template-columns:minmax(0,1fr)}
 #hs-root .v111-t20-pl li{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.3}
+/* v112: «Топ-20 игроков» в ленте — золотая рамка, значок места поверх превью */
+#hs-root .v112-t20row{position:relative;background:linear-gradient(100deg,rgba(242,207,134,.12),rgba(242,207,134,.02) 55%,transparent)!important;box-shadow:inset 3px 0 0 #e8be5a,inset 0 0 0 1px rgba(242,207,134,.28)!important;border-radius:12px}
+#hs-root .v112-t20row h4,#hs-root .v112-t20row b{color:#f6dfa4}
+#hs-root .v112-t20box{position:relative;overflow:hidden;box-shadow:inset 0 0 0 1.5px rgba(242,207,134,.55)}
+#hs-root .v112-t20badge{position:absolute!important;right:4px;bottom:2px;width:46%;max-width:62px;z-index:9!important;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6))}
+#hs-root .v112-t20badge svg{display:block;width:100%;height:auto}
+#hs-root .v112-t20tag{display:inline-block;margin-right:8px;padding:2px 7px;border-radius:6px;background:linear-gradient(180deg,#f8e2a6,#c99a45);color:#2a1d05;font:800 10px/1.4 var(--f-ui);letter-spacing:.06em;vertical-align:middle}
+html.ax-on #hs-root .ax-scened.ax-has-vis>.v112-t20badge{display:block!important}
