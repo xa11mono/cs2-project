@@ -121,5 +121,5 @@ const html = read('index.html');
 assert(site.includes("['publishers', 'Паблики Pick’Em']") && site.includes('publicPickemArticle'), 'Pick’Em publisher page and article renderer must be wired');
 assert(news.includes("'pickem-pub'") && news.includes('publishPublicPickem') && news.includes('publicPickem:'), 'public posts must use the common news store');
 assert(pickem.includes('publicContext') && pickem.includes('window.V33Pickem'), 'public Pick’Em must read the real Major roster context');
-assert(html.includes('v70-pickem-publishers.js?v=111') && html.includes('v70-publications.css?v=111'), 'new module and styles must load with cache busting');
+assert(html.includes('v70-pickem-publishers.js?v=112') && html.includes('v70-publications.css?v=112'), 'new module and styles must load with cache busting');
 console.log('v72 public Pick’Em + organizer trophy tests passed');

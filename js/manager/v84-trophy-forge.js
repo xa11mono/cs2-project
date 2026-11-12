@@ -607,7 +607,7 @@
 
   const ORGS = [
     { key: 'IEM-big', re: /^IEM\s+(?:Cologne|Katowice|Krak)|^ESL One/i, pick: (r) => iemPool(r) },
-    { key: 'IEM', re: /^IEM\b|^Intel Extreme/i, pick: (r, name) => Object.assign(iemPool(r), { sub: (String(name).replace(/^IEM\s+/i, '').replace(/\s*\(.*\)/, '').replace(/\s+20\d\d$/, '').toUpperCase()).slice(0, 14) }) },
+    { key: 'IEM', re: /^IEM\b|^Intel Extreme|^ESL Challenger/i, pick: (r, name) => Object.assign(iemPool(r), { sub: (String(name).replace(/^IEM\s+/i, '').replace(/\s*\(.*\)/, '').replace(/\s+20\d\d$/, '').toUpperCase()).slice(0, 14) }) },
     { key: 'EPL', re: /^ESL Pro League|^EPL\b/i, pick: (r) => ({ d: 'eplTower', metal: ['gold', 'pale', 'gold', 'rose'][r % 4] }) },
     { key: 'BLAST', re: /^BLAST/i, pick: (r, name) => /spring final|fall final/i.test(name) ? { d: 'blastTri', metal: ['gold', 'silver', 'pale'][r % 3], big: true } : /world final/i.test(name)
       ? { d: 'blastTri', metal: 'gold', big: true }
@@ -729,7 +729,7 @@
     const isMajor = /major/i.test(kind) || /\bmajor\b/i.test(String(name || ''));
     const bare = String(name || '').replace(/\bmajor\b/ig, '').trim();
     let org = isMajor ? (ORGS.find(o => o.re.test(bare) || o.re.test(String(name || ''))) || null) : orgOf(name);
-    if (isMajor && org && !MAJOR_HOSTS.includes(org.key) && org.key !== 'IEM') org = null; // StarLadder и др. Мейджоры не проводят
+    // v112: Мейджор любого узнанного организатора (StarLadder, FiRe…) — с кубком этого организатора, а не случайного хоста (часто BLAST)
     if (isMajor && !org) org = ORGS.find(o => o.key === MAJOR_HOSTS[hash('mjhost|' + name + '|' + season) % MAJOR_HOSTS.length]);
     const spec = org ? org.pick(r, name) : genericSpec(name, r);
     spec.kind = kind; spec.org = org ? org.key : 'custom';

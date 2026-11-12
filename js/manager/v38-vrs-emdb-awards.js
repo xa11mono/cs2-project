@@ -198,10 +198,21 @@
   // определяли одни призовые, и через полгода (когда стартовые очки полностью заменяются результатами) шкала сжималась:
   // 3DMAX с 797 очками оказывался 9-м. Опорные значения обновляются при полном пересчёте (recalcAll).
   let lastRefs = { collected: 0, network: 0, lan: 0 };
-  const rel = (raw, ref) => ref > 0 ? curve(Math.min(raw, ref), ref) : 0;
+  /* v112: выше пятого лучшего значения фактор больше не упирается в 1.0. Раньше пятёрка-семёрка лидеров по каждому
+     фактору получала одинаковый максимум (итог ~1950–2000 у 5–7 команд), порядок решали личные встречи (±100), и команда
+     без титулов после удачных двух месяцев выходила в топ-4 (G2 №4, MIBR и Aurora №1). Теперь ниже пятого — прежняя
+     кривая (×0.85), выше — линейно 0.85…1.0 до лучшего значения в мире: призовые и крупные победы разделяют элиту. */
+  const TOP_SHARE = 0.85;
+  function relTop(raw, ref, max) {
+    if (!(ref > 0) || !(raw > 0)) return 0;
+    if (raw <= ref || !(max > ref)) return TOP_SHARE * curve(Math.min(raw, ref), ref);
+    return TOP_SHARE + (1 - TOP_SHARE) * clamp((raw - ref) / (max - ref), 0, 1);
+  }
+  const rel = (raw, ref, max) => relTop(raw, ref, max);
+  const refMax = (rows, key) => Math.max(0, ...rows.map(x => Math.max(0, Number(x[key]) || 0)));
   function scoreOneTeam(team, now, offeredRef, knownMetrics=null, refs=null){
     const m=knownMetrics || metricsFor(team,now), R=refs || lastRefs;
-    const factors=[curve(Math.min(m.offeredRaw,offeredRef),offeredRef),rel(m.collectedRaw,R.collected),rel(m.network,R.network),rel(m.lan,R.lan)];
+    const factors=[relTop(m.offeredRaw,offeredRef,R.offeredMax),rel(m.collectedRaw,R.collected,R.collectedMax),rel(m.network,R.network,R.networkMax),rel(m.lan,R.lan,R.lanMax)];
     const average=factors.reduce((a,b)=>a+b,0)/4;
     const seed=clamp(team.vrsLedger?.basePts ?? team.pts ?? 500,400,2000);
     const coverage=clamp(m.evidence,0,1);
@@ -215,6 +226,37 @@
   // v84: опубликованные очки догоняют расчётные плавно (постоянная времени ~10 игровых дней), как еженедельные
   // публикации Valve: один турнир сдвигает команду, но не бросает её на 15–20 мест за неделю и обратно.
   const VRS_TAU_DAYS = 10;
+  /* v112: публикация рейтинга — 4 раза за сезон (~раз в три месяца), синхронно с Мейджорами: начало сезона, за 10 недель
+     до каждого Мейджора (по этой публикации — приглашения и посев) и сразу после каждого Мейджора. Между публикациями
+     очки считаются как раньше (vrsShown/vrsTarget, видны в разборе очков), но опубликованные t.pts — таблица, приглашения,
+     посев, сила в матче — не меняются. */
+  const PUB_BEFORE = 70 * DAY;
+  let pubCache = { key: '', dates: [] };
+  function pubDates() {
+    let st = null; try { st = seasonState; } catch (e) {}
+    const sch = (st && st.seasonSchedule) || [], key = (st && st.currentSeason) + '|' + sch.length;
+    if (pubCache.key === key && pubCache.dates.length) return pubCache.dates;
+    const starts = sch.map(e => Number(e && e.calendar && e.calendar.startMs)).filter(x => x > 0);
+    const out = [];
+    if (starts.length) {
+      const first = Math.min(...starts), y = new Date(first).getUTCFullYear();
+      out.push(Date.UTC(y, 0, 1));
+      sch.filter(e => e && /major/i.test(e.name || '') && !/qualif|отбор|rmr/i.test(e.name || '') && e.calendar && e.calendar.startMs).forEach(e => {
+        const a = Number(e.calendar.startMs), b = Number(e.calendar.endMs) || a + 14 * DAY;
+        out.push(a - PUB_BEFORE, b + DAY);
+      });
+    }
+    pubCache = { key, dates: out.sort((a, b) => a - b) };
+    return pubCache.dates;
+  }
+  // момент последней публикации на дату now (без расписания — начало календарного квартала)
+  function pubAt(now) {
+    now = Number(now) || 0;
+    let at = null; pubDates().forEach(d => { if (d <= now) at = d; });
+    if (at == null) { const d = new Date(now); at = Date.UTC(d.getUTCFullYear(), Math.floor(d.getUTCMonth() / 3) * 3, 1); }
+    return at;
+  }
+  function nextPub(now) { now = Number(now) || 0; const d = pubDates().find(x => x > now); if (d) return d; const q = new Date(now); return Date.UTC(q.getUTCFullYear(), Math.floor(q.getUTCMonth() / 3) * 3 + 3, 1); }
   function publish(t, r, now) {
     if (!t || !r) return;
     t.vrsTarget = r.pts; t.vrsBreakdown = r.components;
@@ -222,13 +264,15 @@
     if (!Number.isFinite(shown) || !Number.isFinite(at)) { shown = r.pts; at = now; } // первая публикация — сразу расчётные очки
     const dt = Math.max(0, (Number(now) || 0) - at) / DAY;
     if (dt >= 1) { shown += (r.pts - shown) * (1 - Math.exp(-dt / VRS_TAU_DAYS)); at = now; }
-    t.vrsShown = shown; t.vrsShownAt = at; t.pts = Math.round(clamp(shown, 400, 2000));
+    t.vrsShown = shown; t.vrsShownAt = at;
+    const pa = pubAt(now);
+    if (window.CS2VRSLivePts || !Number.isFinite(Number(t.pts)) || t.vrsPubAt == null || Number(t.vrsPubAt) !== pa) { t.pts = Math.round(clamp(shown, 400, 2000)); t.vrsPubAt = pa; }
   }
   function computeScores(list, now = vrsNow()) {
     const safeList=[...new Set((Array.isArray(list)?list:[]).map(resolveTeam).filter(Boolean))];
     const rows=safeList.map(t=>({team:t,m:metricsFor(t,now)}));
     const offeredRef=refFifth(rows.map(x=>x.m),'offeredRaw');
-    const ms=rows.map(x=>x.m), refs={ collected:refFifth(ms,'collectedRaw'), network:refFifth(ms,'network'), lan:refFifth(ms,'lan') };
+    const ms=rows.map(x=>x.m), refs={ collected:refFifth(ms,'collectedRaw'), network:refFifth(ms,'network'), lan:refFifth(ms,'lan'), offeredMax:refMax(ms,'offeredRaw'), collectedMax:refMax(ms,'collectedRaw'), networkMax:refMax(ms,'network'), lanMax:refMax(ms,'lan') };
     const result=new Map();
     rows.forEach(({team,m})=>result.set(team.name,scoreOneTeam(team,now,offeredRef,m,refs)));
     result.refs=refs;
@@ -422,6 +466,7 @@
   }
   liveTeams().forEach(ensureTeam);
   recalcAll();
+  window.CS2VRSPub = { at: pubAt, next: nextPub, dates: pubDates };
   window.CS2VRSModel = {
     version:2, name:'Valve-inspired VRS', factors:['Bounty Offered','Bounty Collected','Opponent Network','LAN Wins','Head-to-head'],
     delta, recalcAll, ensureTeam, commitMainTournament, applyMatch, recordParallelFinish,

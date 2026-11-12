@@ -43,7 +43,9 @@ function snapBefore(ms) { const S = rankStore().snaps; for (let i = S.length - 1
 // движение за неделю: позиция сейчас против снимка неделю назад (или предыдущего снимка)
 function rankMove(name) {
   const r = H.ranked(), cur = r.findIndex(t => t.name === name) + 1; if (!cur) return 0;
-  const prev = snapBefore(H.nowMs() - 7 * DAY) || rankStore().snaps[rankStore().snaps.length - 2];
+  // v112: рейтинг публикуется раз в ~3 месяца — движение считается от предыдущей публикации
+  const P = window.CS2VRSPub, pa = P ? P.at(H.nowMs()) : 0;
+  const prev = (P && snapBefore(pa - 1)) || snapBefore(H.nowMs() - 7 * DAY) || rankStore().snaps[rankStore().snaps.length - 2];
   const was = rankAt(name, prev); return was ? was - cur : 0;
 }
 function seasonMove(name) { const t = H.teamBy(name), cur = H.ranked().indexOf(t) + 1; return t && Number(t.seasonStartRank) ? t.seasonStartRank - cur : 0; }
@@ -117,9 +119,9 @@ H.PAGES.ranking = () => {
     const all = H.ranked().filter(t => f.academy || !t.isAcademy), world = {}; all.forEach((t, i) => { world[t.name] = i + 1; });
     const rg = f.region || 'world', r = rg === 'world' ? all : all.filter(t => { const g = geoOf(t); return g.reg === rg || g.cc === rg; });
     const max = Math.max(1, ...r.map(t => t.pts || 0)), st = H.stats();
-    body = regionPanel(all, rg) + `<div class="hs-filters" style="margin-bottom:12px"><label class="pt-check"><input type="checkbox" data-rkac${f.academy ? ' checked' : ''}> показать академии</label><span class="hs-sub">Обновлено ${last ? fdate(last.ts) : '—'} · версия: очки рейтинга игры (результаты турниров с весом уровня)</span></div>
-    <section class="hs-box"><table class="hs-tbl rk-tbl"><thead><tr><th>#</th><th>Нед.</th><th class="l">Команда</th><th>Очки</th><th>Престиж</th><th>Сезон</th><th class="l">Форма</th><th class="l">Последний титул</th></tr></thead><tbody>${r.map((t, i) => {
-      H.ensure(t); const w = rankMove(t.name), s = seasonMove(t.name), T = st.T[t.name], last1 = (t.history || []).find(h => h.place === 1 && !h.isBootcamp && !h.isSeasonAward);
+    body = regionPanel(all, rg) + `<div class="hs-filters" style="margin-bottom:12px"><label class="pt-check"><input type="checkbox" data-rkac${f.academy ? ' checked' : ''}> показать академии</label><span class="hs-sub">${window.CS2VRSPub ? `Публикация VRS: ${fdate(CS2VRSPub.at(H.nowMs()))} · следующая: ${fdate(CS2VRSPub.next(H.nowMs()))} (4 раза за сезон — перед Мейджорами и после них)` : `Обновлено ${last ? fdate(last.ts) : '—'}`}</span></div>
+    <section class="hs-box"><table class="hs-tbl rk-tbl"><thead><tr><th>#</th><th title="Изменение с прошлой публикации">Изм.</th><th class="l">Команда</th><th>Очки</th><th>Престиж</th><th>Сезон</th><th class="l">Форма</th><th class="l">Последний титул</th></tr></thead><tbody>${r.map((t, i) => {
+      H.ensure(t); const w = rankMove(t.name), s = seasonMove(t.name), T = st.T[t.name], last1 = (t.history || []).find(h => h.place === 1 && !h.isBootcamp && !h.isSeasonAward && !h.isQual && !/qualif|отбор|квалиф|\brmr\b/i.test(h.tournament || ''));   // v112: победа в отборе — не титул
       return `<tr data-team="${esc(t.name)}" class="${i < 3 ? 'top' : ''}"><td class="n"><b>${i + 1}</b></td><td class="${w > 0 ? 'up' : w < 0 ? 'dn' : 'hs-dim'}">${w > 0 ? '▲' + w : w < 0 ? '▼' + (-w) : '–'}</td>
         <td class="l">${logo(t.name, 'md')}<b class="rk-n">${esc(t.name)}</b>${rg !== 'world' ? `<small class="hs-dim"> · #${world[t.name]} в мире</small>` : ''}</td>
         <td><b>${Math.round(t.pts || 0)}</b><span class="hs-bar"><i style="width:${((t.pts || 0) / max * 100).toFixed(0)}%"></i></span></td><td>${window.V33Prestige ? V33Prestige.starsHtml(V33Prestige.prestige(t.name)) : ''}</td><td class="${s > 0 ? 'up' : s < 0 ? 'dn' : 'hs-dim'}">${s > 0 ? '▲' + s : s < 0 ? '▼' + (-s) : '–'}</td>

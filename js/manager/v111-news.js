@@ -52,7 +52,8 @@
       const it = N.get ? N.get(el.dataset.art) : null; if (!it) return;
       const s = srcOf(it); if (s.id === 'hltv') return;   // HLTV — по умолчанию, без значка в ленте
       el.setAttribute('data-v111pub', s.id);
-      const host = el.querySelector('.nl-k, .hs-news-k, .ax-nw-k') || el.querySelector('h4, b');
+      // v112: подпись — в строку рубрики; <b> внутри логотипа (инициалы .hs-logo) хостом быть не может — иначе значок попадал в логотип и сдвигал его
+      const host = el.querySelector('.nl-k, .hs-news-k, .ax-nw-k, .v84-spot-tx small') || [...el.querySelectorAll('h4, b')].find(x => !x.closest('.hs-logo, .v84-spot-logo, .ax-nvis'));
       const thumb = !!el.querySelector(BOX);
       if (host) { if (host.matches('h4, b')) host.insertAdjacentHTML('beforebegin', `<div class="v111-src-row">${chip(s, thumb)}</div>`); else host.insertAdjacentHTML('afterbegin', chip(s, thumb)); }
     });

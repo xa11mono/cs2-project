@@ -12,7 +12,7 @@ assert(/syncClockCooperative: syncCareerClockCooperative/.test(career) && /syncC
 assert(/__CS2_BATCH_CPU_BUDGET_MS = 10/.test(batch) && /__CS2_FAST_FORWARD_IDLE_MS = 0/.test(batch),'v84: skips use 10 ms work slices without artificial idle gaps');
 assert(/window\.__CS2_BATCH_TRAINING_MAP_STATS = null/.test(batch) && /delete window\.__CS2_BATCH_TRAINING_MAP_STATS/.test(batch),'batch historical map index is scoped to one skip');
 assert(/window\.CS2SimulationPerf\.lastBatch/.test(batch) && /training: window\.V31\?\.trainingDiagnostics/.test(batch),'lastBatch exposes training diagnostics');
-assert(html.includes('v17-smart-calendar-skip.js?v=111') && html.includes('v31-career-core.js?v=111') && html.includes('v33-time.js?v=111') && html.includes('v27-hltv-site.js?v=111'),'changed scripts bypass browser cache');
+assert(html.includes('v17-smart-calendar-skip.js?v=112') && html.includes('v31-career-core.js?v=112') && html.includes('v33-time.js?v=112') && html.includes('v27-hltv-site.js?v=112'),'changed scripts bypass browser cache');
 assert(site.includes('CS2 Manager <i class="pt-ver">v86</i>'),'visible version is v82');
 
 const matches=[

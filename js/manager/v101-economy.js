@@ -115,8 +115,10 @@
   /* ------------------------------------------------------------ интерфейс */
   // Мейджор — золотая звёздочка на иконке турнира (списки турниров, календарь, «Главная»)
   const MAJOR_RE = /\bmajor\b|мейджор/i;
-  function markMajors(root) {
-    (root || document).querySelectorAll('.hs-ev-tr, .ax-cal-ic, .ax-evcard-ic').forEach(ic => {
+  // v112: звезда Мейджора — только у кубков в профилях команды и игрока (не в календаре, списках турниров и на странице турнира)
+  function markMajors(root, pg) {
+    if (pg !== 'team' && pg !== 'player') return;
+    if (0) (root || document).querySelectorAll('.hs-ev-tr, .ax-cal-ic, .ax-evcard-ic').forEach(ic => {
       if (ic.dataset.v101maj) return; ic.dataset.v101maj = '1';
       const row = ic.closest('[data-event], tr, li, button, .ax-evcard, .ax-card') || ic.parentNode;
       const name = (row && (row.querySelector('b') || row).textContent) || '';
@@ -134,7 +136,7 @@
       host.classList.add('v101-cuphost'); host.insertAdjacentHTML('beforeend', '<i class="st v101-st" title="Major">★</i>');
     });
   }
-  (H.AFTER || []).push((pg, arg, root) => { try { markMajors(root); } catch (e) {} });
+  (H.AFTER || []).push((pg, arg, root) => { try { markMajors(root, pg); } catch (e) {} });
   (H.AFTER || []).push((pg, arg, root) => {
     if (!root) return;
     try {
@@ -163,5 +165,5 @@
 
   W.CS2Power = { target, recalibrate, reseed, ANCHOR, pow, trend };
   W.V101Deals = { cancel };
-  W.V101MarkMajors = markMajors;
+  W.V101MarkMajors = (root, pg) => markMajors(root, pg || (H.S && H.S.page));
 })();

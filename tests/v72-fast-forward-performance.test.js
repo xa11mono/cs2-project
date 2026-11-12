@@ -44,10 +44,10 @@ assert(/if \(window\.v57BatchCalendarSkip \|\| !b\.running/.test(autoScript) && 
 assert(/if\(wasRunning && !window\.v57BatchCalendarSkip/.test(v17) && /batchBroadcastWasRunning/.test(batch) && /startTVBroadcastMode\(\)/.test(batch), 'a previously active live broadcast should resume once after the batch, not after each day');
 assert(/window\.v57BatchCalendarSkip \|\| H\.S\.page/.test(spectator), 'spectator UI polling should suspend during long fast-forward');
 for (const f of ['v17-smart-calendar-skip.js', 'v33-time.js', 'v63-simulation-kernel.js', 'v21-parallel-tournaments-academies-layer.js', 'auto_script_1.js', 'v32-spectator.js']) {
-  const version = 111; // v111: all scripts share one cache version
+  const version = 112; // v112: all scripts share one cache version
   assert(html.includes(`${f}?v=${version}`), `${f} must bypass stale browser cache after the relevant patch`);
 }
-assert(html.includes('v56-autosave.js?v=111'), 'autosave snapshot scheduler must bypass the v80 browser cache');
+assert(html.includes('v56-autosave.js?v=112'), 'autosave snapshot scheduler must bypass the v80 browser cache');
 
 (async () => {
   let days = 0, parallelTicks = 0, yields = 0, finalAutosaves = 0, renders = 0, savesTeams = 0, savesSeason = 0;

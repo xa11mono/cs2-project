@@ -48,7 +48,7 @@
   }
   function weekly(force) {
     const s = S(), wk = Math.floor(now() / WEEK); if (!force && s.wk === wk) return 0; s.wk = wk;
-    let n = 0;
+    let n = 0, crisisN = 0;   // v112: новость о кризисе — только у команд из топ-30 (полгода назад), не больше двух в неделю
     ranked().forEach((t, i) => {
       const rk = i + 1, h = s.ranks[t.name] = s.ranks[t.name] || []; h.unshift(rk); if (h.length > 52) h.length = 52;
       const j = judge(t, rk, h), cur = s.cur[t.name];
@@ -63,7 +63,7 @@
       const prev = cur.key; s.cur[t.name] = { key: j.key, since: now(), why: j.why }; s.cand[t.name] = null; n++;
       if (j.key === 'dominance') news({ cat: 'ranking', icon: '👑', imp: 7, title: `Эпоха ${t.name}`, lead: `${j.why}: соперники ищут ответ.`, body: [], tags: [{ t: 'team', v: t.name }] });
       else if (prev === 'dominance') news({ cat: 'ranking', icon: '🌅', imp: 6, title: `Конец эпохи ${t.name}`, lead: `Доминирование закончилось: теперь — ${L[j.key]}.`, body: [], tags: [{ t: 'team', v: t.name }] });
-      else if (j.key === 'crisis') news({ cat: 'ranking', icon: '📉', imp: 5, title: `${t.name} в кризисе`, lead: j.why, body: [], tags: [{ t: 'team', v: t.name }] });
+      else if (j.key === 'crisis' && (h[25] || 99) <= C('era.crisisNewsTop', 30) && (crisisN++) < 2) news({ cat: 'ranking', icon: '📉', imp: 5, title: `${t.name} в кризисе`, lead: j.why, body: [], tags: [{ t: 'team', v: t.name }] });
       else if (j.key === 'return') news({ cat: 'ranking', icon: '🔁', imp: 6, title: `${t.name} возвращается на вершину`, lead: j.why, body: [], tags: [{ t: 'team', v: t.name }] });
     });
     return n;

@@ -97,7 +97,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   pass('страницы карьеры и эфира: без ошибок, содержимое не шире окна на 1672 и 390 px');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  assert(html.includes('css/v97-design.css?v=111') && html.includes('js/manager/v97-design.js?v=111'), 'v97 подключён');
+  assert(html.includes('css/v97-design.css?v=112') && html.includes('js/manager/v97-design.js?v=112'), 'v97 подключён');
   console.log('v97 design: all checks passed');
   await ctx.close();
 })().catch(e => { console.error('FAIL', e.message); process.exit(1); });

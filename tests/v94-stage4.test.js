@@ -85,7 +85,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   });
   assert(vr.ok, 'опорные значения факторов VRS: ' + JSON.stringify(vr));
   const src = fs.readFileSync(path.join(dir, 'js/manager/v38-vrs-emdb-awards.js'), 'utf8');
-  assert(/rel\(m\.collectedRaw,R\.collected\)/.test(src) && /rel\(m\.lan,R\.lan\)/.test(src), 'все факторы VRS — относительно опорного значения');
+  assert(/rel\(m\.collectedRaw,R\.collected[,)]/.test(src) && /rel\(m\.lan,R\.lan[,)]/.test(src), 'все факторы VRS — относительно опорного значения');   // v112: + максимум в мире (rel(raw, ref, max))
   pass('v94: VRS — bounty collected, opponent network and LAN wins are relative to the 5th best (refs ' + JSON.stringify(vr.refs) + ')');
 
   // 6. рынок: новичок защищён, обучение на чистых итогах
@@ -105,7 +105,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   const pg = await p.evaluate(async () => { HS.nav('finance'); await new Promise(r => setTimeout(r, 300)); const h = document.getElementById('hs-page').innerHTML; return { ok: !/Не удалось показать страницу/.test(h), forecast: /Прогноз сезона/.test(h), partner: /Генеральный партнёр/.test(h) }; });
   assert(pg.ok && pg.forecast && pg.partner, 'страница финансов: ' + JSON.stringify(pg));
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  assert(html.includes('v94-economy.js?v=111') && !html.includes('?v=93'), 'модуль v94 подключён');
+  assert(html.includes('v94-economy.js?v=112') && !html.includes('?v=93'), 'модуль v94 подключён');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v94: finance page shows the season forecast and the partner; module wired; no page errors');
   await ctx.close(); console.log('v94 stage 4 tests passed');

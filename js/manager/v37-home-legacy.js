@@ -157,7 +157,9 @@ function checkDynasty(snap) {
   addStory(`era:${team}:${era.startSeason}:${season}`, {
     cat: 'legacy', icon: '👑', team, ev: snap.id, v37Group: `era-${team}-${season}`,
     title: `Начало большой эпохи: ${team} вошли в историю CS2`,
-    lead: `${team} собрали ${majors} ${majors === 1 ? 'титул Major' : 'титула Major'} и ${tier1} побед${tier1 === 1 ? 'у' : 'ы'} на турнирах Tier-1 за последние четыре сезона.`,
+    lead: (() => { const pl = (n, a, b, c) => { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? a : m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20) ? b : c; };   // v112: склонения, без «0 титула Major»
+      const t1 = `${tier1} ${pl(tier1, 'победу', 'победы', 'побед')} на турнирах Tier-1`;
+      return `${team} ${majors ? `выиграли ${majors} ${pl(majors, 'Мейджор', 'Мейджора', 'Мейджоров')} и одержали ${t1}` : `одержали ${t1}`} за последние четыре сезона.`; })(),
     body: [`Внутриигровая отметка эпохи: сезон ${era.startSeason}–${season}.`, 'Дальнейшая задача — удержать состав, развивать молодых игроков и доказать, что это не короткий пик формы.'],
     tags: newsTags(team, '', snap.id), imp: 9
   });
