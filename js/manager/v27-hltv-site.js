@@ -867,7 +867,7 @@ function pAwards() {
   if (y) {
     const Y = years[y];
     const aw = ['poty', 'rifler', 'awper', 'igl', 'entry', 'clutch', 'support', 'breakout', 'rookie', 'coach'].map(k => { const x = Y.aw.find(a => a.type === k); return x ? `<button type="button" class="hs-awcard" ${k === 'coach' ? `data-team="${esc(x.team || '')}"` : `data-player="${esc(x.nick)}"`}><span class="hs-awimg">${window.TW ? window.TW.awardSvg(k, +y) : ''}</span><small>${esc(window.TW?.AWARD_DEF?.[k]?.title || k)}</small><b>${k === 'coach' ? '' : pFlag(team(x.nick))} ${esc(x.nick)}</b><em>${esc(x.team || '')}</em></button>` : ''; }).join('');
-    const top = Y.top.sort((a, b) => a.r - b.r).map(x => `<button type="button" class="hs-top20" data-player="${esc(x.nick)}"><span class="hs-t20img">${window.TW ? window.TW.top20Svg(x.r) : '#' + x.r}</span><span class="hs-t20b"><b>${pFlag(team(x.nick))} ${esc(x.nick)}</b><small><span class="hs-t20team">${esc(x.team || '—')}</span>${x.mvpCount ? `<em class="hs-t20mvp" title="MVP турниров за год">${x.mvpCount} MVP</em>` : ''}${x.evpCount ? `<em class="hs-t20mvp evp" title="EVP турниров за год">${x.evpCount} EVP</em>` : ''}</small></span></button>`).join('');
+    const top = Y.top.sort((a, b) => a.r - b.r).map(x => `<button type="button" class="hs-top20" data-player="${esc(x.nick)}"><span class="hs-t20img">${window.TW ? window.TW.top20Svg(x.r, x.y) : '#' + x.r}</span><span class="hs-t20b"><b>${pFlag(team(x.nick))} ${esc(x.nick)}</b><small><span class="hs-t20team">${esc(x.team || '—')}</span>${x.mvpCount ? `<em class="hs-t20mvp" title="MVP турниров за год">${x.mvpCount} MVP</em>` : ''}${x.evpCount ? `<em class="hs-t20mvp evp" title="EVP турниров за год">${x.evpCount} EVP</em>` : ''}</small></span></button>`).join('');
     yearBody = `<div class="hs-awrow">${aw}</div><h3 class="hs-h3">Топ-20 игроков ${y} года</h3><div class="hs-t20grid">${top}</div>`;
   }
   const ychips = ys.map(k => `<button type="button" class="hs-chip${String(k) === String(y) ? ' on' : ''}" data-awyear="${k}">${k}</button>`).join('');
@@ -961,9 +961,9 @@ function achItems(nick) { // list — элементы с годом (для с�
   // одна медаль MVP со счётчиком; в подсказке — все турниры (свежие сверху)
   if (rec.mvp.length) list.push({ lead: true, html: `<span class="hs-achi mvp" data-tip="${esc(`MVP турниров: ${rec.mvp.length}\n` + rec.mvp.slice(0, 14).map(x => `• ${x.n}${x.y ? ' (' + x.y + ')' : ''}${x.team ? ' · ' + x.team : ''}`).join('\n') + (rec.mvp.length > 14 ? `\n… и ещё ${rec.mvp.length - 14}` : ''))}">${window.TW.medalSvg('mvp')}<i class="cnt">${rec.mvp.length}</i></span>` });
   const evp = Array.isArray(raw.evp) ? raw.evp : [];
-  if (evp.length) list.push({ lead: true, html: `<span class="hs-achi mvp evp" data-tip="${esc(`EVP турниров: ${evp.length}\n` + evp.slice(0, 14).map(x => `• ${x.n}${x.y ? ' (' + x.y + ')' : ''}${x.team ? ' · ' + x.team : ''}`).join('\n'))}">${window.TW.medalSvg('evp')}<i class="cnt">${evp.length}</i></span>` });
+  void evp;   // v111: медали EVP в профиле не показываются (EVP по-прежнему учитываются в рейтинге года)
   (rec.aw || []).forEach(a => list.push({ y: a.y, o: 3, html: `<span class="hs-achi" data-tip="${esc(window.TW.AWARD_DEF[a.type]?.title || '')} ${a.y}">${window.TW.awardSvg(a.type, a.y)}<i>'${String(a.y).slice(-2)}</i></span>` }));
-  (rec.top || []).forEach(x => list.push({ y: x.y, o: 2, html: `<span class="hs-achi" data-tip="Топ-20 ${x.y}: #${x.r}">${window.TW.top20Svg(x.r)}<i>'${String(x.y).slice(-2)}</i></span>` }));
+  (rec.top || []).forEach(x => list.push({ y: x.y, o: 2, html: `<span class="hs-achi" data-tip="Топ-20 ${x.y}: #${x.r}">${window.TW.top20Svg(x.r, x.y)}<i>'${String(x.y).slice(-2)}</i></span>` }));
   const player = playerNow(nick), sharedTitles = window.RewardSystem?.getPlayerEventAchievements(nick, player?.t)
     || window.twPlayerAchievements?.(nick, player?.t) || [];
   sharedTitles.forEach(x => {

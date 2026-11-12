@@ -752,7 +752,8 @@ function render(sp) {
 }
 
 /* ------------------------------------------------- медали и плашки */
-function medalSvg(kind) { // MVP / EVP в духе HLTV: круглая медаль — золотой обод, эмалевое кольцо с делениями, центр с надписью
+function medalSvg(kind) { if (kind !== 'evp' && window.CS2TrophyForge && window.CS2TrophyForge.mvpMedal) return window.CS2TrophyForge.mvpMedal(); // v110: реалистичная медаль MVP
+  // MVP / EVP в духе HLTV: круглая медаль — золотой обод, эмалевое кольцо с делениями, центр с надписью
   const evp = kind === 'evp', ring = evp ? ['#9aa7b8', '#5b6778'] : ['#2f6fd6', '#183f86'], core = evp ? ['#eef2f7', '#aab4c2'] : ['#ffe08a', '#d39a22'];
   let ticks = '';
   for (let i = 0; i < 36; i++) { const a = i / 36 * Math.PI * 2, r1 = 21.5, r2 = i % 3 ? 23.5 : 25; ticks += `<line x1="${n(32 + Math.cos(a) * r1)}" y1="${n(32 + Math.sin(a) * r1)}" x2="${n(32 + Math.cos(a) * r2)}" y2="${n(32 + Math.sin(a) * r2)}" stroke="#fff" stroke-opacity="${i % 3 ? .35 : .7}" stroke-width="${i % 3 ? .6 : 1}"/>`; }
@@ -767,7 +768,8 @@ function medalSvg(kind) { // MVP / EVP в духе HLTV: круглая меда
     `<path d="M14 22a20 20 0 0 1 14-10" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2" stroke-linecap="round"/></svg>`;
 }
 // Grand Slam — золотой слиток: объёмный брусок в лёгком ракурсе, скошенные грани, блики, без надписей
-function goldBarSvg() {
+function goldBarSvg(year) {
+  if (window.CS2TrophyForge && window.CS2TrophyForge.goldBar) return window.CS2TrophyForge.goldBar({ year }); // v102: векторный слиток
   const u = 'gb' + (++UID).toString(36);
   return (`<svg class="tw-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>` +
     `<radialGradient id="gbG" cx=".5" cy=".55" r=".5"><stop offset="0" stop-color="#ffd76a" stop-opacity=".35"/><stop offset="1" stop-color="#ffd76a" stop-opacity="0"/></radialGradient>` +
@@ -789,7 +791,8 @@ function goldBarSvg() {
     `<path d="M14 38H30" stroke="#fff" stroke-opacity=".25" stroke-width="1.2" stroke-linecap="round"/>` +
     `<path d="M44 21l1.2 2.6 2.6 1.2-2.6 1.2L44 28.6l-1.2-2.6-2.6-1.2 2.6-1.2z" fill="#fff" opacity=".9"/></svg>`).replace(/gb(G|Top|Front|Side|Edge)\b/g, u + '$1');
 }
-function top20Svg(rank) { // плашка «топ-20 года»: оранжевый восьмиугольник с местом
+function top20Svg(rank, year) { // плашка «топ-20 года» (v109: значок со звездой и годом из генератора)
+  if (window.CS2TrophyForge && window.CS2TrophyForge.rankBadge) return window.CS2TrophyForge.rankBadge(rank, year);
   const d = new Defs(), c = rank <= 1 ? ['#ffd45a', '#d6901d', '#8a5208'] : rank === 2 ? ['#eef2f6', '#a7b1bd', '#5d6773'] : rank === 3 ? ['#f0b98a', '#b86f35', '#6e3a14'] : rank <= 10 ? ['#ffa15a', '#e0631f', '#8c3208'] : ['#f2a56c', '#c9662e', '#7a3814']; // 1 — золото, 2 — серебро, 3 — бронза
   const p = 'M20 5h24l14 14v26L44 59H20L6 45V19z';
   return d.svg(`<path d="${p}" fill="${d.lg('t20', 0, 0, 0, 1, [[0, c[0]], [.55, c[1]], [1, c[2]]])}"/>` +
@@ -1594,7 +1597,7 @@ function playerItems(p, t) {
   if (rec.mvp.length) out.push({ svg: medalSvg('mvp'), count: rec.mvp.length, title: `MVP турниров: ${rec.mvp.length}`,
     sub: rec.mvp.slice(0, 6).map(x => `${x.n} (${x.y})`).join('<br>') + (rec.mvp.length > 6 ? '<br>…' : ''), big: () => medalSvg('mvp'), s: 1e9 });
   rec.aw.forEach(a => out.push({ svg: awardSvg(a.type, a.y), yr: a.y, title: (AWARD_DEF[a.type] || {}).title || a.type, sub: `${a.y} · ${esc2(a.team || '')}`, big: () => awardSvg(a.type, a.y), s: a.s, order: 5 }));
-  rec.top.forEach(x => out.push({ svg: top20Svg(x.r), yr: x.y, title: `Топ-20 игроков ${x.y}: #${x.r}${x.mvpCount ? ` · ${x.mvpCount} MVP` : ''}`, sub: `${x.mvpCount ? `${x.mvpCount} MVP · ` : ''}${esc2(x.team || '')}`, big: () => top20Svg(x.r), s: x.s, order: 4 }));
+  rec.top.forEach(x => out.push({ svg: top20Svg(x.r, x.y), yr: x.y, title: `Топ-20 игроков ${x.y}: #${x.r}${x.mvpCount ? ` · ${x.mvpCount} MVP` : ''}`, sub: `${x.mvpCount ? `${x.mvpCount} MVP · ` : ''}${esc2(x.team || '')}`, big: () => top20Svg(x.r), s: x.s, order: 4 }));
   const titles = window.RewardSystem?.getPlayerEventAchievements(p.nick, t) || playerAchievementRows(p.nick, t);
   titles.forEach(x => out.push({ svg: trophySvg(x.n, x.s, x.k), star: x.k === 'major', kind: x.k, title: x.n,
     sub: `Сезон ${x.s} (${x.y || yearOf(x.s)}) · ${KIND_LABEL[x.k] || ''} · ${esc2(x.team || '')}`,

@@ -407,7 +407,9 @@ function announce() {
   if (!fresh.length) return;
   const batch = fresh.splice(0); renderMini();
   const hot = batch.filter(x => x.imp >= 7).sort((a, b) => b.imp - a.imp);
-  hot.slice(0, 2).forEach(it => toast(`<div class="v29-toast-ic">${window.CS2Glyph ? window.CS2Glyph(it) : (it.icon || '★')}</div><div class="v29-toast-t"><small>HLTV · ${it.imp >= 9 ? 'СРОЧНО' : (CATS[it.cat]?.l || 'Новости')}</small><b>${esc(it.title)}</b><span>${esc(it.lead || '')}</span></div>`, () => window.hltvSiteOpenArticle && window.hltvSiteOpenArticle(it.id)));
+  // v111: уведомление — от имени источника новости (HLTV или паблик с логотипом)
+  const srcOf = it => { try { return window.V111News ? window.V111News.srcOf(it) : null; } catch (e) { return null; } };
+  hot.slice(0, 2).forEach(it => { const sr = srcOf(it), pub = sr && sr.id !== 'hltv'; toast(`<div class="v29-toast-ic${pub ? ' v111-tic' : ''}">${pub ? `<img src="${esc(sr.logo)}" alt="">` : (window.CS2Glyph ? window.CS2Glyph(it) : (it.icon || '★'))}</div><div class="v29-toast-t"><small>${pub ? esc(sr.name) : 'HLTV'} · ${it.imp >= 9 ? 'СРОЧНО' : (CATS[it.cat]?.l || 'Новости')}</small><b>${esc(it.title)}</b><span>${esc(it.lead || '')}</span></div>`, () => window.hltvSiteOpenArticle && window.hltvSiteOpenArticle(it.id)); });
   const rest = batch.length - Math.min(2, hot.length);
   if (hot.length && rest > 2) toast(`<div class="v29-toast-ic">📰</div><div class="v29-toast-t"><small>HLTV</small><b>Ещё ${rest} ${plural(rest, 'новость', 'новости', 'новостей')}</b><span>Откройте ленту, чтобы ничего не пропустить</span></div>`, () => window.hltvSiteOpen && window.hltvSiteOpen('news'));
 }

@@ -6,7 +6,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
 (async () => {
   const dir = path.resolve(__dirname, '..');
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  ['v99-perf.js?v=101', 'v99-talks.js?v=101', 'v99-transfers.js?v=101', 'v99-manager.js?v=101', 'v99-spectator.js?v=101', 'v99.css?v=101'].forEach(f => assert(html.includes(f), 'подключён ' + f));
+  ['v99-perf.js?v=111', 'v99-talks.js?v=111', 'v99-transfers.js?v=111', 'v99-manager.js?v=111', 'v99-spectator.js?v=111', 'v99.css?v=111'].forEach(f => assert(html.includes(f), 'подключён ' + f));
   const ctx = await chromium.launchPersistentContext(fs.mkdtempSync(path.join(os.tmpdir(), 'cs2-v99-')), { viewport: { width: 1600, height: 900 } });
   const p = ctx.pages()[0] || await ctx.newPage(); const errs = [];
   p.on('pageerror', e => errs.push(e.message)); p.on('dialog', d => d.accept());
