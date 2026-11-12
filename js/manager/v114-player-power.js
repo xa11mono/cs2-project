@@ -51,7 +51,7 @@
   }
   function potential(p) {
     if (!p) return null;
-    const raw = Number.isFinite(Number(p.pot)) ? Number(p.pot) : Number(p.potential);
+    const raw = p.pot != null && p.pot !== '' && Number.isFinite(Number(p.pot)) ? Number(p.pot) : Number(p.potential);
     if (!Number.isFinite(raw)) return null;
     return round1(clamp(Math.max(base(p), raw), 0, 100));
   }
