@@ -43,43 +43,14 @@
     ['firepower', 'tacticalIQ', 'clutch', 'utility'].forEach(a => { p[a] = clamp(Math.round(((+p[a] || 70) + d) * 10) / 10, 50, 99); });
     const lv = pow(p); if (!(+p.pot >= lv)) p.pot = Math.round((lv + ((+p.age || 25) <= 22 ? 2 : 0)) * 10) / 10;
   }
-  function recalibrate() {
-    if (seasonState.v101Pow) return 0;
-    let n = 0;
-    const all = teams.flatMap(t => t.players || []).concat((typeof transferState !== 'undefined' && transferState.freeAgents) || []);
-    all.forEach(p => { if (!p || !p.nick) return; const d = target(p) - pow(p); if (Math.abs(d) >= .05) { shift(p, d); n++; } });
-    seasonState.v101Pow = { at: now(), n };
-    try { teams.forEach(t => { try { W.ensurePlayerLayer && W.ensurePlayerLayer(t); } catch (e) {} }); } catch (e) {}
-    try { W.saveTeams && W.saveTeams(); W.saveSeasonState && W.saveSeasonState(); } catch (e) {}
-    console.info('[v101] сила игроков пересчитана:', n);
-    return n;
+  function recalibrate() { return 0; // v114: старые ручные anchors и cap 91.5 отключены; атрибуты старых сейвов не переписываем.
   }
 
   /* ------------------------------------------------------------ 1б. стартовый рейтинг новой игры
      В базе у части клубов стартовые очки расходятся с составом (3DMAX: состав #12 по силе, очки #73 — за сезон
      «▲63» выглядело как взлёт слабой команды). В новой игре (до первого турнира) позиция по очкам, отличающаяся от
      позиции по силе больше чем на 15 мест, сдвигается на 2/3 пути к ней; рейтинг дальше считают результаты. */
-  function reseed() {
-    if (seasonState.v101Seed) return 0;
-    const fresh = (Number(seasonState.currentSeason) || 1) === 1 && (Number(seasonState.tournamentIndex) || 1) <= 1 && !(teams.some(t => (t.history || []).some(h => h && h.place > 0 && !h.isSeasonAward)));
-    if (!fresh) { seasonState.v101Seed = { skipped: true }; return 0; }
-    const pro = teams.filter(t => t && !t.isAcademy && Array.isArray(t.players) && t.players.length >= 5);
-    const tp = t => t.players.slice(0, 5).reduce((a, p) => a + pow(p), 0) / 5;
-    const byPts = pro.slice().sort((a, b) => (b.pts || 0) - (a.pts || 0)), byPow = pro.slice().sort((a, b) => tp(b) - tp(a));
-    const ptsAt = byPts.map(t => +t.pts || 0), changes = [];
-    pro.forEach(t => {
-      const rP = byPts.indexOf(t) + 1, rW = byPow.indexOf(t) + 1; if (Math.abs(rP - rW) <= 15) return;
-      const rT = Math.round((rW * 2 + rP) / 3), pts = Math.round(ptsAt[clamp(rT, 1, ptsAt.length) - 1]);
-      if (!pts || pts === t.pts) return;
-      changes.push(`${t.name}: #${rP} → ~#${rT}`);
-      t.pts = pts; t.vrsShown = pts; t.vrsTarget = pts; t.seasonStartRank = null;
-      if (t.vrsLedger) t.vrsLedger.basePts = pts;
-      if (Number.isFinite(Number(t.matchStrength))) t.matchStrength = pts;
-    });
-    seasonState.v101Seed = { at: now(), changes };
-    try { teams.sort((a, b) => (b.pts || 0) - (a.pts || 0)); W.saveTeams && W.saveTeams(); W.saveSeasonState && W.saveSeasonState(); } catch (e) {}
-    if (changes.length) console.info('[v101] стартовый рейтинг выровнен по составам:', changes.join('; '));
-    return changes.length;
+  function reseed() { return 0; // v114: VRS не пересчитывается из Overall игрока.
   }
 
   /* ------------------------------------------------------------ 2. история стоимости */
