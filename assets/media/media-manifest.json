@@ -801,10 +801,10 @@
  },
  "players": {
   "910": {
-   "file": "assets/media/players/910.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/910.webp?v=130",
+   "src": "user:2026-photos",
    "match": "910",
-   "full": "assets/media/players/full/910.webp"
+   "full": "assets/media/players/full/910.webp?v=130"
   },
   "957": {
    "file": "assets/media/players/957.webp",
@@ -813,364 +813,364 @@
    "full": "assets/media/players/full/957.webp"
   },
   "sh1ro": {
-   "file": "assets/media/players/sh1ro.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/sh1ro.webp?v=130",
+   "src": "user:2026-photos",
    "match": "sh1ro",
-   "full": "assets/media/players/full/sh1ro.webp"
+   "full": "assets/media/players/full/sh1ro.webp?v=130"
   },
   "magixx": {
-   "file": "assets/media/players/magixx.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/magixx.webp?v=130",
+   "src": "user:2026-photos",
    "match": "magixx",
-   "full": "assets/media/players/full/magixx.webp"
+   "full": "assets/media/players/full/magixx.webp?v=130"
   },
   "tN1R": {
-   "file": "assets/media/players/tn1r.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/tn1r.webp?v=130",
+   "src": "user:2026-photos",
    "match": "tN1R",
-   "full": "assets/media/players/full/tn1r.webp"
+   "full": "assets/media/players/full/tn1r.webp?v=130"
   },
   "zont1x": {
-   "file": "assets/media/players/zont1x.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/zont1x.webp?v=130",
+   "src": "user:2026-photos",
    "match": "zont1x",
-   "full": "assets/media/players/full/zont1x.webp"
+   "full": "assets/media/players/full/zont1x.webp?v=130"
   },
   "donk": {
-   "file": "assets/media/players/donk.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/donk.webp?v=130",
+   "src": "user:2026-photos",
    "match": "donk",
-   "full": "assets/media/players/full/donk.webp"
+   "full": "assets/media/players/full/donk.webp?v=130"
   },
   "karrigan": {
-   "file": "assets/media/players/karrigan.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/karrigan.webp?v=130",
+   "src": "user:2026-photos",
    "match": "karrigan",
-   "full": "assets/media/players/full/karrigan.webp"
+   "full": "assets/media/players/full/karrigan.webp?v=130"
   },
   "NiKo": {
-   "file": "assets/media/players/niko.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/niko.webp?v=130",
+   "src": "user:2026-photos",
    "match": "NiKo",
-   "full": "assets/media/players/full/niko.webp"
+   "full": "assets/media/players/full/niko.webp?v=130"
   },
   "TeSeS": {
-   "file": "assets/media/players/teses.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/teses.webp?v=130",
+   "src": "user:2026-photos",
    "match": "TeSeS",
-   "full": "assets/media/players/full/teses.webp"
+   "full": "assets/media/players/full/teses.webp?v=130"
   },
   "m0NESY": {
-   "file": "assets/media/players/m0nesy.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/m0nesy.webp?v=130",
+   "src": "user:2026-photos",
    "match": "m0NESY",
-   "full": "assets/media/players/full/m0nesy.webp"
+   "full": "assets/media/players/full/m0nesy.webp?v=130"
   },
   "kyousuke": {
-   "file": "assets/media/players/kyousuke.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/kyousuke.webp?v=130",
+   "src": "user:2026-photos",
    "match": "kyousuke",
-   "full": "assets/media/players/full/kyousuke.webp"
+   "full": "assets/media/players/full/kyousuke.webp?v=130"
   },
   "apEX": {
-   "file": "assets/media/players/apex.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/apex.webp?v=130",
+   "src": "user:2026-photos",
    "match": "apEX",
-   "full": "assets/media/players/full/apex.webp"
+   "full": "assets/media/players/full/apex.webp?v=130"
   },
   "ropz": {
-   "file": "assets/media/players/ropz.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/ropz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ropz",
-   "full": "assets/media/players/full/ropz.webp"
+   "full": "assets/media/players/full/ropz.webp?v=130"
   },
   "ZywOo": {
-   "file": "assets/media/players/zywoo.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/zywoo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ZywOo",
-   "full": "assets/media/players/full/zywoo.webp"
+   "full": "assets/media/players/full/zywoo.webp?v=130"
   },
   "flameZ": {
-   "file": "assets/media/players/flamez.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/flamez.webp?v=130",
+   "src": "user:2026-photos",
    "match": "flameZ",
-   "full": "assets/media/players/full/flamez.webp"
+   "full": "assets/media/players/full/flamez.webp?v=130"
   },
   "mezii": {
-   "file": "assets/media/players/mezii.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/mezii.webp?v=130",
+   "src": "user:2026-photos",
    "match": "mezii",
-   "full": "assets/media/players/full/mezii.webp"
+   "full": "assets/media/players/full/mezii.webp?v=130"
   },
   "torzsi": {
-   "file": "assets/media/players/torzsi.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/torzsi.webp?v=130",
+   "src": "user:2026-photos",
    "match": "torzsi",
-   "full": "assets/media/players/full/torzsi.webp"
+   "full": "assets/media/players/full/torzsi.webp?v=130"
   },
   "Spinx": {
-   "file": "assets/media/players/spinx.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/spinx.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Spinx",
-   "full": "assets/media/players/full/spinx.webp"
+   "full": "assets/media/players/full/spinx.webp?v=130"
   },
   "xertioN": {
-   "file": "assets/media/players/xertion.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/xertion.webp?v=130",
+   "src": "user:2026-photos",
    "match": "xertioN",
-   "full": "assets/media/players/full/xertion.webp"
+   "full": "assets/media/players/full/xertion.webp?v=130"
   },
   "PR": {
-   "file": "assets/media/players/pr.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/pr.webp?v=130",
+   "src": "user:2026-photos",
    "match": "PR",
-   "full": "assets/media/players/full/pr.webp"
+   "full": "assets/media/players/full/pr.webp?v=130"
   },
   "xelex": {
-   "file": "assets/media/players/xelex.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/xelex.webp?v=130",
+   "src": "user:2026-photos",
    "match": "xelex",
-   "full": "assets/media/players/full/xelex.webp"
+   "full": "assets/media/players/full/xelex.webp?v=130"
   },
   "FalleN": {
-   "file": "assets/media/players/fallen.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/fallen.webp?v=130",
+   "src": "user:2026-photos",
    "match": "FalleN",
-   "full": "assets/media/players/full/fallen.webp"
+   "full": "assets/media/players/full/fallen.webp?v=130"
   },
   "yuurih": {
-   "file": "assets/media/players/yuurih.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/yuurih.webp?v=130",
+   "src": "user:2026-photos",
    "match": "yuurih",
-   "full": "assets/media/players/full/yuurih.webp"
+   "full": "assets/media/players/full/yuurih.webp?v=130"
   },
   "YEKINDAR": {
-   "file": "assets/media/players/yekindar.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/yekindar.webp?v=130",
+   "src": "user:2026-photos",
    "match": "YEKINDAR",
-   "full": "assets/media/players/full/yekindar.webp"
+   "full": "assets/media/players/full/yekindar.webp?v=130"
   },
   "KSCERATO": {
-   "file": "assets/media/players/kscerato.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/kscerato.webp?v=130",
+   "src": "user:2026-photos",
    "match": "KSCERATO",
-   "full": "assets/media/players/full/kscerato.webp"
+   "full": "assets/media/players/full/kscerato.webp?v=130"
   },
   "molodoy": {
-   "file": "assets/media/players/molodoy.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/molodoy.webp?v=130",
+   "src": "user:2026-photos",
    "match": "molodoy",
-   "full": "assets/media/players/full/molodoy.webp"
+   "full": "assets/media/players/full/molodoy.webp?v=130"
   },
   "huNter-": {
-   "file": "assets/media/players/hunter.webp",
-   "src": "liga:Real_CS_2026",
-   "match": "huNter",
-   "full": "assets/media/players/full/hunter.webp"
+   "file": "assets/media/players/hunter.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "huNter-",
+   "full": "assets/media/players/full/hunter.webp?v=130"
   },
   "NertZ": {
-   "file": "assets/media/players/nertz.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/nertz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "NertZ",
-   "full": "assets/media/players/full/nertz.webp"
+   "full": "assets/media/players/full/nertz.webp?v=130"
   },
   "r1nkle": {
-   "file": "assets/media/players/r1nkle.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/r1nkle.webp?v=130",
+   "src": "user:2026-photos",
    "match": "r1nkle",
-   "full": "assets/media/players/full/r1nkle.webp"
+   "full": "assets/media/players/full/r1nkle.webp?v=130"
   },
   "HeavyGod": {
-   "file": "assets/media/players/heavygod.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/heavygod.webp?v=130",
+   "src": "user:2026-photos",
    "match": "HeavyGod",
-   "full": "assets/media/players/full/heavygod.webp"
+   "full": "assets/media/players/full/heavygod.webp?v=130"
   },
   "MATYS": {
-   "file": "assets/media/players/matys.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/matys.webp?v=130",
+   "src": "user:2026-photos",
    "match": "MATYS",
-   "full": "assets/media/players/full/matys.webp"
+   "full": "assets/media/players/full/matys.webp?v=130"
   },
   "Aleksib": {
-   "file": "assets/media/players/aleksib.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/aleksib.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Aleksib",
-   "full": "assets/media/players/full/aleksib.webp"
+   "full": "assets/media/players/full/aleksib.webp?v=130"
   },
   "iM": {
-   "file": "assets/media/players/im.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/im.webp?v=130",
+   "src": "user:2026-photos",
    "match": "iM",
-   "full": "assets/media/players/full/im.webp"
+   "full": "assets/media/players/full/im.webp?v=130"
   },
   "b1t": {
-   "file": "assets/media/players/b1t.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/b1t.webp?v=130",
+   "src": "user:2026-photos",
    "match": "b1t",
-   "full": "assets/media/players/full/b1t.webp"
+   "full": "assets/media/players/full/b1t.webp?v=130"
   },
   "w0nderful": {
-   "file": "assets/media/players/w0nderful.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/w0nderful.webp?v=130",
+   "src": "user:2026-photos",
    "match": "w0nderful",
-   "full": "assets/media/players/full/w0nderful.webp"
+   "full": "assets/media/players/full/w0nderful.webp?v=130"
   },
   "makazze": {
-   "file": "assets/media/players/makazze.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/makazze.webp?v=130",
+   "src": "user:2026-photos",
    "match": "makazze",
-   "full": "assets/media/players/full/makazze.webp"
+   "full": "assets/media/players/full/makazze.webp?v=130"
   },
   "xfl0ud": {
-   "file": "assets/media/players/xfl0ud.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/xfl0ud.webp?v=130",
+   "src": "user:2026-photos",
    "match": "xfl0ud",
-   "full": "assets/media/players/full/xfl0ud.webp"
+   "full": "assets/media/players/full/xfl0ud.webp?v=130"
   },
   "dem0n": {
-   "file": "assets/media/players/dem0n.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/dem0n.webp?v=130",
+   "src": "user:2026-photos",
    "match": "dem0n",
-   "full": "assets/media/players/full/dem0n.webp"
+   "full": "assets/media/players/full/dem0n.webp?v=130"
   },
   "Krabeni": {
-   "file": "assets/media/players/krabeni.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/krabeni.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Krabeni",
-   "full": "assets/media/players/full/krabeni.webp"
+   "full": "assets/media/players/full/krabeni.webp?v=130"
   },
   "cmtry": {
-   "file": "assets/media/players/cmtry.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/cmtry.webp?v=130",
+   "src": "user:2026-photos",
    "match": "cmtry",
-   "full": "assets/media/players/full/cmtry.webp"
+   "full": "assets/media/players/full/cmtry.webp?v=130"
   },
   "dziugss": {
-   "file": "assets/media/players/dziugss.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/dziugss.webp?v=130",
+   "src": "user:2026-photos",
    "match": "dziugss",
-   "full": "assets/media/players/full/dziugss.webp"
+   "full": "assets/media/players/full/dziugss.webp?v=130"
   },
   "dumau": {
-   "file": "assets/media/players/dumau.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/dumau.webp?v=130",
+   "src": "user:2026-photos",
    "match": "dumau",
-   "full": "assets/media/players/full/dumau.webp"
+   "full": "assets/media/players/full/dumau.webp?v=130"
   },
   "latto": {
-   "file": "assets/media/players/latto.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/latto.webp?v=130",
+   "src": "user:2026-photos",
    "match": "latto",
-   "full": "assets/media/players/full/latto.webp"
+   "full": "assets/media/players/full/latto.webp?v=130"
   },
   "n1ssim": {
-   "file": "assets/media/players/n1ssim.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/n1ssim.webp?v=130",
+   "src": "user:2026-photos",
    "match": "n1ssim",
-   "full": "assets/media/players/full/n1ssim.webp"
+   "full": "assets/media/players/full/n1ssim.webp?v=130"
   },
   "try": {
-   "file": "assets/media/players/try.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/try.webp?v=130",
+   "src": "user:2026-photos",
    "match": "try",
-   "full": "assets/media/players/full/try.webp"
+   "full": "assets/media/players/full/try.webp?v=130"
   },
   "XANTARES": {
-   "file": "assets/media/players/xantares.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/xantares.webp?v=130",
+   "src": "user:2026-photos",
    "match": "XANTARES",
-   "full": "assets/media/players/full/xantares.webp"
+   "full": "assets/media/players/full/xantares.webp?v=130"
   },
   "woxic": {
-   "file": "assets/media/players/woxic.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/woxic.webp?v=130",
+   "src": "user:2026-photos",
    "match": "woxic",
-   "full": "assets/media/players/full/woxic.webp"
+   "full": "assets/media/players/full/woxic.webp?v=130"
   },
   "Jimpphat": {
-   "file": "assets/media/players/jimpphat.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/jimpphat.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Jimpphat",
-   "full": "assets/media/players/full/jimpphat.webp"
+   "full": "assets/media/players/full/jimpphat.webp?v=130"
   },
   "Wicadia": {
-   "file": "assets/media/players/wicadia.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/wicadia.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Wicadia",
-   "full": "assets/media/players/full/wicadia.webp"
+   "full": "assets/media/players/full/wicadia.webp?v=130"
   },
   "frozen": {
-   "file": "assets/media/players/frozen.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/frozen.webp?v=130",
+   "src": "user:2026-photos",
    "match": "frozen",
-   "full": "assets/media/players/full/frozen.webp"
+   "full": "assets/media/players/full/frozen.webp?v=130"
   },
   "Twistzz": {
-   "file": "assets/media/players/twistzz.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/twistzz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Twistzz",
-   "full": "assets/media/players/full/twistzz.webp"
+   "full": "assets/media/players/full/twistzz.webp?v=130"
   },
   "Neityu": {
-   "file": "assets/media/players/neityu.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/neityu.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Neityu",
-   "full": "assets/media/players/full/neityu.webp"
+   "full": "assets/media/players/full/neityu.webp?v=130"
   },
   "jcobbb": {
-   "file": "assets/media/players/jcobbb.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/jcobbb.webp?v=130",
+   "src": "user:2026-photos",
    "match": "jcobbb",
-   "full": "assets/media/players/full/jcobbb.webp"
+   "full": "assets/media/players/full/jcobbb.webp?v=130"
   },
   "bLitz": {
-   "file": "assets/media/players/blitz.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/blitz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "bLitz",
-   "full": "assets/media/players/full/blitz.webp"
+   "full": "assets/media/players/full/blitz.webp?v=130"
   },
   "Techno": {
-   "file": "assets/media/players/techno.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/techno.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Techno",
-   "full": "assets/media/players/full/techno.webp"
+   "full": "assets/media/players/full/techno.webp?v=130"
   },
   "tikuak": {
-   "file": "assets/media/players/tikuak.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/tikuak.webp?v=130",
+   "src": "user:2026-photos",
    "match": "tikuak",
-   "full": "assets/media/players/full/tikuak.webp"
+   "full": "assets/media/players/full/tikuak.webp?v=130"
   },
   "Boombl4": {
-   "file": "assets/media/players/boombl4.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/boombl4.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Boombl4",
-   "full": "assets/media/players/full/boombl4.webp"
+   "full": "assets/media/players/full/boombl4.webp?v=130"
   },
   "zorte": {
-   "file": "assets/media/players/zorte.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/zorte.webp?v=130",
+   "src": "user:2026-photos",
    "match": "zorte",
-   "full": "assets/media/players/full/zorte.webp"
+   "full": "assets/media/players/full/zorte.webp?v=130"
   },
   "S1ren": {
-   "file": "assets/media/players/s1ren.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/s1ren.webp?v=130",
+   "src": "user:2026-photos",
    "match": "S1ren",
-   "full": "assets/media/players/full/s1ren.webp"
+   "full": "assets/media/players/full/s1ren.webp?v=130"
   },
   "d1Ledez": {
-   "file": "assets/media/players/d1ledez.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/d1ledez.webp?v=130",
+   "src": "user:2026-photos",
    "match": "d1Ledez",
-   "full": "assets/media/players/full/d1ledez.webp"
+   "full": "assets/media/players/full/d1ledez.webp?v=130"
   },
   "Magnojez": {
-   "file": "assets/media/players/magnojez.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/magnojez.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Magnojez",
-   "full": "assets/media/players/full/magnojez.webp"
+   "full": "assets/media/players/full/magnojez.webp?v=130"
   },
   "HooXi": {
    "file": "assets/media/players/hooxi.webp",
@@ -1179,10 +1179,10 @@
    "full": "assets/media/players/full/hooxi.webp"
   },
   "phzy": {
-   "file": "assets/media/players/phzy.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/phzy.webp?v=130",
+   "src": "user:2026-photos",
    "match": "phzy",
-   "full": "assets/media/players/full/phzy.webp"
+   "full": "assets/media/players/full/phzy.webp?v=130"
   },
   "jabbi": {
    "file": "assets/media/players/jabbi.webp",
@@ -1191,178 +1191,178 @@
    "full": "assets/media/players/full/jabbi.webp"
   },
   "Staehr": {
-   "file": "assets/media/players/staehr.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/staehr.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Staehr",
-   "full": "assets/media/players/full/staehr.webp"
+   "full": "assets/media/players/full/staehr.webp?v=130"
   },
   "meyern": {
-   "file": "assets/media/players/meyern.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/meyern.webp?v=130",
+   "src": "user:2026-photos",
    "match": "meyern",
-   "full": "assets/media/players/full/meyern.webp"
+   "full": "assets/media/players/full/meyern.webp?v=130"
   },
   "luchov": {
-   "file": "assets/media/players/luchov.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/luchov.webp?v=130",
+   "src": "user:2026-photos",
    "match": "luchov",
-   "full": "assets/media/players/full/luchov.webp"
+   "full": "assets/media/players/full/luchov.webp?v=130"
   },
   "Maka": {
-   "file": "assets/media/players/maka.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/maka.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Maka",
-   "full": "assets/media/players/full/maka.webp"
+   "full": "assets/media/players/full/maka.webp?v=130"
   },
   "misutaaa": {
-   "file": "assets/media/players/misutaaa.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/misutaaa.webp?v=130",
+   "src": "user:2026-photos",
    "match": "misutaaa",
-   "full": "assets/media/players/full/misutaaa.webp"
+   "full": "assets/media/players/full/misutaaa.webp?v=130"
   },
   "Graviti": {
-   "file": "assets/media/players/graviti.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/graviti.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Graviti",
-   "full": "assets/media/players/full/graviti.webp"
+   "full": "assets/media/players/full/graviti.webp?v=130"
   },
   "NAF": {
-   "file": "assets/media/players/naf.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/naf.webp?v=130",
+   "src": "user:2026-photos",
    "match": "NAF",
-   "full": "assets/media/players/full/naf.webp"
+   "full": "assets/media/players/full/naf.webp?v=130"
   },
   "EliGE": {
-   "file": "assets/media/players/elige.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/elige.webp?v=130",
+   "src": "user:2026-photos",
    "match": "EliGE",
-   "full": "assets/media/players/full/elige.webp"
+   "full": "assets/media/players/full/elige.webp?v=130"
   },
   "malbsMd": {
-   "file": "assets/media/players/malbsmd.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/malbsmd.webp?v=130",
+   "src": "user:2026-photos",
    "match": "malbsMd",
-   "full": "assets/media/players/full/malbsmd.webp"
+   "full": "assets/media/players/full/malbsmd.webp?v=130"
   },
   "JT": {
-   "file": "assets/media/players/jt.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/jt.webp?v=130",
+   "src": "user:2026-photos",
    "match": "JT",
-   "full": "assets/media/players/full/jt.webp"
+   "full": "assets/media/players/full/jt.webp?v=130"
   },
   "alex666": {
-   "file": "assets/media/players/alex666.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/alex666.webp?v=130",
+   "src": "user:2026-photos",
    "match": "alex666",
-   "full": "assets/media/players/full/alex666.webp"
+   "full": "assets/media/players/full/alex666.webp?v=130"
   },
   "npl": {
-   "file": "assets/media/players/npl.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/npl.webp?v=130",
+   "src": "user:2026-photos",
    "match": "npl",
-   "full": "assets/media/players/full/npl.webp"
+   "full": "assets/media/players/full/npl.webp?v=130"
   },
   "kensizor": {
-   "file": "assets/media/players/kensizor.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/kensizor.webp?v=130",
+   "src": "user:2026-photos",
    "match": "kensizor",
-   "full": "assets/media/players/full/kensizor.webp"
+   "full": "assets/media/players/full/kensizor.webp?v=130"
   },
   "esenthial": {
-   "file": "assets/media/players/esenthial.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/esenthial.webp?v=130",
+   "src": "user:2026-photos",
    "match": "esenthial",
-   "full": "assets/media/players/full/esenthial.webp"
+   "full": "assets/media/players/full/esenthial.webp?v=130"
   },
   "s1zzi": {
-   "file": "assets/media/players/s1zzi.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/s1zzi.webp?v=130",
+   "src": "user:2026-photos",
    "match": "s1zzi",
-   "full": "assets/media/players/full/s1zzi.webp"
+   "full": "assets/media/players/full/s1zzi.webp?v=130"
   },
   "biguzera": {
-   "file": "assets/media/players/biguzera.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/biguzera.webp?v=130",
+   "src": "user:2026-photos",
    "match": "biguzera",
-   "full": "assets/media/players/full/biguzera.webp"
+   "full": "assets/media/players/full/biguzera.webp?v=130"
   },
   "saffee": {
-   "file": "assets/media/players/saffee.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/saffee.webp?v=130",
+   "src": "user:2026-photos",
    "match": "saffee",
-   "full": "assets/media/players/full/saffee.webp"
+   "full": "assets/media/players/full/saffee.webp?v=130"
   },
   "snow": {
-   "file": "assets/media/players/snow.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/snow.webp?v=130",
+   "src": "user:2026-photos",
    "match": "snow",
-   "full": "assets/media/players/full/snow.webp"
+   "full": "assets/media/players/full/snow.webp?v=130"
   },
   "tabseN": {
-   "file": "assets/media/players/tabsen.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/tabsen.webp?v=130",
+   "src": "user:2026-photos",
    "match": "tabseN",
-   "full": "assets/media/players/full/tabsen.webp"
+   "full": "assets/media/players/full/tabsen.webp?v=130"
   },
   "faveN": {
-   "file": "assets/media/players/faven.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/faven.webp?v=130",
+   "src": "user:2026-photos",
    "match": "faveN",
-   "full": "assets/media/players/full/faven.webp"
+   "full": "assets/media/players/full/faven.webp?v=130"
   },
   "blameF": {
-   "file": "assets/media/players/blamef.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/blamef.webp?v=130",
+   "src": "user:2026-photos",
    "match": "blameF",
-   "full": "assets/media/players/full/blamef.webp"
+   "full": "assets/media/players/full/blamef.webp?v=130"
   },
   "Brollan": {
-   "file": "assets/media/players/brollan.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/brollan.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Brollan",
-   "full": "assets/media/players/full/brollan.webp"
+   "full": "assets/media/players/full/brollan.webp?v=130"
   },
   "nilo": {
-   "file": "assets/media/players/nilo.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/nilo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "nilo",
-   "full": "assets/media/players/full/nilo.webp"
+   "full": "assets/media/players/full/nilo.webp?v=130"
   },
   "susp": {
-   "file": "assets/media/players/susp.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/susp.webp?v=130",
+   "src": "user:2026-photos",
    "match": "susp",
-   "full": "assets/media/players/full/susp.webp"
+   "full": "assets/media/players/full/susp.webp?v=130"
   },
   "MartinezSa": {
-   "file": "assets/media/players/martinezsa.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/martinezsa.webp?v=130",
+   "src": "user:2026-photos",
    "match": "MartinezSa",
-   "full": "assets/media/players/full/martinezsa.webp"
+   "full": "assets/media/players/full/martinezsa.webp?v=130"
   },
   "Chr1zN": {
-   "file": "assets/media/players/chr1zn.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/chr1zn.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Chr1zN",
-   "full": "assets/media/players/full/chr1zn.webp"
+   "full": "assets/media/players/full/chr1zn.webp?v=130"
   },
   "FL1T": {
-   "file": "assets/media/players/fl1t.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/fl1t.webp?v=130",
+   "src": "user:2026-photos",
    "match": "FL1T",
-   "full": "assets/media/players/full/fl1t.webp"
+   "full": "assets/media/players/full/fl1t.webp?v=130"
   },
   "Jame": {
-   "file": "assets/media/players/jame.webp",
-   "src": "liga:Real_CS_2026",
-   "match": "jame",
-   "full": "assets/media/players/full/jame.webp"
+   "file": "assets/media/players/jame.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Jame",
+   "full": "assets/media/players/full/jame.webp?v=130"
   },
   "xiELO": {
-   "file": "assets/media/players/xielo.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/xielo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "xiELO",
-   "full": "assets/media/players/full/xielo.webp"
+   "full": "assets/media/players/full/xielo.webp?v=130"
   },
   "xseveN": {
    "file": "assets/media/players/xseven.webp",
@@ -1371,10 +1371,10 @@
    "full": "assets/media/players/full/xseven.webp"
   },
   "stavn": {
-   "file": "assets/media/players/stavn.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/stavn.webp?v=130",
+   "src": "user:2026-photos",
    "match": "stavn",
-   "full": "assets/media/players/full/stavn.webp"
+   "full": "assets/media/players/full/stavn.webp?v=130"
   },
   "jL": {
    "file": "assets/media/players/jl.webp",
@@ -1383,34 +1383,34 @@
    "full": "assets/media/players/full/jl.webp"
   },
   "Krimbo": {
-   "file": "assets/media/players/krimbo.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/krimbo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Krimbo",
-   "full": "assets/media/players/full/krimbo.webp"
+   "full": "assets/media/players/full/krimbo.webp?v=130"
   },
   "xKacpersky": {
-   "file": "assets/media/players/xkacpersky.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/xkacpersky.webp?v=130",
+   "src": "user:2026-photos",
    "match": "xKacpersky",
-   "full": "assets/media/players/full/xkacpersky.webp"
+   "full": "assets/media/players/full/xkacpersky.webp?v=130"
   },
   "n0rb3r7": {
-   "file": "assets/media/players/n0rb3r7.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/n0rb3r7.webp?v=130",
+   "src": "user:2026-photos",
    "match": "n0rb3r7",
-   "full": "assets/media/players/full/n0rb3r7.webp"
+   "full": "assets/media/players/full/n0rb3r7.webp?v=130"
   },
   "mizu": {
-   "file": "assets/media/players/mizu.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/mizu.webp?v=130",
+   "src": "user:2026-photos",
    "match": "mizu",
-   "full": "assets/media/players/full/mizu.webp"
+   "full": "assets/media/players/full/mizu.webp?v=130"
   },
   "frontales": {
-   "file": "assets/media/players/frontales.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/frontales.webp?v=130",
+   "src": "user:2026-photos",
    "match": "frontales",
-   "full": "assets/media/players/full/frontales.webp"
+   "full": "assets/media/players/full/frontales.webp?v=130"
   },
   "Snax": {
    "file": "assets/media/players/snax.webp",
@@ -1419,184 +1419,184 @@
    "full": "assets/media/players/full/snax.webp"
   },
   "REZ": {
-   "file": "assets/media/players/rez.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/rez.webp?v=130",
+   "src": "user:2026-photos",
    "match": "REZ",
-   "full": "assets/media/players/full/rez.webp"
+   "full": "assets/media/players/full/rez.webp?v=130"
   },
   "Tauson": {
-   "file": "assets/media/players/tauson.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/tauson.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Tauson",
-   "full": "assets/media/players/full/tauson.webp"
+   "full": "assets/media/players/full/tauson.webp?v=130"
   },
   "FL4MUS": {
-   "file": "assets/media/players/fl4mus.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/fl4mus.webp?v=130",
+   "src": "user:2026-photos",
    "match": "FL4MUS",
-   "full": "assets/media/players/full/fl4mus.webp"
+   "full": "assets/media/players/full/fl4mus.webp?v=130"
   },
   "hypex": {
-   "file": "assets/media/players/hypex.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/hypex.webp?v=130",
+   "src": "user:2026-photos",
    "match": "hypex",
-   "full": "assets/media/players/full/hypex.webp"
+   "full": "assets/media/players/full/hypex.webp?v=130"
   },
   "nqz": {
-   "file": "assets/media/players/nqz.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/nqz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "nqz",
-   "full": "assets/media/players/full/nqz.webp"
+   "full": "assets/media/players/full/nqz.webp?v=130"
   },
   "insani": {
-   "file": "assets/media/players/insani.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/insani.webp?v=130",
+   "src": "user:2026-photos",
    "match": "insani",
-   "full": "assets/media/players/full/insani.webp"
+   "full": "assets/media/players/full/insani.webp?v=130"
   },
   "venomzera": {
-   "file": "assets/media/players/venomzera.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/venomzera.webp?v=130",
+   "src": "user:2026-photos",
    "match": "venomzera",
-   "full": "assets/media/players/full/venomzera.webp"
+   "full": "assets/media/players/full/venomzera.webp?v=130"
   },
   "tomaszin": {
-   "file": "assets/media/players/tomaszin.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/tomaszin.webp?v=130",
+   "src": "user:2026-photos",
    "match": "tomaszin",
-   "full": "assets/media/players/full/tomaszin.webp"
+   "full": "assets/media/players/full/tomaszin.webp?v=130"
   },
   "MaSvAl": {
-   "file": "assets/media/players/masval.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/masval.webp?v=130",
+   "src": "user:2026-photos",
    "match": "MaSvAl",
-   "full": "assets/media/players/full/masval.webp"
+   "full": "assets/media/players/full/masval.webp?v=130"
   },
   "AW": {
-   "file": "assets/media/players/aw.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/aw.webp?v=130",
+   "src": "user:2026-photos",
    "match": "AW",
-   "full": "assets/media/players/full/aw.webp"
+   "full": "assets/media/players/full/aw.webp?v=130"
   },
   "tenzy": {
-   "file": "assets/media/players/tenzy.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/tenzy.webp?v=130",
+   "src": "user:2026-photos",
    "match": "tENZY",
-   "full": "assets/media/players/full/tenzy.webp"
+   "full": "assets/media/players/full/tenzy.webp?v=130"
   },
   "JamYoung": {
-   "file": "assets/media/players/jamyoung.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/jamyoung.webp?v=130",
+   "src": "user:2026-photos",
    "match": "JamYoung",
-   "full": "assets/media/players/full/jamyoung.webp"
+   "full": "assets/media/players/full/jamyoung.webp?v=130"
   },
   "Jee": {
-   "file": "assets/media/players/jee.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/jee.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Jee",
-   "full": "assets/media/players/full/jee.webp"
+   "full": "assets/media/players/full/jee.webp?v=130"
   },
   "Mercury": {
-   "file": "assets/media/players/mercury.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/mercury.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Mercury",
-   "full": "assets/media/players/full/mercury.webp"
+   "full": "assets/media/players/full/mercury.webp?v=130"
   },
   "Moseyuh": {
-   "file": "assets/media/players/moseyuh.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/moseyuh.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Moseyuh",
-   "full": "assets/media/players/full/moseyuh.webp"
+   "full": "assets/media/players/full/moseyuh.webp?v=130"
   },
   "cptkurtka023": {
-   "file": "assets/media/players/cptkurtka023.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/cptkurtka023.webp?v=130",
+   "src": "user:2026-photos",
    "match": "cptkurtka023",
-   "full": "assets/media/players/full/cptkurtka023.webp"
+   "full": "assets/media/players/full/cptkurtka023.webp?v=130"
   },
   "headtr1ck": {
-   "file": "assets/media/players/headtr1ck.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/headtr1ck.webp?v=130",
+   "src": "user:2026-photos",
    "match": "headtr1ck",
-   "full": "assets/media/players/full/headtr1ck.webp"
+   "full": "assets/media/players/full/headtr1ck.webp?v=130"
   },
   "zeRRoFIX": {
-   "file": "assets/media/players/zerrofix.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/zerrofix.webp?v=130",
+   "src": "user:2026-photos",
    "match": "zeRRoFIX",
-   "full": "assets/media/players/full/zerrofix.webp"
+   "full": "assets/media/players/full/zerrofix.webp?v=130"
   },
   "onic": {
-   "file": "assets/media/players/onic.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/onic.webp?v=130",
+   "src": "user:2026-photos",
    "match": "onic",
-   "full": "assets/media/players/full/onic.webp"
+   "full": "assets/media/players/full/onic.webp?v=130"
   },
   "slaxz-": {
-   "file": "assets/media/players/slaxz.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/slaxz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "slaxz-",
-   "full": "assets/media/players/full/slaxz.webp"
+   "full": "assets/media/players/full/slaxz.webp?v=130"
   },
   "Swisher": {
-   "file": "assets/media/players/swisher.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/swisher.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Swisher",
-   "full": "assets/media/players/full/swisher.webp"
+   "full": "assets/media/players/full/swisher.webp?v=130"
   },
   "s1n": {
-   "file": "assets/media/players/s1n.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/s1n.webp?v=130",
+   "src": "user:2026-photos",
    "match": "s1n",
-   "full": "assets/media/players/full/s1n.webp"
+   "full": "assets/media/players/full/s1n.webp?v=130"
   },
   "JBa": {
-   "file": "assets/media/players/jba.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/jba.webp?v=130",
+   "src": "user:2026-photos",
    "match": "JBa",
-   "full": "assets/media/players/full/jba.webp"
+   "full": "assets/media/players/full/jba.webp?v=130"
   },
   "Lake": {
-   "file": "assets/media/players/lake.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/lake.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Lake",
-   "full": "assets/media/players/full/lake.webp"
+   "full": "assets/media/players/full/lake.webp?v=130"
   },
   "z4KR": {
-   "file": "assets/media/players/z4kr.webp",
-   "src": "liga:Pro-Journey-Teams",
-   "match": "z4kr",
-   "full": "assets/media/players/full/z4kr.webp"
+   "file": "assets/media/players/z4kr.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "z4KR",
+   "full": "assets/media/players/full/z4kr.webp?v=130"
   },
   "EmiliaQAQ": {
-   "file": "assets/media/players/emiliaqaq.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/emiliaqaq.webp?v=130",
+   "src": "user:2026-photos",
    "match": "EmiliaQAQ",
-   "full": "assets/media/players/full/emiliaqaq.webp"
+   "full": "assets/media/players/full/emiliaqaq.webp?v=130"
   },
   "Starry": {
-   "file": "assets/media/players/starry.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/starry.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Starry",
-   "full": "assets/media/players/full/starry.webp"
+   "full": "assets/media/players/full/starry.webp?v=130"
   },
   "C4LLM3SU3": {
-   "file": "assets/media/players/c4llm3su3.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/c4llm3su3.webp?v=130",
+   "src": "user:2026-photos",
    "match": "C4LLM3SU3",
-   "full": "assets/media/players/full/c4llm3su3.webp"
+   "full": "assets/media/players/full/c4llm3su3.webp?v=130"
   },
   "device": {
-   "file": "assets/media/players/device.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/device.webp?v=130",
+   "src": "user:2026-photos",
    "match": "device",
-   "full": "assets/media/players/full/device.webp"
+   "full": "assets/media/players/full/device.webp?v=130"
   },
   "rain": {
-   "file": "assets/media/players/rain.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/rain.webp?v=130",
+   "src": "user:2026-photos",
    "match": "rain",
-   "full": "assets/media/players/full/rain.webp"
+   "full": "assets/media/players/full/rain.webp?v=130"
   },
   "cadiaN": {
    "file": "assets/media/players/cadian.webp",
@@ -1611,10 +1611,10 @@
    "full": "assets/media/players/full/bodyy.webp"
   },
   "adamb": {
-   "file": "assets/media/players/adamb.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/adamb.webp?v=130",
+   "src": "user:2026-photos",
    "match": "adamb",
-   "full": "assets/media/players/full/adamb.webp"
+   "full": "assets/media/players/full/adamb.webp?v=130"
   },
   "degster": {
    "file": "assets/media/players/degster.webp",
@@ -1623,34 +1623,34 @@
    "full": "assets/media/players/full/degster.webp"
   },
   "X5G7V": {
-   "file": "assets/media/players/x5g7v.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/x5g7v.webp?v=130",
+   "src": "user:2026-photos",
    "match": "X5G7V",
-   "full": "assets/media/players/full/x5g7v.webp"
+   "full": "assets/media/players/full/x5g7v.webp?v=130"
   },
   "nafany": {
-   "file": "assets/media/players/nafany.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/nafany.webp?v=130",
+   "src": "user:2026-photos",
    "match": "nafany",
-   "full": "assets/media/players/full/nafany.webp"
+   "full": "assets/media/players/full/nafany.webp?v=130"
   },
   "BELCHONOKK": {
-   "file": "assets/media/players/belchonokk.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/belchonokk.webp?v=130",
+   "src": "user:2026-photos",
    "match": "BELCHONOKK",
-   "full": "assets/media/players/full/belchonokk.webp"
+   "full": "assets/media/players/full/belchonokk.webp?v=130"
   },
   "fame": {
-   "file": "assets/media/players/fame.webp",
-   "src": "liga:Real_CS_2026",
-   "match": "FAME",
-   "full": "assets/media/players/full/fame.webp"
+   "file": "assets/media/players/fame.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "fame",
+   "full": "assets/media/players/full/fame.webp?v=130"
   },
   "ArtFr0st": {
-   "file": "assets/media/players/artfr0st.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/artfr0st.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ArtFr0st",
-   "full": "assets/media/players/full/artfr0st.webp"
+   "full": "assets/media/players/full/artfr0st.webp?v=130"
   },
   "acoR": {
    "file": "assets/media/players/acor.webp",
@@ -1665,16 +1665,16 @@
    "full": "assets/media/players/full/cabbi.webp"
   },
   "MistR": {
-   "file": "assets/media/players/mistr.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/mistr.webp?v=130",
+   "src": "user:2026-photos",
    "match": "MistR",
-   "full": "assets/media/players/full/mistr.webp"
+   "full": "assets/media/players/full/mistr.webp?v=130"
   },
   "s1mple": {
-   "file": "assets/media/players/s1mple.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/s1mple.webp?v=130",
+   "src": "user:2026-photos",
    "match": "s1mple",
-   "full": "assets/media/players/full/s1mple.webp"
+   "full": "assets/media/players/full/s1mple.webp?v=130"
   },
   "electroNic": {
    "file": "assets/media/players/electronic.webp",
@@ -1683,22 +1683,22 @@
    "full": "assets/media/players/full/electronic.webp"
   },
   "Magisk": {
-   "file": "assets/media/players/magisk.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/magisk.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Magisk",
-   "full": "assets/media/players/full/magisk.webp"
+   "full": "assets/media/players/full/magisk.webp?v=130"
   },
   "Senzu": {
-   "file": "assets/media/players/senzu.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/senzu.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Senzu",
-   "full": "assets/media/players/full/senzu.webp"
+   "full": "assets/media/players/full/senzu.webp?v=130"
   },
   "mzinho": {
-   "file": "assets/media/players/mzinho.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/mzinho.webp?v=130",
+   "src": "user:2026-photos",
    "match": "mzinho",
-   "full": "assets/media/players/full/mzinho.webp"
+   "full": "assets/media/players/full/mzinho.webp?v=130"
   },
   "MAJ3R": {
    "file": "assets/media/players/maj3r.webp",
@@ -1707,220 +1707,220 @@
    "full": "assets/media/players/full/maj3r.webp"
   },
   "regali": {
-   "file": "assets/media/players/regali.webp",
-   "src": "liga:Real_CS_2026",
-   "match": "regali",
-   "full": "assets/media/players/full/regali.webp"
+   "file": "assets/media/players/regali.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Regali",
+   "full": "assets/media/players/full/regali.webp?v=130"
   },
   "Kvem": {
-   "file": "assets/media/players/kvem.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/kvem.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Kvem",
-   "full": "assets/media/players/full/kvem.webp"
+   "full": "assets/media/players/full/kvem.webp?v=130"
   },
   "jottAAA": {
-   "file": "assets/media/players/jottaaa.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/jottaaa.webp?v=130",
+   "src": "user:2026-photos",
    "match": "jottAAA",
-   "full": "assets/media/players/full/jottaaa.webp"
+   "full": "assets/media/players/full/jottaaa.webp?v=130"
   },
   "nitr0": {
-   "file": "assets/media/players/nitr0.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/nitr0.webp?v=130",
+   "src": "user:2026-photos",
    "match": "nitr0",
-   "full": "assets/media/players/full/nitr0.webp"
+   "full": "assets/media/players/full/nitr0.webp?v=130"
   },
   "Sonic": {
-   "file": "assets/media/players/sonic.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/sonic.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Sonic",
-   "full": "assets/media/players/full/sonic.webp"
+   "full": "assets/media/players/full/sonic.webp?v=130"
   },
   "hallzerk": {
-   "file": "assets/media/players/hallzerk.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/hallzerk.webp?v=130",
+   "src": "user:2026-photos",
    "match": "hallzerk",
-   "full": "assets/media/players/full/hallzerk.webp"
+   "full": "assets/media/players/full/hallzerk.webp?v=130"
   },
   "Grim": {
-   "file": "assets/media/players/grim.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/grim.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Grim",
-   "full": "assets/media/players/full/grim.webp"
+   "full": "assets/media/players/full/grim.webp?v=130"
   },
   "Jeorge": {
-   "file": "assets/media/players/jeorge.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/jeorge.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Jeorge",
-   "full": "assets/media/players/full/jeorge.webp"
+   "full": "assets/media/players/full/jeorge.webp?v=130"
   },
   "KaiR0N-": {
-   "file": "assets/media/players/kair0n.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/kair0n.webp?v=130",
+   "src": "user:2026-photos",
    "match": "KaiR0N-",
-   "full": "assets/media/players/full/kair0n.webp"
+   "full": "assets/media/players/full/kair0n.webp?v=130"
   },
   "Xant3r": {
-   "file": "assets/media/players/xant3r.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/xant3r.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Xant3r",
-   "full": "assets/media/players/full/xant3r.webp"
+   "full": "assets/media/players/full/xant3r.webp?v=130"
   },
   "robo": {
-   "file": "assets/media/players/robo.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/robo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "robo",
-   "full": "assets/media/players/full/robo.webp"
+   "full": "assets/media/players/full/robo.webp?v=130"
   },
   "chelo": {
-   "file": "assets/media/players/chelo.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/chelo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "chelo",
-   "full": "assets/media/players/full/chelo.webp"
+   "full": "assets/media/players/full/chelo.webp?v=130"
   },
   "decenty": {
-   "file": "assets/media/players/decenty.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/decenty.webp?v=130",
+   "src": "user:2026-photos",
    "match": "decenty",
-   "full": "assets/media/players/full/decenty.webp"
+   "full": "assets/media/players/full/decenty.webp?v=130"
   },
   "noway": {
-   "file": "assets/media/players/noway.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/noway.webp?v=130",
+   "src": "user:2026-photos",
    "match": "noway",
-   "full": "assets/media/players/full/noway.webp"
+   "full": "assets/media/players/full/noway.webp?v=130"
   },
   "saadzin": {
-   "file": "assets/media/players/saadzin.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/saadzin.webp?v=130",
+   "src": "user:2026-photos",
    "match": "saadzin",
-   "full": "assets/media/players/full/saadzin.webp"
+   "full": "assets/media/players/full/saadzin.webp?v=130"
   },
   "exit": {
-   "file": "assets/media/players/exit.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/exit.webp?v=130",
+   "src": "user:2026-photos",
    "match": "exit",
-   "full": "assets/media/players/full/exit.webp"
+   "full": "assets/media/players/full/exit.webp?v=130"
   },
   "zevy": {
-   "file": "assets/media/players/zevy.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/zevy.webp?v=130",
+   "src": "user:2026-photos",
    "match": "zevy",
-   "full": "assets/media/players/full/zevy.webp"
+   "full": "assets/media/players/full/zevy.webp?v=130"
   },
   "kye": {
-   "file": "assets/media/players/kye.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/kye.webp?v=130",
+   "src": "user:2026-photos",
    "match": "kye",
-   "full": "assets/media/players/full/kye.webp"
+   "full": "assets/media/players/full/kye.webp?v=130"
   },
   "JW": {
-   "file": "assets/media/players/jw.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/jw.webp?v=130",
+   "src": "user:2026-photos",
    "match": "JW",
-   "full": "assets/media/players/full/jw.webp"
+   "full": "assets/media/players/full/jw.webp?v=130"
   },
   "KRIMZ": {
-   "file": "assets/media/players/krimz.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/krimz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "KRIMZ",
-   "full": "assets/media/players/full/krimz.webp"
+   "full": "assets/media/players/full/krimz.webp?v=130"
   },
   "maxster": {
-   "file": "assets/media/players/maxster.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/maxster.webp?v=130",
+   "src": "user:2026-photos",
    "match": "maxster",
-   "full": "assets/media/players/full/maxster.webp"
+   "full": "assets/media/players/full/maxster.webp?v=130"
   },
   "dex": {
-   "file": "assets/media/players/dex.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/dex.webp?v=130",
+   "src": "user:2026-photos",
    "match": "dex",
-   "full": "assets/media/players/full/dex.webp"
+   "full": "assets/media/players/full/dex.webp?v=130"
   },
   "twist": {
-   "file": "assets/media/players/twist.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/twist.webp?v=130",
+   "src": "user:2026-photos",
    "match": "twist",
-   "full": "assets/media/players/full/twist.webp"
+   "full": "assets/media/players/full/twist.webp?v=130"
   },
   "bobeksde": {
-   "file": "assets/media/players/bobeksde.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/bobeksde.webp?v=130",
+   "src": "user:2026-photos",
    "match": "bobeksde",
-   "full": "assets/media/players/full/bobeksde.webp"
+   "full": "assets/media/players/full/bobeksde.webp?v=130"
   },
   "fear": {
-   "file": "assets/media/players/fear.webp",
-   "src": "liga:Pro-Journey-Teams",
-   "match": "fEAR",
-   "full": "assets/media/players/full/fear.webp"
+   "file": "assets/media/players/fear.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "fear",
+   "full": "assets/media/players/full/fear.webp?v=130"
   },
   "jambo": {
-   "file": "assets/media/players/jambo.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/jambo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "jambo",
-   "full": "assets/media/players/full/jambo.webp"
+   "full": "assets/media/players/full/jambo.webp?v=130"
   },
   "jackasmo": {
-   "file": "assets/media/players/jackasmo.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/jackasmo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "jackasmo",
-   "full": "assets/media/players/full/jackasmo.webp"
+   "full": "assets/media/players/full/jackasmo.webp?v=130"
   },
   "Rainwaker": {
-   "file": "assets/media/players/rainwaker.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/rainwaker.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Rainwaker",
-   "full": "assets/media/players/full/rainwaker.webp"
+   "full": "assets/media/players/full/rainwaker.webp?v=130"
   },
   "afro": {
-   "file": "assets/media/players/afro.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/afro.webp?v=130",
+   "src": "user:2026-photos",
    "match": "afro",
-   "full": "assets/media/players/full/afro.webp"
+   "full": "assets/media/players/full/afro.webp?v=130"
   },
   "lux": {
-   "file": "assets/media/players/lux.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/lux.webp?v=130",
+   "src": "user:2026-photos",
    "match": "lux",
-   "full": "assets/media/players/full/lux.webp"
+   "full": "assets/media/players/full/lux.webp?v=130"
   },
   "yxngstxr": {
-   "file": "assets/media/players/yxngstxr.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/yxngstxr.webp?v=130",
+   "src": "user:2026-photos",
    "match": "yxngstxr",
-   "full": "assets/media/players/full/yxngstxr.webp"
+   "full": "assets/media/players/full/yxngstxr.webp?v=130"
   },
   "AZUWU": {
-   "file": "assets/media/players/azuwu.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/azuwu.webp?v=130",
+   "src": "user:2026-photos",
    "match": "AZUWU",
-   "full": "assets/media/players/full/azuwu.webp"
+   "full": "assets/media/players/full/azuwu.webp?v=130"
   },
   "alex": {
-   "file": "assets/media/players/alex.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/alex.webp?v=130",
+   "src": "user:2026-photos",
    "match": "alex",
-   "full": "assets/media/players/full/alex.webp"
+   "full": "assets/media/players/full/alex.webp?v=130"
   },
   "mopoz": {
-   "file": "assets/media/players/mopoz.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/mopoz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "mopoz",
-   "full": "assets/media/players/full/mopoz.webp"
+   "full": "assets/media/players/full/mopoz.webp?v=130"
   },
   "sausol": {
-   "file": "assets/media/players/sausol.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/sausol.webp?v=130",
+   "src": "user:2026-photos",
    "match": "sausol",
-   "full": "assets/media/players/full/sausol.webp"
+   "full": "assets/media/players/full/sausol.webp?v=130"
   },
   "dav1g": {
-   "file": "assets/media/players/dav1g.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/dav1g.webp?v=130",
+   "src": "user:2026-photos",
    "match": "dav1g",
-   "full": "assets/media/players/full/dav1g.webp"
+   "full": "assets/media/players/full/dav1g.webp?v=130"
   },
   "chopper": {
    "file": "assets/media/players/chopper.webp",
@@ -1953,88 +1953,88 @@
    "full": "assets/media/players/full/b1elany.webp"
   },
   "nEMANHA": {
-   "file": "assets/media/players/nemanha.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/nemanha.webp?v=130",
+   "src": "user:2026-photos",
    "match": "nEMANHA",
-   "full": "assets/media/players/full/nemanha.webp"
+   "full": "assets/media/players/full/nemanha.webp?v=130"
   },
   "m1N1": {
-   "file": "assets/media/players/m1n1.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/m1n1.webp?v=130",
+   "src": "user:2026-photos",
    "match": "m1N1",
-   "full": "assets/media/players/full/m1n1.webp"
+   "full": "assets/media/players/full/m1n1.webp?v=130"
   },
   "sinnopsyy": {
-   "file": "assets/media/players/sinnopsyy.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/sinnopsyy.webp?v=130",
+   "src": "user:2026-photos",
    "match": "sinnopsyy",
-   "full": "assets/media/players/full/sinnopsyy.webp"
+   "full": "assets/media/players/full/sinnopsyy.webp?v=130"
   },
   "Bibu": {
-   "file": "assets/media/players/bibu.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/bibu.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Bibu",
-   "full": "assets/media/players/full/bibu.webp"
+   "full": "assets/media/players/full/bibu.webp?v=130"
   },
   "salazar": {
-   "file": "assets/media/players/salazar.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/salazar.webp?v=130",
+   "src": "user:2026-photos",
    "match": "salazar",
-   "full": "assets/media/players/full/salazar.webp"
+   "full": "assets/media/players/full/salazar.webp?v=130"
   },
   "NickyB": {
-   "file": "assets/media/players/nickyb.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/nickyb.webp?v=130",
+   "src": "user:2026-photos",
    "match": "NickyB",
-   "full": "assets/media/players/full/nickyb.webp"
+   "full": "assets/media/players/full/nickyb.webp?v=130"
   },
   "ztr": {
-   "file": "assets/media/players/ztr.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/ztr.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ztr",
-   "full": "assets/media/players/full/ztr.webp"
+   "full": "assets/media/players/full/ztr.webp?v=130"
   },
   "podi": {
-   "file": "assets/media/players/podi.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/podi.webp?v=130",
+   "src": "user:2026-photos",
    "match": "podi",
-   "full": "assets/media/players/full/podi.webp"
+   "full": "assets/media/players/full/podi.webp?v=130"
   },
   "jocab": {
-   "file": "assets/media/players/jocab.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/jocab.webp?v=130",
+   "src": "user:2026-photos",
    "match": "jocab",
-   "full": "assets/media/players/full/jocab.webp"
+   "full": "assets/media/players/full/jocab.webp?v=130"
   },
   "Demho": {
-   "file": "assets/media/players/demho.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/demho.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Demho",
-   "full": "assets/media/players/full/demho.webp"
+   "full": "assets/media/players/full/demho.webp?v=130"
   },
   "Prism": {
-   "file": "assets/media/players/prism.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/prism.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Prism",
-   "full": "assets/media/players/full/prism.webp"
+   "full": "assets/media/players/full/prism.webp?v=130"
   },
   "ultimate": {
-   "file": "assets/media/players/ultimate.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/ultimate.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ultimate",
-   "full": "assets/media/players/full/ultimate.webp"
+   "full": "assets/media/players/full/ultimate.webp?v=130"
   },
   "Qlocuu": {
-   "file": "assets/media/players/qlocuu.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/qlocuu.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Qlocuu",
-   "full": "assets/media/players/full/qlocuu.webp"
+   "full": "assets/media/players/full/qlocuu.webp?v=130"
   },
   "Stewie2k": {
-   "file": "assets/media/players/stewie2k.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/stewie2k.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Stewie2K",
-   "full": "assets/media/players/full/stewie2k.webp"
+   "full": "assets/media/players/full/stewie2k.webp?v=130"
   },
   "shox": {
    "file": "assets/media/players/shox.webp",
@@ -2055,10 +2055,10 @@
    "full": "assets/media/players/full/maden.webp"
   },
   "siuhy": {
-   "file": "assets/media/players/siuhy.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/siuhy.webp?v=130",
+   "src": "user:2026-photos",
    "match": "siuhy",
-   "full": "assets/media/players/full/siuhy.webp"
+   "full": "assets/media/players/full/siuhy.webp?v=130"
   },
   "sdy": {
    "file": "assets/media/players/sdy.webp",
@@ -2073,10 +2073,10 @@
    "full": "assets/media/players/full/perfecto.webp"
   },
   "HObbit": {
-   "file": "assets/media/players/hobbit.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/hobbit.webp?v=130",
+   "src": "user:2026-photos",
    "match": "HObbit",
-   "full": "assets/media/players/full/hobbit.webp"
+   "full": "assets/media/players/full/hobbit.webp?v=130"
   },
   "Techno4k": {
    "file": "assets/media/players/techno4k.webp",
@@ -2085,10 +2085,10 @@
    "full": "assets/media/players/full/techno4k.webp"
   },
   "1eeR": {
-   "file": "assets/media/players/1eer.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/1eer.webp?v=130",
+   "src": "user:2026-photos",
    "match": "1eeR",
-   "full": "assets/media/players/full/1eer.webp"
+   "full": "assets/media/players/full/1eer.webp?v=130"
   },
   "kmrn": {
    "file": "assets/media/players/kmrn.webp",
@@ -2097,34 +2097,34 @@
    "full": "assets/media/players/full/kmrn.webp"
   },
   "zweih": {
-   "file": "assets/media/players/zweih.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/zweih.webp?v=130",
+   "src": "user:2026-photos",
    "match": "zweih",
-   "full": "assets/media/players/full/zweih.webp"
+   "full": "assets/media/players/full/zweih.webp?v=130"
   },
   "nicoodoz": {
-   "file": "assets/media/players/nicoodoz.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/nicoodoz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "nicoodoz",
-   "full": "assets/media/players/full/nicoodoz.webp"
+   "full": "assets/media/players/full/nicoodoz.webp?v=130"
   },
   "INS": {
-   "file": "assets/media/players/ins.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/ins.webp?v=130",
+   "src": "user:2026-photos",
    "match": "INS",
-   "full": "assets/media/players/full/ins.webp"
+   "full": "assets/media/players/full/ins.webp?v=130"
   },
   "SunPayus": {
-   "file": "assets/media/players/sunpayus.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/sunpayus.webp?v=130",
+   "src": "user:2026-photos",
    "match": "SunPayus",
-   "full": "assets/media/players/full/sunpayus.webp"
+   "full": "assets/media/players/full/sunpayus.webp?v=130"
   },
   "cass1n": {
-   "file": "assets/media/players/cass1n.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/cass1n.webp?v=130",
+   "src": "user:2026-photos",
    "match": "cass1n",
-   "full": "assets/media/players/full/cass1n.webp"
+   "full": "assets/media/players/full/cass1n.webp?v=130"
   },
   "Attacker": {
    "file": "assets/media/players/attacker.webp",
@@ -2139,16 +2139,16 @@
    "full": "assets/media/players/full/austin.webp"
   },
   "TO0RO": {
-   "file": "assets/media/players/to0ro.webp",
-   "src": "liga:Real_CS_2026",
-   "match": "TO0RO",
-   "full": "assets/media/players/full/to0ro.webp"
+   "file": "assets/media/players/to0ro.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "tO0RO",
+   "full": "assets/media/players/full/to0ro.webp?v=130"
   },
   "nettik": {
-   "file": "assets/media/players/nettik.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/nettik.webp?v=130",
+   "src": "user:2026-photos",
    "match": "nettik",
-   "full": "assets/media/players/full/nettik.webp"
+   "full": "assets/media/players/full/nettik.webp?v=130"
   },
   "Alkaren": {
    "file": "assets/media/players/alkaren.webp",
@@ -2157,10 +2157,10 @@
    "full": "assets/media/players/full/alkaren.webp"
   },
   "Vexite": {
-   "file": "assets/media/players/vexite.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/vexite.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Vexite",
-   "full": "assets/media/players/full/vexite.webp"
+   "full": "assets/media/players/full/vexite.webp?v=130"
   },
   "MisterLoAF": {
    "file": "assets/media/players/misterloaf.webp",
@@ -2193,22 +2193,22 @@
    "full": "assets/media/players/full/texta.webp"
   },
   "story": {
-   "file": "assets/media/players/story.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/story.webp?v=130",
+   "src": "user:2026-photos",
    "match": "story",
-   "full": "assets/media/players/full/story.webp"
+   "full": "assets/media/players/full/story.webp?v=130"
   },
   "MaiL09": {
-   "file": "assets/media/players/mail09.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/mail09.webp?v=130",
+   "src": "user:2026-photos",
    "match": "MaiL09",
-   "full": "assets/media/players/full/mail09.webp"
+   "full": "assets/media/players/full/mail09.webp?v=130"
   },
   "aliStair": {
-   "file": "assets/media/players/alistair.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/alistair.webp?v=130",
+   "src": "user:2026-photos",
    "match": "aliStair",
-   "full": "assets/media/players/full/alistair.webp"
+   "full": "assets/media/players/full/alistair.webp?v=130"
   },
   "history": {
    "file": "assets/media/players/history.webp",
@@ -2229,10 +2229,10 @@
    "full": "assets/media/players/full/brace.webp"
   },
   "asap": {
-   "file": "assets/media/players/asap.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/asap.webp?v=130",
+   "src": "user:2026-photos",
    "match": "asap",
-   "full": "assets/media/players/full/asap.webp"
+   "full": "assets/media/players/full/asap.webp?v=130"
   },
   "Bymas": {
    "file": "assets/media/players/bymas.webp",
@@ -2241,10 +2241,10 @@
    "full": "assets/media/players/full/bymas.webp"
   },
   "kashl1d": {
-   "file": "assets/media/players/kashl1d.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/kashl1d.webp?v=130",
+   "src": "user:2026-photos",
    "match": "kashl1d",
-   "full": "assets/media/players/full/kashl1d.webp"
+   "full": "assets/media/players/full/kashl1d.webp?v=130"
   },
   "L1haNg": {
    "file": "assets/media/players/l1hang.webp",
@@ -2253,22 +2253,22 @@
    "full": "assets/media/players/full/l1hang.webp"
   },
   "cobrazera": {
-   "file": "assets/media/players/cobrazera.webp",
-   "src": "liga:Pro-Journey-Teams",
-   "match": "cobrazera",
-   "full": "assets/media/players/full/cobrazera.webp"
+   "file": "assets/media/players/cobrazera.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Cobrazera",
+   "full": "assets/media/players/full/cobrazera.webp?v=130"
   },
   "sjuush": {
-   "file": "assets/media/players/sjuush.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/sjuush.webp?v=130",
+   "src": "user:2026-photos",
    "match": "sjuush",
-   "full": "assets/media/players/full/sjuush.webp"
+   "full": "assets/media/players/full/sjuush.webp?v=130"
   },
   "junior": {
-   "file": "assets/media/players/junior.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/junior.webp?v=130",
+   "src": "user:2026-photos",
    "match": "junior",
-   "full": "assets/media/players/full/junior.webp"
+   "full": "assets/media/players/full/junior.webp?v=130"
   },
   "vision": {
    "file": "assets/media/players/vision.webp",
@@ -2277,10 +2277,10 @@
    "full": "assets/media/players/full/vision.webp"
   },
   "Zesta": {
-   "file": "assets/media/players/zesta.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/zesta.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Zesta",
-   "full": "assets/media/players/full/zesta.webp"
+   "full": "assets/media/players/full/zesta.webp?v=130"
   },
   "suki": {
    "file": "assets/media/players/suki.webp",
@@ -2295,10 +2295,10 @@
    "full": "assets/media/players/full/br0.webp"
   },
   "krazy": {
-   "file": "assets/media/players/krazy.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/krazy.webp?v=130",
+   "src": "user:2026-photos",
    "match": "krazy",
-   "full": "assets/media/players/full/krazy.webp"
+   "full": "assets/media/players/full/krazy.webp?v=130"
   },
   "BOROS": {
    "file": "assets/media/players/boros.webp",
@@ -2319,16 +2319,16 @@
    "full": "assets/media/players/full/osee.webp"
   },
   "cool4st": {
-   "file": "assets/media/players/cool4st.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/cool4st.webp?v=130",
+   "src": "user:2026-photos",
    "match": "cool4st",
-   "full": "assets/media/players/full/cool4st.webp"
+   "full": "assets/media/players/full/cool4st.webp?v=130"
   },
   "z1k4": {
-   "file": "assets/media/players/z1k4.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/z1k4.webp?v=130",
+   "src": "user:2026-photos",
    "match": "z1k4",
-   "full": "assets/media/players/full/z1k4.webp"
+   "full": "assets/media/players/full/z1k4.webp?v=130"
   },
   "ChildKing": {
    "file": "assets/media/players/childking.webp",
@@ -2337,10 +2337,10 @@
    "full": "assets/media/players/full/childking.webp"
   },
   "AccuracyTG": {
-   "file": "assets/media/players/accuracytg.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/accuracytg.webp?v=130",
+   "src": "user:2026-photos",
    "match": "AccuracyTG",
-   "full": "assets/media/players/full/accuracytg.webp"
+   "full": "assets/media/players/full/accuracytg.webp?v=130"
   },
   "mantuu": {
    "file": "assets/media/players/mantuu.webp",
@@ -2373,16 +2373,16 @@
    "full": "assets/media/players/full/kaide.webp"
   },
   "synyx": {
-   "file": "assets/media/players/synyx.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/synyx.webp?v=130",
+   "src": "user:2026-photos",
    "match": "synyx",
-   "full": "assets/media/players/full/synyx.webp"
+   "full": "assets/media/players/full/synyx.webp?v=130"
   },
   "shield": {
-   "file": "assets/media/players/shield.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/shield.webp?v=130",
+   "src": "user:2026-photos",
    "match": "shield",
-   "full": "assets/media/players/full/shield.webp"
+   "full": "assets/media/players/full/shield.webp?v=130"
   },
   "lauNX": {
    "file": "assets/media/players/launx.webp",
@@ -2391,10 +2391,10 @@
    "full": "assets/media/players/full/launx.webp"
   },
   "eraa": {
-   "file": "assets/media/players/eraa.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/eraa.webp?v=130",
+   "src": "user:2026-photos",
    "match": "eraa",
-   "full": "assets/media/players/full/eraa.webp"
+   "full": "assets/media/players/full/eraa.webp?v=130"
   },
   "dycha": {
    "file": "assets/media/players/dycha.webp",
@@ -2427,16 +2427,16 @@
    "full": "assets/media/players/full/dexter.webp"
   },
   "ewjerkz": {
-   "file": "assets/media/players/ewjerkz.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/ewjerkz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ewjerkz",
-   "full": "assets/media/players/full/ewjerkz.webp"
+   "full": "assets/media/players/full/ewjerkz.webp?v=130"
   },
   "kauez": {
-   "file": "assets/media/players/kauez.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/kauez.webp?v=130",
+   "src": "user:2026-photos",
    "match": "kauez",
-   "full": "assets/media/players/full/kauez.webp"
+   "full": "assets/media/players/full/kauez.webp?v=130"
   },
   "ksloks": {
    "file": "assets/media/players/ksloks.webp",
@@ -2445,28 +2445,28 @@
    "full": "assets/media/players/full/ksloks.webp"
   },
   "z1Nny": {
-   "file": "assets/media/players/z1nny.webp",
-   "src": "liga:Pro-Journey-Teams",
-   "match": "z1Nny",
-   "full": "assets/media/players/full/z1nny.webp"
+   "file": "assets/media/players/z1nny.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Z1Nny",
+   "full": "assets/media/players/full/z1nny.webp?v=130"
   },
   "aNdu": {
-   "file": "assets/media/players/andu.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/andu.webp?v=130",
+   "src": "user:2026-photos",
    "match": "aNdu",
-   "full": "assets/media/players/full/andu.webp"
+   "full": "assets/media/players/full/andu.webp?v=130"
   },
   "kAlash": {
-   "file": "assets/media/players/kalash.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/kalash.webp?v=130",
+   "src": "user:2026-photos",
    "match": "kAlash",
-   "full": "assets/media/players/full/kalash.webp"
+   "full": "assets/media/players/full/kalash.webp?v=130"
   },
   "bnox": {
-   "file": "assets/media/players/bnox.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/bnox.webp?v=130",
+   "src": "user:2026-photos",
    "match": "bnox",
-   "full": "assets/media/players/full/bnox.webp"
+   "full": "assets/media/players/full/bnox.webp?v=130"
   },
   "chengking": {
    "file": "assets/media/players/chengking.webp",
@@ -2475,10 +2475,10 @@
    "full": "assets/media/players/full/chengking.webp"
   },
   "nin9": {
-   "file": "assets/media/players/nin9.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/nin9.webp?v=130",
+   "src": "user:2026-photos",
    "match": "nin9",
-   "full": "assets/media/players/full/nin9.webp"
+   "full": "assets/media/players/full/nin9.webp?v=130"
   },
   "yAmi": {
    "file": "assets/media/players/yami.webp",
@@ -2499,10 +2499,10 @@
    "full": "assets/media/players/full/lan.webp"
   },
   "sk0R": {
-   "file": "assets/media/players/sk0r.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/sk0r.webp?v=130",
+   "src": "user:2026-photos",
    "match": "sk0R",
-   "full": "assets/media/players/full/sk0r.webp"
+   "full": "assets/media/players/full/sk0r.webp?v=130"
   },
   "KENSI": {
    "file": "assets/media/players/kensi.webp",
@@ -2517,10 +2517,10 @@
    "full": "assets/media/players/full/bsd.webp"
   },
   "snav": {
-   "file": "assets/media/players/snav.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/snav.webp?v=130",
+   "src": "user:2026-photos",
    "match": "snav",
-   "full": "assets/media/players/full/snav.webp"
+   "full": "assets/media/players/full/snav.webp?v=130"
   },
   "hardzao": {
    "file": "assets/media/players/hardzao.webp",
@@ -2577,10 +2577,10 @@
    "full": "assets/media/players/full/abr.webp"
   },
   "nicx": {
-   "file": "assets/media/players/nicx.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/nicx.webp?v=130",
+   "src": "user:2026-photos",
    "match": "nicx",
-   "full": "assets/media/players/full/nicx.webp"
+   "full": "assets/media/players/full/nicx.webp?v=130"
   },
   "nacho": {
    "file": "assets/media/players/nacho.webp",
@@ -2589,10 +2589,10 @@
    "full": "assets/media/players/full/nacho.webp"
   },
   "buda": {
-   "file": "assets/media/players/buda.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/buda.webp?v=130",
+   "src": "user:2026-photos",
    "match": "buda",
-   "full": "assets/media/players/full/buda.webp"
+   "full": "assets/media/players/full/buda.webp?v=130"
   },
   "levi": {
    "file": "assets/media/players/levi.webp",
@@ -2631,10 +2631,10 @@
    "full": "assets/media/players/full/4ever.webp"
   },
   "Ro1f": {
-   "file": "assets/media/players/ro1f.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/ro1f.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Ro1f",
-   "full": "assets/media/players/full/ro1f.webp"
+   "full": "assets/media/players/full/ro1f.webp?v=130"
   },
   "nifee": {
    "file": "assets/media/players/nifee.webp",
@@ -2655,10 +2655,10 @@
    "full": "assets/media/players/full/michu.webp"
   },
   "zmb": {
-   "file": "assets/media/players/zmb.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/zmb.webp?v=130",
+   "src": "user:2026-photos",
    "match": "zmb",
-   "full": "assets/media/players/full/zmb.webp"
+   "full": "assets/media/players/full/zmb.webp?v=130"
   },
   "ckzao": {
    "file": "assets/media/players/ckzao.webp",
@@ -2679,16 +2679,16 @@
    "full": "assets/media/players/full/felps.webp"
   },
   "ivz": {
-   "file": "assets/media/players/ivz.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/ivz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ivz",
-   "full": "assets/media/players/full/ivz.webp"
+   "full": "assets/media/players/full/ivz.webp?v=130"
   },
   "pesadelo": {
-   "file": "assets/media/players/pesadelo.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/pesadelo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "pesadelo",
-   "full": "assets/media/players/full/pesadelo.webp"
+   "full": "assets/media/players/full/pesadelo.webp?v=130"
   },
   "bl1x1": {
    "file": "assets/media/players/bl1x1.webp",
@@ -2703,10 +2703,10 @@
    "full": "assets/media/players/full/frontsiderr.webp"
   },
   "Raijin": {
-   "file": "assets/media/players/raijin.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/raijin.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Raijin",
-   "full": "assets/media/players/full/raijin.webp"
+   "full": "assets/media/players/full/raijin.webp?v=130"
   },
   "SaVage": {
    "file": "assets/media/players/savage.webp",
@@ -2715,10 +2715,10 @@
    "full": "assets/media/players/full/savage.webp"
   },
   "Flierax": {
-   "file": "assets/media/players/flierax.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/flierax.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Flierax",
-   "full": "assets/media/players/full/flierax.webp"
+   "full": "assets/media/players/full/flierax.webp?v=130"
   },
   "controlez": {
    "file": "assets/media/players/controlez.webp",
@@ -2727,16 +2727,16 @@
    "full": "assets/media/players/full/controlez.webp"
   },
   "ROUX": {
-   "file": "assets/media/players/roux.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/roux.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ROUX",
-   "full": "assets/media/players/full/roux.webp"
+   "full": "assets/media/players/full/roux.webp?v=130"
   },
   "erkaSt": {
-   "file": "assets/media/players/erkast.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/erkast.webp?v=130",
+   "src": "user:2026-photos",
    "match": "erkaSt",
-   "full": "assets/media/players/full/erkast.webp"
+   "full": "assets/media/players/full/erkast.webp?v=130"
   },
   "rage": {
    "file": "assets/media/players/rage.webp",
@@ -2757,16 +2757,16 @@
    "full": "assets/media/players/full/goofy.webp"
   },
   "CeRq": {
-   "file": "assets/media/players/cerq.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/cerq.webp?v=130",
+   "src": "user:2026-photos",
    "match": "CeRq",
-   "full": "assets/media/players/full/cerq.webp"
+   "full": "assets/media/players/full/cerq.webp?v=130"
   },
   "urban0": {
-   "file": "assets/media/players/urban0.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/urban0.webp?v=130",
+   "src": "user:2026-photos",
    "match": "urban0",
-   "full": "assets/media/players/full/urban0.webp"
+   "full": "assets/media/players/full/urban0.webp?v=130"
   },
   "tomiko": {
    "file": "assets/media/players/tomiko.webp",
@@ -2775,10 +2775,10 @@
    "full": "assets/media/players/full/tomiko.webp"
   },
   "H4SAN4TOR": {
-   "file": "assets/media/players/h4san4tor.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/h4san4tor.webp?v=130",
+   "src": "user:2026-photos",
    "match": "H4SAN4TOR",
-   "full": "assets/media/players/full/h4san4tor.webp"
+   "full": "assets/media/players/full/h4san4tor.webp?v=130"
   },
   "shg": {
    "file": "assets/media/players/shg.webp",
@@ -2853,16 +2853,16 @@
    "full": "assets/media/players/full/reiko.webp"
   },
   "avid": {
-   "file": "assets/media/players/avid.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/avid.webp?v=130",
+   "src": "user:2026-photos",
    "match": "avid",
-   "full": "assets/media/players/full/avid.webp"
+   "full": "assets/media/players/full/avid.webp?v=130"
   },
   "Joey": {
-   "file": "assets/media/players/joey.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/joey.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Joey",
-   "full": "assets/media/players/full/joey.webp"
+   "full": "assets/media/players/full/joey.webp?v=130"
   },
   "notineki": {
    "file": "assets/media/players/notineki.webp",
@@ -2871,22 +2871,22 @@
    "full": "assets/media/players/full/notineki.webp"
   },
   "executor": {
-   "file": "assets/media/players/executor.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/executor.webp?v=130",
+   "src": "user:2026-photos",
    "match": "executor",
-   "full": "assets/media/players/full/executor.webp"
+   "full": "assets/media/players/full/executor.webp?v=130"
   },
   "aragornN": {
-   "file": "assets/media/players/aragornn.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/aragornn.webp?v=130",
+   "src": "user:2026-photos",
    "match": "aragornN",
-   "full": "assets/media/players/full/aragornn.webp"
+   "full": "assets/media/players/full/aragornn.webp?v=130"
   },
   "xerolte": {
-   "file": "assets/media/players/xerolte.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/xerolte.webp?v=130",
+   "src": "user:2026-photos",
    "match": "xerolte",
-   "full": "assets/media/players/full/xerolte.webp"
+   "full": "assets/media/players/full/xerolte.webp?v=130"
   },
   "SADDYX": {
    "file": "assets/media/players/saddyx.webp",
@@ -2895,10 +2895,10 @@
    "full": "assets/media/players/full/saddyx.webp"
   },
   "Nexius": {
-   "file": "assets/media/players/nexius.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/nexius.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Nexius",
-   "full": "assets/media/players/full/nexius.webp"
+   "full": "assets/media/players/full/nexius.webp?v=130"
   },
   "dan1": {
    "file": "assets/media/players/dan1.webp",
@@ -2931,10 +2931,10 @@
    "full": "assets/media/players/full/bnc.webp"
   },
   "divine": {
-   "file": "assets/media/players/divine.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/divine.webp?v=130",
+   "src": "user:2026-photos",
    "match": "divine",
-   "full": "assets/media/players/full/divine.webp"
+   "full": "assets/media/players/full/divine.webp?v=130"
   },
   "revoltz": {
    "file": "assets/media/players/revoltz.webp",
@@ -2943,22 +2943,22 @@
    "full": "assets/media/players/full/revoltz.webp"
   },
   "naitte": {
-   "file": "assets/media/players/naitte.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/naitte.webp?v=130",
+   "src": "user:2026-photos",
    "match": "naitte",
-   "full": "assets/media/players/full/naitte.webp"
+   "full": "assets/media/players/full/naitte.webp?v=130"
   },
   "tom1jed": {
-   "file": "assets/media/players/tom1jed.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/tom1jed.webp?v=130",
+   "src": "user:2026-photos",
    "match": "tom1jed",
-   "full": "assets/media/players/full/tom1jed.webp"
+   "full": "assets/media/players/full/tom1jed.webp?v=130"
   },
   "abizz": {
-   "file": "assets/media/players/abizz.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/abizz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "abizz",
-   "full": "assets/media/players/full/abizz.webp"
+   "full": "assets/media/players/full/abizz.webp?v=130"
   },
   "BnTeT": {
    "file": "assets/media/players/bntet.webp",
@@ -3027,10 +3027,10 @@
    "full": "assets/media/players/full/relaxxie.webp"
   },
   "aidKiT": {
-   "file": "assets/media/players/aidkit.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/aidkit.webp?v=130",
+   "src": "user:2026-photos",
    "match": "aidKiT",
-   "full": "assets/media/players/full/aidkit.webp"
+   "full": "assets/media/players/full/aidkit.webp?v=130"
   },
   "poizon": {
    "file": "assets/media/players/poizon.webp",
@@ -3069,16 +3069,16 @@
    "full": "assets/media/players/full/aerial.webp"
   },
   "Tuurtle": {
-   "file": "assets/media/players/tuurtle.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/tuurtle.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Tuurtle",
-   "full": "assets/media/players/full/tuurtle.webp"
+   "full": "assets/media/players/full/tuurtle.webp?v=130"
   },
   "ZEDKO": {
-   "file": "assets/media/players/zedko.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/zedko.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ZEDKO",
-   "full": "assets/media/players/full/zedko.webp"
+   "full": "assets/media/players/full/zedko.webp?v=130"
   },
   "Farlig": {
    "file": "assets/media/players/farlig.webp",
@@ -3129,16 +3129,16 @@
    "full": "assets/media/players/full/rickeh.webp"
   },
   "ogwizard": {
-   "file": "assets/media/players/ogwizard.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/ogwizard.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ogwizard",
-   "full": "assets/media/players/full/ogwizard.webp"
+   "full": "assets/media/players/full/ogwizard.webp?v=130"
   },
   "freshie": {
-   "file": "assets/media/players/freshie.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/freshie.webp?v=130",
+   "src": "user:2026-photos",
    "match": "freshie",
-   "full": "assets/media/players/full/freshie.webp"
+   "full": "assets/media/players/full/freshie.webp?v=130"
   },
   "brett": {
    "file": "assets/media/players/brett.webp",
@@ -3171,16 +3171,16 @@
    "full": "assets/media/players/full/motm.webp"
   },
   "fr3nd": {
-   "file": "assets/media/players/fr3nd.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/fr3nd.webp?v=130",
+   "src": "user:2026-photos",
    "match": "fr3nd",
-   "full": "assets/media/players/full/fr3nd.webp"
+   "full": "assets/media/players/full/fr3nd.webp?v=130"
   },
   "naz": {
-   "file": "assets/media/players/naz.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/naz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "naz",
-   "full": "assets/media/players/full/naz.webp"
+   "full": "assets/media/players/full/naz.webp?v=130"
   },
   "SaMey": {
    "file": "assets/media/players/samey.webp",
@@ -3207,10 +3207,10 @@
    "full": "assets/media/players/full/suonko.webp"
   },
   "sh1nejezzz": {
-   "file": "assets/media/players/sh1nejezzz.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/sh1nejezzz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "sh1nejezzz",
-   "full": "assets/media/players/full/sh1nejezzz.webp"
+   "full": "assets/media/players/full/sh1nejezzz.webp?v=130"
   },
   "xenization": {
    "file": "assets/media/players/xenization.webp",
@@ -3231,10 +3231,10 @@
    "full": "assets/media/players/full/xanzu.webp"
   },
   "MUTiRiS": {
-   "file": "assets/media/players/mutiris.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/mutiris.webp?v=130",
+   "src": "user:2026-photos",
    "match": "MUTiRiS",
-   "full": "assets/media/players/full/mutiris.webp"
+   "full": "assets/media/players/full/mutiris.webp?v=130"
   },
   "dukefissura": {
    "file": "assets/media/players/dukefissura.webp",
@@ -3255,10 +3255,10 @@
    "full": "assets/media/players/full/chill.webp"
   },
   "VLDN": {
-   "file": "assets/media/players/vldn.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/vldn.webp?v=130",
+   "src": "user:2026-photos",
    "match": "VLDN",
-   "full": "assets/media/players/full/vldn.webp"
+   "full": "assets/media/players/full/vldn.webp?v=130"
   },
   "SENSEi": {
    "file": "assets/media/players/sensei.webp",
@@ -3297,10 +3297,10 @@
    "full": "assets/media/players/full/yungher.webp"
   },
   "happ": {
-   "file": "assets/media/players/happ.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/happ.webp?v=130",
+   "src": "user:2026-photos",
    "match": "happ",
-   "full": "assets/media/players/full/happ.webp"
+   "full": "assets/media/players/full/happ.webp?v=130"
   },
   "n1cks": {
    "file": "assets/media/players/n1cks.webp",
@@ -3321,10 +3321,10 @@
    "full": "assets/media/players/full/chop.webp"
   },
   "kisserek": {
-   "file": "assets/media/players/kisserek.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/kisserek.webp?v=130",
+   "src": "user:2026-photos",
    "match": "kisserek",
-   "full": "assets/media/players/full/kisserek.webp"
+   "full": "assets/media/players/full/kisserek.webp?v=130"
   },
   "icyvl0ne": {
    "file": "assets/media/players/icyvl0ne.webp",
@@ -3369,10 +3369,10 @@
    "full": "assets/media/players/full/expsasiki.webp"
   },
   "gxx-": {
-   "file": "assets/media/players/gxx.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/gxx.webp?v=130",
+   "src": "user:2026-photos",
    "match": "gxx-",
-   "full": "assets/media/players/full/gxx.webp"
+   "full": "assets/media/players/full/gxx.webp?v=130"
   },
   "DEPRESHN": {
    "file": "assets/media/players/depreshn.webp",
@@ -3453,10 +3453,10 @@
    "full": "assets/media/players/full/xaler.webp"
   },
   "pancc": {
-   "file": "assets/media/players/pancc.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/pancc.webp?v=130",
+   "src": "user:2026-photos",
    "match": "pancc",
-   "full": "assets/media/players/full/pancc.webp"
+   "full": "assets/media/players/full/pancc.webp?v=130"
   },
   "tatazin": {
    "file": "assets/media/players/tatazin.webp",
@@ -3489,10 +3489,10 @@
    "full": "assets/media/players/full/yiksrezo.webp"
   },
   "keen": {
-   "file": "assets/media/players/keen.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/keen.webp?v=130",
+   "src": "user:2026-photos",
    "match": "keen",
-   "full": "assets/media/players/full/keen.webp"
+   "full": "assets/media/players/full/keen.webp?v=130"
   },
   "w1sely": {
    "file": "assets/media/players/w1sely.webp",
@@ -3513,10 +3513,10 @@
    "full": "assets/media/players/full/jkaem.webp"
   },
   "Porya": {
-   "file": "assets/media/players/porya.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/porya.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Porya",
-   "full": "assets/media/players/full/porya.webp"
+   "full": "assets/media/players/full/porya.webp?v=130"
   },
   "sterling": {
    "file": "assets/media/players/sterling.webp",
@@ -3549,10 +3549,10 @@
    "full": "assets/media/players/full/kristou.webp"
   },
   "CacaNito": {
-   "file": "assets/media/players/cacanito.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/cacanito.webp?v=130",
+   "src": "user:2026-photos",
    "match": "CacaNito",
-   "full": "assets/media/players/full/cacanito.webp"
+   "full": "assets/media/players/full/cacanito.webp?v=130"
   },
   "ANa": {
    "file": "assets/media/players/ana.webp",
@@ -3603,10 +3603,10 @@
    "full": "assets/media/players/full/febreeze.webp"
   },
   "ponter": {
-   "file": "assets/media/players/ponter.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/ponter.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ponter",
-   "full": "assets/media/players/full/ponter.webp"
+   "full": "assets/media/players/full/ponter.webp?v=130"
   },
   "atarax1a": {
    "file": "assets/media/players/atarax1a.webp",
@@ -3621,10 +3621,10 @@
    "full": "assets/media/players/full/heap.webp"
   },
   "bluewh1te": {
-   "file": "assets/media/players/bluewh1te.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/bluewh1te.webp?v=130",
+   "src": "user:2026-photos",
    "match": "bluewh1te",
-   "full": "assets/media/players/full/bluewh1te.webp"
+   "full": "assets/media/players/full/bluewh1te.webp?v=130"
   },
   "hazr": {
    "file": "assets/media/players/hazr.webp",
@@ -3723,16 +3723,16 @@
    "full": "assets/media/players/full/rainny.webp"
   },
   "stanislaw": {
-   "file": "assets/media/players/stanislaw.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/stanislaw.webp?v=130",
+   "src": "user:2026-photos",
    "match": "stanislaw",
-   "full": "assets/media/players/full/stanislaw.webp"
+   "full": "assets/media/players/full/stanislaw.webp?v=130"
   },
   "zock": {
-   "file": "assets/media/players/zock.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/zock.webp?v=130",
+   "src": "user:2026-photos",
    "match": "zock",
-   "full": "assets/media/players/full/zock.webp"
+   "full": "assets/media/players/full/zock.webp?v=130"
   },
   "grape": {
    "file": "assets/media/players/grape.webp",
@@ -3843,10 +3843,10 @@
    "full": "assets/media/players/full/sobol.webp"
   },
   "YumsaN": {
-   "file": "assets/media/players/yumsan.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/yumsan.webp?v=130",
+   "src": "user:2026-photos",
    "match": "YumsaN",
-   "full": "assets/media/players/full/yumsan.webp"
+   "full": "assets/media/players/full/yumsan.webp?v=130"
   },
   "gLong": {
    "file": "assets/media/players/glong.webp",
@@ -3945,10 +3945,10 @@
    "full": "assets/media/players/full/mari.webp"
   },
   "Drop": {
-   "file": "assets/media/players/drop.webp",
-   "src": "liga:Pro-Journey-Teams",
-   "match": "Drop",
-   "full": "assets/media/players/full/drop.webp"
+   "file": "assets/media/players/drop.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "drop",
+   "full": "assets/media/players/full/drop.webp?v=130"
   },
   "trindade": {
    "file": "assets/media/players/trindade.webp",
@@ -3969,28 +3969,28 @@
    "full": "assets/media/players/full/mello.webp"
   },
   "timo": {
-   "file": "assets/media/players/timo.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/timo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "timo",
-   "full": "assets/media/players/full/timo.webp"
+   "full": "assets/media/players/full/timo.webp?v=130"
   },
   "gbb": {
-   "file": "assets/media/players/gbb.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/gbb.webp?v=130",
+   "src": "user:2026-photos",
    "match": "gbb",
-   "full": "assets/media/players/full/gbb.webp"
+   "full": "assets/media/players/full/gbb.webp?v=130"
   },
   "tomate": {
-   "file": "assets/media/players/tomate.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/tomate.webp?v=130",
+   "src": "user:2026-photos",
    "match": "tomate",
-   "full": "assets/media/players/full/tomate.webp"
+   "full": "assets/media/players/full/tomate.webp?v=130"
   },
   "tex1y": {
-   "file": "assets/media/players/tex1y.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/tex1y.webp?v=130",
+   "src": "user:2026-photos",
    "match": "tex1y",
-   "full": "assets/media/players/full/tex1y.webp"
+   "full": "assets/media/players/full/tex1y.webp?v=130"
   },
   "riskyb0b": {
    "file": "assets/media/players/riskyb0b.webp",
@@ -3999,10 +3999,10 @@
    "full": "assets/media/players/full/riskyb0b.webp"
   },
   "fury5k": {
-   "file": "assets/media/players/fury5k.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/fury5k.webp?v=130",
+   "src": "user:2026-photos",
    "match": "fury5k",
-   "full": "assets/media/players/full/fury5k.webp"
+   "full": "assets/media/players/full/fury5k.webp?v=130"
   },
   "cheeseball": {
    "file": "assets/media/players/cheeseball.webp",
@@ -4083,10 +4083,10 @@
    "full": "assets/media/players/full/dott1.webp"
   },
   "pepe": {
-   "file": "assets/media/players/pepe.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/pepe.webp?v=130",
+   "src": "user:2026-photos",
    "match": "pepe",
-   "full": "assets/media/players/full/pepe.webp"
+   "full": "assets/media/players/full/pepe.webp?v=130"
   },
   "bacc": {
    "file": "assets/media/players/bacc.webp",
@@ -4257,10 +4257,10 @@
    "full": "assets/media/players/full/nbl.webp"
   },
   "destiny": {
-   "file": "assets/media/players/destiny.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/destiny.webp?v=130",
+   "src": "user:2026-photos",
    "match": "destiny",
-   "full": "assets/media/players/full/destiny.webp"
+   "full": "assets/media/players/full/destiny.webp?v=130"
   },
   "swayu": {
    "file": "assets/media/players/swayu.webp",
@@ -4269,10 +4269,10 @@
    "full": "assets/media/players/full/swayu.webp"
   },
   "F1KU": {
-   "file": "assets/media/players/f1ku.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/f1ku.webp?v=130",
+   "src": "user:2026-photos",
    "match": "F1KU",
-   "full": "assets/media/players/full/f1ku.webp"
+   "full": "assets/media/players/full/f1ku.webp?v=130"
   },
   "Boye": {
    "file": "assets/media/players/boye.webp",
@@ -4293,10 +4293,10 @@
    "full": "assets/media/players/full/youka.webp"
   },
   "mag1k3Y": {
-   "file": "assets/media/players/mag1k3y.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/mag1k3y.webp?v=130",
+   "src": "user:2026-photos",
    "match": "mag1k3Y",
-   "full": "assets/media/players/full/mag1k3y.webp"
+   "full": "assets/media/players/full/mag1k3y.webp?v=130"
   },
   "sideffect": {
    "file": "assets/media/players/sideffect.webp",
@@ -4443,10 +4443,10 @@
    "full": "assets/media/players/full/prosus.webp"
   },
   "Lack1": {
-   "file": "assets/media/players/lack1.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/lack1.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Lack1",
-   "full": "assets/media/players/full/lack1.webp"
+   "full": "assets/media/players/full/lack1.webp?v=130"
   },
   "TRAVIS": {
    "file": "assets/media/players/travis.webp",
@@ -4479,16 +4479,16 @@
    "full": "assets/media/players/full/sugar.webp"
   },
   "4X1s": {
-   "file": "assets/media/players/4x1s.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/4x1s.webp?v=130",
+   "src": "user:2026-photos",
    "match": "4X1s",
-   "full": "assets/media/players/full/4x1s.webp"
+   "full": "assets/media/players/full/4x1s.webp?v=130"
   },
   "KusMe": {
-   "file": "assets/media/players/kusme.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/kusme.webp?v=130",
+   "src": "user:2026-photos",
    "match": "KusMe",
-   "full": "assets/media/players/full/kusme.webp"
+   "full": "assets/media/players/full/kusme.webp?v=130"
   },
   "hasteka": {
    "file": "assets/media/players/hasteka.webp",
@@ -4509,10 +4509,10 @@
    "full": "assets/media/players/full/kraxyt.webp"
   },
   "sowalio": {
-   "file": "assets/media/players/sowalio.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/sowalio.webp?v=130",
+   "src": "user:2026-photos",
    "match": "sowalio",
-   "full": "assets/media/players/full/sowalio.webp"
+   "full": "assets/media/players/full/sowalio.webp?v=130"
   },
   "Wonderzce": {
    "file": "assets/media/players/wonderzce.webp",
@@ -4755,10 +4755,10 @@
    "full": "assets/media/players/full/bones.webp"
   },
   "upE": {
-   "file": "assets/media/players/upe.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/upe.webp?v=130",
+   "src": "user:2026-photos",
    "match": "upE",
-   "full": "assets/media/players/full/upe.webp"
+   "full": "assets/media/players/full/upe.webp?v=130"
   },
   "maaryy": {
    "file": "assets/media/players/maaryy.webp",
@@ -4821,10 +4821,10 @@
    "full": "assets/media/players/full/spamzzy.webp"
   },
   "tripex17": {
-   "file": "assets/media/players/doni.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/doni.webp?v=130",
+   "src": "user:2026-photos",
    "match": "tripex17",
-   "full": "assets/media/players/full/doni.webp"
+   "full": "assets/media/players/full/doni.webp?v=130"
   },
   "Beccie": {
    "file": "assets/media/players/beccie.webp",
@@ -4971,10 +4971,10 @@
    "full": "assets/media/players/full/anttzz.webp"
   },
   "HOLY": {
-   "file": "assets/media/players/holy.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/holy.webp?v=130",
+   "src": "user:2026-photos",
    "match": "HOLY",
-   "full": "assets/media/players/full/holy.webp"
+   "full": "assets/media/players/full/holy.webp?v=130"
   },
   "Dr3nquu": {
    "file": "assets/media/players/dr3nquu.webp",
@@ -4995,10 +4995,10 @@
    "full": "assets/media/players/full/izr.webp"
   },
   "arrozdoce": {
-   "file": "assets/media/players/arrozdoce.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/arrozdoce.webp?v=130",
+   "src": "user:2026-photos",
    "match": "arrozdoce",
-   "full": "assets/media/players/full/arrozdoce.webp"
+   "full": "assets/media/players/full/arrozdoce.webp?v=130"
   },
   "fr0k": {
    "file": "assets/media/players/fr0k.webp",
@@ -5037,10 +5037,10 @@
    "full": "assets/media/players/full/shady.webp"
   },
   "TMB": {
-   "file": "assets/media/players/tmb.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/tmb.webp?v=130",
+   "src": "user:2026-photos",
    "match": "TMB",
-   "full": "assets/media/players/full/tmb.webp"
+   "full": "assets/media/players/full/tmb.webp?v=130"
   },
   "w1dow": {
    "file": "assets/media/players/w1dow.webp",
@@ -5133,172 +5133,172 @@
    "full": "assets/media/players/full/lkz.webp"
   },
   "kyxsan": {
-   "file": "assets/media/players/kyxsan.webp",
-   "src": "liga:Real_CS_2026",
+   "file": "assets/media/players/kyxsan.webp?v=130",
+   "src": "user:2026-photos",
    "match": "kyxsan",
-   "full": "assets/media/players/full/kyxsan.webp"
+   "full": "assets/media/players/full/kyxsan.webp?v=130"
   },
   "JBOEN": {
-   "file": "assets/media/players/jboen.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/jboen.webp?v=130",
+   "src": "user:2026-photos",
    "match": "JBOEN",
-   "full": "assets/media/players/full/jboen.webp"
+   "full": "assets/media/players/full/jboen.webp?v=130"
   },
   "sFade8": {
-   "file": "assets/media/players/sfade8.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/sfade8.webp?v=130",
+   "src": "user:2026-photos",
    "match": "sFade8",
-   "full": "assets/media/players/full/sfade8.webp"
+   "full": "assets/media/players/full/sfade8.webp?v=130"
   },
   "Lucky": {
-   "file": "assets/media/players/lucky.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/lucky.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Lucky",
-   "full": "assets/media/players/full/lucky.webp"
+   "full": "assets/media/players/full/lucky.webp?v=130"
   },
   "gr1ks": {
-   "file": "assets/media/players/gr1ks.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/gr1ks.webp?v=130",
+   "src": "user:2026-photos",
    "match": "gr1ks",
-   "full": "assets/media/players/full/gr1ks.webp"
+   "full": "assets/media/players/full/gr1ks.webp?v=130"
   },
   "rate": {
-   "file": "assets/media/players/rate.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/rate.webp?v=130",
+   "src": "user:2026-photos",
    "match": "rate",
-   "full": "assets/media/players/full/rate.webp"
+   "full": "assets/media/players/full/rate.webp?v=130"
   },
   "clouden": {
-   "file": "assets/media/players/clouden.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/clouden.webp?v=130",
+   "src": "user:2026-photos",
    "match": "clouden",
-   "full": "assets/media/players/full/clouden.webp"
+   "full": "assets/media/players/full/clouden.webp?v=130"
   },
   "gafolo": {
-   "file": "assets/media/players/gafolo.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/gafolo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "gafolo",
-   "full": "assets/media/players/full/gafolo.webp"
+   "full": "assets/media/players/full/gafolo.webp?v=130"
   },
   "koala": {
-   "file": "assets/media/players/koala.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/koala.webp?v=130",
+   "src": "user:2026-photos",
    "match": "koala",
-   "full": "assets/media/players/full/koala.webp"
+   "full": "assets/media/players/full/koala.webp?v=130"
   },
   "maxxkor": {
-   "file": "assets/media/players/maxxkor.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/maxxkor.webp?v=130",
+   "src": "user:2026-photos",
    "match": "maxxkor",
-   "full": "assets/media/players/full/maxxkor.webp"
+   "full": "assets/media/players/full/maxxkor.webp?v=130"
   },
   "rdnzao": {
-   "file": "assets/media/players/rdnzao.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/rdnzao.webp?v=130",
+   "src": "user:2026-photos",
    "match": "rdnzao",
-   "full": "assets/media/players/full/rdnzao.webp"
+   "full": "assets/media/players/full/rdnzao.webp?v=130"
   },
   "doc": {
-   "file": "assets/media/players/doc.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/doc.webp?v=130",
+   "src": "user:2026-photos",
    "match": "doc",
-   "full": "assets/media/players/full/doc.webp"
+   "full": "assets/media/players/full/doc.webp?v=130"
   },
   "Ax1Le": {
-   "file": "assets/media/players/ax1le.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/ax1le.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Ax1Le",
-   "full": "assets/media/players/full/ax1le.webp"
+   "full": "assets/media/players/full/ax1le.webp?v=130"
   },
   "reck": {
-   "file": "assets/media/players/reck.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/reck.webp?v=130",
+   "src": "user:2026-photos",
    "match": "reck",
-   "full": "assets/media/players/full/reck.webp"
+   "full": "assets/media/players/full/reck.webp?v=130"
   },
   "xeedo": {
-   "file": "assets/media/players/xeedo.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/xeedo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "xeedo",
-   "full": "assets/media/players/full/xeedo.webp"
+   "full": "assets/media/players/full/xeedo.webp?v=130"
   },
   "qw1nk1": {
-   "file": "assets/media/players/qw1nk1.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/qw1nk1.webp?v=130",
+   "src": "user:2026-photos",
    "match": "qw1nk1",
-   "full": "assets/media/players/full/qw1nk1.webp"
+   "full": "assets/media/players/full/qw1nk1.webp?v=130"
   },
   "cairne": {
-   "file": "assets/media/players/cairne.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/cairne.webp?v=130",
+   "src": "user:2026-photos",
    "match": "cairne",
-   "full": "assets/media/players/full/cairne.webp"
+   "full": "assets/media/players/full/cairne.webp?v=130"
   },
   "Sdaim": {
-   "file": "assets/media/players/sdaim.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/sdaim.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Sdaim",
-   "full": "assets/media/players/full/sdaim.webp"
+   "full": "assets/media/players/full/sdaim.webp?v=130"
   },
   "beastik": {
-   "file": "assets/media/players/beastik.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/beastik.webp?v=130",
+   "src": "user:2026-photos",
    "match": "beastik",
-   "full": "assets/media/players/full/beastik.webp"
+   "full": "assets/media/players/full/beastik.webp?v=130"
   },
   "SHOCK": {
-   "file": "assets/media/players/shock.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/shock.webp?v=130",
+   "src": "user:2026-photos",
    "match": "SHOCK",
-   "full": "assets/media/players/full/shock.webp"
+   "full": "assets/media/players/full/shock.webp?v=130"
   },
   "MoDo": {
-   "file": "assets/media/players/modo.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/modo.webp?v=130",
+   "src": "user:2026-photos",
    "match": "MoDo",
-   "full": "assets/media/players/full/modo.webp"
+   "full": "assets/media/players/full/modo.webp?v=130"
   },
   "stressarN": {
-   "file": "assets/media/players/stressarn.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/stressarn.webp?v=130",
+   "src": "user:2026-photos",
    "match": "stressarN",
-   "full": "assets/media/players/full/stressarn.webp"
+   "full": "assets/media/players/full/stressarn.webp?v=130"
   },
   "flouzer": {
-   "file": "assets/media/players/flouzer.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/flouzer.webp?v=130",
+   "src": "user:2026-photos",
    "match": "flouzer",
-   "full": "assets/media/players/full/flouzer.webp"
+   "full": "assets/media/players/full/flouzer.webp?v=130"
   },
   "senka": {
-   "file": "assets/media/players/senka.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/senka.webp?v=130",
+   "src": "user:2026-photos",
    "match": "senka",
-   "full": "assets/media/players/full/senka.webp"
+   "full": "assets/media/players/full/senka.webp?v=130"
   },
   "ayuki": {
-   "file": "assets/media/players/ayuki.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/ayuki.webp?v=130",
+   "src": "user:2026-photos",
    "match": "ayuki",
-   "full": "assets/media/players/full/ayuki.webp"
+   "full": "assets/media/players/full/ayuki.webp?v=130"
   },
   "soulfly": {
-   "file": "assets/media/players/soulfly.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/soulfly.webp?v=130",
+   "src": "user:2026-photos",
    "match": "soulfly",
-   "full": "assets/media/players/full/soulfly.webp"
+   "full": "assets/media/players/full/soulfly.webp?v=130"
   },
   "IceBerg": {
-   "file": "assets/media/players/iceberg.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/iceberg.webp?v=130",
+   "src": "user:2026-photos",
    "match": "IceBerg",
-   "full": "assets/media/players/full/iceberg.webp"
+   "full": "assets/media/players/full/iceberg.webp?v=130"
   },
   "leakz": {
-   "file": "assets/media/players/leakz.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/leakz.webp?v=130",
+   "src": "user:2026-photos",
    "match": "leakz",
-   "full": "assets/media/players/full/leakz.webp"
+   "full": "assets/media/players/full/leakz.webp?v=130"
   },
   "Djoko": {
    "file": "assets/media/players/djoko.webp",
@@ -5325,10 +5325,10 @@
    "full": "assets/media/players/full/qikert.webp"
   },
   "lattykk": {
-   "file": "assets/media/players/lattykk.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/lattykk.webp?v=130",
+   "src": "user:2026-photos",
    "match": "lattykk",
-   "full": "assets/media/players/full/lattykk.webp"
+   "full": "assets/media/players/full/lattykk.webp?v=130"
   },
   "reyoz": {
    "file": "assets/media/players/reyoz.webp",
@@ -5367,28 +5367,28 @@
    "full": "assets/media/players/full/fenomen.webp"
   },
   "draken": {
-   "file": "assets/media/players/draken.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/draken.webp?v=130",
+   "src": "user:2026-photos",
    "match": "draken",
-   "full": "assets/media/players/full/draken.webp"
+   "full": "assets/media/players/full/draken.webp?v=130"
   },
   "hampus": {
-   "file": "assets/media/players/hampus.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/hampus.webp?v=130",
+   "src": "user:2026-photos",
    "match": "hampus",
-   "full": "assets/media/players/full/hampus.webp"
+   "full": "assets/media/players/full/hampus.webp?v=130"
   },
   "Svedjehed": {
-   "file": "assets/media/players/svedjehed.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/svedjehed.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Svedjehed",
-   "full": "assets/media/players/full/svedjehed.webp"
+   "full": "assets/media/players/full/svedjehed.webp?v=130"
   },
   "Dytor": {
-   "file": "assets/media/players/dytor.webp",
-   "src": "liga:Pro-Journey-Teams",
+   "file": "assets/media/players/dytor.webp?v=130",
+   "src": "user:2026-photos",
    "match": "Dytor",
-   "full": "assets/media/players/full/dytor.webp"
+   "full": "assets/media/players/full/dytor.webp?v=130"
   },
   "kl1m": {
    "file": "assets/media/players/kl1m.webp",
@@ -5413,6 +5413,942 @@
    "src": "liga:Pro-Journey-Teams",
    "match": "Nikodeon",
    "full": "assets/media/players/full/nikodeon.webp"
+  },
+  "0SAMAS": {
+   "file": "assets/media/players/0samas.webp?v=130",
+   "full": "assets/media/players/full/0samas.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "0SAMAS"
+  },
+  "2high": {
+   "file": "assets/media/players/2high.webp?v=130",
+   "full": "assets/media/players/full/2high.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "2high"
+  },
+  "3ippoch": {
+   "file": "assets/media/players/3ippoch.webp?v=130",
+   "full": "assets/media/players/full/3ippoch.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "3ippoch"
+  },
+  "adamS": {
+   "file": "assets/media/players/adams.webp?v=130",
+   "full": "assets/media/players/full/adams.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "adamS"
+  },
+  "Alisson": {
+   "file": "assets/media/players/alisson.webp?v=130",
+   "full": "assets/media/players/full/alisson.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Alisson"
+  },
+  "amster": {
+   "file": "assets/media/players/amster.webp?v=130",
+   "full": "assets/media/players/full/amster.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "amster"
+  },
+  "AquaRS": {
+   "file": "assets/media/players/aquars.webp?v=130",
+   "full": "assets/media/players/full/aquars.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "AquaRS"
+  },
+  "ariucle": {
+   "file": "assets/media/players/ariucle.webp?v=130",
+   "full": "assets/media/players/full/ariucle.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "ariucle"
+  },
+  "arT": {
+   "file": "assets/media/players/art.webp?v=130",
+   "full": "assets/media/players/full/art.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "arT"
+  },
+  "autimatic": {
+   "file": "assets/media/players/autimatic.webp?v=130",
+   "full": "assets/media/players/full/autimatic.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "autimatic"
+  },
+  "b1st": {
+   "file": "assets/media/players/b1st.webp?v=130",
+   "full": "assets/media/players/full/b1st.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "b1st"
+  },
+  "Banjo": {
+   "file": "assets/media/players/banjo.webp?v=130",
+   "full": "assets/media/players/full/banjo.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Banjo"
+  },
+  "Blytz": {
+   "file": "assets/media/players/blytz.webp?v=130",
+   "full": "assets/media/players/full/blytz.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Blytz"
+  },
+  "Brehze": {
+   "file": "assets/media/players/brehze.webp?v=130",
+   "full": "assets/media/players/full/brehze.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Brehze"
+  },
+  "Brillo": {
+   "file": "assets/media/players/brillo.webp?v=130",
+   "full": "assets/media/players/full/brillo.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Brillo"
+  },
+  "brutmonster": {
+   "file": "assets/media/players/brutmonster.webp?v=130",
+   "full": "assets/media/players/full/brutmonster.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "brutmonster"
+  },
+  "bsover": {
+   "file": "assets/media/players/bsover.webp?v=130",
+   "full": "assets/media/players/full/bsover.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "bsover"
+  },
+  "Cizzx": {
+   "file": "assets/media/players/cizzx.webp?v=130",
+   "full": "assets/media/players/full/cizzx.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Cizzx"
+  },
+  "Cjoffo": {
+   "file": "assets/media/players/cjoffo.webp?v=130",
+   "full": "assets/media/players/full/cjoffo.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Cjoffo"
+  },
+  "clax": {
+   "file": "assets/media/players/clax.webp?v=130",
+   "full": "assets/media/players/full/clax.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "clax"
+  },
+  "Cxzi": {
+   "file": "assets/media/players/cxzi.webp?v=130",
+   "full": "assets/media/players/full/cxzi.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Cxzi"
+  },
+  "DAN9ARMATURA": {
+   "file": "assets/media/players/dan9armatura.webp?v=130",
+   "full": "assets/media/players/full/dan9armatura.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "DAN9ARMATURA"
+  },
+  "dare": {
+   "file": "assets/media/players/dare.webp?v=130",
+   "full": "assets/media/players/full/dare.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "dare"
+  },
+  "dav1deuS": {
+   "file": "assets/media/players/dav1deus.webp?v=130",
+   "full": "assets/media/players/full/dav1deus.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "dav1deuS"
+  },
+  "Dawy": {
+   "file": "assets/media/players/dawy.webp?v=130",
+   "full": "assets/media/players/full/dawy.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Dawy"
+  },
+  "DemQQ": {
+   "file": "assets/media/players/demqq.webp?v=130",
+   "full": "assets/media/players/full/demqq.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "DemQQ"
+  },
+  "detr0ittJ": {
+   "file": "assets/media/players/detr0ittj.webp?v=130",
+   "full": "assets/media/players/full/detr0ittj.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "detr0ittJ"
+  },
+  "dgt": {
+   "file": "assets/media/players/dgt.webp?v=130",
+   "full": "assets/media/players/full/dgt.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "dgt"
+  },
+  "Djon8": {
+   "file": "assets/media/players/djon8.webp?v=130",
+   "full": "assets/media/players/full/djon8.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Djon8"
+  },
+  "drac": {
+   "file": "assets/media/players/drac.webp?v=130",
+   "full": "assets/media/players/full/drac.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "drac"
+  },
+  "Dragon": {
+   "file": "assets/media/players/dragon.webp?v=130",
+   "full": "assets/media/players/full/dragon.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Dragon"
+  },
+  "dwushka": {
+   "file": "assets/media/players/dwushka.webp?v=130",
+   "full": "assets/media/players/full/dwushka.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "dwushka"
+  },
+  "ex1st": {
+   "file": "assets/media/players/ex1st.webp?v=130",
+   "full": "assets/media/players/full/ex1st.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "ex1st"
+  },
+  "F0R3VER": {
+   "file": "assets/media/players/f0r3ver.webp?v=130",
+   "full": "assets/media/players/full/f0r3ver.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "F0R3VER"
+  },
+  "FaNg": {
+   "file": "assets/media/players/fang.webp?v=130",
+   "full": "assets/media/players/full/fang.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "FaNg"
+  },
+  "FAZERY": {
+   "file": "assets/media/players/fazery.webp?v=130",
+   "full": "assets/media/players/full/fazery.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "FAZERY"
+  },
+  "fNk": {
+   "file": "assets/media/players/fnk.webp?v=130",
+   "full": "assets/media/players/full/fnk.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "fNk"
+  },
+  "forsyy": {
+   "file": "assets/media/players/forsyy.webp?v=130",
+   "full": "assets/media/players/full/forsyy.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "forsyy"
+  },
+  "gehji": {
+   "file": "assets/media/players/gehji.webp?v=130",
+   "full": "assets/media/players/full/gehji.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "gehji"
+  },
+  "Gizmy": {
+   "file": "assets/media/players/gizmy.webp?v=130",
+   "full": "assets/media/players/full/gizmy.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Gizmy"
+  },
+  "Grizz": {
+   "file": "assets/media/players/grizz.webp?v=130",
+   "full": "assets/media/players/full/grizz.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Grizz"
+  },
+  "guty": {
+   "file": "assets/media/players/guty.webp?v=130",
+   "full": "assets/media/players/full/guty.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "guty"
+  },
+  "HeCkBNk": {
+   "file": "assets/media/players/heckbnk.webp?v=130",
+   "full": "assets/media/players/full/heckbnk.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "HeCkBNk"
+  },
+  "hext": {
+   "file": "assets/media/players/hext.webp?v=130",
+   "full": "assets/media/players/full/hext.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "hext"
+  },
+  "hfah": {
+   "file": "assets/media/players/hfah.webp?v=130",
+   "full": "assets/media/players/full/hfah.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "hfah"
+  },
+  "hitori": {
+   "file": "assets/media/players/hitori.webp?v=130",
+   "full": "assets/media/players/full/hitori.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "hitori"
+  },
+  "hoolig4n": {
+   "file": "assets/media/players/hoolig4n.webp?v=130",
+   "full": "assets/media/players/full/hoolig4n.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "hoolig4n"
+  },
+  "HUASOPEEK": {
+   "file": "assets/media/players/huasopeek.webp?v=130",
+   "full": "assets/media/players/full/huasopeek.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "HUASOPEEK"
+  },
+  "Icarus": {
+   "file": "assets/media/players/icarus.webp?v=130",
+   "full": "assets/media/players/full/icarus.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Icarus"
+  },
+  "JDC": {
+   "file": "assets/media/players/jdc.webp?v=130",
+   "full": "assets/media/players/full/jdc.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "JDC"
+  },
+  "jks": {
+   "file": "assets/media/players/jks.webp?v=130",
+   "full": "assets/media/players/full/jks.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "jks"
+  },
+  "Jorko": {
+   "file": "assets/media/players/jorko.webp?v=130",
+   "full": "assets/media/players/full/jorko.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Jorko"
+  },
+  "Junyme": {
+   "file": "assets/media/players/junyme.webp?v=130",
+   "full": "assets/media/players/full/junyme.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Junyme"
+  },
+  "kade0": {
+   "file": "assets/media/players/kade0.webp?v=130",
+   "full": "assets/media/players/full/kade0.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "kade0"
+  },
+  "KAISER": {
+   "file": "assets/media/players/kaiser.webp?v=130",
+   "full": "assets/media/players/full/kaiser.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "KAISER"
+  },
+  "karnez": {
+   "file": "assets/media/players/karnez.webp?v=130",
+   "full": "assets/media/players/full/karnez.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "karnez"
+  },
+  "KEi": {
+   "file": "assets/media/players/kei.webp?v=130",
+   "full": "assets/media/players/full/kei.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "KEi"
+  },
+  "khaN": {
+   "file": "assets/media/players/khan.webp?v=130",
+   "full": "assets/media/players/full/khan.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "khaN"
+  },
+  "Kind0": {
+   "file": "assets/media/players/kind0.webp?v=130",
+   "full": "assets/media/players/full/kind0.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Kind0"
+  },
+  "Kiy0o": {
+   "file": "assets/media/players/kiy0o.webp?v=130",
+   "full": "assets/media/players/full/kiy0o.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Kiy0o"
+  },
+  "kL1o": {
+   "file": "assets/media/players/kl1o.webp?v=130",
+   "full": "assets/media/players/full/kl1o.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "kL1o"
+  },
+  "kodak": {
+   "file": "assets/media/players/kodak.webp?v=130",
+   "full": "assets/media/players/full/kodak.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "kodak"
+  },
+  "kr1vda": {
+   "file": "assets/media/players/kr1vda.webp?v=130",
+   "full": "assets/media/players/full/kr1vda.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "kr1vda"
+  },
+  "Kunai": {
+   "file": "assets/media/players/kunai.webp?v=130",
+   "full": "assets/media/players/full/kunai.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Kunai"
+  },
+  "Kursy": {
+   "file": "assets/media/players/kursy.webp?v=130",
+   "full": "assets/media/players/full/kursy.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Kursy"
+  },
+  "KWERTZZ": {
+   "file": "assets/media/players/kwertzz.webp?v=130",
+   "full": "assets/media/players/full/kwertzz.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "KWERTZZ"
+  },
+  "Kylar": {
+   "file": "assets/media/players/kylar.webp?v=130",
+   "full": "assets/media/players/full/kylar.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Kylar"
+  },
+  "kyuubii": {
+   "file": "assets/media/players/kyuubii.webp?v=130",
+   "full": "assets/media/players/full/kyuubii.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "kyuubii"
+  },
+  "L1seYoung": {
+   "file": "assets/media/players/l1seyoung.webp?v=130",
+   "full": "assets/media/players/full/l1seyoung.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "L1seYoung"
+  },
+  "leen": {
+   "file": "assets/media/players/leen.webp?v=130",
+   "full": "assets/media/players/full/leen.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "leen"
+  },
+  "LNZ": {
+   "file": "assets/media/players/lnz.webp?v=130",
+   "full": "assets/media/players/full/lnz.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "LNZ"
+  },
+  "lollipop21k": {
+   "file": "assets/media/players/lollipop21k.webp?v=130",
+   "full": "assets/media/players/full/lollipop21k.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "lollipop21k"
+  },
+  "Ltz": {
+   "file": "assets/media/players/ltz.webp?v=130",
+   "full": "assets/media/players/full/ltz.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Ltz"
+  },
+  "M1key": {
+   "file": "assets/media/players/m1key.webp?v=130",
+   "full": "assets/media/players/full/m1key.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "M1key"
+  },
+  "maggent": {
+   "file": "assets/media/players/maggent.webp?v=130",
+   "full": "assets/media/players/full/maggent.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "maggent"
+  },
+  "Magic": {
+   "file": "assets/media/players/magic.webp?v=130",
+   "full": "assets/media/players/full/magic.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Magic"
+  },
+  "MahaR": {
+   "file": "assets/media/players/mahar.webp?v=130",
+   "full": "assets/media/players/full/mahar.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "MahaR"
+  },
+  "MarKE": {
+   "file": "assets/media/players/marke.webp?v=130",
+   "full": "assets/media/players/full/marke.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "MarKE"
+  },
+  "Matheos": {
+   "file": "assets/media/players/matheos.webp?v=130",
+   "full": "assets/media/players/full/matheos.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Matheos"
+  },
+  "matios": {
+   "file": "assets/media/players/matios.webp?v=130",
+   "full": "assets/media/players/full/matios.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "matios"
+  },
+  "max": {
+   "file": "assets/media/players/max.webp?v=130",
+   "full": "assets/media/players/full/max.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "max"
+  },
+  "mazay": {
+   "file": "assets/media/players/mazay.webp?v=130",
+   "full": "assets/media/players/full/mazay.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "mazay"
+  },
+  "menddel": {
+   "file": "assets/media/players/menddel.webp?v=130",
+   "full": "assets/media/players/full/menddel.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "menddel"
+  },
+  "meowpop": {
+   "file": "assets/media/players/meowpop.webp?v=130",
+   "full": "assets/media/players/full/meowpop.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "meowpop"
+  },
+  "mhN1": {
+   "file": "assets/media/players/mhn1.webp?v=130",
+   "full": "assets/media/players/full/mhn1.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "mhN1"
+  },
+  "MiQ": {
+   "file": "assets/media/players/miq.webp?v=130",
+   "full": "assets/media/players/full/miq.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "MiQ"
+  },
+  "mir": {
+   "file": "assets/media/players/mir.webp?v=130",
+   "full": "assets/media/players/full/mir.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "mir"
+  },
+  "MisteM": {
+   "file": "assets/media/players/mistem.webp?v=130",
+   "full": "assets/media/players/full/mistem.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "MisteM"
+  },
+  "NaYz": {
+   "file": "assets/media/players/nayz.webp?v=130",
+   "full": "assets/media/players/full/nayz.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "NaYz"
+  },
+  "nbqq": {
+   "file": "assets/media/players/nbqq.webp?v=130",
+   "full": "assets/media/players/full/nbqq.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "nbqq"
+  },
+  "Ne1XXX": {
+   "file": "assets/media/players/ne1xxx.webp?v=130",
+   "full": "assets/media/players/full/ne1xxx.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Ne1XXX"
+  },
+  "Neqy": {
+   "file": "assets/media/players/neqy.webp?v=130",
+   "full": "assets/media/players/full/neqy.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Neqy"
+  },
+  "NEUZ": {
+   "file": "assets/media/players/neuz.webp?v=130",
+   "full": "assets/media/players/full/neuz.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "NEUZ"
+  },
+  "newt": {
+   "file": "assets/media/players/newt.webp?v=130",
+   "full": "assets/media/players/full/newt.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "newt"
+  },
+  "next1me": {
+   "file": "assets/media/players/next1me.webp?v=130",
+   "full": "assets/media/players/full/next1me.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "next1me"
+  },
+  "nikitea": {
+   "file": "assets/media/players/nikitea.webp?v=130",
+   "full": "assets/media/players/full/nikitea.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "nikitea"
+  },
+  "NOPEEJ": {
+   "file": "assets/media/players/nopeej.webp?v=130",
+   "full": "assets/media/players/full/nopeej.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "NOPEEJ"
+  },
+  "OWNER": {
+   "file": "assets/media/players/owner.webp?v=130",
+   "full": "assets/media/players/full/owner.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "OWNER"
+  },
+  "PKL": {
+   "file": "assets/media/players/pkl.webp?v=130",
+   "full": "assets/media/players/full/pkl.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "PKL"
+  },
+  "pleynnn": {
+   "file": "assets/media/players/pleynnn.webp?v=130",
+   "full": "assets/media/players/full/pleynnn.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "pleynnn"
+  },
+  "Plopski": {
+   "file": "assets/media/players/plopski.webp?v=130",
+   "full": "assets/media/players/full/plopski.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Plopski"
+  },
+  "poiii": {
+   "file": "assets/media/players/poiii.webp?v=130",
+   "full": "assets/media/players/full/poiii.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "poiii"
+  },
+  "Polbandana": {
+   "file": "assets/media/players/polbandana.webp?v=130",
+   "full": "assets/media/players/full/polbandana.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Polbandana"
+  },
+  "POLO": {
+   "file": "assets/media/players/polo.webp?v=130",
+   "full": "assets/media/players/full/polo.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "POLO"
+  },
+  "Psycho": {
+   "file": "assets/media/players/psycho.webp?v=130",
+   "full": "assets/media/players/full/psycho.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Psycho"
+  },
+  "puuha": {
+   "file": "assets/media/players/puuha.webp?v=130",
+   "full": "assets/media/players/full/puuha.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "puuha"
+  },
+  "Quality": {
+   "file": "assets/media/players/quality.webp?v=130",
+   "full": "assets/media/players/full/quality.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Quality"
+  },
+  "r3salt": {
+   "file": "assets/media/players/r3salt.webp?v=130",
+   "full": "assets/media/players/full/r3salt.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "r3salt"
+  },
+  "R4DYX": {
+   "file": "assets/media/players/r4dyx.webp?v=130",
+   "full": "assets/media/players/full/r4dyx.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "R4DYX"
+  },
+  "Rack": {
+   "file": "assets/media/players/rack.webp?v=130",
+   "full": "assets/media/players/full/rack.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Rack"
+  },
+  "ragga": {
+   "file": "assets/media/players/ragga.webp?v=130",
+   "full": "assets/media/players/full/ragga.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "ragga"
+  },
+  "RaY5ive": {
+   "file": "assets/media/players/ray5ive.webp?v=130",
+   "full": "assets/media/players/full/ray5ive.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "RaY5ive"
+  },
+  "rendysky": {
+   "file": "assets/media/players/rendysky.webp?v=130",
+   "full": "assets/media/players/full/rendysky.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "rendysky"
+  },
+  "Rkzinho": {
+   "file": "assets/media/players/rkzinho.webp?v=130",
+   "full": "assets/media/players/full/rkzinho.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Rkzinho"
+  },
+  "rud": {
+   "file": "assets/media/players/rud.webp?v=130",
+   "full": "assets/media/players/full/rud.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "rud"
+  },
+  "ryu": {
+   "file": "assets/media/players/ryu.webp?v=130",
+   "full": "assets/media/players/full/ryu.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "ryu"
+  },
+  "s0und": {
+   "file": "assets/media/players/s0und.webp?v=130",
+   "full": "assets/media/players/full/s0und.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "s0und"
+  },
+  "s4ltovsk1yy": {
+   "file": "assets/media/players/s4ltovsk1yy.webp?v=130",
+   "full": "assets/media/players/full/s4ltovsk1yy.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "s4ltovsk1yy"
+  },
+  "SELLTER": {
+   "file": "assets/media/players/sellter.webp?v=130",
+   "full": "assets/media/players/full/sellter.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "SELLTER"
+  },
+  "shaiK": {
+   "file": "assets/media/players/shaik.webp?v=130",
+   "full": "assets/media/players/full/shaik.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "shaiK"
+  },
+  "shalfey": {
+   "file": "assets/media/players/shalfey.webp?v=130",
+   "full": "assets/media/players/full/shalfey.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "shalfey"
+  },
+  "SHiNE": {
+   "file": "assets/media/players/shine.webp?v=130",
+   "full": "assets/media/players/full/shine.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "SHiNE"
+  },
+  "Shr": {
+   "file": "assets/media/players/shr.webp?v=130",
+   "full": "assets/media/players/full/shr.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Shr"
+  },
+  "sirah": {
+   "file": "assets/media/players/sirah.webp?v=130",
+   "full": "assets/media/players/full/sirah.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "sirah"
+  },
+  "skizzyee": {
+   "file": "assets/media/players/skizzyee.webp?v=130",
+   "full": "assets/media/players/full/skizzyee.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "skizzyee"
+  },
+  "sl3nd": {
+   "file": "assets/media/players/sl3nd.webp?v=130",
+   "full": "assets/media/players/full/sl3nd.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "sl3nd"
+  },
+  "Smash": {
+   "file": "assets/media/players/smash.webp?v=130",
+   "full": "assets/media/players/full/smash.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Smash"
+  },
+  "smekk": {
+   "file": "assets/media/players/smekk.webp?v=130",
+   "full": "assets/media/players/full/smekk.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "smekk"
+  },
+  "SquEzxc": {
+   "file": "assets/media/players/squezxc.webp?v=130",
+   "full": "assets/media/players/full/squezxc.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "SquEzxc"
+  },
+  "stadodo": {
+   "file": "assets/media/players/stadodo.webp?v=130",
+   "full": "assets/media/players/full/stadodo.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "stadodo"
+  },
+  "swiz": {
+   "file": "assets/media/players/swiz.webp?v=130",
+   "full": "assets/media/players/full/swiz.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "swiz"
+  },
+  "syph0": {
+   "file": "assets/media/players/syph0.webp?v=130",
+   "full": "assets/media/players/full/syph0.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "syph0"
+  },
+  "szejn": {
+   "file": "assets/media/players/szejn.webp?v=130",
+   "full": "assets/media/players/full/szejn.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "szejn"
+  },
+  "tAk": {
+   "file": "assets/media/players/tak.webp?v=130",
+   "full": "assets/media/players/full/tak.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "tAk"
+  },
+  "Tarkky": {
+   "file": "assets/media/players/tarkky.webp?v=130",
+   "full": "assets/media/players/full/tarkky.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Tarkky"
+  },
+  "Tatu": {
+   "file": "assets/media/players/tatu.webp?v=130",
+   "full": "assets/media/players/full/tatu.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Tatu"
+  },
+  "tein": {
+   "file": "assets/media/players/tein.webp?v=130",
+   "full": "assets/media/players/full/tein.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "tein"
+  },
+  "TMKj": {
+   "file": "assets/media/players/tmkj.webp?v=130",
+   "full": "assets/media/players/full/tmkj.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "TMKj"
+  },
+  "topo": {
+   "file": "assets/media/players/topo.webp?v=130",
+   "full": "assets/media/players/full/topo.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "topo"
+  },
+  "Tr0ublE": {
+   "file": "assets/media/players/tr0uble.webp?v=130",
+   "full": "assets/media/players/full/tr0uble.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Tr0ublE"
+  },
+  "tronic": {
+   "file": "assets/media/players/tronic.webp?v=130",
+   "full": "assets/media/players/full/tronic.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "tronic"
+  },
+  "tw1sterzaza": {
+   "file": "assets/media/players/tw1sterzaza.webp?v=130",
+   "full": "assets/media/players/full/tw1sterzaza.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "tw1sterzaza"
+  },
+  "tyr1k": {
+   "file": "assets/media/players/tyr1k.webp?v=130",
+   "full": "assets/media/players/full/tyr1k.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "tyr1k"
+  },
+  "VILBy": {
+   "file": "assets/media/players/vilby.webp?v=130",
+   "full": "assets/media/players/full/vilby.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "VILBy"
+  },
+  "VINI": {
+   "file": "assets/media/players/vini.webp?v=130",
+   "full": "assets/media/players/full/vini.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "VINI"
+  },
+  "volt": {
+   "file": "assets/media/players/volt.webp?v=130",
+   "full": "assets/media/players/full/volt.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "volt"
+  },
+  "waZz": {
+   "file": "assets/media/players/wazz.webp?v=130",
+   "full": "assets/media/players/full/wazz.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "waZz"
+  },
+  "Westmelon": {
+   "file": "assets/media/players/westmelon.webp?v=130",
+   "full": "assets/media/players/full/westmelon.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "Westmelon"
+  },
+  "WOOD7": {
+   "file": "assets/media/players/wood7.webp?v=130",
+   "full": "assets/media/players/full/wood7.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "WOOD7"
+  },
+  "xEternaLxx": {
+   "file": "assets/media/players/xeternalxx.webp?v=130",
+   "full": "assets/media/players/full/xeternalxx.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "xEternaLxx"
+  },
+  "yksjupe": {
+   "file": "assets/media/players/yksjupe.webp?v=130",
+   "full": "assets/media/players/full/yksjupe.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "yksjupe"
+  },
+  "yoki": {
+   "file": "assets/media/players/yoki.webp?v=130",
+   "full": "assets/media/players/full/yoki.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "yoki"
+  },
+  "zemix": {
+   "file": "assets/media/players/zemix.webp?v=130",
+   "full": "assets/media/players/full/zemix.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "zemix"
+  },
+  "zer0UKY": {
+   "file": "assets/media/players/zer0uky.webp?v=130",
+   "full": "assets/media/players/full/zer0uky.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "zer0UKY"
+  },
+  "zero": {
+   "file": "assets/media/players/zero.webp?v=130",
+   "full": "assets/media/players/full/zero.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "zero"
+  },
+  "zewts": {
+   "file": "assets/media/players/zewts.webp?v=130",
+   "full": "assets/media/players/full/zewts.webp?v=130",
+   "src": "user:2026-photos",
+   "match": "zewts"
   }
  },
  "tournaments": {},
@@ -5420,49 +6356,25 @@
  "missing": {
   "teams": [],
   "players": [
-   "arT",
    "DarkMeister",
-   "ryu",
-   "max",
-   "dgt",
-   "HUASOPEEK",
-   "Kursy",
-   "Jorko",
-   "Tatu",
    "Rzinh0",
-   "JDC",
    "she1zzZJEZ",
    "oNte",
    "tadeo",
-   "dwushka",
-   "LNZ",
    "mo0N",
    "xZero",
-   "Dawy",
-   "Westmelon",
-   "Gizmy",
-   "sirah",
-   "poiii",
    "s0m",
    "pr1metapz",
-   "mir",
-   "F0R3VER",
    "AquaR85",
    "oRO",
-   "clax",
    "kashjld",
    "zHend",
    "Anlele",
-   "khaN",
-   "syph0",
    "StRoGo",
    "deko",
    "ctom",
    "m3wsu",
    "kelieN",
-   "VINI",
-   "dav1deuS",
-   "Ltz",
    "r0lf",
    "era",
    "uP",
@@ -5471,64 +6383,40 @@
    "rim3",
    "mhl",
    "Cxz",
-   "hext",
    "CaNito",
    "OSAMAS",
    "B0ye",
-   "Banjo",
-   "Matheos",
-   "ex1st",
-   "VILBy",
    "Kiryasoo",
    "Netrix",
    "s1nside",
    "k0gaSs",
-   "MahaR",
-   "FAZERY",
-   "skizzyee",
-   "yoki",
-   "kodak",
-   "SHiNE",
-   "hitori",
-   "Junyme",
-   "yksjupe",
    "eSx",
    "mixer",
    "dupreeh",
    "k0nfig",
    "Luken",
-   "Shr",
-   "detr0ittJ",
    "chayJESUS",
-   "Grizz",
    "HEN1",
    "Peeping",
    "JOTA",
    "Wolffe",
-   "MarKE",
-   "Cxzi",
    "WolfY",
    "H0NeST",
    "nosraC",
    "Bwills",
    "SLIGHT",
-   "Alisson",
    "Zoker",
    "Olga",
    "Andrew",
    "Pose1doNN",
    "fREQ",
-   "KAISER",
    "CLASIA",
-   "Zero",
    "ninjaZ",
    "Crisp",
-   "FaNg",
    "Cryptic",
    "Sandman",
    "Fruitcupx",
    "LyttleZ",
-   "Rkzinho",
    "Markz",
    "BiBiAhn",
    "aNgelo",
@@ -5541,7 +6429,6 @@
    "Evan",
    "Valter0k",
    "RenanZin",
-   "WOOD7",
    "FraGuTy",
    "Lekzi",
    "Hezz",
@@ -5567,7 +6454,6 @@
    "delboNi",
    "Noktse",
    "Lucaozy",
-   "PKL",
    "REGIANE",
    "Luk1nha",
    "FRIZZY",
