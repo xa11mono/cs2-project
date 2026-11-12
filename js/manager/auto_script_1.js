@@ -1057,7 +1057,7 @@ function ensurePlayerLayer(t){
     fatigue: Math.round(fat),
     chemistry: Math.round(chemistry),
     cohesion: Math.round(cohesion),
-    power: Math.round((avg('firepower')*0.40 + avg('tacticalIQ')*0.25 + avg('clutch')*0.20 + avg('utility')*0.15)*10)/10
+    power: Math.round((window.CS2Power ? window.CS2Power.team(t).power : (avg('firepower')*0.40 + avg('tacticalIQ')*0.25 + avg('clutch')*0.20 + avg('utility')*0.15))*10)/10
   };
   t.playerLayerVersion = PLAYER_LAYER_VERSION;
   // Legacy fields remain the authoritative interface for the old simulation formulas.
