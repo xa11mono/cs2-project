@@ -27,12 +27,8 @@
      v101 сохраняет только совместимые legacy helpers; атрибуты игроков и VRS не калибруются по никам.
   */
 
-  /* ------------------------------------------------------------ 1б. стартовый рейтинг новой игры
-     В базе у части клубов стартовые очки расходятся с составом (3DMAX: состав #12 по силе, очки #73 — за сезон
-     «▲63» выглядело как взлёт слабой команды). В новой игре (до первого турнира) позиция по очкам, отличающаяся от
-     позиции по силе больше чем на 15 мест, сдвигается на 2/3 пути к ней; рейтинг дальше считают результаты. */
-  function reseed() { return 0; // v114: VRS не пересчитывается из Overall игрока.
-  }
+  /* v114: стартовый VRS остаётся данными рейтинговой системы, не пересеивается из силы игроков. */
+  function reseed() { return 0; }
 
   /* ------------------------------------------------------------ 2. история стоимости */
   const wk = () => Math.floor(now() / DAY / 7);
@@ -113,7 +109,7 @@
   try { recalibrate(); } catch (e) { console.warn('[v101 power]', e); }
   // выравнивание стартового рейтинга — после посева новой игры (v88: seasonState.v88Seed), иначе очки ещё не окончательные
   const every = (W.CS2Loop && W.CS2Loop.every) || ((f, ms) => setInterval(f, ms));
-  every(() => { if (W.v57BatchCalendarSkip) return; try { if (!seasonState.v101Pow) recalibrate(); if (!seasonState.v101Seed && seasonState.v88Seed) reseed(); snapValues(); } catch (e) {} }, 4000, 'v101-economy');
+  every(() => { if (W.v57BatchCalendarSkip) return; try { snapValues(); } catch (e) {} }, 4000, 'v101-economy');
 
   W.CS2Power = { recalibrate, reseed, pow, trend }; // v114-player-power.js подключается следующим и публикует полный API.
   W.V101Deals = { cancel };
