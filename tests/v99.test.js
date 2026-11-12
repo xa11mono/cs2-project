@@ -60,7 +60,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   pass('разговоры: болезнь с заменой и возвращением, ветвление, все сценарии, обещания, истечение срока');
 
   // окно «Требует решения»: новый разговор открывается сам
-  await p.evaluate(() => { const t = HS.teamBy(V31.managed()); V99Talks.start(t.players[1].nick, 'family', { good: true }); });
+  await p.evaluate(() => { const t = HS.teamBy(V31.managed()); V99Talks.start(t.players[1].nick, 'family', { good: true }, true); });
   await p.waitForTimeout(1800);
   const gate = await p.evaluate(() => { const g = document.getElementById('v96-gate'); return g && !g.hidden ? g.querySelectorAll('.v99-opt').length : -1; });
   assert(gate === 3, 'разговор в окне «Требует решения»: ' + gate);

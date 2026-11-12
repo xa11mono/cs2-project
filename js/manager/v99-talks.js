@@ -546,6 +546,7 @@
   function scrollLog() { setTimeout(() => { const l = document.querySelector('#hs-page .v84-dm-log'); if (l) l.scrollTop = l.scrollHeight; }, 0); }
 
   // «Переписка»: варианты ответа активного разговора и темы для разговора
+  (H.AFTER || []).push(pg => { setTimeout(() => { W.__v111InboxOpen = pg === 'inbox'; }, 0); });   // v111: повторная отрисовка «Центра» ≠ открытие
   (H.AFTER || []).push((pg, arg, root) => {
     if (pg === 'dm') {
       const nick = H.S.dm && H.S.dm.nick, box = root.querySelector('.v84-dm-acts'); if (!nick || !box || !me()) return;
@@ -569,7 +570,8 @@
       const done = S().convs.filter(c => c.team === me() && c.st !== 'open').slice(0, 12);
       const hist = root.querySelectorAll('.v96-panel')[1];
       // v101: открытый «Центр событий» = всё просмотрено (счётчик в меню и колокольчике сбрасывается)
-      try { list.forEach(c => { S().seen[c.id] = 1; }); const V9 = W.V96Windows; if (V9) { const st = V9.state(); V9.events().forEach(e => { st.seen[e.id] = 1; }); } setTimeout(() => { try { if (W.V99Mail) W.V99Mail.unread().forEach(m => { m.read = true; }); } catch (e) {} }, 0); } catch (e) {}   // письма — после отрисовки, чтобы новые были видны выделенными
+      // v111: только при открытии страницы — разговор, пришедший пока «Центр» открыт, всё равно поднимает окно решения
+      if (!W.__v111InboxOpen) try { list.forEach(c => { S().seen[c.id] = 1; }); const V9 = W.V96Windows; if (V9) { const st = V9.state(); V9.events().forEach(e => { st.seen[e.id] = 1; }); } setTimeout(() => { try { if (W.V99Mail) W.V99Mail.unread().forEach(m => { m.read = true; }); } catch (e) {} }, 0); } catch (e) {}   // письма — после отрисовки, чтобы новые были видны выделенными
       if (hist && done.length) hist.insertAdjacentHTML('beforeend', `<h3 class="v96-ph sub">Разговоры с игроками</h3><ul class="v96-hist">${done.map(c => `<li><time>${esc(fdate(c.doneAt || c.ts))}</time><b>${esc(c.nick)} · ${esc(val(SC[c.key].title, ctx(c)) || '')}</b><span>${esc(c.res || '')}</span></li>`).join('')}</ul>`);
     }
     if (pg === 'squad' && me()) {
@@ -591,5 +593,5 @@
   // и сразу после «Продолжить» по дням
   ['skipGameCalendarDay'].forEach(n => { const f = W[n]; if (typeof f !== 'function' || f.__v99t) return; const w = function () { const r = f.apply(this, arguments); try { if (me()) daily(); } catch (e) {} return r; }; Object.keys(f).forEach(k => { try { w[k] = f[k]; } catch (e) {} }); w.__v99t = true; W[n] = w; try { (0, eval)(`${n} = window.${n}`); } catch (e) {} });
 
-  W.V99Talks = { S, SC, start: (nick, key, data) => { const p = P(nick); return p ? startConv(p, key, data, true) : null; }, answer, card, open: openConvs, pending, trust: trustOf, isOut, out: (nick, days, reason) => out(P(nick), days, reason), daily, weekly, expire, MANAGER_TOPICS };
+  W.V99Talks = { S, SC, start: (nick, key, data, incoming) => { const p = P(nick); return p ? startConv(p, key, data, !incoming) : null; }, answer, card, open: openConvs, pending, trust: trustOf, isOut, out: (nick, days, reason) => out(P(nick), days, reason), daily, weekly, expire, MANAGER_TOPICS };
 })();
