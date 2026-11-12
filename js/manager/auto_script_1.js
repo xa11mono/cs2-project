@@ -1281,7 +1281,7 @@ function teamIdentityFit(t,p){
 window.teamIdentityGroup=teamIdentityGroup; window.teamIdentityFit=teamIdentityFit; window.playerLangGroup=playerLangGroup;
 function teamRankValue(t){ return Number(t?.pts)||500; }
 function isStarPlayer(p){ return (Number(p?.firepower)||0)+(Number(p?.tacticalIQ)||0)+(Number(p?.clutch)||0)+(Number(p?.utility)||0) >= 365; }
-function playerPower(p){ return Number(p?.firepower||0)*0.40 + Number(p?.tacticalIQ||0)*0.25 + Number(p?.clutch||0)*0.20 + Number(p?.utility||0)*0.15; }
+function playerPower(p){ return window.CS2Power ? window.CS2Power.overall(p) : Number(p?.firepower||0)*0.40 + Number(p?.tacticalIQ||0)*0.25 + Number(p?.clutch||0)*0.20 + Number(p?.utility||0)*0.15; }
 function teamNeedsTransfer(t){
   ensurePlayerLayer(t);
   const lowForm=t.players.filter(p=>Number(p.form||100)<92).length;
