@@ -47,7 +47,7 @@
       + (morale - 80) * cfg('power.current.morale', .10)
       - fatigue * cfg('power.current.fatigue', .08)
       + (confidence - 60) * cfg('power.current.confidence', .05);
-    return round1(clamp(base(p) + delta, 0, 100));
+    return round1(clamp(base(p) + clamp(delta, -5, 5), 0, 100));
   }
   function potential(p) {
     if (!p) return null;
