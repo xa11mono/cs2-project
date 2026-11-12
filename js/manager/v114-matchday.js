@@ -52,7 +52,9 @@
     return null;
   }
   const idOf = (ph, n) => `md|${ph}|${n.key}`;
-  function current() { const n = myNext(), ph = phaseOf(n); return ph ? { n, ph, id: idOf(ph, n) } : null; }
+  // автотесты (webdriver) — без карточек матч-дня, если тест не включил их явно (как окно первого запуска v100)
+  const inert = () => !!(navigator.webdriver && !W.__v114mdTest);
+  function current() { if (inert()) return null; const n = myNext(), ph = phaseOf(n); return ph ? { n, ph, id: idOf(ph, n) } : null; }
 
   /* ------------------------------------------------------------ действия */
   function autoScout(n) {
@@ -114,8 +116,15 @@
 
   if (W.V96Windows && W.V96Windows.addProvider) W.V96Windows.addProvider({
     key: 'matchday',
-    items: () => { try { autoTick(); const c = current(); return c && !S().done[c.id] ? [c.id] : []; } catch (e) { return []; } },
-    fresh: () => { try { const c = current(); return c && !S().done[c.id] && !S().seen[c.id] ? [c.id] : []; } catch (e) { return []; } },
+    // «завтра»/«сегодня» блокируют «Продолжить» только до первого показа; «Матч начинается» — пока не выбран вариант
+    items: () => { try { autoTick(); const c = current(); return c && !S().done[c.id] && (c.ph === 'soon' || !S().seen[c.id]) ? [c.id] : []; } catch (e) { return []; } },
+    fresh: () => { try {
+      const c = current(); if (!c || S().done[c.id] || S().seen[c.id]) return [];
+      // при загрузке и выборе клуба — без всплывающего окна (напоминание — в окне решений по «Продолжить»);
+      // само окно всплывает, только когда фаза наступает по ходу игры
+      if (W.__v114mdBoot !== me()) { W.__v114mdBoot = me(); S().seen[c.id] = now(); return []; }
+      return [c.id];
+    } catch (e) { return []; } },
     card: id => card(id),
     seen: id => { S().seen[id] = now(); },
     later: id => { S().done[id] = { a: 'later', at: now() }; save(); },
