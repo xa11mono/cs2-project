@@ -41,9 +41,9 @@ const SORTS = [['rank', 'По рейтингу'], ['power', 'По силе со�
 
   /* ------------------------------------------------------------ данные клуба */
   const starters = t => (t.players || []).filter(p => p && p.status !== 'BENCH').slice(0, 5);
-  const pow = p => (+p.firepower || 0) * .4 + (+p.tacticalIQ || 0) * .25 + (+p.clutch || 0) * .2 + (+p.utility || 0) * .15;
-  const iglPow = p => (+p.tacticalIQ || 0) * .55 + (+p.utility || 0) * .2 + (+p.clutch || 0) * .15 + (+p.firepower || 0) * .1;
-  const ovr = p => Math.round(p.role === 'IGL' ? iglPow(p) : pow(p));
+  const pow = p => W.CS2Power ? W.CS2Power.overall(p) : (+p.firepower || 0) * .4 + (+p.tacticalIQ || 0) * .25 + (+p.clutch || 0) * .2 + (+p.utility || 0) * .15;
+  const iglPow = p => W.CS2Power ? W.CS2Power.role(p, 'IGL') : (+p.tacticalIQ || 0) * .55 + (+p.utility || 0) * .2 + (+p.clutch || 0) * .15 + (+p.firepower || 0) * .1;
+  const ovr = p => Math.round(pow(p)); // Base Overall; Role Rating не подменяет общую силу.
   const avg = (a, f) => a.length ? a.reduce((s, x) => s + f(x), 0) / a.length : 0;
   const money = v => { const a = Math.abs(v), s = v < 0 ? '−' : ''; return a >= 1e6 ? `${s}$${(a / 1e6).toFixed(1)}M` : `${s}$${Math.round(a / 1e3)}K`; };
   const budgetOf = n => { try { return Number(V.org(n).budget) || 0; } catch (e) { return 0; } };

@@ -734,7 +734,7 @@ document.addEventListener('keydown', e => {
 document.addEventListener('click', e => { const b = e.target.closest('[data-hl-close]'); if (b) closeOverlay(b.closest('.hl-overlay')); });
 
 /* ---------------------------------------------------- окно игрока */
-const ovr = p => Math.round((+p.firepower || 0) * .40 + (+p.tacticalIQ || 0) * .25 + (+p.clutch || 0) * .20 + (+p.utility || 0) * .15);
+const ovr = p => Math.round(W.CS2Power ? W.CS2Power.overall(p) : (+p.firepower || 0) * .40 + (+p.tacticalIQ || 0) * .25 + (+p.clutch || 0) * .20 + (+p.utility || 0) * .15);
 function openPlayer(teamName, nick) {
   const t = teams.find(x => x.name === teamName); if (!t) return;
   ensurePlayerLayer(t);
