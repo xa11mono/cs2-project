@@ -74,14 +74,19 @@ const HOME_CATS = [['all', 'Все'], ['match', 'Матчи'], ['tournament', '�
 function newsBlock(skip) {
   const f = H.S.hm, fd = H.feed().filter(n => n.id !== skip);
   const groups = { tournament: ['tournament', 'major', 'event', 'preview'], player: ['player', 'award', 'stats'], transfer: ['transfer', 'roster', 'coach'] };
-  const list = fd.filter(n => f.nc === 'all' || n.cat === f.nc || (groups[f.nc] || []).includes(n.cat)).slice(0, 12);
+  // v113: HLTV Awards и отсчёт топ-20 за последние 3 игровых дня — закреплены сверху (их не вытесняет поток матчевых новостей)
+  const nowT = H.nowMs(), isPin = n => n && n.cat === 'award' && nowT - (Number(n.ts) || 0) < 3 * 864e5 && (Number(n.imp) >= 8 || (window.V111News && window.V111News.cardData && window.V111News.cardData(n)));
+  const pins = (f.nc === 'all' || f.nc === 'player') ? fd.filter(isPin).sort((a, b) => (Number(b.imp) || 0) - (Number(a.imp) || 0) || (b.ts || 0) - (a.ts || 0)).slice(0, 2) : [];
+  pins.forEach(n => { n.__pin = true; });
+  const list = pins.concat(fd.filter(n => !pins.includes(n) && (f.nc === 'all' || n.cat === f.nc || (groups[f.nc] || []).includes(n.cat))).slice(0, 12 - pins.length));
   const chips = HOME_CATS.map(([k, l]) => `<button type="button" class="hm-tab${f.nc === k ? ' on' : ''}" data-hmc="${k}">${l}</button>`).join('');
   return `<section class="hs-box hm-news"><header class="hs-box-h"><h3>Новости</h3><div class="hm-tabs">${chips}</div><button type="button" class="hs-more" data-nav="news">вся лента →</button></header>
     <div class="hs-box-b">${list.map(newsLine).join('') || empty('В этой рубрике пока пусто')}</div></section>`;
 }
 function newsLine(n) {
   const c = catOf(n.cat), img = newsVisual(n, false);
-  return `<article class="nl${(n.imp || 0) >= 8 ? ' hot' : ''}" data-art="${esc(n.id)}" tabindex="0"><div class="nl-img">${img}</div><div class="nl-t"><div class="nl-k"><span class="hs-ncat c-${esc(n.cat)}">${esc(c.l)}</span>${n.rumor ? `<span class="hm-rumor${n.confirmed ? ' ok' : n.denied ? ' no' : ''}">${n.confirmed ? 'подтверждено' : n.denied ? 'опровергнуто' : 'слух'}</span>` : ''}</div><h4>${esc(n.title)}</h4><p>${esc(n.lead || '')}</p></div><time>${H.ndate(n.ts)}</time></article>`;
+  const pin = !!n.__pin; n.__pin = false;
+  return `<article class="nl${(n.imp || 0) >= 8 ? ' hot' : ''}${pin ? ' nl-pin' : ''}" data-art="${esc(n.id)}" tabindex="0"><div class="nl-img">${img}</div><div class="nl-t"><div class="nl-k">${pin ? '<span class="nl-pin-t">📌 Закреплено</span>' : ''}<span class="hs-ncat c-${esc(n.cat)}">${esc(c.l)}</span>${n.rumor ? `<span class="hm-rumor${n.confirmed ? ' ok' : n.denied ? ' no' : ''}">${n.confirmed ? 'подтверждено' : n.denied ? 'опровергнуто' : 'слух'}</span>` : ''}</div><h4>${esc(n.title)}</h4><p>${esc(n.lead || '')}</p></div><time>${H.ndate(n.ts)}</time></article>`;
 }
 H.newsLine = newsLine;
 function rightCol() {

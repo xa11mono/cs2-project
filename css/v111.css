@@ -112,3 +112,6 @@ html.ax-on #hs-root .ax-scened.ax-has-vis>.v112-t20badge{display:block!important
 #hs-root .v113-aw b{font:800 14px/1.2 var(--f-ui);color:#fff}
 #hs-root .v113-aw em{font-style:normal;font-size:11.5px;color:#9e9686}
 @media (max-width:700px){#hs-root .v113-podium{gap:6px}#hs-root .v113-pod b{font-size:14px}#hs-root .v113-pod.r1 b{font-size:16px}}
+/* v113: портрет на карточке топ-20 — всегда во всю высоту колонки (у маленьких файлов фото было в натуральный размер) */
+#hs-root .v111-t20-r>img{position:absolute!important;left:50%;bottom:0;height:94%!important;max-height:none!important;width:auto!important;max-width:120%;transform:translateX(-50%);object-fit:contain;object-position:bottom}
+#hs-root .nl-pin-t{display:inline-block;margin-right:8px;font:800 10px/1.4 var(--f-ui);letter-spacing:.04em;color:#f1d27a}
