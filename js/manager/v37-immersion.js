@@ -140,6 +140,23 @@ function eventStories(id) {
   const n=N(); if(!n?.all) return [];
   return n.all().filter(x=>x.ev===id || (x.tags||[]).some(t=>t.t==='event'&&t.v===id)).slice(0,4);
 }
+/* v128: итоги турнира одной строкой — чемпион, 2-е и 3-е место, MVP с портретом и статистикой турнира */
+function playerObj(nick,team){ try{ return (H.teamBy?.(team)?.players||[]).find(p=>p.nick===nick) || H.playerNow?.(nick) || {nick}; }catch(e){ return {nick}; } }
+function mvpLine(snap,nick){ try{ const o=H.stats?.().P?.[nick], e=o?.byEv?.[snap.id]; return e?H.line(e.s):null; }catch(e){ return null; } }
+function finalOf(snap){ try{ const ms=(H.indexSnap?H.indexSnap(snap):[]).filter(m=>m.w&&!m.wo&&/Гранд|Финал \(|^Финал|Финал$/.test(String(m.__stage||'').split(' · ').pop()||'')); return ms.pop()||null; }catch(e){ return null; } }
+function results(snap,mvp){
+  const rows=(snap.results||[]).slice().sort((a,b)=>(Number(a.p)||99)-(Number(b.p)||99)).filter(x=>x.n).slice(0,3);
+  if(!rows.length && snap.champion) rows.push({n:snap.champion,p:1});
+  const fin=finalOf(snap), sc=fin&&Array.isArray(fin.s)?(fin.w===fin.a?`${Math.max(...fin.s)}:${Math.min(...fin.s)}`:`${Math.max(...fin.s)}:${Math.min(...fin.s)}`):'';
+  const opp=fin?(fin.w===fin.a?fin.b:fin.a):'';
+  const place=(r,i)=>{ const lab=i===0?'Чемпион':`${r.p||i+1}-е место`, sub=i===0&&opp?`Финал ${sc?sc+' ':''}vs ${esc(opp)}`:lab;
+    return `<div class="v128-place p${i+1}" data-team="${esc(r.n)}" role="link" tabindex="0" title="Страница команды ${esc(r.n)}"><span class="v128-rank">${i+1}</span><span class="v128-tlogo">${H.logo?H.logo(r.n,i===0?'lg':'sm'):''}</span><span class="v128-tcopy"><small>${i===0?'Чемпион':lab}</small><b>${esc(r.n)}</b>${i===0&&opp?`<em>${sub}</em>`:''}</span></div>`; };
+  let mv='';
+  if(mvp){ const p=playerObj(mvp.nick,mvp.team), l=mvpLine(snap,mvp.nick);
+    const stat=l?`<span class="v128-mstat"><b class="${H.ratingCls?H.ratingCls(l.rating):''}">${H.f2?H.f2(l.rating):Number(l.rating).toFixed(2)}</b><small>Rating 3.0</small></span><span class="v128-mstat"><b>${l.maps}</b><small>карт</small></span><span class="v128-mstat"><b>${l.k}–${l.d}</b><small>K–D</small></span>`:'';
+    mv=`<div class="v128-mvp" data-player="${esc(mvp.nick)}" role="link" tabindex="0" title="Профиль ${esc(mvp.nick)}"><span class="v128-mph">${H.photoHtml?H.photoHtml(p):''}</span><span class="v128-mcopy"><small><i>MVP</i> турнира</small><b>${H.pFlag?H.pFlag(p)+' ':''}${esc(mvp.nick)}</b><em>${H.logo?H.logo(mvp.team||'','xs'):''} ${esc(mvp.team||'')}</em></span>${stat?`<span class="v128-mstats">${stat}</span>`:''}</div>`; }
+  return `<div class="v128-results${mv?'':' no-mvp'}">${rows.map(place).join('')}${mv}</div>`;
+}
 const origEvent=H.PAGES.event;
 if(typeof origEvent==='function'&&!origEvent.__v37){
   const wrapped=function(id){
@@ -151,7 +168,7 @@ if(typeof origEvent==='function'&&!origEvent.__v37){
       const stories=eventStories(snap.id), status=snap.live?'● LIVE':snap.scheduled?'Скоро':'Завершён';
       const champ=snap.champion&&snap.champion!=='—'?`<div class="v37-event-champion" data-team="${esc(snap.champion)}" role="link" tabindex="0" title="Страница команды ${esc(snap.champion)}"><small>Чемпион</small>${H.logo?H.logo(snap.champion,'lg'):''}<b>${esc(snap.champion)}</b></div>`:'';
       const mvpHtml=mvp?`<div class="v37-event-mvp"><span class="v37-mvp-medal">MVP</span><div>${H.photoHtml?H.photoHtml((H.teamBy?.(mvp.team)?.players||[]).find(p=>p.nick===mvp.nick)||{nick:mvp.nick}):''}<b>${esc(mvp.nick)}</b><small>${esc(mvp.team||'')}</small></div></div>`:'';
-      const hero=`<section class="v37-event-hero k-${esc(kind)} ${snap.live?'is-live':done?'is-done':'is-upcoming'}"><div class="v37-event-hero-top"><span class="v37-eyebrow">${esc(({major:'MAJOR',elite:'S-TIER',regular:'TIER-1',tier2:'TIER-2',tier3:'TIER-3',academy:'АКАДЕМИИ',qual:'КВАЛИФИКАЦИЯ',nations:'S-TIER · СБОРНЫЕ'})[kind]||String(kind).toUpperCase())} · ${yearFor(snap)}</span><span class="v37-event-status">${status}</span></div><div class="v37-event-main"><div class="v37-event-title"><h2>${esc(snap.name||'Tournament')}</h2><p>${esc(ev?.format||snap.format||'Соревновательная сетка')} · ${snap.size||snap.participants?.length||'—'} команд · ${ev?.tier==='1'?'приглашения по VRS':'открытая квалификация'}</p><div class="v37-event-progress"><div><span>Прогресс турнира</span><b>${pct}%</b></div><i><em style="width:${pct}%"></em></i></div></div>${champ||mvpHtml}</div>${done?`<div class="v37-event-finale"><div class="v37-event-podium">${podium(snap)}</div>${mvpHtml}</div>`:''}${stories.length?`<div class="v37-event-stories"><div class="v37-eyebrow">Материалы о турнире</div>${stories.map(x=>`<button type="button" data-art="${esc(x.id)}"><small>${esc(N()?.CATS?.[x.cat]?.l||'Материал')}</small><b>${esc(x.title)}</b></button>`).join('')}</div>`:''}</section>`;
+      const hero=`<section class="v37-event-hero k-${esc(kind)} ${snap.live?'is-live':done?'is-done':'is-upcoming'}"><div class="v37-event-hero-top"><span class="v37-eyebrow">${esc(({major:'MAJOR',elite:'S-TIER',regular:'TIER-1',tier2:'TIER-2',tier3:'TIER-3',academy:'АКАДЕМИИ',qual:'КВАЛИФИКАЦИЯ',nations:'S-TIER · СБОРНЫЕ'})[kind]||String(kind).toUpperCase())} · ${yearFor(snap)}</span><span class="v37-event-status">${status}</span></div><div class="v37-event-main"><div class="v37-event-title"><h2>${esc(snap.name||'Tournament')}</h2><p>${esc(ev?.format||snap.format||'Соревновательная сетка')} · ${snap.size||snap.participants?.length||'—'} команд · ${ev?.tier==='1'?'приглашения по VRS':'открытая квалификация'}</p><div class="v37-event-progress"><div><span>Прогресс турнира</span><b>${pct}%</b></div><i><em style="width:${pct}%"></em></i></div></div>${done?'':(champ||mvpHtml)}</div>${done?results(snap,mvp):''}${stories.length?`<div class="v37-event-stories"><div class="v37-eyebrow">Материалы о турнире</div>${stories.map(x=>`<button type="button" data-art="${esc(x.id)}"><small>${esc(N()?.CATS?.[x.cat]?.l||'Материал')}</small><b>${esc(x.title)}</b></button>`).join('')}</div>`:''}</section>`;
       // v84: одна шапка турнира — этот блок (с кубком и данными события); прежняя шапка ev-head скрывается.
       const evMeta=(()=>{ try{ const st=Number(ev?.startMs||snap.gs||0), en=Number(ev?.endMs||snap.ge||0); const meta=window.V30Series?.meta?.(snap.name)||null; const prize=Number(snap.prize||ev?.prize||window.CS2Realism?.prizeFor?.(snap.name,kind)||0);
         const cell=(k,v)=>v?`<div><small>${k}</small><b>${esc(String(v))}</b></div>`:'';

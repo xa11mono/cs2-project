@@ -1,0 +1,63 @@
+/* v128 — итоги турнира в шапке страницы турнира и MVP на главном баннере: плотно, без пустых панелей */
+
+/* ---------- строка итогов: чемпион · 2-е · 3-е · MVP ---------- */
+#hs-root .v128-results{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.7fr);gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)}
+#hs-root .v128-results.no-mvp{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,1fr)}
+#hs-root .v128-place,#hs-root .v128-mvp{position:relative;display:flex;align-items:center;gap:10px;min-width:0;height:72px;padding:0 14px;border-radius:12px;background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);cursor:pointer;transition:background .15s,box-shadow .15s,transform .15s}
+#hs-root .v128-place:hover,#hs-root .v128-mvp:hover{background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);transform:translateY(-1px)}
+#hs-root .v128-place:focus-visible,#hs-root .v128-mvp:focus-visible{outline:2px solid var(--c-focus);outline-offset:2px}
+#hs-root .v128-rank{flex:0 0 22px;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;font:800 11px/1 var(--f-ui,inherit);color:#11131a;background:#8b93a1}
+#hs-root .v128-place.p1 .v128-rank{background:linear-gradient(135deg,#ffe08a,#e0a91f)}
+#hs-root .v128-place.p2 .v128-rank{background:linear-gradient(135deg,#f1f4f8,#a9b3bd)}
+#hs-root .v128-place.p3 .v128-rank{background:linear-gradient(135deg,#f0b27a,#a0522d)}
+#hs-root .v128-place.p1{background:linear-gradient(90deg,rgba(255,197,61,.14),rgba(255,197,61,.04));box-shadow:inset 0 0 0 1px rgba(255,197,61,.3)}
+#hs-root .v128-place.p1:hover{box-shadow:inset 0 0 0 1px rgba(255,197,61,.55)}
+#hs-root .v128-tlogo{flex:0 0 auto;display:grid;place-items:center;width:34px;height:34px}
+#hs-root .v128-place.p1 .v128-tlogo{width:44px;height:44px}
+#hs-root .v128-tlogo .hl-logo,#hs-root .v128-tlogo img,#hs-root .v128-tlogo svg{max-width:100%;max-height:100%}
+#hs-root .v128-tcopy,#hs-root .v128-mcopy{display:flex;flex-direction:column;gap:3px;min-width:0}
+#hs-root .v128-tcopy small,#hs-root .v128-mcopy small{font:700 10.5px/1 var(--f-ui,inherit);letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-3)}
+#hs-root .v128-place.p1 .v128-tcopy small{color:var(--c-gold)}
+#hs-root .v128-tcopy b,#hs-root .v128-mcopy b{font:750 15px/1.15 var(--f-ui,inherit);color:var(--c-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hs-root .v128-place.p1 .v128-tcopy b{font-size:17px}
+#hs-root .v128-tcopy em,#hs-root .v128-mcopy em{display:flex;align-items:center;gap:5px;font:600 12px/1.2 var(--f-ui,inherit);font-style:normal;color:var(--c-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* MVP: портрет в рамке 72×72 (бюст по верхнему краю), рядом — имя и статистика за турнир */
+#hs-root .v128-mvp{padding:0 14px 0 0;overflow:hidden;background:linear-gradient(90deg,rgba(255,122,26,.12),rgba(255,255,255,.03) 55%);box-shadow:inset 0 0 0 1px rgba(255,122,26,.28)}
+#hs-root .v128-mvp:hover{box-shadow:inset 0 0 0 1px rgba(255,122,26,.5)}
+#hs-root .v128-mph{flex:0 0 72px;align-self:stretch;position:relative;overflow:hidden;background:radial-gradient(70% 80% at 50% 100%,rgba(255,122,26,.35),transparent 75%)}
+#hs-root .v128-mph .cs2-portrait{position:absolute!important;inset:6px 0 auto 0!important;display:block!important;width:100%!important;height:auto!important;min-width:0!important;max-width:none!important;aspect-ratio:1/1;margin:0!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;overflow:visible!important;transform:none!important}
+#hs-root .v128-mph .cs2-portrait img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;object-fit:cover!important;object-position:50% 0!important;border-radius:0!important;transform:none!important}
+#hs-root .v128-mph .cs2-portrait.empty{display:grid;place-items:center;inset:10px}
+#hs-root .v128-mcopy small i,#hs-root .v128-hmvp-t small i{font-style:normal;color:#1b0c02;background:var(--c-action);border-radius:4px;padding:1px 5px;margin-right:4px;letter-spacing:.04em}
+#hs-root .v128-mstats{display:flex;gap:14px;margin-left:auto;padding-left:6px}
+#hs-root .v128-mstat{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+#hs-root .v128-mstat b{font:800 16px/1 var(--f-ui,inherit);font-variant-numeric:tabular-nums;color:var(--c-text)}
+#hs-root .v128-mstat small{font:600 10px/1 var(--f-ui,inherit);color:var(--c-text-3);white-space:nowrap}
+@media (max-width:1500px){#hs-root .v128-mstat:nth-child(n+2){display:none}}
+@media (max-width:1180px){#hs-root .v128-results{grid-template-columns:repeat(3,minmax(0,1fr))}#hs-root .v128-mvp{grid-column:1/-1}#hs-root .v128-mstat:nth-child(n+2){display:flex}}
+@media (max-width:640px){#hs-root .v128-results{grid-template-columns:1fr}}
+
+/* ---------- «Материалы о турнире»: одна плотная строка карточек ---------- */
+#hs-root .v37-event-stories{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))!important;gap:10px!important;margin-top:16px!important;padding-top:14px!important;border-top:1px solid rgba(255,255,255,.07)!important}
+#hs-root .v37-event-stories button{position:relative;justify-content:center;gap:6px!important;min-height:64px;padding:10px 34px 10px 14px!important;border:0!important;border-radius:12px!important;background:rgba(255,255,255,.035)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);text-align:left}
+#hs-root .v37-event-stories button::after{content:"↗";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--c-text-3);font-size:14px;transition:color .15s,transform .15s}
+#hs-root .v37-event-stories button:hover{transform:none!important;background:rgba(255,255,255,.06)!important;box-shadow:inset 0 0 0 1px rgba(255,122,26,.4)}
+#hs-root .v37-event-stories button:hover::after{color:var(--c-action);transform:translate(2px,-60%)}
+#hs-root .v37-event-stories button small{font:700 10.5px/1 var(--f-ui,inherit)!important;letter-spacing:.06em!important;color:var(--c-action)!important}
+#hs-root .v37-event-stories button b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font:650 13px/1.35 var(--f-ui,inherit)!important;color:var(--c-text)}
+
+/* ---------- главный баннер: карточка MVP с портретом ---------- */
+#hs-root .v128-hmvp{display:inline-flex;align-items:center;gap:12px;height:64px;margin-top:14px;padding:0 16px 0 0;overflow:hidden;border:0;border-radius:12px;background:linear-gradient(90deg,rgba(255,197,61,.14),rgba(255,197,61,.04));box-shadow:inset 0 0 0 1px rgba(255,197,61,.3);color:var(--c-text);text-align:left;cursor:pointer;transition:box-shadow .15s,transform .15s}
+#hs-root .v128-hmvp:hover{box-shadow:inset 0 0 0 1px rgba(255,197,61,.6);transform:translateY(-1px)}
+#hs-root .v128-hmvp-ph{flex:0 0 64px;align-self:stretch;position:relative;overflow:hidden;background:radial-gradient(70% 80% at 50% 100%,rgba(255,197,61,.32),transparent 75%)}
+#hs-root .v128-hmvp-ph .cs2-portrait{position:absolute!important;inset:6px 0 auto 0!important;display:block!important;width:100%!important;height:auto!important;min-width:0!important;max-width:none!important;aspect-ratio:1/1;margin:0!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;overflow:visible!important;transform:none!important}
+#hs-root .v128-hmvp-ph .cs2-portrait img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;object-fit:cover!important;object-position:50% 0!important;border-radius:0!important;transform:none!important}
+#hs-root .v128-hmvp-ph .cs2-portrait.empty{display:grid;place-items:center;inset:10px}
+#hs-root .v128-hmvp-t{display:flex;flex-direction:column;gap:3px;min-width:0}
+#hs-root .v128-hmvp-t small{font:700 10.5px/1 var(--f-ui,inherit);letter-spacing:.06em;text-transform:uppercase;color:var(--c-gold)}
+#hs-root .v128-hmvp-t b{font:750 15px/1.15 var(--f-ui,inherit);color:var(--c-text);white-space:nowrap}
+#hs-root .v128-hmvp-t em{display:flex;align-items:center;gap:5px;font:600 12px/1.2 var(--f-ui,inherit);font-style:normal;color:var(--c-text-2);white-space:nowrap}
+#hs-root .v128-hmvp-rt{display:flex;flex-direction:column;gap:3px;margin-left:8px;padding-left:14px;border-left:1px solid rgba(255,255,255,.1)}
+#hs-root .v128-hmvp-rt b{font:800 18px/1 var(--f-ui,inherit);font-variant-numeric:tabular-nums}
+#hs-root .v128-hmvp-rt small{font:600 10.5px/1 var(--f-ui,inherit);color:var(--c-text-3);white-space:nowrap}
