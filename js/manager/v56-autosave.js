@@ -403,6 +403,35 @@
   window.v56RestoreAutosave = restoreFromFolder;
   window.v56AutosaveStatus = () => lastMessage;
 
+  // v131: защита от потери прогресса. Когда localStorage переполнен, записи состояния молча не проходят,
+  // и после перезагрузки игра открывалась на старой дате (в тесте — март 2027 вместо 2033). Полная копия
+  // при этом лежит в IndexedDB. При запуске сравниваем даты и, если автокопия заметно новее, предлагаем её загрузить.
+  async function checkNewerSnapshot() {
+    try {
+      if (typeof seasonState === 'undefined' || !seasonState?.calendar) return;
+      const rec = await dbGet('browserAutosave'); if (!rec || !rec.payload) return;
+      let st = rec.payload.seasonState; if (typeof st === 'string') { try { st = JSON.parse(st); } catch (e) { st = null; } }
+      const snapMs = Number(st?.calendar?.currentMs) || 0, curMs = Number(seasonState.calendar.currentMs) || 0;
+      if (!snapMs || snapMs - curMs < 2 * 864e5) return;
+      if (document.getElementById('v131-restore')) return;
+      const f = ms => new Date(ms).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+      const box = document.createElement('div'); box.id = 'v131-restore';
+      box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+      box.style.cssText = 'position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;background:rgba(5,7,10,.72);font-family:inherit';
+      box.innerHTML = `<div style="max-width:460px;margin:16px;padding:22px 24px;border-radius:14px;background:#14171c;border:1px solid #f08a24;color:#e8edf3;box-shadow:0 20px 60px rgba(0,0,0,.6)">
+        <h2 style="margin:0 0 10px;font-size:19px">Найдено более свежее сохранение</h2>
+        <p style="margin:0 0 6px;color:#b9c3cf;font-size:14px">Сейчас загружено: <b>${f(curMs)}</b></p>
+        <p style="margin:0 0 14px;color:#b9c3cf;font-size:14px">Автокопия в браузере: <b style="color:#ffd27a">${f(snapMs)}</b> (сохранена ${new Date(rec.savedAt || Date.now()).toLocaleString('ru-RU')})</p>
+        <p style="margin:0 0 16px;color:#8d99a6;font-size:13px">Основное хранилище браузера переполнено, поэтому последние сохранения попали только в автокопию.</p>
+        <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" data-v131r="no" style="padding:9px 14px;border-radius:9px;border:1px solid #3a4350;background:#1c2128;color:#cfd6df;cursor:pointer">Оставить как есть</button>
+        <button type="button" data-v131r="yes" style="padding:9px 14px;border-radius:9px;border:0;background:linear-gradient(180deg,#ffb04d,#f08a24);color:#1a0d00;font-weight:800;cursor:pointer">Загрузить автокопию</button></div></div>`;
+      box.addEventListener('click', async e => { const b = e.target.closest('[data-v131r]'); if (!b) return; box.remove(); if (b.dataset.v131r === 'yes') { try { await restoreBrowserSnapshot(); } catch (er) { status('Не удалось загрузить автокопию: ' + (er?.message || er), 'err'); } } });
+      document.body.appendChild(box);
+    } catch (e) { console.warn('[v131 autosave check]', e); }
+  }
+  setTimeout(checkNewerSnapshot, 4500);
+  window.v131CheckNewerSnapshot = checkNewerSnapshot;
+
   // Перехватываем стандартные записи браузерного сейва; тяжёлые данные из памяти
   // также подхватываются периодическим снимком, даже если конкретный модуль не пишет в localStorage.
   try {

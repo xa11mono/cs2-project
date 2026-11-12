@@ -1310,7 +1310,8 @@ function reconcileExistingMvpAwards() {
 
 // v33: Rating 3.0 (формула HLTV: KAST, KPR, DPR, Impact, ADR) из статистики архива портала
 function statOf(nick, season, evId) {
-  try { const H = window.HS; if (!H || !H.stats) return null; H.invalidate && H.invalidate(); const o = H.stats().P[nick]; if (!o) return null;
+  // v131: без принудительного сброса кэша — HS.stats() сам подхватывает новые турниры по ревизии архива (сброс = полная пересборка по всему архиву на каждый вызов)
+  try { const H = window.HS; if (!H || !H.stats) return null; const o = H.stats().P[nick]; if (!o) return null;
     const src = evId ? o.byEv[evId]?.s : season != null ? o.bySeason[season] : o.all; return src && src.maps ? H.line(src) : null; } catch (e) { return null; }
 }
 // Старый генератор сезонных наград удалён: годовой Top-20 и персональные

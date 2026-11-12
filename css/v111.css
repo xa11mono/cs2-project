@@ -146,3 +146,10 @@ html.ax-on #hs-root .ax-scened.ax-has-vis>.v112-t20badge{display:block!important
 #hs-root .v131-aw-r .v111-t20-rank{z-index:3;max-width:58%}
 #hs-root .v131-aw-r .v111-t20-rank b.v131-aw-lbl{font:900 26px/1.05 var(--f-ui);text-transform:uppercase}
 #hs-root .v131-aw-r img.v131-aw-logo{height:auto;width:58%;max-width:240px;align-self:center;margin-bottom:60px;-webkit-mask-image:none;mask-image:none;opacity:.95}
+/* v131: портрет на карточке HLTV Top 20 — на всю ширину правой колонки (раньше потолок 520px и мелкая голова внизу высокой колонки) */
+#hs-root .v111-t20-r img{width:auto;height:auto;max-width:100%;max-height:none;object-fit:contain;image-rendering:auto}
+#hs-root .v111-t20-r img.v131-fit{height:auto}
+#hs-root .v111-t20-r img.v131-aw-logo{width:58%;min-height:0;object-fit:contain}
+/* v131: громкие трансферы в ленте */
+#hs-root .v131-bigtag{display:inline-flex;align-items:center;margin-right:8px;padding:2px 8px;border-radius:6px;font:900 10px/1.4 var(--f-ui);letter-spacing:.08em;color:#1a0d00;background:linear-gradient(180deg,#ffd27a,#f08a24)}
+#hs-root .v131-bigrow{box-shadow:inset 3px 0 0 #f08a24}

@@ -74,7 +74,7 @@
       el.classList.add('v112-t20row');
       const box = el.querySelector(BOX);
       let badge = ''; try { badge = d.award ? (W.TW && W.TW.awardSvg ? W.TW.awardSvg(d.award.type, d.year) : '') : (W.TW && W.TW.top20Svg ? W.TW.top20Svg(d.r, d.year) : ''); } catch (e) {}
-      const tag = d.award ? `HLTV AWARDS ${d.year}` : `HLTV TOP 20 · №${d.r}`;
+      const tag = d.award || (d.ceremony && !d.nick) ? `HLTV AWARDS ${d.year}` : `HLTV TOP 20 · №${d.r}`;
       if (box && badge) { box.classList.add('v112-t20box'); box.insertAdjacentHTML('beforeend', `<span class="v112-t20badge${d.award ? ' aw' : ''}" title="${esc(tag)}">${badge}</span>`); }
       const k = el.querySelector('.nl-k, .hs-news-k, .ax-nw-k'); if (k && !k.querySelector('.v112-t20tag')) k.insertAdjacentHTML('afterbegin', `<span class="v112-t20tag">${esc(tag)}</span>`);
     });
@@ -130,12 +130,26 @@
       ${pod ? `<div class="v113-podium">${pod}</div>` : ''}${aw ? `<div class="v111-t20-box v113-aw"><h4>Награды года</h4><ul>${aw}</ul></div>` : ''}</section>`;
   }
   /* v131: «Команда года» и «Тренер года» — карточка команды: трофей, логотип, итоги года */
+  // v131: в «Командных достижениях» — только Major и Tier-1/S-Tier: без квалификаций, Tier-2/3 и академий
+  function tier1(h) {
+    const nm = String(h.tournament || '');
+    if (/qualif|квалиф|closed|open qualifier/i.test(nm)) return false;
+    try { if (W.twNormalizeTitleKind) return ['major', 'elite', 'regular'].includes(W.twNormalizeTitleKind(h.kind || h.prestige, nm, h.tier, h)); } catch (e) {}
+    return true;
+  }
+  // v131: портрет — лучший из доступных файлов (полуростовой, если есть, иначе квадрат 256 px) и без растягивания
+  // больше чем в 1,5 раза: исходники маленькие (200–420 px), при растяжке на всю колонку фото «мылится»
+  function portraitImg(photo, nick) {
+    let alt = ''; try { alt = (W.V31Media && W.V31Media.url('player', nick)) || ''; } catch (e) {}
+    const fit = "var w=this.naturalWidth,h=this.naturalHeight;if(h<300&&this.dataset.alt&&this.dataset.alt!==this.getAttribute('src')&&!this.dataset.sw){this.dataset.sw=1;this.src=this.dataset.alt;return;}this.style.width=Math.round(Math.min(this.parentNode.clientWidth,w*1.5))+'px';this.classList.add('v131-fit')";
+    return `<img src="${esc(photo)}" data-alt="${esc(alt)}" alt="" decoding="async" onload="${fit}">`;
+  }
   function teamAwardCard(it, d) {
     const a = d.award, team = a.team || a.nick, tn = tintOf(team);
     let svg = ''; try { svg = W.TW && W.TW.awardSvg ? W.TW.awardSvg(a.type, d.year) : ''; } catch (e) {}
     let logo = ''; try { logo = (W.V31Media && W.V31Media.url('team', team)) || ''; } catch (e) {}
     const t = H.teamBy ? H.teamBy(team) : null, places = { 1: [], 2: [], 3: [] };
-    ((t && t.history) || []).forEach(h => { if (!h || h.isSeasonAward) return; const y = H.yearOf ? H.yearOf(h.season) : 2025 + (+h.season || 1); if (y !== d.year || !(h.isMajor || h.isElite)) return; const pl = +h.place; if (pl >= 1 && pl <= 3) places[pl].push(h.tournament); });
+    ((t && t.history) || []).forEach(h => { if (!h || h.isSeasonAward) return; const y = H.yearOf ? H.yearOf(h.season) : 2025 + (+h.season || 1); if (y !== d.year || !(h.isMajor || h.isElite) || !tier1(h)) return; const pl = +h.place; if (pl >= 1 && pl <= 3 && !places[pl].includes(h.tournament)) places[pl].push(h.tournament); });
     const list2 = arr => arr.length ? `<ul>${arr.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<p class="v111-none">—</p>';
     const body = (Array.isArray(it.body) ? it.body : []).map(x => `<li>${esc(x)}</li>`).join('');
     return `<section class="v111-t20 v131-awcard" style="--tr:${tn[0]};--tg:${tn[1]};--tb:${tn[2]}">
@@ -163,8 +177,8 @@
     // командные места за год (Tier-1 и Мейджоры)
     const places = { 1: [], 2: [], 3: [] };
     const t = teamName && H.teamBy(teamName);
-    ((t && t.history) || []).forEach(h => { if (!h || h.isSeasonAward) return; const y = H.yearOf ? H.yearOf(h.season) : 2025 + (+h.season || 1); if (y !== d.year || !(h.isMajor || h.isElite)) return; const pl = +h.place; if (pl >= 1 && pl <= 3) places[pl].push(h.tournament); });
-    (aw.ti || []).filter(x => +x.y === d.year).forEach(x => { if (!places[1].includes(x.n)) places[1].push(x.n); });
+    ((t && t.history) || []).forEach(h => { if (!h || h.isSeasonAward) return; const y = H.yearOf ? H.yearOf(h.season) : 2025 + (+h.season || 1); if (y !== d.year || !(h.isMajor || h.isElite) || !tier1(h)) return; const pl = +h.place; if (pl >= 1 && pl <= 3 && !places[pl].includes(h.tournament)) places[pl].push(h.tournament); });
+    (aw.ti || []).filter(x => +x.y === d.year && tier1({ tournament: x.n, kind: x.k || x.kind, prestige: x.prestige, tier: x.tier })).forEach(x => { if (!places[1].includes(x.n)) places[1].push(x.n); });
     // личная статистика
     const bars = L ? [
       ['Убийства за раунд', L.kpr, avg('kpr'), L.kpr.toFixed(2), 1.2],
@@ -202,7 +216,7 @@
         ${barHtml ? `<div class="v111-t20-box"><h4>Личная статистика <small>· отметка — среднее по топ-20</small></h4>${barHtml}</div>` : ''}
         ${notes.length ? `<div class="v111-t20-box"><h4>Заметные показатели</h4><ul class="v111-t20-notes">${notes.map(([t, r]) => `<li>${esc(t)} <b class="${r <= 3 ? 'hi' : ''}">(#${r})</b></li>`).join('')}</ul></div>` : ''}
       </div>
-      <div class="v111-t20-r${d.award ? ' v131-aw-r' : ''}">${photo ? `<img src="${esc(photo)}" alt="" loading="lazy" decoding="async">` : ''}${d.award ? (() => { let svg = ''; try { svg = W.TW && W.TW.awardSvg ? W.TW.awardSvg(d.award.type, d.year) : ''; } catch (e) {} return `<span class="v131-aw-trophy">${svg}</span><div class="v111-t20-rank"><b class="v131-aw-lbl">${esc(d.award.label)}</b><small>HLTV AWARDS / ${d.year}</small></div>`; })() : `<div class="v111-t20-rank"><b>#${d.r}</b><small>HLTV TOP 20 / ${d.year}</small></div>`}</div>
+      <div class="v111-t20-r${d.award ? ' v131-aw-r' : ''}">${photo ? portraitImg(photo, d.nick) : ''}${d.award ? (() => { let svg = ''; try { svg = W.TW && W.TW.awardSvg ? W.TW.awardSvg(d.award.type, d.year) : ''; } catch (e) {} return `<span class="v131-aw-trophy">${svg}</span><div class="v111-t20-rank"><b class="v131-aw-lbl">${esc(d.award.label)}</b><small>HLTV AWARDS / ${d.year}</small></div>`; })() : `<div class="v111-t20-rank"><b>#${d.r}</b><small>HLTV TOP 20 / ${d.year}</small></div>`}</div>
     </section>`;
   }
 
@@ -222,5 +236,54 @@
   const every = (W.CS2Loop && W.CS2Loop.every) || ((f, ms) => setInterval(f, ms));
   every(() => { try { decorate(document.getElementById('hs-page')); } catch (e) {} }, 1500, 'v111-news');
 
-  W.V111News = { srcOf, SRC, card, cardData };
+  /* ------------------------------------------------------------ v131: громкие трансферы */
+  // Переход (или подписание свободного агента) игрока из Топ-20 HLTV последнего года либо игрока с рейтингом 1.12+
+  // за год в Tier-1 — главная новость: заголовок «Громкий трансфер», важность 8–9, место в Топ-20 и статистика.
+  const MOVE_T = /^(трансфер|подписание|выкуп)$/;
+  function bigInfo(nick) {
+    if (!nick) return null;
+    const yNow = (H.yearOf && seasonStateYear()) || new Date().getFullYear();
+    let top = null;
+    try { const rec = (W.twAwardsExport && (W.twAwardsExport().p || {})[nick]) || {}; (rec.top || []).forEach(x => { if (+x.y >= yNow - 1 && (!top || +x.y > +top.y || (+x.y === +top.y && x.r < top.r))) top = x; }); } catch (e) {}
+    let L = null, ly = 0;
+    try { const o = H.stats().P[nick]; [yNow, yNow - 1].some(y => { const src = o && o.byYear && o.byYear[y]; const l = src && H.line(src); if (l && l.maps >= 20) { L = l; ly = y; return true; } return false; }); } catch (e) {}
+    const big = !!top || (L && L.rating >= 1.12);
+    return big ? { top, L, ly, mega: !!(top && top.r <= 5) || (L && L.rating >= 1.2) } : null;
+  }
+  function seasonStateYear() { try { return new Date(Number(seasonState.calendar.currentMs)).getFullYear(); } catch (e) { return 0; } }
+  // хук вызывается из V29News.add (генераторы трансферов берут add напрямую, обёртка над N.add их не видит)
+  W.V131NewsHook = function (it) {
+    try {
+      if (!(it && it.cat === 'transfer' && it.player && it.team && !it.big && !it.rumor && (MOVE_T.test(String(it.ttype || '')) || it.from))) return;
+      const b = bigInfo(it.player); if (!b) return;
+      it.big = true; it.imp = Math.max(Number(it.imp) || 0, b.mega ? 9 : 8);
+      if (!/^Громкий трансфер/.test(it.title || '')) it.title = `Громкий трансфер: ${it.player} — в ${it.team}`;
+      const extra = [];
+      if (b.top) extra.push(`${it.player} — №${b.top.r} рейтинга HLTV Top 20 ${b.top.y} года.`);
+      if (b.L) extra.push(`Статистика за ${b.ly} год (Tier-1): Rating 3.0 ${b.L.rating.toFixed(2)} на ${b.L.maps} картах, ADR ${b.L.adr.toFixed(1)}, KAST ${b.L.kast.toFixed(1)}%.`);
+      it.body = extra.concat(Array.isArray(it.body) ? it.body : []);
+    } catch (e) {}
+  };
+  // v131: закрепление важного наверху «Главной» и ленты на несколько игровых дней:
+  // громкие трансферы и Топ-20/HLTV Awards — 3 дня, победитель турнира Tier-1 — 2 дня (Мейджор — 3), MVP турнира — 2 дня
+  const DAYMS = 864e5;
+  W.V131PinFor = function (n) {
+    if (!n || n.legacy) return 0;
+    const imp = Number(n.imp) || 0, t = String(n.title || '');
+    if (n.big) return 3 * DAYMS;
+    if (n.t20 || n.hltvAward || cardData(n)) return 3 * DAYMS;
+    if (n.cat === 'award' && / — MVP турнира /.test(t)) return 2 * DAYMS;
+    if ((n.cat === 'tournament' || n.cat === 'major') && /^Итоги .+: путь .+ к титулу/.test(t) && imp >= 8) return (n.cat === 'major' || imp >= 10 ? 3 : 2) * DAYMS;
+    return 0;
+  };
+  W.V131Pins = function (list, nowT, max) {
+    return list.filter(n => { const d = W.V131PinFor(n); return d && nowT - (Number(n.ts) || 0) < d && nowT >= (Number(n.ts) || 0) - 60000; })
+      .sort((a, b) => (Number(b.imp) || 0) - (Number(a.imp) || 0) || (b.ts || 0) - (a.ts || 0)).slice(0, max || 3);
+  };
+  // метка в ленте
+  every(() => { try { (document.getElementById('hs-page') || document).querySelectorAll('[data-art]:not([data-v131big])').forEach(el => {
+    el.setAttribute('data-v131big', '1'); const it = N.get ? N.get(el.dataset.art) : null; if (!it || !it.big) return;
+    el.classList.add('v131-bigrow'); const k = el.querySelector('.nl-k, .hs-news-k, .ax-nw-k'); if (k && !k.querySelector('.v131-bigtag')) k.insertAdjacentHTML('afterbegin', '<span class="v131-bigtag">ГРОМКИЙ ТРАНСФЕР</span>'); }); } catch (e) {} }, 1500, 'v131-big');
+
+  W.V111News = { srcOf, SRC, card, cardData, bigInfo };
 })();

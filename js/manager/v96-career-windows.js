@@ -22,6 +22,8 @@
   const me = () => { try { return V.managed() || ''; } catch (e) { return ''; } };
   const team = () => H.teamBy(me());
   const weekNo = () => Math.floor(now() / DAY / 7);
+  // v131: в заголовке — номер недели в календарном году (раньше: недели с 1970 г. по модулю 100 — «неделя 24» в январе)
+  const yearWeek = () => { const d = new Date(now()), y0 = new Date(d.getFullYear(), 0, 1).getTime(); return Math.floor((d.getTime() - y0) / DAY / 7) + 1; };
   const S = () => { const s = seasonState.v96 = seasonState.v96 || {}; s.trainWeek = s.trainWeek == null ? -1 : s.trainWeek; s.seen = s.seen || {}; s.later = s.later || {}; return s; };
   const save = () => { try { saveSeasonState(); } catch (e) {} try { saveTeams(); } catch (e) {} };
   const fdate = ms => { try { return H.fdate(ms); } catch (e) { return new Date(ms).toLocaleDateString('ru-RU'); } };
@@ -134,7 +136,7 @@
       body = eventCard(cur.ev);
       foot = `<small class="v96-hint">Клавиши 1–${cur.ev.options.length} — выбрать вариант</small><button type="button" class="v96-later" data-v96later="${esc(cur.ev.id)}">Решить позже</button>`;
     } else {
-      body = `<article class="v96-ev"><header class="v96-ev-h"><span class="v96-kind">Тренировка</span><span class="v96-due">неделя ${weekNo() % 100}</span></header><h3>План тренировок на неделю</h3><p class="v96-ev-t">Выберите фокус и интенсивность. Эффект применяется раз в игровую неделю; план действует, пока вы его не измените.</p>${trainingPanel({ compact: true })}</article>`;
+      body = `<article class="v96-ev"><header class="v96-ev-h"><span class="v96-kind">Тренировка</span><span class="v96-due">неделя ${yearWeek()}</span></header><h3>План тренировок на неделю</h3><p class="v96-ev-t">Выберите фокус и интенсивность. Эффект применяется раз в игровую неделю; план действует, пока вы его не измените.</p>${trainingPanel({ compact: true })}</article>`;
       foot = `<small class="v96-hint">Рекомендация ассистента помечена в списке</small><span class="v96-foot-b"><button type="button" class="v96-later" data-v96trkeep>Оставить как есть</button><button type="button" class="v96-go" data-v96trok>Утвердить план</button></span>`;
     }
     root.innerHTML = `<div class="v96-back" data-v96close></div><div class="v96-win">

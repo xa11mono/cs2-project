@@ -863,11 +863,16 @@
     try {
       if (typeof document === 'undefined' || document.getElementById('cs2-stk-ui')) return;
       const st = document.createElement('style'); st.id = 'cs2-stk-ui';
-      st.textContent = `.v84-stk-svg .stk-holo{transform:translate(var(--hx,0px),var(--hy,0px));transition:transform .12s linear;animation:stkHolo 7s ease-in-out infinite alternate}
-.v84-stk:hover .v84-stk-svg .stk-holo,#stk-inspect .stk-holo{animation:none}
+      // v131: в сетке стикеры статичны — бесконечные анимации голограммы и блика у каждого из десятков сложных SVG
+      // (градиенты, маски, размытие) перерисовывали всю страницу каждый кадр и роняли FPS. Голограмма двигается
+      // только у стикера под курсором (вслед за мышью) и в окне осмотра; карточки за экраном не рисуются.
+      st.textContent = `.v84-stk-svg .stk-holo{transform:translate(var(--hx,0px),var(--hy,0px));transition:transform .12s linear}
 @keyframes stkHolo{from{transform:translate(-30px,-18px)}to{transform:translate(30px,18px)}}
-.v84-stk-svg .stk-glint{opacity:var(--ga,.6);transition:opacity .15s;animation:stkGlint 2.4s steps(3) infinite}
+.v84-stk-svg .stk-glint{opacity:var(--ga,.6);transition:opacity .15s}
+.v84-stk:hover .v84-stk-svg .stk-glint{animation:stkGlint 2.4s steps(3) infinite}
 #stk-inspect .stk-glint{animation:none}
+.v84-stk-grid>.v84-stk{content-visibility:auto;contain-intrinsic-size:118px 150px;contain:layout paint}
+.v84-stk-team{content-visibility:auto;contain-intrinsic-size:auto 420px}
 @keyframes stkGlint{0%{opacity:.35}50%{opacity:.85}100%{opacity:.5}}
 #stk-inspect{position:fixed;inset:0;z-index:99999;background:radial-gradient(ellipse at 50% 40%,#2a3442,#0b0e13 75%);display:flex;align-items:center;justify-content:center}
 #stk-inspect .stk-insp-card{text-align:center;color:#dfe5ee;font-family:Arial,sans-serif}

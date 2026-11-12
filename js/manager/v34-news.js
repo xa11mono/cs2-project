@@ -37,7 +37,7 @@ function angleOf(it) {
 function evName(it) { if (it.ev) { try { const s = (window.hubArchiveExport ? window.hubArchiveExport() : {})[it.ev]; if (s) return s.name; } catch (e) {} } return (it.title || '').match(/на (.+?)$/)?.[1] || 'турнире'; }
 let startSeq = null;
 function rewrite(it) {
-  if (!it || it.v34h || it.legacy) return;
+  if (!it || it.v34h || it.legacy || it.big || it.t20 || it.hltvAward) return;   // v131: громкие трансферы и Топ-20/награды — со своими заголовками
   if (startSeq == null) startSeq = Math.max(0, ...(N.all() || []).map(x => +x.o || 0));
   if ((+it.o || 0) <= startSeq) return;   // старые заголовки не трогаем — только новые материалы
   it.v34h = 1;

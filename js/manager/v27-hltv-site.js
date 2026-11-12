@@ -289,42 +289,22 @@ function addTo(o, x) {
   o.maps++; if (x.won) o.mw++; o.R += x.R; o.k += x.k; o.d += x.d; o.a += x.a; o.dmg += x.adr * x.R; o.hsk += x.hsk; o.kastR += x.kast * x.R / 100; o.rt += x.rating * x.R; o.imp += x.impact * x.R;
   o.ok += x.ok_; o.od += x.od; o.k2 += x.k2; o.k3 += x.k3; o.k4 += x.k4; o.k5 += x.k5; o.clA += x.clA; o.clW += x.clW;
 }
-let STATS = null, STATS_KEY = '', STATS_TURN_KEY = null;
+let STATS = null, STATS_KEY = '', STATS_TURN_KEY = null, STATS_BUILT = null;
+const STATS_DIAG = window.CS2StatsDiag = { full: 0, inc: 0, incMatches: 0, fullMatches: 0 };   // v131: диагностика пересборок статистики
 const LINE_MEMO = new Map(); // v84: кэш строк карт с архивными составами (составы и счёт не меняются)
-function stats() {
-  // Build the cache key from cheap revisions/signatures before filtering the archive.
-  // Previously every 2.2s news scan called archMatches().filter() across all archived maps
-  // even when no tournament had changed, freezing large legacy saves for several seconds.
-  const archived = archMatches();
-  // v84: the roster/career part of the cache key is computed at most once per
-  // synchronous turn (weekly AI evaluation used to rebuild it ~500 times per week),
-  // and attributes are rounded so fractional weekly training gains no longer force
-  // a full rebuild of every historical player line.
-  const careerLedger = (() => { try { return typeof transferState !== 'undefined' && transferState.v57PlayerCareer || {}; } catch(e) { return {}; } })();
-  let sideKey = STATS_TURN_KEY;
-  if (sideKey === null) {
-    const careerKey = Object.entries(careerLedger).map(([n,x]) => `${n}:${Number(x?.__v57UpdatedAt)||0}:${Number(x?.__v57MatchCount)|| (Array.isArray(x?.matches)?x.matches.length:0)}`).sort().join(',');
-    const rosterKey = TEAMS().map(t => (t.players || []).map(p => `${p.nick}:${p.role||''}:${Math.round(Number(p.firepower)||0)}:${Math.round(Number(p.clutch)||0)}:${Math.round(Number(p.utility)||0)}:${Math.round(Number(p.tacticalIQ)||0)}`).join(',')).join(';');
-    sideKey = STATS_TURN_KEY = `${hash(rosterKey)}|${hash(careerKey)}`;
-    Promise.resolve().then(() => { STATS_TURN_KEY = null; });
-  }
-  const key = `${ARCH_KEY}|${sideKey}`;
-  if (STATS && STATS_KEY === key) { STATS.ms = allMatches(); return STATS; }
-  const ms = archived.filter(m => m.kind !== 'show'); // v84: Кубок наций считается только в статистике самого турнира (byEv), не в рейтинге игрока/клуба // шоу-матчи и Кубок наций — только в истории, не в рейтинге игроков/команд
-  ZP = null;
-  const P = {}, T = {}, M = {};
-  const pOf = (x) => P[x.nick] || (P[x.nick] = { nick: x.nick, team: x.team, p: x.p, all: Z0(), bySeason: {}, byYear: {}, bySK: {}, byMap: {}, byEv: {}, matches: [] });
+// v131: обработка одного матча архива (общая для полной сборки и инкрементального обновления статистики)
+function addMatch(m, P, T, M, affP) {
+  const pOf = (x) => { if (affP) affP.add(x.nick); return P[x.nick] || (P[x.nick] = { nick: x.nick, team: x.team, p: x.p, all: Z0(), bySeason: {}, byYear: {}, bySK: {}, byMap: {}, byEv: {}, matches: [] }); };
   const tAdd = (name, won, rw, rl, map, m, isMatch, matchWon) => {
     const o = T[name] || (T[name] = { name, maps: 0, mw: 0, rw: 0, rl: 0, matches: 0, matchW: 0, byMap: {}, form: [], h2h: {} });
     if (isMatch) {
-      o.matches++; if (matchWon) o.matchW++; o.form.unshift(matchWon ? 'W' : 'L'); if (o.form.length > 10) o.form.length = 10; // v30: последние матчи, а не первые
+      o.matches++; if (matchWon) o.matchW++; o.form.unshift(matchWon ? 'W' : 'L'); if (o.form.length > 10) o.form.length = 10;
       const opp = m.a === name ? m.b : m.a, h = o.h2h[opp] || (o.h2h[opp] = { w: 0, l: 0 }); if (matchWon) h.w++; else h.l++;
       return;
     }
     o.maps++; if (won) o.mw++; o.rw += rw; o.rl += rl;
     const bm = o.byMap[map] || (o.byMap[map] = { n: 0, w: 0, rw: 0, rl: 0 }); bm.n++; if (won) bm.w++; bm.rw += rw; bm.rl += rl;
   };
-  [...ms].reverse().forEach(m => { // от старых к новым — так копятся ряды рейтинга по матчам
     const NAT = m.kind === 'nations';
     if (!NAT) { tAdd(m.a, 0, 0, 0, 0, m, true, m.w === m.a); tAdd(m.b, 0, 0, 0, 0, m, true, m.w === m.b); }
     const rA = rosterOf(m, m.a), rB = rosterOf(m, m.b), per = {};
@@ -354,7 +334,70 @@ function stats() {
       });
     });
     Object.entries(per).forEach(([nick, pm]) => P[nick].matches.unshift(pm)); // новые — первыми
-  });
+}
+function stats() {
+  // Build the cache key from cheap revisions/signatures before filtering the archive.
+  // Previously every 2.2s news scan called archMatches().filter() across all archived maps
+  // even when no tournament had changed, freezing large legacy saves for several seconds.
+  const archived = archMatches();
+  // v84: the roster/career part of the cache key is computed at most once per
+  // synchronous turn (weekly AI evaluation used to rebuild it ~500 times per week),
+  // and attributes are rounded so fractional weekly training gains no longer force
+  // a full rebuild of every historical player line.
+  const careerLedger = (() => { try { return typeof transferState !== 'undefined' && transferState.v57PlayerCareer || {}; } catch(e) { return {}; } })();
+  let sideKey = STATS_TURN_KEY;
+  if (sideKey === null) {
+    const careerKey = Object.entries(careerLedger).map(([n,x]) => `${n}:${Number(x?.__v57UpdatedAt)||0}:${Number(x?.__v57MatchCount)|| (Array.isArray(x?.matches)?x.matches.length:0)}`).sort().join(',');
+    // v131: в ключе — только состав команд (кто где играет). Агрегаты матчей не зависят от характеристик и роли:
+    // o.p — ссылка на живой объект игрока, поэтому еженедельные тренировки больше не вызывают полную пересборку
+    // статистики по всему архиву (на 6–7 сезоне это секунды на каждый вызов во время перемотки).
+    const rosterKey = TEAMS().map(t => `${t.name}=` + (t.players || []).map(p => p.nick).join(',')).join(';');
+    sideKey = STATS_TURN_KEY = `${hash(rosterKey)}|${hash(careerKey)}`;
+    Promise.resolve().then(() => { STATS_TURN_KEY = null; });
+  }
+  const key = `${ARCH_KEY}|${sideKey}`;
+  if (STATS && STATS_KEY === key) { STATS.ms = allMatches(); return STATS; }
+  const ms = archived.filter(m => m.kind !== 'show');
+  // v131: инкрементальное обновление. Если в архив только добавились матчи (новый турнир), а составы и
+  // карьерный журнал не менялись — досчитываем лишь новые матчи поверх готовых агрегатов, а не обходим весь архив.
+  // Суммы от порядка не зависят; порядок списков матчей игроков и «форму» команд восстанавливаем отдельно.
+  const B = STATS_BUILT;
+  if (!STATS || !B) STATS_DIAG.noBase = (STATS_DIAG.noBase || 0) + 1;
+  else if (B.sideKey !== sideKey) { STATS_DIAG.side = (STATS_DIAG.side || 0) + 1; if (B.sideKey.split('|')[0] !== sideKey.split('|')[0]) STATS_DIAG.roster = (STATS_DIAG.roster || 0) + 1; }
+  if (STATS && B && B.sideKey === sideKey) {
+    const fresh = ms.filter(m => !B.ids.has(m.id));
+    const rostN = ms.reduce((n, m) => n + (m.rost ? 1 : 0), 0);
+    // ревизия архива сменилась, а матчи те же (событие без карт, служебная перезапись) — статистика не меняется
+    if (!fresh.length && ms.length === B.ids.size && rostN === B.rostN) { STATS.ms = allMatches(); STATS_KEY = key; STATS_DIAG.same = (STATS_DIAG.same || 0) + 1; return STATS; }
+    if (!(fresh.length && ms.length - fresh.length === B.ids.size)) STATS_DIAG.notAppend = (STATS_DIAG.notAppend || 0) + 1;
+    if (fresh.length && ms.length - fresh.length === B.ids.size && fresh.length <= Math.max(400, ms.length * .25)) {
+      const touched = new Set(); fresh.forEach(m => { rosterOf(m, m.a).concat(rosterOf(m, m.b)).forEach(x => touched.add(x && (x.nick || x))); });
+      if (![...touched].some(n => B.replaced.has(n))) {
+        const { P, T, M } = STATS, affP = new Set(), affT = new Set();
+        ZP = null;
+        [...fresh].reverse().forEach(m => { addMatch(m, P, T, M, affP); affT.add(m.a); affT.add(m.b); B.ids.add(m.id); });
+        affP.forEach(n => { const o = P[n]; if (o && o.matches) o.matches.sort((a, b) => (b.ts || 0) - (a.ts || 0)); });
+        affT.forEach(name => { const o = T[name]; if (!o) return; o.form = []; for (const m of ms) { if (m.kind === 'nations' || (m.a !== name && m.b !== name)) continue; o.form.push(m.w === name ? 'W' : 'L'); if (o.form.length >= 10) break; } });
+        affP.forEach(n => { const o = P[n], now = o && playerNow(o.nick); if (now) { o.team = now.t?.name || 'Свободный агент'; o.p = now.p; } });
+        B.rostN = rostN; STATS.ms = allMatches(); STATS_KEY = key; STATS_DIAG.inc++; STATS_DIAG.incMatches += fresh.length;
+        return STATS;
+      }
+    }
+  } // v84: Кубок наций считается только в статистике самого турнира (byEv), не в рейтинге игрока/клуба // шоу-матчи и Кубок наций — только в истории, не в рейтинге игроков/команд
+  ZP = null;
+  const P = {}, T = {}, M = {};
+  const pOf = (x) => P[x.nick] || (P[x.nick] = { nick: x.nick, team: x.team, p: x.p, all: Z0(), bySeason: {}, byYear: {}, bySK: {}, byMap: {}, byEv: {}, matches: [] });
+  const tAdd = (name, won, rw, rl, map, m, isMatch, matchWon) => {
+    const o = T[name] || (T[name] = { name, maps: 0, mw: 0, rw: 0, rl: 0, matches: 0, matchW: 0, byMap: {}, form: [], h2h: {} });
+    if (isMatch) {
+      o.matches++; if (matchWon) o.matchW++; o.form.unshift(matchWon ? 'W' : 'L'); if (o.form.length > 10) o.form.length = 10; // v30: последние матчи, а не первые
+      const opp = m.a === name ? m.b : m.a, h = o.h2h[opp] || (o.h2h[opp] = { w: 0, l: 0 }); if (matchWon) h.w++; else h.l++;
+      return;
+    }
+    o.maps++; if (won) o.mw++; o.rw += rw; o.rl += rl;
+    const bm = o.byMap[map] || (o.byMap[map] = { n: 0, w: 0, rw: 0, rl: 0 }); bm.n++; if (won) bm.w++; bm.rw += rw; bm.rl += rl;
+  };
+  [...ms].reverse().forEach(m => addMatch(m, P, T, M, null)); // от старых к новым — так копятся ряды рейтинга по матчам
   // v57: если игрок ушёл в свободные агенты, сохраняем последний полноценный career-агрегат.
   // Архивы старых сейвов без roster snapshots иначе начинали приписывать ему состав клуба,
   // а после ухода игрока его сыгранные карты исчезали из профиля.
@@ -366,6 +409,8 @@ function stats() {
   // текущий клуб / данные игрока — по нынешним составам и рынку свободных агентов
   Object.values(P).forEach(o => { const now = playerNow(o.nick); if (now) { o.team = now.t?.name || 'Свободный агент'; o.p = now.p; } });
   STATS = { P, T, M, ms: allMatches() }; STATS_KEY = key;
+  STATS_DIAG.full++; STATS_DIAG.fullMatches = ms.length;
+  STATS_BUILT = { sideKey, rostN: ms.reduce((n, m) => n + (m.rost ? 1 : 0), 0), ids: new Set(ms.map(m => m.id)), replaced: new Set(Object.keys(careerLedger).filter(n => P[n] === careerLedger[n])) };
   return STATS;
 }
 function line(o) { // сумма → средние
@@ -509,7 +554,7 @@ window.addEventListener('popstate', () => { const [p, a] = parseHash(); S.hist.p
 window.addEventListener('resize', () => { if (root) markNav(); });
 window.hltvSiteRefreshPickemNav = () => { if (root) markNav(); };
 window.hltvSiteOpen = open;
-window.hltvSiteReset = () => { STATS = null; STATS_KEY = ''; STATS_TURN_KEY = null; ZP = null; ARCH_MS = null; ALL_MS = null; S.hist = []; S.cmp = null; if (root) render(); };
+window.hltvSiteReset = () => { STATS_BUILT = null; STATS = null; STATS_KEY = ''; STATS_TURN_KEY = null; ZP = null; ARCH_MS = null; ALL_MS = null; S.hist = []; S.cmp = null; if (root) render(); };
 Promise.resolve(window.hubArchiveReady).then(() => { try { window.hltvSiteReset?.(); } catch (e) {} });
 window.hltvSiteOpenPlayer = nick => { S.ptab = 'overview'; open('player', nick); };
 window.hltvMiniTop = n => {
@@ -1246,7 +1291,7 @@ window.HS = {
   S, PAGES, AFTER, CLICKS, ICON, NAV_GAME, NAV_MORE, SECTION_OF, nav, render, esc, hash, rngOf, f1, f2, yearOf, TEAMS, ranked, teamBy, archive, awards, ensure, flag, pFlag, logo, SIL, KIND, KIND_ORDER,
   trophy, photoHtml, photoOf, ratingCls, allMatches, rosterOf, playerNow, stats, line, filtered, Z0, mapLines, box, back, empty, matchRow, calendarEvents, fdate, nowMs, feed, newsRow, topStory,
   findNews, ndate, NW, NCATS, pollBox, predictMini, predCard, radar, ratingChart, attrsOf, ATTR_L, achItems, clamp, enc, routeOf,
-  invalidate: () => { STATS = null; STATS_KEY = ''; STATS_TURN_KEY = null; ZP = null; ARCH_MS = null; ARCH_KEY = ''; ARCH_REV = -1; ALL_MS = null; },
+  invalidate: () => { STATS_BUILT = null; STATS = null; STATS_KEY = ''; STATS_TURN_KEY = null; ZP = null; ARCH_MS = null; ARCH_KEY = ''; ARCH_REV = -1; ALL_MS = null; },
   matchIndex
 };
 Object.assign(PAGES, { home: pHome, news: pNews, article: pArticle, predict: pPredict, matches: pMatches, match: pMatch, events: pEvents, stats: pStats, ranking: pRanking, awards: pAwards, player: pPlayer, team: pTeam });

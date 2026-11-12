@@ -136,7 +136,7 @@
   function startOf(rec) { if (!rec.start) rec.start = Math.max(rec.next || 0, Math.min(20, rec.computed?.top?.length || 0)); return rec.start; }
   function rankAt(rec, r) { return Math.min(rec.revealAt + (startOf(rec) - r) * DAY, rec.ceremonyAt - 2 * HOUR); }
   function rankNews(rec, x, ts) {
-    news({ cat: 'award', icon: '🏅', imp: x.r <= 5 ? 8 : x.r <= 10 ? 6 : 5, player: x.nick, team: x.team, ts,
+    news({ src: 'hltv', cat: 'award', icon: '🏅', imp: x.r <= 5 ? 8 : x.r <= 10 ? 6 : 5, player: x.nick, team: x.team, ts,
       t20: { year: rec.year, r: x.r, nick: x.nick },
       title: `Топ-20 игроков ${rec.year}: №${x.r} — ${x.nick}`,
       lead: `${x.nick} (${x.team || '—'}) занимает ${x.r}-е место в рейтинге лучших игроков ${rec.year} года.`,
@@ -148,12 +148,12 @@
   // №3 → №2 → №1 (игрок года) → личные награды по одной → «Команда года» → итоговая статья.
   function ceremonySteps(rec) {
     const top = rec.computed?.top || [], C = rec.ceremonyAt, out = [];
-    [3, 2, 1].forEach((r, i) => { const x = top.find(z => z.r === r); if (x) out.push({ at: C + i * 2 * HOUR, k: 'top', r }); });
+    [3, 2, 1].forEach((r, i) => { const x = top.find(z => z.r === r); if (x) out.push({ at: C + i * HOUR, k: 'top', r }); });
     const rows = (rec.computed?.awardRows || []).filter(a => a && a.type !== 'poty');
     rows.sort((a, b) => (AW_ORDER.indexOf(a.type) + 99) % 99 - (AW_ORDER.indexOf(b.type) + 99) % 99);
-    let at = C + 4 * HOUR + 40 * 60000;
-    rows.forEach(a => { out.push({ at, k: 'aw', type: a.type }); at += 20 * 60000; });
-    if (rec.team?.team) { out.push({ at, k: 'team' }); at += 20 * 60000; }
+    let at = C + 2 * HOUR + 20 * 60000;   // церемония укладывается в один вечер (19:00 → ~23:00)
+    rows.forEach(a => { out.push({ at, k: 'aw', type: a.type }); at += 8 * 60000; });
+    if (rec.team?.team) { out.push({ at, k: 'team' }); at += 8 * 60000; }
     out.push({ at: at + 10 * 60000, k: 'sum' });
     return out;
   }
@@ -164,22 +164,22 @@
       const word = { 3: 'третье', 2: 'второе', 1: 'первое' }[x.r];
       if (x.r === 1) {
         const hof = (ST()?.hallOfFame || []).find(h => Number(h.season) === rec.season); if (hof?.awards) hof.awards.mvp = x.nick;
-        news({ cat: 'award', icon: '🏆', imp: 10, player: x.nick, team: x.team, ts: st.at, t20: { year: y, r: 1, nick: x.nick },
+        news({ src: 'hltv', cat: 'award', icon: '🏆', imp: 10, player: x.nick, team: x.team, ts: st.at, t20: { year: y, r: 1, nick: x.nick },
           title: `HLTV Awards ${y}: ${x.nick} — лучший игрок года`,
           lead: `${x.nick} (${x.team || '—'}) возглавляет рейтинг HLTV Top 20 и получает главную награду ${y} года.`,
           body: [statLine(x.nick, y), x.mvpCount ? `MVP турниров за год: ${x.mvpCount}.` : '', 'Остальные награды года объявят в течение вечера.'].filter(Boolean),
           tags: [P(x.nick)].concat(x.team ? [T(x.team)] : []) });
-      } else news({ cat: 'award', icon: '🏅', imp: 9, player: x.nick, team: x.team, ts: st.at, t20: { year: y, r: x.r, nick: x.nick },
+      } else news({ src: 'hltv', cat: 'award', icon: '🏅', imp: 9, player: x.nick, team: x.team, ts: st.at, t20: { year: y, r: x.r, nick: x.nick },
         title: `Топ-20 игроков ${y}: №${x.r} — ${x.nick}`,
         lead: `Церемония HLTV Awards: ${x.nick} (${x.team || '—'}) — ${word} место в рейтинге лучших игроков ${y} года.`,
-        body: [statLine(x.nick, y), x.mvpCount ? `MVP турниров за год: ${x.mvpCount}.` : '', x.r === 3 ? 'Через пару часов — №2.' : 'Следующим объявят игрока года.'].filter(Boolean),
+        body: [statLine(x.nick, y), x.mvpCount ? `MVP турниров за год: ${x.mvpCount}.` : '', x.r === 3 ? 'Через час — №2.' : 'Следующим объявят игрока года.'].filter(Boolean),
         tags: [P(x.nick)].concat(x.team ? [T(x.team)] : []) });
       return;
     }
     if (st.k === 'aw') {
       const a = (rec.computed?.awardRows || []).find(z => z.type === st.type); if (!a) return;
       const label = W.TW?.AWARD_DEF?.[a.type]?.title || a.type, coach = a.type === 'coach';
-      news({ cat: 'award', icon: '🎖️', imp: 7, player: coach ? '' : a.nick, team: a.team || '', ts: st.at,
+      news({ src: 'hltv', cat: 'award', icon: '🎖️', imp: 7, player: coach ? '' : a.nick, team: a.team || '', ts: st.at,
         hltvAward: { year: y, type: a.type, nick: a.nick, team: a.team || '', label },
         title: `HLTV Awards ${y}: ${label} — ${a.nick}`,
         lead: coach ? `${a.nick} (${a.team || '—'}) признан лучшим тренером ${y} года.` : `${a.nick} (${a.team || '—'}) получает награду «${label}» по итогам ${y} года.`,
@@ -188,7 +188,7 @@
       return;
     }
     if (st.k === 'team') {
-      news({ cat: 'award', icon: '👑', imp: 8, team: rec.team.team, ts: st.at,
+      news({ src: 'hltv', cat: 'award', icon: '👑', imp: 8, team: rec.team.team, ts: st.at,
         hltvAward: { year: y, type: 'team', nick: rec.team.team, team: rec.team.team, label: 'Команда года' },
         title: `HLTV Awards ${y}: Команда года — ${rec.team.team}`,
         lead: `${rec.team.team} — лучшая команда ${y} года по результатам турниров Tier-1.`,
@@ -197,7 +197,7 @@
       return;
     }
     const an = rec.computed?.announcements || [], top3 = [3, 2, 1].map(r => top.find(z => z.r === r)).filter(Boolean);
-    news({ cat: 'award', icon: '🏆', imp: 9, team: rec.team?.team || '', ts: st.at,
+    news({ src: 'hltv', cat: 'award', icon: '🏆', imp: 9, team: rec.team?.team || '', ts: st.at,
       title: `HLTV Awards ${y}: итоги года`,
       lead: `Церемония завершена: тройка лучших игроков ${y} года, все личные награды и «Команда года».`,
       body: top3.map(x => `№${x.r} — ${x.nick} (${x.team || '—'})${statLine(x.nick, y) ? ' · ' + statLine(x.nick, y) : ''}.`)

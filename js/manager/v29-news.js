@@ -80,6 +80,7 @@ let eventTs = null;
 function add(it) {
   if (it && it.ts == null && eventTs) it.ts = eventTs;
   if (Date.now() < suppressBootNewsUntil) return null;
+  try { if (typeof window.V131NewsHook === 'function') window.V131NewsHook(it); } catch (e) {}   // v131: громкие трансферы
   it.id = it.id || ('n' + (++store.seq).toString(36) + '-' + (h32(it.title + calNow()) % 1e6).toString(36));
   if (store.items.some(x => x.id === it.id)) return null;
   if (store.items.slice(0, 60).some(x => x.title === it.title && (x.season || 0) === (it.season || season()))) return null; // v30: без дублей одного сюжета
