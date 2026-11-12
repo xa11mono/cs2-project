@@ -22,6 +22,6 @@ assert(outside.title.includes('32 прямых приглашений'), 'outsid
 assert(source.includes('Статус квоты сейчас') && source.includes('Наиболее вероятная стадия'), 'table must clearly separate current quota status from forecast stage');
 assert(!source.includes('вне текущего состава'), 'ambiguous legacy roster wording must be removed');
 assert(source.includes('title="${esc(current.title)}"'), 'the current stage detail should remain available in a tooltip');
-assert(index.includes('v35-major-path.js?v=112') && index.includes('v30-portal.css?v=112'), 'v72 assets must bypass the browser cache');
+assert(index.includes('v35-major-path.js?v=113') && index.includes('v30-portal.css?v=113'), 'v72 assets must bypass the browser cache');
 assert(css.includes('.mp-z.current-in') && css.includes('.mp-z.out'), 'current quota states must have distinct visual treatment');
 console.log('PASS v72: current quota status no longer visually conflicts with forecast stage; outside-quota wording is corrected');

@@ -76,3 +76,7 @@ html.ax-on #hs-root .v111-t20 .v111-bar.v111-bar>i,#hs-root .v111-bar>i{backgrou
 #hs-root .v112-t20badge svg{display:block;width:100%;height:auto}
 #hs-root .v112-t20tag{display:inline-block;margin-right:8px;padding:2px 7px;border-radius:6px;background:linear-gradient(180deg,#f8e2a6,#c99a45);color:#2a1d05;font:800 10px/1.4 var(--f-ui);letter-spacing:.06em;vertical-align:middle}
 html.ax-on #hs-root .ax-scened.ax-has-vis>.v112-t20badge{display:block!important}
+/* v112.1: ярлык паблика в «Громких новостях» — компактный, в строке рубрики (правило .v84-spot-tx span растягивало его во всю ширину) */
+#hs-root .v84-spot-tx small .v111-src{display:inline-flex!important;-webkit-line-clamp:unset!important;overflow:visible!important;opacity:1!important;font-size:inherit!important;height:18px;margin:0 6px 0 0;padding:0 6px 0 2px;vertical-align:-4px;text-transform:none;letter-spacing:0}
+#hs-root .v84-spot-tx small .v111-src img{width:14px;height:14px}
+#hs-root .v84-spot-tx small .v111-src b{font-size:9.5px!important;letter-spacing:.04em}

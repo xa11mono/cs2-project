@@ -52,6 +52,6 @@ assert(Math.abs(api.inviteProbability({ s3: '70%', s2: '5%', s1: '2%' }) - .77) 
 
 assert(source.includes('mp-stage-divider') && source.includes('const stageSections = [3, 2, 1]'), 'table should render continuous explicit stage sections');
 assert(!source.includes('Number(x.in) > 0'), 'legacy `in` field should not override the normalized total');
-assert(index.includes('v35-major-path.js?v=112') && index.includes('v30-portal.css?v=112'), 'cache busting should force v72 JS/CSS to load');
+assert(index.includes('v35-major-path.js?v=113') && index.includes('v30-portal.css?v=113'), 'cache busting should force v72 JS/CSS to load');
 assert(css.includes('.mp-stage-divider td'), 'stage divider rows need visible group styling');
 console.log('PASS v72: Major Path stage groups are contiguous; each is sorted by derived invite probability descending');

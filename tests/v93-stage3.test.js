@@ -121,7 +121,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   });
   assert(pg.era && pg.fans && pg.career && pg.tier && pg.strat, 'страницы: ' + JSON.stringify(pg));
   const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
-  assert(['v93-careers.js?v=112', 'v93-eras.js?v=112', 'v93-fans.js?v=112'].every(x => html.includes(x)) && !html.includes('?v=93'), 'модули v93 подключены');
+  assert(['v93-careers.js?v=113', 'v93-eras.js?v=113', 'v93-fans.js?v=113'].every(x => html.includes(x)) && !html.includes('?v=93'), 'модули v93 подключены');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v93: team page shows era, fans, Tier status and strategy; player page shows career; modules wired; no page errors');
   await ctx.close(); console.log('v93 stage 3 tests passed');

@@ -21,7 +21,8 @@
   const ranked = () => H.ranked().filter(t => !t.isAcademy);
   const rankOf = n => { const i = ranked().findIndex(t => t.name === n); return i < 0 ? 99 : i + 1; };
   // v99: менеджер, не отметивший любимую команду, видит в «Моей ленте» свой клуб
-  const favTeam = () => S()?.favTeam || (typeof teams !== 'undefined' ? teams.find(t => t.isFan)?.name : '') || (() => { try { return W.V31?.managed?.() || ''; } catch (e) { return ''; } })() || '';
+  // v112: любимая команда — та же, что «☆ Стать фанатом» на странице команды (профиль фаната v33), отдельной отметки нет
+  const favTeam = () => (W.V33Fan && W.V33Fan.prof && W.V33Fan.prof.team) || S()?.favTeam || (typeof teams !== 'undefined' ? teams.find(t => t.isFan)?.name : '') || (() => { try { return W.V31?.managed?.() || ''; } catch (e) { return ''; } })() || '';
   const favPlayer = () => S()?.favPlayer || '';
   const legend = n => { try { return !!W.CS2Legend?.(n); } catch (e) { return false; } };
   const popular = n => !!n && (rankOf(n) <= 10 || legend(n) || n === favTeam());
@@ -80,8 +81,9 @@
 
   // ------------------------------------------------------------ моя лента
   function myFeedHtml() {
-    const ft = favTeam(), fp = favPlayer(); if (!ft && !fp) return `<section class="hs-box v84-my"><header class="hs-box-h"><h3>Моя лента</h3></header><p class="v84-pad hs-note">Отметьте любимую команду («★ Моя команда» на странице команды) и игрока («★ Следить» в профиле) — здесь появятся их новости и ближайшие матчи.</p></section>`;
-    const items = N.all().filter(n => (n.tags || []).some(t => t.v === ft || t.v === fp) || n.team === ft || n.player === fp).slice(0, 5);
+    const ft = favTeam(), fp = favPlayer(); if (!ft && !fp) return `<section class="hs-box v84-my"><header class="hs-box-h"><h3>Моя лента</h3></header><p class="v84-pad hs-note">Отметьте любимую команду («☆ Стать фанатом» на странице команды) и игрока («★ Следить» в профиле) — здесь появятся их новости и ближайшие матчи.</p></section>`;
+    const inTitle = (n, x) => x && String(n.title || '').includes(x);   // v112: и упоминания в заголовке
+    const items = N.all().filter(n => (n.tags || []).some(t => t.v === ft || t.v === fp) || n.team === ft || n.player === fp || inTitle(n, ft) || inTitle(n, fp)).slice(0, 6);
     let next = null; try { next = (N.upcoming() || []).find(x => x.m && (x.m.t1 === ft || x.m.t2 === ft)); } catch (e) {}
     return `<section class="hs-box v84-my"><header class="hs-box-h"><h3>Моя лента</h3><span class="hs-sub">${ft ? `${H.logo(ft, 'xs')} ${esc(ft)}` : ''}${fp ? ` · ${esc(fp)}` : ''}</span></header>
       ${next ? `<div class="v84-my-next">Следующий матч: <b>${esc(next.m.t1)}</b> vs <b>${esc(next.m.t2)}</b> <small>${esc(next.stage || '')}</small></div>` : ''}
@@ -238,11 +240,11 @@
     try { if (page === 'home') { const rail = document.querySelector('#hs-page .v37-news-rail'), my = document.querySelector('#hs-page .v84-my-slot .v84-my');
       if (rail && my) { rail.appendChild(my); my.classList.add('in-rail'); const row = document.querySelector('#hs-page .v84-home-row'); if (row && !row.querySelector('.v84-mod')) row.remove(); else if (row) row.classList.add('one'); } } } catch (e) {}
     try {
-      if (!['home', 'news'].includes(page)) return;
-      document.querySelectorAll('#hs-page [data-art]:not(.v84-spot)').forEach(el => { const n = H.findNews?.(el.dataset.art); const k = spotKind(n); if (k) el.classList.add('v84-spotrow', 'v84-spotrow-' + k); });
+      // v112: раньше здесь стоял return для всех страниц, кроме «Главной» и «Новостей», и кнопка «☆ Следить» в профиле игрока не появлялась
+      if (['home', 'news'].includes(page)) document.querySelectorAll('#hs-page [data-art]:not(.v84-spot)').forEach(el => { const n = H.findNews?.(el.dataset.art); const k = spotKind(n); if (k) el.classList.add('v84-spotrow', 'v84-spotrow-' + k); });
     } catch (e) {}
     try {
-      if (page === 'team') { const head = document.querySelector('#hs-page .tm-head .tm-id'); const name = document.querySelector('#hs-page h1')?.textContent?.trim();
+      if (page === 'team' && !document.querySelector('#hs-page [data-fanof]')) { const head = document.querySelector('#hs-page .tm-head .tm-id'); const name = document.querySelector('#hs-page h1')?.textContent?.trim();
         if (head && name && H.teamBy(name) && !head.querySelector('[data-favteam]')) head.insertAdjacentHTML('beforeend', `<button type="button" class="hs-btn ${favTeam() === name ? '' : 'ghost'} sm v84-favbtn" data-favteam="${esc(name)}">${favTeam() === name ? '★ Моя команда' : '☆ Моя команда'}</button>`); }
       if (page === 'player') { const act = document.querySelector('#hs-page .hs-pact'), nick = String(H.S.arg || '').split('/')[0];
         if (act && !act.querySelector('[data-favpl]')) act.insertAdjacentHTML('afterbegin', `<button type="button" class="hs-btn ghost" data-favpl="${esc(nick)}">${favPlayer() === nick ? '★ Слежу' : '☆ Следить'}</button>`); }
