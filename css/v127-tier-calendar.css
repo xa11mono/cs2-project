@@ -33,3 +33,4 @@
 #hs-root .ttc-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--c-text-3);opacity:.75}
 #hs-root .ttc-empty b{font-size:24px;font-weight:700}
 #hs-root .ttc-empty span{font-size:var(--t-caption);font-weight:600}
+#hs-root .ttc-ev.cont .ttc-name::before{content:"↳ ";color:var(--c-text-3);font-weight:600}

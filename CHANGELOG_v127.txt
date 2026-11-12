@@ -12,3 +12,6 @@ CS2 Manager v127 — календарь Tier-1
   встроенные значки. Чтобы заменить значок своим файлом: положить webp в assets/media/events
   (pgl.webp, iem.webp, blastrivals.webp, thunderpick.webp, ewc.webp, starladder.webp) и добавить имя в HAVE
   в js/manager/v127-tier-calendar.js.
+- Мейджор, как на HLTV: «Stage 1» и «Stage 2» — отдельными строками, дальше (Stage 3 и плей-офф) — под именем
+  Мейджора; LIVE ставится на ту часть, что идёт сейчас.
+- Турнир, захватывающий два месяца, показывается в обоих: во втором месяце — со стрелкой «↳» (продолжение).

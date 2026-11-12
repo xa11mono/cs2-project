@@ -80,7 +80,19 @@
   function items(year, cur) {
     let list = [];
     try { list = H.events().filter(e => e && e.startMs && (e.tier === '1' || e.kind === 'major') && e.season === cur); } catch (e) {}
-    const out = list.map(e => ({ id: e.id, name: e.name, short: shortName(e.name), startMs: e.startMs, endMs: e.endMs || e.startMs, live: e.status === 'live', done: e.status === 'done', major: e.kind === 'major', champion: e.champion || '' }));
+    const out = [];
+    list.forEach(e => {
+      const base = { id: e.id, name: e.name, short: shortName(e.name), startMs: e.startMs, endMs: e.endMs || e.startMs, live: e.status === 'live', done: e.status === 'done', major: e.kind === 'major', champion: e.champion || '' };
+      if (!base.major) return out.push(base);
+      // Мейджор, как на HLTV: Stage 1 и Stage 2 — отдельными строками, дальше (Stage 3 и плей-офф) — под именем Мейджора.
+      // Деление — то же, что в календаре по дням: четверти общей длительности.
+      const span = Math.max(8 * DAY, base.endMs - base.startMs), part = span / 4, s0 = base.startMs, end = s0 + span;
+      const now = H.nowMs(), stage = (a, b) => ({ live: !base.done && now >= a && now < b, done: base.done || now >= b });
+      const org = (/^(\S+)\s/.exec(base.short) || [])[1], tag = org && /major/i.test(base.short) ? `${org} Major` : base.short.replace(/\s'\d\d$/, '');
+      out.push({ ...base, short: `${tag} Stage 1`, name: `${base.name} · Stage 1`, startMs: s0, endMs: s0 + part, ...stage(s0, s0 + part), champion: '' });
+      out.push({ ...base, short: `${tag} Stage 2`, name: `${base.name} · Stage 2`, startMs: s0 + part, endMs: s0 + part * 2, ...stage(s0 + part, s0 + part * 2), champion: '' });
+      out.push({ ...base, startMs: s0 + part * 2, endMs: end, ...stage(s0 + part * 2, end) });
+    });
     // HLTV Awards: церемония в начале года
     try {
       const A = W.CS2Awards, rec = ST().v84Awards || {};
@@ -111,12 +123,15 @@
     const views = chip(true, 'data-tcview="year"', 'Год') + chip(false, 'data-tcview="days"', 'По дням');
     let total = 0;
     const months = MN.map((m, i) => {
-      const list = all.filter(e => new Date(e.startMs).getFullYear() === year && new Date(e.startMs).getMonth() === i); total += list.length;
+      // турнир, захватывающий два месяца, виден в обоих (в следующем — с пометкой «продолжение»)
+      const m0 = new Date(year, i, 1).getTime(), m1 = new Date(year, i + 1, 1).getTime();
+      const list = all.filter(e => e.startMs < m1 && Math.max(e.startMs + 1, e.endMs) > m0).map(e => e.startMs < m0 ? { ...e, cont: true } : e);
+      total += list.filter(e => !e.cont).length;
       const shown = f.expand ? list : list.slice(0, SHOW);
       const rows = shown.map(e => {
         const attr = e.nav ? `data-nav="${e.nav}"` : `data-event="${esc(e.id)}"`;
         const tip = `${e.name} · ${new Date(e.startMs).toLocaleDateString('ru-RU')} – ${new Date(e.endMs).toLocaleDateString('ru-RU')}${e.champion ? ' · чемпион: ' + e.champion : ''}`;
-        return `<button type="button" class="ttc-ev${e.major ? ' major' : ''}${e.done ? ' done' : ''}${e.live ? ' live' : ''}" ${attr} title="${esc(tip)}">` +
+        return `<button type="button" class="ttc-ev${e.major ? ' major' : ''}${e.done ? ' done' : ''}${e.live ? ' live' : ''}${e.cont ? ' cont' : ''}" ${attr} title="${esc(tip)}">` +
           `<span class="ttc-logo">${logo(e.name)}</span><span class="ttc-name">${esc(e.short)}</span>` +
           (e.live ? '<span class="hs-live">LIVE</span>' : `<span class="ttc-date">${dates(e)}</span>`) + '</button>';
       }).join('');
