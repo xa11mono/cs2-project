@@ -76,7 +76,8 @@
   function cardData(it) {
     let m = TOP_RE.exec(it.title || ''), year, r, nick;
     if (m) { year = +m[1]; r = +m[2]; nick = m[3].trim(); }
-    else if ((m = AW_RE.exec(it.title || ''))) { year = +m[1]; r = 1; nick = m[2].trim(); }
+    else if ((m = AW_RE.exec(it.title || ''))) { year = +m[1]; r = 1; nick = m[2].trim(); return { year, r, nick, ceremony: true }; }
+    else if ((m = /^HLTV Awards (\d{4}): итоги года/.exec(it.title || ''))) return { year: +m[1], r: 1, nick: '', ceremony: true };
     else if ((m = BEST_RE.exec(it.title || ''))) { year = +m[1]; r = 1; nick = m[2].trim(); }   // v112: так v33 называет №1
     else return null;
     return { year, r, nick };
@@ -89,8 +90,35 @@
     return out;
   }
   function rankIn(list, nick, f) { const s = list.slice().sort((a, b) => f(b.L) - f(a.L)); const i = s.findIndex(x => x.nick === nick); return i < 0 ? null : i + 1; }
+  /* v113: церемония HLTV Awards — главное событие года: пьедестал тройки и все награды года в одной карточке */
+  const AWARD_TYPE = [[/снайпер|awp/i, 'awper'], [/рифлер/i, 'rifler'], [/капитан|igl/i, 'igl'], [/новичок|rookie/i, 'rookie'], [/клатч/i, 'clutch'], [/entry|открывающ/i, 'entry'],
+    [/поддержк|support/i, 'support'], [/молод/i, 'youngstar'], [/прогресс|улучш/i, 'mostimproved'], [/прорыв/i, 'breakout'], [/команда года/i, 'team'], [/тренер/i, 'coach'], [/игрок года/i, 'poty']];
+  function photoOf(nick) { try { const now = H.playerNow ? H.playerNow(nick) : null, p = now && now.p; return (W.V31Media && W.V31Media.full ? W.V31Media.full(nick) : null) || (W.V31Media && W.V31Media.url('player', nick)) || (p && p.photo) || ''; } catch (e) { return ''; } }
+  function tintOf(team) { try { const u = W.V31Media && W.V31Media.url('team', team), f = u && String(u).split('/').pop(); if (f && W.CS2_TEAM_TINT && W.CS2_TEAM_TINT[f]) return W.CS2_TEAM_TINT[f]; } catch (e) {} return [242, 207, 134]; }
+  function ceremonyCard(it, d) {
+    const body = Array.isArray(it.body) ? it.body : [], top = [], awards = [];
+    body.forEach(line => {
+      const t = String(line || '');
+      let m = /^№(\d+) — (.+?) \((.*?)\)(?: · (.*?))?\.?$/.exec(t);
+      if (m) { top.push({ r: +m[1], nick: m[2], team: m[3], stat: (m[4] || '').replace(/\.$/, '') }); return; }
+      m = /^(Команда года|Прорыв года) — (.+?)(?: \((.*)\))?\.?$/.exec(t);
+      if (m) { awards.push({ label: m[1], nick: m[2], team: '', team2: true, note: m[3] || '' }); return; }
+      m = /^(.+?): (.+?)(?: \((.*?)\))?\.$/.exec(t);
+      if (m && m[1].length < 40) awards.push({ label: m[1], nick: m[2], team: m[3] || '' });
+    });
+    if (!top.length && !awards.length) return '';
+    const pod = [2, 1, 3].map(r => top.find(x => x.r === r)).filter(Boolean).map(x => {
+      const ph = photoOf(x.nick), tn = tintOf(x.team);
+      return `<div class="v113-pod r${x.r}" style="--tr:${tn[0]};--tg:${tn[1]};--tb:${tn[2]}"><div class="v113-pod-ph">${ph ? `<img src="${esc(ph)}" alt="" loading="lazy" decoding="async">` : ''}<span class="v113-pod-n">${x.r}</span></div><b>${esc(x.nick)}</b><small>${esc(x.team || '—')}</small>${x.stat ? `<em>${esc(x.stat.replace(/^Rating 3\.0 /, 'Rating '))}</em>` : ''}</div>`;
+    }).join('');
+    const aw = awards.map(x => { const ty = (AWARD_TYPE.find(a => a[0].test(x.label)) || [0, 'poty'])[1]; let svg = ''; try { svg = W.TW && W.TW.awardSvg ? W.TW.awardSvg(ty, d.year) : ''; } catch (e) {}
+      return `<li><span class="v113-aw-ic">${svg}</span><span><small>${esc(x.label)}</small><b>${esc(x.nick)}</b>${x.team ? `<em>${esc(x.team)}</em>` : x.note ? `<em>${esc(x.note)}</em>` : ''}</span></li>`; }).join('');
+    return `<section class="v111-t20 v113-cer"><div class="v113-cer-h"><small>Церемония</small><h2>HLTV Awards ${d.year}</h2><p>Тройка лучших игроков года и все награды — объявлены сегодня</p></div>
+      ${pod ? `<div class="v113-podium">${pod}</div>` : ''}${aw ? `<div class="v111-t20-box v113-aw"><h4>Награды года</h4><ul>${aw}</ul></div>` : ''}</section>`;
+  }
   function card(it) {
     const d = cardData(it); if (!d) return '';
+    if (d.ceremony) { const c = ceremonyCard(it, d); if (c) return c; if (!d.nick) return ''; }
     const now = H.playerNow ? H.playerNow(d.nick) : null, p = now && now.p, teamName = (now && now.t && now.t.name) || (p && p.v31team) || '';
     const list = yearLines(d.year), me = list.find(x => x.nick === d.nick), L = me && me.L;
     const top = list.slice().sort((a, b) => b.L.rating - a.L.rating).slice(0, 20);

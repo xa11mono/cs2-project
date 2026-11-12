@@ -514,7 +514,8 @@
     if (!n) return {};
     const tags = n.tags || [];
     let pl = null, tm = n.team || (tags.find(x => x.t === 'team') || {}).v || '';
-    const pt = tags.find(x => x.t === 'player'); if (pt) pl = findPlayer(pt.v);
+    // v113: игрок из заголовка важнее первого тега (у «HLTV Awards» в тегах вся тройка — на превью был не №1)
+    const pts = tags.filter(x => x.t === 'player'), pt = pts.find(x => String(n.title || '').includes(x.v)) || (n.player && pts.find(x => x.v === n.player)) || pts[0]; if (pt) pl = findPlayer(pt.v);
     if (!pl) { const words = String((n.title || '') + ' ' + (n.lead || '')).split(/[\s«»"',.:;!?()—–-]+/); const m = nickMap(); for (const w of words) { const f = m.get(w.toLowerCase()); if (f) { pl = f; break; } } }
     if (!tm) { const tt = TEAMS().find(t => t && t.name && t.name.length > 2 && String(n.title || '').includes(t.name)); if (tt) tm = tt.name; }
     if (pl && !tm && pl.t) tm = pl.t.name;

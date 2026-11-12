@@ -84,3 +84,31 @@ html.ax-on #hs-root .ax-scened.ax-has-vis>.v112-t20badge{display:block!important
 #hs-root .br-t:has(.v113-rk) .nm{flex:0 1 auto}
 #hs-root .br-t .v113-rk{flex:none;margin:0 auto 0 6px;padding-right:6px;font:600 10px/1 var(--f-ui);color:var(--c-text-3);white-space:nowrap;opacity:.85}
 @media (max-width:700px){#hs-root .br-t .v113-rk{display:none}}
+/* v113: церемония HLTV Awards — пьедестал тройки и награды года */
+#hs-root .v111-t20.v113-cer{display:block;padding:22px 22px 18px;background:radial-gradient(80% 60% at 50% 0%,rgba(242,207,134,.16),transparent 70%),linear-gradient(160deg,#17150f,#0e0d0b 60%,#0b0b0d)!important}
+#hs-root .v113-cer-h{text-align:center;margin-bottom:14px}
+#hs-root .v113-cer-h small{font:800 11px/1 var(--f-ui);letter-spacing:.2em;text-transform:uppercase;color:#d9bd7c}
+#hs-root .v113-cer-h h2{margin:6px 0 4px;font:900 34px/1 var(--f-ui);letter-spacing:.02em;background:linear-gradient(180deg,#fff3d1,#f2cf86 55%,#c79a47);-webkit-background-clip:text;background-clip:text;color:transparent}
+#hs-root .v113-cer-h p{margin:0;font-size:13px;color:#cbb994}
+#hs-root .v113-podium{display:grid;grid-template-columns:1fr 1.2fr 1fr;align-items:end;gap:12px;margin:8px 0 18px}
+#hs-root .v113-pod{text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px}
+#hs-root .v113-pod-ph{position:relative;width:100%;aspect-ratio:1/1.05;border-radius:14px;overflow:hidden;background:radial-gradient(70% 60% at 50% 65%,rgba(var(--tr),var(--tg),var(--tb),.45),transparent 72%),linear-gradient(180deg,#1d1c20,#111114);box-shadow:inset 0 0 0 1px rgba(242,207,134,.25)}
+#hs-root .v113-pod.r1 .v113-pod-ph{box-shadow:inset 0 0 0 2px #e8be5a,0 18px 40px -18px rgba(242,190,90,.6)}
+#hs-root .v113-pod-ph img{position:absolute;left:50%;bottom:0;height:96%;width:auto;transform:translateX(-50%);filter:drop-shadow(0 10px 18px rgba(0,0,0,.7))}
+#hs-root .v113-pod-n{position:absolute;left:8px;top:6px;font:900 34px/1 var(--f-ui);background:linear-gradient(180deg,#fff3d1,#f2cf86 55%,#c79a47);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 3px 6px rgba(0,0,0,.6))}
+#hs-root .v113-pod.r1 .v113-pod-n{font-size:46px}
+#hs-root .v113-pod.r2 .v113-pod-n,#hs-root .v113-pod.r3 .v113-pod-n{background:linear-gradient(180deg,#ffffff,#c9ced6 60%,#8b929c);-webkit-background-clip:text;background-clip:text}
+#hs-root .v113-pod.r3 .v113-pod-n{background:linear-gradient(180deg,#ffe2c4,#d79a6a 60%,#9a5d33);-webkit-background-clip:text;background-clip:text}
+#hs-root .v113-pod b{margin-top:6px;font:900 18px/1.1 var(--f-ui);color:#fff}
+#hs-root .v113-pod.r1 b{font-size:22px;color:#f6dfa4}
+#hs-root .v113-pod small{font-size:12px;color:#cbb994}
+#hs-root .v113-pod em{font-style:normal;font-size:11px;color:#9e9686}
+#hs-root .v113-aw ul{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;list-style:none;margin:8px 0 0;padding:0}
+#hs-root .v113-aw li{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.03);box-shadow:inset 0 0 0 1px rgba(242,207,134,.14)}
+#hs-root .v113-aw-ic{flex:none;width:34px;height:44px}
+#hs-root .v113-aw-ic svg{width:100%;height:100%}
+#hs-root .v113-aw li>span:last-child{display:flex;flex-direction:column;min-width:0}
+#hs-root .v113-aw small{font:700 10.5px/1.2 var(--f-ui);letter-spacing:.04em;text-transform:uppercase;color:#d9bd7c}
+#hs-root .v113-aw b{font:800 14px/1.2 var(--f-ui);color:#fff}
+#hs-root .v113-aw em{font-style:normal;font-size:11.5px;color:#9e9686}
+@media (max-width:700px){#hs-root .v113-podium{gap:6px}#hs-root .v113-pod b{font-size:14px}#hs-root .v113-pod.r1 b{font-size:16px}}
