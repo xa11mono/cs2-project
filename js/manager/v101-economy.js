@@ -26,6 +26,7 @@
      v114: индивидуальный Overall рассчитывает js/manager/v114-player-power.js.
      v101 сохраняет только совместимые legacy helpers; атрибуты игроков и VRS не калибруются по никам.
   */
+  function recalibrate() { return 0; }
 
   /* v114: стартовый VRS остаётся данными рейтинговой системы, не пересеивается из силы игроков. */
   function reseed() { return 0; }
