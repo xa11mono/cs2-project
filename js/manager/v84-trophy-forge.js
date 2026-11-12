@@ -47,26 +47,29 @@
     steel:   ['#1f242a', '#5d6670', '#b4bdc7', '#eef2f6', '#86909b', '#2c3238'],
     iron:    ['#161617', '#4a4a4d', '#97979b', '#dcdcdf', '#6c6c70', '#232325'],
     teal:    ['#04302b', '#0e7a6f', '#3fd6c4', '#d9fffa', '#1fa596', '#0a3d37'],
-    white:   ['#8a8f96', '#c9cdd2', '#eef0f2', '#ffffff', '#dfe2e6', '#a3a8ae']
+    white:   ['#8a8f96', '#c9cdd2', '#eef0f2', '#ffffff', '#dfe2e6', '#a3a8ae'],
+    // v131: приглушённые «тёмные» металлы для IEM: чёрный титан и воронёная сталь
+    blacktitan: ['#0c0d0f', '#2a2d32', '#5b6068', '#b4bac2', '#3d4249', '#141518'],
+    bluesteel:  ['#11161c', '#3a4552', '#7b8a9a', '#d3dce6', '#55636f', '#1a2129']
   };
   // Допустимые покрытия по организатору: силуэт фиксирован, отделка меняется по сезонам.
   const FINISH = {
-    'IEM-big': ['silver', 'titanium', 'steel', 'chrome', 'silver', 'iron', 'titanium', 'steel', 'gunmetal', 'gold'],
-    IEM: ['silver', 'titanium', 'steel', 'chrome', 'silver', 'iron', 'titanium', 'steel', 'gunmetal', 'gold'],
+    'IEM-big': ['silver', 'titanium', 'steel', 'chrome', 'blacktitan', 'iron', 'titanium', 'bluesteel', 'gunmetal', 'gold', 'silver', 'blacktitan'],
+    IEM: ['silver', 'titanium', 'steel', 'chrome', 'blacktitan', 'iron', 'titanium', 'bluesteel', 'gunmetal', 'gold', 'silver', 'steel'],
     EPL: ['gold', 'pale', 'rose', 'chrome'],
     BLAST: ['gold', 'silver', 'chrome', 'pale', 'gold', 'rose', 'titanium'],
-    PGL: ['gold', 'chrome', 'silver', 'gold', 'rose', 'pale', 'titanium'],
+    PGL: ['gold', 'chrome', 'silver', 'gold', 'rose', 'pale', 'titanium', 'blacktitan', 'gunmetal'],
     DHM: ['silver', 'chrome', 'rose', 'titanium'],
     SL: ['gold', 'silver', 'rose', 'pale', 'chrome'],
-    Thunderpick: ['gold', 'pale', 'gold', 'silver'],
-    PW: ['gold', 'silver', 'chrome', 'pale'],
-    FISSURE: ['gold', 'chrome', 'gold', 'pale'],
+    Thunderpick: ['gold', 'pale', 'gold', 'silver', 'blacktitan'],
+    PW: ['gold', 'silver', 'chrome', 'pale', 'blacktitan', 'gunmetal'],
+    FISSURE: ['gold', 'chrome', 'gold', 'pale', 'blacktitan'],
     BetBoom: ['chrome', 'gold', 'pale', 'titanium'],
     CCT: ['silver', 'chrome', 'gold', 'titanium'],
     ENC: ['silver', 'chrome', 'silver', 'gold'],
-    CAC: ['silver', 'chrome', 'gold', 'titanium', 'rose'],
-    XSE: ['pale', 'gold', 'silver', 'chrome', 'rose'],
-    EWC: ['silver', 'chrome', 'pale', 'gold'],
+    CAC: ['silver', 'chrome', 'gold', 'titanium', 'rose', 'blacktitan', 'bluesteel'],
+    XSE: ['pale', 'gold', 'silver', 'chrome', 'rose', 'blacktitan', 'gunmetal'],
+    EWC: ['silver', 'chrome', 'pale', 'gold', 'blacktitan'],
     Nations: ['gold', 'silver', 'pale', 'chrome'],
     FiRe: ['gold', 'pale', 'chrome'],
     custom: ['silver', 'gold', 'chrome', 'rose', 'bronze', 'pale', 'titanium']
@@ -507,6 +510,15 @@
       fitTxt(30.8, 26, 'ESL', 2.6, 5.2, '#fff') + fitTxt(29.8, 32, 'PRO', 6, 7.1, '#fff') + fitTxt(29.9, 34.5, 'LEAGUE', 2.5, 6.2, '#fff') +
       fitTxt(29.9, 36.9, season ? 'SEASON ' + season : (o.year || ''), 1.6, 6.6, '#fff', ' fill-opacity=".85"');
   };
+  D.stubCup = (c, o) => { // v131: заглушка — контур кубка пунктиром, название организатора и год; модель появится позже
+    const cup = 'M20 9H44L43 22C42 30 37 34 34.5 35V44H38.5L40 49H24L25.5 44H29.5V35C27 34 22 30 21 22Z';
+    return `<ellipse cx="32" cy="66.6" rx="17" ry="1.8" fill="${c.shadow()}"/>` +
+      `<rect x="13" y="51" width="38" height="14.5" rx="2.4" fill="#141922" stroke="#5c6878" stroke-width=".8"/>` +
+      `<path d="${cup}" fill="#1b222d" fill-opacity=".85" stroke="#8d9aab" stroke-width="1.1" stroke-dasharray="2.2 1.6" stroke-linejoin="round"/>` +
+      `<path d="M20.5 12C14 12 13.5 21 21.6 24.5M43.5 12C50 12 50.5 21 42.4 24.5" fill="none" stroke="#8d9aab" stroke-width="1.1" stroke-dasharray="2.2 1.6"/>` +
+      txt(32, 25, '?', 9, '#8d9aab') +
+      fitTxt(32, 57.6, o.label || 'TROPHY', 3.4, 33, '#d6dde6', ' letter-spacing=".3"') + fitTxt(32, 62.6, o.year || '', 2.6, 14, '#8d9aab', ' letter-spacing=".5"');
+  };
   D.blastTri = (c, o) => { // BLAST: гладкий гранёный треугольник (золото/металл) или серебряный «карбоновый»
     const smooth = o.carbon ? false : (o.smooth || ['gold', 'pale', 'blackgold', 'rose', 'bronze'].includes(o.metal) || o.big || !o.metal);
     if (smooth) return `<ellipse cx="32" cy="66.3" rx="27" ry="1.5" fill="${c.shadow()}"/>` + art(c, 'blastGlass', Object.assign({}, o, { metal: o.metal || 'chrome' })).body;
@@ -650,33 +662,63 @@
       `<path d="M27.4 30.6H36.6M28.6 33.6H35.4" stroke="#fff" stroke-opacity=".55" stroke-width=".6"/>` + shine('M23.4 15.6V41.6', 1.1);
   };
 
+  // v131: используются только новые кубки — векторные модели (art: iemCup, iemRings, iemDisc, eplTower, blastGlass/blastCarbon,
+  // pglLattice, pglPlaque, pglCrown2, PGL prism/Major, cacCup, xseTower, ewcDisc, fissureCrystal, thunderCup, pwCrystal, encSpire/encTwist)
+  // и их разновидности (металл, стекло/вставки, цвета флага). Старые нарисованные вручную силуэты больше не выбираются.
+  // У серии — свой «фирменный» силуэт из пула организатора; примерно раз в три сезона — другой силуэт того же пула.
+  const formOf = (pool, name, season) => {
+    const s = series(name), v = hash('form|' + name + '|' + season);
+    return pool.length < 2 || v % 3 ? pool[s % pool.length] : pool[(s + 1 + (v >>> 3) % (pool.length - 1)) % pool.length];
+  };
+  // у организатора нет своей модели кубка — заглушка (силуэт-контур с названием организатора), пока модель не нарисована
+  const stubSpec = (label) => (r, name) => ({ d: 'stubCup', stub: true, label: label || String(name || '').replace(/\s+20\d\d.*$/, '').split(/\s+/).slice(0, 2).join(' ').toUpperCase() });
+  // v131: IEM — по кругу чаша-«кольца», двуручный кубок и монета (у каждой серии свой стартовый вариант), металлы — по сезону
+  const iemPick = (r, name, season) => {
+    const k = (series(name) + (Number(season) || 1)) % 3;
+    if (k === 0) return { d: 'ringChalice', metal: ['silver', 'chrome', 'silver'][r % 3] };
+    if (k === 1) return { d: 'iemClassic', metal: ['silver', 'chrome'][r % 2] };
+    return { d: 'iemPlate', metal: 'chrome', glass: ['ice', 'smoke', 'blue'][(r >>> 4) % 3], bare: true };
+  };
+  // v131: расцветки PGL — благородные и «брутальные» тёмные металлы, без розового и голубого
+  const PGL_PAL = [{ metal: 'gold', glass: 'blue' }, { metal: 'silver', glass: 'red' }, { metal: 'blacktitan', glass: 'red' }, { metal: 'gunmetal', glass: 'amber' },
+    { metal: 'chrome', glass: 'violet' }, { metal: 'gold', glass: 'red' }, { metal: 'blacktitan', glass: 'amber' }, { metal: 'titanium', glass: 'blue' },
+    { metal: 'bluesteel', glass: 'red' }, { metal: 'blackgold', glass: 'amber' }, { metal: 'silver', glass: 'navy' }, { metal: 'blacktitan', glass: 'blue' }];
+  // палитра Мейджоров PGL: без «детских» цветов (розовый, голубой, мятный)
+  const PGL_MJ = [['gold', 'mono'], ['blacktitan', 'red'], ['blacktitan', 'amber'], ['gunmetal', 'red'], ['silver', 'red'], ['gold', 'red'], ['blackgold', 'amber'],
+    ['blacktitan', 'violet'], ['bluesteel', 'red'], ['gunmetal', 'amber'], ['titanium', 'amber'], ['blacktitan', 'mono'], ['gold', 'navy'], ['silver', 'blue']];
   const ORGS = [
-    { key: 'IEM-big', re: /^IEM\s+(?:Cologne|Katowice|Krak)|^ESL One/i, pick: (r) => iemPool(r) },
-    { key: 'IEM', re: /^IEM\b|^Intel Extreme/i, pick: (r, name) => Object.assign(iemPool(r), { sub: (String(name).replace(/^IEM\s+/i, '').replace(/\s*\(.*\)/, '').replace(/\s+20\d\d$/, '').toUpperCase()).slice(0, 14) }) },
+    { key: 'IEM-big', re: /^IEM\s+(?:Cologne|Katowice|Krak)|^ESL One/i, pick: (r, name, season) => iemPick(r, name, season) },
+    { key: 'IEM', re: /^IEM\b|^Intel Extreme/i, pick: (r, name, season) => Object.assign(iemPick(r, name, season), { sub: (String(name).replace(/^IEM\s+/i, '').replace(/\s*\(.*\)/, '').replace(/\s+20\d\d$/, '').toUpperCase()).slice(0, 14) }) },
     { key: 'EPL', re: /^ESL Pro League|^EPL\b/i, pick: (r) => ({ d: 'eplTower', metal: ['gold', 'pale', 'gold', 'rose'][r % 4] }) },
     // v112: BLAST — в основном яркое цветное стекло (синий, фиолетовый, бирюзовый, красный, зелёный, янтарный, розовый); металл — реже
     { key: 'BLAST', re: /^BLAST/i, pick: (r, name) => /spring final|fall final/i.test(name) ? [{ d: 'blastTri', glass: 'blue', big: true }, { d: 'blastTri', glass: 'violet', big: true }, { d: 'blastTri', metal: 'gold', big: true }, { d: 'blastTri', glass: 'red', big: true }][r % 4] : /world final/i.test(name)
       ? { d: 'blastTri', metal: 'gold', big: true }
       : [{ d: 'blastTri', glass: 'blue' }, { d: 'blastTri', glass: 'violet' }, { d: 'blastTri', glass: 'cyan' }, { d: 'blastTri', metal: 'gold', stripes: true }, { d: 'blastTri', glass: 'red' }, { d: 'blastTri', glass: 'green' }, { d: 'blastTri', metal: 'silver', stripes: true }, { d: 'blastTri', glass: 'amber' }, { d: 'blastTri', glass: 'pink' }][r % 9] },
-    { key: 'PGL', re: /^PGL/i, pick: (r, name) => [{ metal: 'gold', glass: 'blue' }, { metal: 'silver', glass: 'ice' }, { metal: 'rose', glass: 'pink' }, { metal: 'chrome', glass: 'violet' }].map(x => ({ d: (/major/i.test(name) ? ['pglMajor', 'pglPrism'][series(name) % 2] : ['pglLattice', 'pglPlaque'][series(name) % 2]), ...x }))[r % 4] },
-    { key: 'DHM', re: /^DreamHack Masters/i, pick: (r) => ({ d: 'mastersCup', metal: ['silver', 'chrome', 'rose'][r % 3] }) },
-    { key: 'DH', re: /^DreamHack/i, pick: (r) => ({ d: 'glassBlock', glass: ['ice', 'smoke', 'amber'][r % 3] }) },
-    { key: 'SL', re: /^StarLadder|^StarSeries/i, pick: (r) => ({ d: 'slStar', metal: ['gold', 'silver', 'rose'][r % 3], glass: ['ruby', 'ice', 'amber'][r % 3] }) },
-    { key: 'Thunderpick', re: /^Thunderpick/i, pick: (r) => ({ d: 'thunderSwirl', metal: 'gold', glass: ['blue', 'cyan'][r % 2] }) },
+    // v131: PGL — Мейджор: в основном щит MAJOR или призма (чередуются по сезонам), иногда — «пламя»; обычные турниры
+    // (Bucharest, Astana, Wallachia…): «пламя-решётка» разных расцветок, реже — похожая «корона-пламя»
+    { key: 'PGL', re: /^PGL/i, pick: (r, name, season) => {
+      const v = hash('pglform|' + name + '|' + season), major = /major/i.test(name);
+      const d = major ? (v % 4 === 0 ? (v >>> 3) % 3 ? 'pglLattice' : 'pglCrown2' : ['pglMajor', 'pglPrism'][(series(name) + (Number(season) || 1)) % 2])
+        : (v % 10 < 7 ? 'pglLattice' : 'pglCrown2');
+      return Object.assign({ d }, PGL_PAL[r % PGL_PAL.length]);
+    } },
+    { key: 'DHM', re: /^DreamHack Masters/i, pick: stubSpec('DREAMHACK') },
+    { key: 'DH', re: /^DreamHack/i, pick: stubSpec('DREAMHACK') },
+    { key: 'SL', re: /^StarLadder|^StarSeries/i, pick: stubSpec('STARLADDER') },
+    { key: 'Thunderpick', re: /^Thunderpick/i, pick: (r) => ({ d: 'thunderSwirl', metal: ['gold', 'pale', 'silver', 'rose'][r % 4], glass: ['blue', 'cyan', 'violet'][(r >>> 2) % 3] }) },
     { key: 'CAC', re: /^CS Asia|^CAC\b/i, pick: (r) => ({ d: 'cacCup', metal: ['silver', 'chrome', 'silver', 'gold'][r % 4] }) }, // v102: CS Asia Championships — своя гранёная чаша
-    { key: 'PW', re: /^Perfect World/i, pick: (r) => ({ d: 'orbBowl', metal: ['gold', 'silver', 'chrome'][r % 3], glass: ['blue', 'cyan', 'ice'][r % 3] }) },
+    { key: 'PW', re: /^Perfect World/i, pick: (r) => ({ d: 'orbBowl', metal: ['gold', 'silver', 'chrome'][r % 3], glass: ['blue', 'cyan', 'ice', 'violet', 'ruby'][(r >>> 2) % 5] }) },
     { key: 'EWC', re: /^Esports World Cup|^EWC\b/i, pick: (r) => ({ d: 'ewcPlate', metal: ['silver', 'chrome', 'pale', 'gold'][r % 4], bare: true }) },
     { key: 'ENC', re: /^ENC\b|esports nations cup/i, pick: (r, name) => ({ d: series(name) % 2 ? 'encTwist' : 'encSpire', metal: ['silver', 'silver', 'chrome', 'gold'][r % 4], metal2: ['gold', 'gold', 'rose', 'silver'][r % 4], glass: ['violet', 'violet', 'blue', 'red'][(r >>> 2) % 4] }) }, // v107: Esports Nations Cup
-    { key: 'Nations', re: /nations cup|national cup|кубок наций/i, pick: (r) => [{ d: 'nationsGlobe', metal: 'gold', glass: 'blue' }, { d: 'nationsCup', metal: 'gold', glass: 'blue' }, { d: 'nationsStars', metal: 'gold', glass: 'blue' }, { d: 'nationsCup', metal: 'pale', glass: 'cyan' }][(r >>> 3) % 4] },
-    { key: 'FiRe', re: /^FiRe\b|fireleague/i, pick: (r) => ({ d: 'fireFlame', metal: 'gold', accent: ['#6cace4', '#e0533b', '#6cace4'][r % 3] }) },
-    { key: 'FISSURE', re: /^FISSURE/i, pick: (r) => ({ d: 'fissure', metal: ['gold', 'pale', 'gold'][r % 3], glass: ['cyan', 'blue', 'cyan'][r % 3] }) },
-    { key: 'BetBoom', re: /^BetBoom|^Dacha/i, pick: (r) => ({ d: 'bbBurst', metal: ['chrome', 'gold'][r % 2], glass: ['mint', 'cyan', 'ice'][r % 3] }) },
+    { key: 'Nations', re: /nations cup|national cup|кубок наций/i, pick: (r, name) => ({ d: series(name) % 2 ? 'encTwist' : 'encSpire', metal: ['gold', 'silver', 'gold', 'chrome'][r % 4], metal2: ['silver', 'gold', 'rose', 'gold'][r % 4], glass: ['blue', 'violet', 'red', 'cyan'][(r >>> 2) % 4] }) },
+    { key: 'FiRe', re: /^FiRe\b|fireleague/i, pick: stubSpec('FIRE') },
+    { key: 'FISSURE', re: /^FISSURE/i, pick: (r) => ({ d: 'fissure', metal: ['gold', 'pale', 'gold', 'chrome'][r % 4], glass: ['cyan', 'blue', 'cyan', 'violet'][r % 4] }) },
+    { key: 'BetBoom', re: /^BetBoom|^Dacha/i, pick: stubSpec('BETBOOM') },
     { key: 'XSE', re: /^XSE\b/i, pick: (r) => ({ d: 'xseTower', metal: ['pale', 'gold', 'silver', 'chrome'][r % 4] }) }, // v102: китайский организатор XSE — гранёная башня на ступенчатой подставке
-    { key: 'CCT', re: /^CCT\b/i, pick: (r) => ({ d: r % 2 ? 'cctPortal' : 'cctChevron', metal: ['silver', 'chrome', 'gold'][r % 3], glass: ['blue', 'cyan'][r % 2], accent: ['#2f6fe0', '#1f9e6e', '#d23b3b', '#7a3fd0'][(r >>> 3) % 4] }) }
+    { key: 'CCT', re: /^CCT\b/i, pick: stubSpec('CCT') }
   ];
   const series = name => hash('series|' + String(name || '').replace(/\s*(?:season\s+\d+|20\d\d)\s*/ig, ' ').trim().toLowerCase());
-  // v84: у всех турниров IEM (Katowice, Cologne, Kraków, Chengdu, Rio, Melbourne…) общий пул кубков:
-  // классический кубок с крышкой и ручками, кубок-«кольца» (как в Кёльне), монета без подставки, стеклянная тарелка на стойке.
+  // v84: у всех турниров IEM (Katowice, Cologne, Kraków, Chengdu, Rio, Melbourne…) общий пул отделок.
   const iemPool = r => [
     { d: 'iemClassic', metal: 'silver' }, { d: 'ringChalice', metal: 'silver' }, { d: 'iemPlate', metal: 'chrome', glass: 'ice', bare: true },
     { d: 'iemClassic', metal: 'chrome' }, { d: 'ringChalice', metal: 'chrome', tint: 'violet' }, { d: 'iemPlate', metal: 'chrome', glass: 'smoke', bare: true },
@@ -722,7 +764,9 @@
   const DUOS = [
     ['gold', 'red', null], ['gold', 'blue', null], ['gold', 'cyan', null], ['silver', 'red', 'gold'], ['silver', 'blue', null],
     ['chrome', 'cyan', null], ['pale', 'amber', null], ['rose', 'violet', null], ['gold', 'green', null], ['titanium', 'amber', 'gold'],
-    ['silver', 'ice', null], ['bronze', 'red', null], ['white', 'blue', 'gold'], ['chrome', 'red', null], ['gold', 'navy', null], ['white', 'red', 'gold']
+    ['silver', 'ice', null], ['bronze', 'red', null], ['white', 'blue', 'gold'], ['chrome', 'red', null], ['gold', 'navy', null], ['white', 'red', 'gold'],
+    // v131: брутальные тёмные металлы
+    ['blacktitan', 'red', 'gold'], ['blacktitan', 'cyan', null], ['gunmetal', 'amber', null], ['bluesteel', 'ice', null], ['blacktitan', 'amber', null]
   ];
   // ESL Pro League: оригинальная расцветка (золото + чёрный); меняется только оттенок чёрного корпуса
   // корпус: оригинальный чёрный или нейтральные оттенки (графит, серый, титан, серебро, белый)
@@ -744,7 +788,15 @@
     if (blastGlass) { spec.accent = GLASS[spec.glass]; spec.second = spec.glass; spec.place = !!place; if (place) spec.ribbon = place.ribbon; return spec; }
     if (!keepMetal && !greyOrg && (place || (v >>> 7) % 2 === 0)) { spec.metal = pair.metal; if (pair.metal2) spec.metal2 = pair.metal2; }
 
-    const sec = pair.second;
+    // v131: кубки с цветами города меняют расцветку по сезонам, сохраняя основной цвет города:
+    // 1-й — классика города, 2-й — тёмный «брутальный» металл, 3-й — второй цвет флага во вставках, 4-й — оружейная сталь / чёрное золото
+    let sec = pair.second;
+    if (place) {
+      const k = ((Number(season) || 1) + (hash('cityrot|' + String(name).replace(/\s*20\d\d.*$/, '')) % 4)) % 4;
+      if (k === 1 && !keepMetal && !greyOrg) spec.metal = ['blacktitan', 'gunmetal', 'blacktitan', 'bluesteel'][(v >>> 12) % 4];
+      else if (k === 2 && place.ribbon && place.ribbon !== place.second) sec = place.ribbon;
+      else if (k === 3 && !keepMetal && !greyOrg) spec.metal = ['blackgold', 'gunmetal', 'titanium'][(v >>> 12) % 3];
+    }
     if (spec.glass && !(spec.org === 'BLAST' && !spec.metal)) spec.glass = sec;
     spec.accent = GLASS[sec];
     if (spec.tint || spec.org === 'IEM-big' || spec.org === 'IEM') spec.tint = sec;
@@ -758,18 +810,28 @@
   }
   const MAJOR_HOSTS = ['PGL', 'IEM-big', 'BLAST', 'PW'];
   function orgOf(name) { return ORGS.find(o => o.re.test(String(name || ''))) || null; }
-  function genericSpec(name, r) {
-    // Неизвестный организатор: стиль закреплён за самим брендом (первые слова названия),
-    // поэтому разные бренды получают разные сочетания формы/цвета, а один бренд — узнаваем.
-    const brand = String(name || '').replace(/\s+20\d\d.*$/, '').split(/\s+/).slice(0, 2).join(' ').toUpperCase();
-    const b = hash('brand|' + brand);
-    const forms = ['classicCup', 'shardAward', 'medallion', 'crystalPrism', 'coin', 'wingCup', 'spire', 'ringStack', 'arcGate', 'prismCrown'];
-    const accents = ['#2f6fe0', '#1f9e6e', '#d23b3b', '#e08a1f', '#0fa3b8', '#7a3fd0'];
-    const d = forms[b % forms.length];
-    return { d, metal: ['silver', 'gold', 'chrome', 'rose', 'bronze'][(b >>> 3) % 5], glass: GLASS_POOL[(b >>> 9) % GLASS_POOL.length], accent: accents[(b >>> 5) % accents.length], base: ['step', 'round', 'slab'][r % 3],
-      label: brand.split(' ')[0].slice(0, 8), year: (String(name).match(/20\d\d/) || [''])[0], prize: '$' + ((r % 4) + 1) * 50 + 'K' };
+  function genericSpec(name) {
+    // v131: неизвестный организатор — заглушка до появления его модели кубка
+    return Object.assign(stubSpec()(0, name), { year: (String(name).match(/20\d\d/) || [''])[0] });
   }
+  // v131: IEM (чаша-«кольца», двуручный кубок, монета) — только приглушённые металлы, без ярких цветных вставок,
+  // даже на Мейджоре и в городе с яркими цветами флага
+  const PRISM_METALS = new Set(['silver', 'chrome', 'gold', 'pale', 'titanium', 'steel', 'gunmetal', 'blacktitan', 'bluesteel', 'blackgold', 'iron']);
+  const IEM_METALS = new Set(['silver', 'chrome', 'titanium', 'steel', 'iron', 'gunmetal', 'blacktitan', 'bluesteel', 'gold', 'pale', 'blackgold', 'white']);
   function cupSpec(name, season, kind) {
+    const spec = cupSpecRaw(name, season, kind);
+    // v131: призма PGL на бетонной основе — не перекрашивается в яркие цвета, только благородные и тёмные металлы
+    if (spec.d === 'pglPrism' && !PRISM_METALS.has(spec.metal)) spec.metal = ['blacktitan', 'silver', 'gold', 'gunmetal', 'chrome', 'blackgold'][hash('prism|' + name + '|' + season) % 6];
+    if (spec.d === 'pglPrism' && ['pink', 'ice', 'sky', 'mint', 'cyan', 'white'].includes(spec.glass)) spec.glass = spec.second = ['red', 'amber', 'blue'][hash('prismg|' + name + '|' + season) % 3];
+    if (spec.org === 'IEM' || spec.org === 'IEM-big') {
+      if (!IEM_METALS.has(spec.metal)) spec.metal = FINISH.IEM[hash('iemm|' + name + '|' + season) % FINISH.IEM.length];
+      spec.metal2 = null; spec.tint = null;
+      if (spec.glass) spec.glass = ['smoke', 'ice', 'smoke'][hash('iemg|' + name + '|' + season) % 3];
+      spec.second = 'smoke'; spec.accent = GLASS.smoke;
+    }
+    return spec;
+  }
+  function cupSpecRaw(name, season, kind) {
     const r = hash('cup|' + name + '|' + season);
     // v102: отдельного кубка Мейджора нет. Мейджор всегда берёт форму из пула организатора-хоста
     // (PGL, IEM, BLAST, StarLadder, Perfect World…) и получает ленту MAJOR и сияние.
@@ -779,11 +841,12 @@
     let org = isMajor ? (ORGS.find(o => o.re.test(bare) || o.re.test(String(name || ''))) || null) : orgOf(name);
     // v112: Мейджор любого узнанного организатора (StarLadder, FiRe…) — с кубком этого организатора, а не случайного хоста (часто BLAST)
     if (isMajor && !org) org = ORGS.find(o => o.key === MAJOR_HOSTS[hash('mjhost|' + name + '|' + season) % MAJOR_HOSTS.length]);
-    const spec = org ? org.pick(r, name) : genericSpec(name, r);
+    const spec = org ? org.pick(r, name, Number(season) || 1) : genericSpec(name, r);
     spec.kind = kind; spec.org = org ? org.key : 'custom';
     // v102: процедурные надписи на трофее: «IEM DALLAS» + год (из названия или 2025 + сезон)
     spec.year = (String(name || '').match(/20\d\d/) || [String(2025 + (Number(season) || 1))])[0];
     spec.title = String(name || '').replace(/\s*\(.*?\)\s*/g, ' ').replace(/\b20\d\d\b/g, '').replace(/\s+/g, ' ').trim().toUpperCase().slice(0, 26);
+    if (spec.stub) { if (isMajor) { spec.major = true; spec.big = true; } return spec; }   // v131: заглушка — без отделок
     if (isMajor) { spec.major = true; spec.big = true; }
     // Отделка по сезону: тот же организатор — тот же силуэт, но разные покрытия из его пула.
     const pool = FINISH[spec.org] || FINISH.custom, v = hash('finish|' + name + '|' + season);
@@ -793,22 +856,28 @@
       const grey = spec.org === 'IEM' || spec.org === 'IEM-big';
       // v112: палитра Мейджоров шире — классические металлы и яркие анодированные; 'mono' — одноцветный кубок
       // (внутренняя часть PGL того же цвета, что и внешняя), иначе — двухцветный (металл + вставка другого цвета)
-      const MJ = grey ? [['silver'], ['chrome'], ['gold'], ['cobalt'], ['titanium'], ['blackgold'], ['ruby'], ['violet'], ['emerald'], ['silver']]
+      const MJ = grey ? [['silver'], ['chrome'], ['gold'], ['blacktitan'], ['titanium'], ['blackgold'], ['steel'], ['gunmetal'], ['bluesteel'], ['silver']]
         : [['gold', 'mono'], ['silver', 'blue'], ['ruby', 'mono'], ['cobalt', 'mono'], ['emerald', 'mono'], ['violet', 'mono'], ['teal', 'mono'], ['gold', 'red'],
-           ['chrome', 'violet'], ['rose', 'mono'], ['holo', 'mono'], ['blackgold', 'amber'], ['silver', 'red'], ['cobalt', 'amber'], ['ruby', 'amber'], ['emerald', 'yellow'], ['pale', 'navy'], ['silver', 'mono']];
-      const MONO = { gold: 'amber', pale: 'amber', silver: 'ice', chrome: 'ice', ruby: 'ruby', cobalt: 'blue', emerald: 'mint', violet: 'violet', teal: 'cyan', rose: 'pink', holo: 'cyan', blackgold: 'amber', titanium: 'smoke' };
-      const fRaw = MJ[hash('mjpal|' + name + '|' + season) % MJ.length];
+           ['chrome', 'violet'], ['rose', 'mono'], ['holo', 'mono'], ['blackgold', 'amber'], ['silver', 'red'], ['cobalt', 'amber'], ['ruby', 'amber'], ['emerald', 'yellow'], ['pale', 'navy'], ['silver', 'mono'],
+           ['blacktitan', 'mono'], ['blacktitan', 'red'], ['blacktitan', 'cyan'], ['gunmetal', 'amber'], ['bluesteel', 'ice']];   // v131: чёрные «брутальные» Мейджоры
+      const MONO = { gold: 'amber', pale: 'amber', silver: 'ice', chrome: 'ice', ruby: 'ruby', cobalt: 'blue', emerald: 'mint', violet: 'violet', teal: 'cyan', rose: 'pink', holo: 'cyan', blackgold: 'amber', titanium: 'smoke', blacktitan: 'amber', gunmetal: 'red', bluesteel: 'ice' };
+      const MJP = spec.org === 'PGL' ? PGL_MJ : MJ, fRaw = MJP[hash('mjpal|' + name + '|' + season) % MJP.length];
       const f = fRaw[1] === 'mono' ? [fRaw[0], MONO[fRaw[0]] || 'amber'] : fRaw;
       const golden = f[0] === 'gold' || f[0] === 'pale';
       spec.metal = f[0];
       if (spec.org === 'BLAST' && golden) spec.glass = null; // золотой треугольник BLAST — металлом
       if (spec.glass) spec.glass = f[1] || (grey ? null : ['amber', 'ice', 'blue'][(v >>> 5) % 3]);
       if (f[1]) spec.second = f[1];
-      if (spec.d === 'pglLattice' || spec.d === 'pglCrown2' || spec.d === 'pglPrism') spec.glass = spec.second = f[1] || ['blue', 'blue', 'violet', 'cyan'][(v >>> 5) % 4];
-      if (placeOf(name) && !grey && (v >>> 9) % 3 === 0) applyDuo(spec, name, season, false); // v112: цвета флага города — лишь иногда, а не каждый раз (Austin больше не всегда синий)
+      if (spec.d === 'pglLattice' || spec.d === 'pglCrown2' || spec.d === 'pglPrism') spec.glass = spec.second = f[1] || ['blue', 'red', 'violet', 'amber'][(v >>> 5) % 4];
+      if (placeOf(name) && !grey && spec.org !== 'PGL' && (v >>> 9) % 3 === 0) applyDuo(spec, name, season, false); // v112: цвета флага города — лишь иногда, а не каждый раз (Austin больше не всегда синий)
       if (spec.org === 'BLAST') {   // v112: Мейджор BLAST — яркий анодированный металл, свой в каждом сезоне
-        const BRM = ['gold', 'ruby', 'cobalt', 'emerald', 'violet', 'teal', 'holo', 'copper', 'gold'];
-        spec.metal = BRM[hash('mjcol|' + name + '|' + season) % BRM.length]; spec.glass = null; spec.metal2 = null; spec.smooth = true; spec.stripes = false;
+        // v131: Мейджор BLAST — гладкий или карбоновый треугольник. Карбоновый — разных расцветок;
+        // гладкий — то яркий переливающийся (голограмма, анодированные цвета), то обычный благородный металл
+        const hv = hash('mjcol|' + name + '|' + season), carbon = hv % 5 < 2;
+        const CARB = ['silver', 'ruby', 'cobalt', 'emerald', 'violet', 'teal', 'gold', 'copper', 'gunmetal', 'holo', 'blacktitan'];
+        const VIVM = ['holo', 'ruby', 'cobalt', 'emerald', 'violet', 'teal', 'copper'], PLAIN = ['gold', 'silver', 'chrome', 'pale', 'rose', 'titanium', 'blackgold', 'blacktitan'];
+        spec.metal = carbon ? CARB[(hv >>> 4) % CARB.length] : ((hv >>> 4) % 2 ? VIVM[(hv >>> 8) % VIVM.length] : PLAIN[(hv >>> 8) % PLAIN.length]);
+        spec.glass = null; spec.metal2 = null; spec.smooth = !carbon; spec.carbon = carbon; spec.stripes = carbon;
       }
       if (spec.d === 'orbBowl') { // кристалл Perfect World: цвет кристалла — от отделки, цвет страны остаётся на ленте
         const PWG = { gold: 'amber', pale: 'amber', silver: 'blue', chrome: 'ice', rose: 'pink', titanium: 'violet', ruby: 'ruby', cobalt: 'blue', emerald: 'mint', violet: 'violet', teal: 'cyan', holo: 'cyan', blackgold: 'amber' };
@@ -830,6 +899,10 @@
       const ci = (si * 3 + (Number(season) || 1) * 5) % BR.length;   // ×3 взаимно просто с 8: соседние серии сезона — разные цвета
       spec.metal = BR[ci]; spec.metal2 = null; spec.glass = null;
       const smooth = ((si + (Number(season) || 1)) % 3) === 0 || /final/i.test(name); spec.smooth = smooth; spec.stripes = !smooth;
+      // v131: и гладкий, и карбоновый треугольник примерно в половине сезонов — благородным или тёмным металлом,
+      // в остальных — ярким анодированным (у соседних серий сезона цвета по-прежнему разные)
+      if (hash('blplain|' + name + '|' + season) % 2 === 0) spec.metal = ['gold', 'silver', 'chrome', 'pale', 'rose', 'titanium', 'blacktitan', 'blackgold', 'gunmetal', 'bluesteel'][hash('blpm|' + name + '|' + season) % 10];
+      if (!smooth) spec.carbon = true;
       const SEC = { teal: 'amber', emerald: 'yellow', ruby: 'white', cobalt: 'cyan', holo: 'violet', violet: 'pink', gold: 'red', copper: 'cyan', blackgold: 'amber', rose: 'pink' };
       spec.second = SEC[spec.metal] || 'amber'; spec.accent = GLASS[spec.second] || '#ffb347';
       const pl = placeOf(name); spec.place = !!pl; if (pl) spec.ribbon = pl.ribbon;
@@ -858,7 +931,7 @@
     const accents = ['#b8202e', '#1f4fb5', '#1f9e6e', '#7a3fd0', '#e08a1f', '#0fa3b8', '#c2185b'];
     const acc = spec.accent || accents[pick(9, accents.length)];
     let back = '', front = '';
-    const orn = spec.major || spec.bare || ARTS[spec.d] || ['iemClassic', 'ringChalice', 'iemPlate', 'blastTri', 'xseTower', 'cacCup', 'eplTower', 'ewcPlate', 'fissure', 'thunderSwirl', 'orbBowl', 'pglCrown2', 'pglPrism', 'pglMajor', 'pglPlaque', 'encSpire', 'encTwist'].includes(spec.d) || ['coin', 'cheque', 'medallion'].includes(spec.d) ? [] : (pick(12, 3) === 0 ? ['laurel'] : []);
+    const orn = spec.major || spec.bare || spec.stub || ARTS[spec.d] || ['iemClassic', 'ringChalice', 'iemPlate', 'blastTri', 'xseTower', 'cacCup', 'eplTower', 'ewcPlate', 'fissure', 'thunderSwirl', 'orbBowl', 'pglCrown2', 'pglPrism', 'pglMajor', 'pglPlaque', 'encSpire', 'encTwist'].includes(spec.d) || ['coin', 'cheque', 'medallion'].includes(spec.d) ? [] : (pick(12, 3) === 0 ? ['laurel'] : []);
     // v102: у кубков без цветных вставок второй цвет пары/флага показывается лентой-бантом на ножке
     const NEEDS_RIBBON = ['mastersCup', 'ewcCup', 'cctChevron', 'classicCup', 'wingCup', 'spire', 'glassBlock'];
     if (spec.second && !spec.major && !spec.bare && NEEDS_RIBBON.includes(spec.d)) orn.push('ribbon'); // v84: из украшений — только лавровый венок; без искр и мелких деталей
@@ -993,7 +1066,17 @@
     entry: ['ENTRY', 'OF THE YEAR'], igl: ['IGL', 'OF THE YEAR'], captain: ['CAPTAIN', 'OF THE YEAR'], rookie: ['ROOKIE', 'OF THE YEAR'],
     youngstar: ['YOUNG STAR', 'OF THE YEAR'], clutch: ['CLUTCH', 'MASTER'], support: ['SUPPORT', 'OF THE YEAR'], defender: ['DEFENDER', 'OF THE YEAR'],
     breakout: ['BREAKOUT', 'OF THE YEAR'], mostimproved: ['MOST', 'IMPROVED'], lurker: ['LURKER', 'OF THE YEAR'], anchor: ['ANCHOR', 'OF THE YEAR'], utility: ['UTILITY', 'MASTER'],
-    team: ['TEAM', 'OF THE YEAR'], teamseason: ['TEAM', 'OF THE SEASON']   // v112: «Команда года» — такая же статуэтка, как у игрока года
+    team: ['TEAM', 'OF THE YEAR'], teamseason: ['TEAM', 'OF THE SEASON'],   // v112: «Команда года» — такая же статуэтка, как у игрока года
+    coach: ['COACH', 'OF THE YEAR'], analyst: ['ANALYST', 'OF THE YEAR'], hall: ['HALL', 'OF FAME']   // v131: и у тренера — статуэтка, а не старый кубок
+  };
+  // v131: разновидности статуэток — у каждой номинации своё сочетание металлов [фигура, основание/табличка];
+  // главные награды (игрок года, MVP, команда года, зал славы) — классическое золото
+  const STATUE_METAL = {
+    poty: ['gold', 'silver'], mvp: ['gold', 'silver'], team: ['gold', 'silver'], teamseason: ['pale', 'silver'], hall: ['blackgold', 'gold'],
+    awper: ['chrome', 'gold'], rifler: ['pale', 'titanium'], entry: ['rose', 'silver'], igl: ['titanium', 'gold'], captain: ['titanium', 'gold'],
+    rookie: ['silver', 'pale'], youngstar: ['steel', 'gold'], clutch: ['cobalt', 'silver'], support: ['emerald', 'silver'], defender: ['steel', 'pale'],
+    breakout: ['copper', 'silver'], mostimproved: ['bronze', 'pale'], lurker: ['violet', 'silver'], anchor: ['gunmetal', 'gold'], utility: ['teal', 'silver'],
+    coach: ['silver', 'gold'], analyst: ['white', 'gold']
   };
   // силуэты оружия для таблички (в единицах ширины 1)
   const RIFLE_ICON = 'M0 .42H.18L.2 .36H.62L.66 .3H.72L.74 .36H1V.44H.78L.74 .5H.62L.58 .62H.5L.52 .5H.36L.3 .7H.2L.24 .5H.16L.04 .56H0z';
@@ -1003,10 +1086,11 @@
     o = o || {};
     const c = new Ctx(), lines = PLAYER_AWARDS[type] || PLAYER_AWARDS.poty;
     const key = o.model || (type === 'team' || type === 'teamseason' ? 'statueHelmet' : hash('st|' + type) % 2 ? 'statueBeret' : 'statueHelmet');
-    const { body } = art(c, key, { metal: o.metal || 'gold', metal3: o.metal3 || 'silver' });
-    const [x0, y0, x1, y1] = STATUE_PLATE[key], w = x1 - x0, cx = n((x0 + x1) / 2), gold = sampleStops(metalStops(o.metal || 'gold'), .78);
+    const sm = STATUE_METAL[type] || STATUE_METAL.poty, metal = o.metal || sm[0], metal3 = o.metal3 || sm[1];
+    const { body } = art(c, key, { metal, metal3 });
+    const [x0, y0, x1, y1] = STATUE_PLATE[key], w = x1 - x0, cx = n((x0 + x1) / 2), gold = sampleStops(metalStops(['gold', 'pale', 'blackgold', 'bronze', 'copper', 'rose'].includes(metal) ? metal : 'gold'), .78);
     const team = type === 'team' || type === 'teamseason';
-    const icon = type === 'awper' ? AWP_ICON : team ? CROWN_ICON : RIFLE_ICON, iw = w * (team ? .42 : .62);
+    const icon = type === 'awper' ? AWP_ICON : (team || type === 'coach' || type === 'hall' || type === 'analyst') ? CROWN_ICON : RIFLE_ICON, iw = w * (team ? .42 : .62);
     let t = `<g transform="translate(${n(+cx - iw / 2)} ${n(y0 + (y1 - y0) * .02)}) scale(${n(iw)})"><path d="${icon}" fill="${gold}"/></g>`;
     const ly = (k) => n(y0 + (y1 - y0) * k);
     t += fitTxt(cx, ly(.4), 'HLTV', w * .22, w * .8, gold) + fitTxt(cx, ly(.55), lines[0], w * .2, w * .86, gold) +

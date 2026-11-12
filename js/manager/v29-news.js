@@ -65,7 +65,11 @@ window.V29NewsClear = () => {
 };
 function flush() { clearTimeout(saveT); saveT = null; if (disabled) return; try { localStorage.setItem(NEWS_KEY, JSON.stringify(store)); } catch (e) {} try { localStorage.setItem(FAN_KEY, JSON.stringify(fan)); } catch (e) {} }
 window.addEventListener('beforeunload', flush);
-window.v29NewsTrim = level => { store.items = store.items.slice(0, level >= 2 ? 90 : 200); fan.preds = fan.preds.slice(0, level >= 2 ? 60 : 150); flush(); };
+// v131: при нехватке места не выбрасываем ключевые сюжеты года (Топ-20, HLTV Awards, главные новости ≤ 400 дней):
+// после длинной перемотки они оказываются «старше» сотен новых рядовых новостей и раньше вырезались целиком.
+const v29Vip = (x, now) => !!x && (x.t20 || x.hltvAward || (x.cat === 'award' && (x.imp || 0) >= 8) || (x.imp || 0) >= 10) && now - (Number(x.ts) || 0) < 400 * 864e5;
+window.v29NewsTrim = level => { const keep = level >= 2 ? 90 : 200, now = calNow();
+  store.items = store.items.slice(0, keep).concat(store.items.slice(keep).filter(x => v29Vip(x, now)).slice(0, level >= 2 ? 40 : 70)); fan.preds = fan.preds.slice(0, level >= 2 ? 60 : 150); flush(); };
 
 const CATS = {
   tournament: { l: 'Турниры', ic: '🏆' }, major: { l: 'Major', ic: '⭐' }, transfer: { l: 'Трансферы', ic: '⇄' }, rumor: { l: 'Слухи', ic: '🕵️' },
@@ -93,6 +97,8 @@ function add(it) {
     // v84: при переполнении сначала уходят рядовые новости (imp ≤ 4) из старшей половины ленты, а не важные сюжеты.
     let extra = store.items.length - CAP;
     for (let i = store.items.length - 1; i >= CAP / 2 && extra > 0; i--) if ((store.items[i].imp || 3) <= 4) { store.items.splice(i, 1); extra--; }
+    // v131: дальше — самые старые, кроме ключевых сюжетов года
+    if (store.items.length > CAP) { const now = calNow(); for (let i = store.items.length - 1; i >= 0 && store.items.length > CAP; i--) if (!v29Vip(store.items[i], now)) store.items.splice(i, 1); }
     if (store.items.length > CAP) store.items.length = CAP;
   }
   fresh.push(it); save();

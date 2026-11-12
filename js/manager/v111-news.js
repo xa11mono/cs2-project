@@ -73,9 +73,10 @@
       const it = N.get ? N.get(el.dataset.art) : null, d = it && cardData(it); if (!d) return;
       el.classList.add('v112-t20row');
       const box = el.querySelector(BOX);
-      let badge = ''; try { badge = W.TW && W.TW.top20Svg ? W.TW.top20Svg(d.r, d.year) : ''; } catch (e) {}
-      if (box && badge) { box.classList.add('v112-t20box'); box.insertAdjacentHTML('beforeend', `<span class="v112-t20badge" title="HLTV Top 20 · №${d.r}">${badge}</span>`); }
-      const k = el.querySelector('.nl-k, .hs-news-k, .ax-nw-k'); if (k && !k.querySelector('.v112-t20tag')) k.insertAdjacentHTML('afterbegin', `<span class="v112-t20tag">HLTV TOP 20 · №${d.r}</span>`);
+      let badge = ''; try { badge = d.award ? (W.TW && W.TW.awardSvg ? W.TW.awardSvg(d.award.type, d.year) : '') : (W.TW && W.TW.top20Svg ? W.TW.top20Svg(d.r, d.year) : ''); } catch (e) {}
+      const tag = d.award ? `HLTV AWARDS ${d.year}` : `HLTV TOP 20 · №${d.r}`;
+      if (box && badge) { box.classList.add('v112-t20box'); box.insertAdjacentHTML('beforeend', `<span class="v112-t20badge${d.award ? ' aw' : ''}" title="${esc(tag)}">${badge}</span>`); }
+      const k = el.querySelector('.nl-k, .hs-news-k, .ax-nw-k'); if (k && !k.querySelector('.v112-t20tag')) k.insertAdjacentHTML('afterbegin', `<span class="v112-t20tag">${esc(tag)}</span>`);
     });
   }
   // уведомление о новости подписывает v29-news (V111News.srcOf)
@@ -83,6 +84,9 @@
   /* ------------------------------------------------------------ 2. карточка «HLTV Top 20» */
   const TOP_RE = /Топ-20 игроков (\d{4}): №(\d+) — (.+)$/, AW_RE = /^HLTV Awards (\d{4}): (.+?) — лучший игрок года/, BEST_RE = /^Лучший игрок (\d{4}) года — (.+?)!?$/;
   function cardData(it) {
+    // v131: структурированные данные из движка наград (новые новости); регулярки ниже — для старых сохранений
+    if (it.hltvAward && it.hltvAward.type) { const a = it.hltvAward; return { year: +a.year, r: 0, nick: a.nick, award: a }; }
+    if (it.t20 && it.t20.nick) return { year: +it.t20.year, r: +it.t20.r, nick: it.t20.nick };
     let m = TOP_RE.exec(it.title || ''), year, r, nick;
     if (m) { year = +m[1]; r = +m[2]; nick = m[3].trim(); }
     else if ((m = AW_RE.exec(it.title || ''))) { year = +m[1]; r = 1; nick = m[2].trim(); return { year, r, nick, ceremony: true }; }
@@ -125,9 +129,29 @@
     return `<section class="v111-t20 v113-cer"><div class="v113-cer-h"><small>Церемония</small><h2>HLTV Awards ${d.year}</h2><p>Тройка лучших игроков года и все награды — объявлены сегодня</p></div>
       ${pod ? `<div class="v113-podium">${pod}</div>` : ''}${aw ? `<div class="v111-t20-box v113-aw"><h4>Награды года</h4><ul>${aw}</ul></div>` : ''}</section>`;
   }
+  /* v131: «Команда года» и «Тренер года» — карточка команды: трофей, логотип, итоги года */
+  function teamAwardCard(it, d) {
+    const a = d.award, team = a.team || a.nick, tn = tintOf(team);
+    let svg = ''; try { svg = W.TW && W.TW.awardSvg ? W.TW.awardSvg(a.type, d.year) : ''; } catch (e) {}
+    let logo = ''; try { logo = (W.V31Media && W.V31Media.url('team', team)) || ''; } catch (e) {}
+    const t = H.teamBy ? H.teamBy(team) : null, places = { 1: [], 2: [], 3: [] };
+    ((t && t.history) || []).forEach(h => { if (!h || h.isSeasonAward) return; const y = H.yearOf ? H.yearOf(h.season) : 2025 + (+h.season || 1); if (y !== d.year || !(h.isMajor || h.isElite)) return; const pl = +h.place; if (pl >= 1 && pl <= 3) places[pl].push(h.tournament); });
+    const list2 = arr => arr.length ? `<ul>${arr.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<p class="v111-none">—</p>';
+    const body = (Array.isArray(it.body) ? it.body : []).map(x => `<li>${esc(x)}</li>`).join('');
+    return `<section class="v111-t20 v131-awcard" style="--tr:${tn[0]};--tg:${tn[1]};--tb:${tn[2]}">
+      <div class="v111-t20-l">
+        <h2 class="v111-t20-n">${esc(a.nick)}</h2>
+        <p class="v111-t20-s">${esc(a.label)} · ${d.year}${a.type === 'coach' && team ? ' · ' + esc(team) : ''}</p>
+        <div class="v111-t20-box"><h4>Командные достижения ${esc(team)} за ${d.year}</h4><div class="v111-t20-pl">${[1, 2, 3].map(k => `<div><span class="v111-pn p${k}">${k}</span><b>${['', 'Первое место', 'Второе место', 'Третье место'][k]}</b>${list2(places[k])}</div>`).join('')}</div></div>
+        ${body ? `<div class="v111-t20-box"><h4>Итоги</h4><ul class="v111-t20-notes">${body}</ul></div>` : ''}
+      </div>
+      <div class="v111-t20-r v131-aw-r">${logo ? `<img class="v131-aw-logo" src="${esc(logo)}" alt="" loading="lazy" decoding="async">` : ''}<span class="v131-aw-trophy">${svg}</span><div class="v111-t20-rank"><b class="v131-aw-lbl">${esc(a.label)}</b><small>HLTV AWARDS / ${d.year}</small></div></div>
+    </section>`;
+  }
   function card(it) {
     const d = cardData(it); if (!d) return '';
     if (d.ceremony) { const c = ceremonyCard(it, d); if (c) return c; if (!d.nick) return ''; }
+    if (d.award && (d.award.type === 'team' || d.award.type === 'coach' || d.award.type === 'teamseason')) return teamAwardCard(it, d);
     const now = H.playerNow ? H.playerNow(d.nick) : null, p = now && now.p, teamName = (now && now.t && now.t.name) || (p && p.v31team) || '';
     const list = yearLines(d.year), me = list.find(x => x.nick === d.nick), L = me && me.L;
     const top = list.slice().sort((a, b) => b.L.rating - a.L.rating).slice(0, 20);
@@ -178,7 +202,7 @@
         ${barHtml ? `<div class="v111-t20-box"><h4>Личная статистика <small>· отметка — среднее по топ-20</small></h4>${barHtml}</div>` : ''}
         ${notes.length ? `<div class="v111-t20-box"><h4>Заметные показатели</h4><ul class="v111-t20-notes">${notes.map(([t, r]) => `<li>${esc(t)} <b class="${r <= 3 ? 'hi' : ''}">(#${r})</b></li>`).join('')}</ul></div>` : ''}
       </div>
-      <div class="v111-t20-r">${photo ? `<img src="${esc(photo)}" alt="" loading="lazy" decoding="async">` : ''}<div class="v111-t20-rank"><b>#${d.r}</b><small>HLTV TOP 20 / ${d.year}</small></div></div>
+      <div class="v111-t20-r${d.award ? ' v131-aw-r' : ''}">${photo ? `<img src="${esc(photo)}" alt="" loading="lazy" decoding="async">` : ''}${d.award ? (() => { let svg = ''; try { svg = W.TW && W.TW.awardSvg ? W.TW.awardSvg(d.award.type, d.year) : ''; } catch (e) {} return `<span class="v131-aw-trophy">${svg}</span><div class="v111-t20-rank"><b class="v131-aw-lbl">${esc(d.award.label)}</b><small>HLTV AWARDS / ${d.year}</small></div>`; })() : `<div class="v111-t20-rank"><b>#${d.r}</b><small>HLTV TOP 20 / ${d.year}</small></div>`}</div>
     </section>`;
   }
 
