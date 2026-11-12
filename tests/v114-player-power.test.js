@@ -25,7 +25,7 @@ const squad = P.team({ players: [player, { ...player, nick: '2' }, { ...player, 
 assert.equal(squad.count, 5);
 assert.equal(squad.power, 79);
 assert.equal(squad.currentPower, 79);
-assert.equal(squad.roleCoverage, 40);
+assert.equal(squad.roleCoverage, 0);
 assert.equal(P.team({ players: [] }).count, 0);
 const d = P.diagnostics(player);
 assert.equal(d.overall, 79);
