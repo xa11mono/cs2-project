@@ -86,11 +86,16 @@ html.ax-on #hs-root .v84-dm-acts .v84-dm-role{display:inline-flex;flex-wrap:wrap
 html.ax-on #hs-root .v99-topics{width:100%;padding-bottom:10px!important;margin-bottom:6px!important}
 html.ax-on #hs-root :is(.v84-dm-h,.v99-dmopts,.v84-dm-acts){flex-shrink:0!important}   /* в колонке flex блоки сжимались и наезжали друг на друга */
 
-/* v101: метка Мейджора — золотой кружок со звездой на иконке турнира */
+/* v101: метка Мейджора — как нижняя звезда у кубков в профиле игрока (.hs-achi i.st): золотой градиентный кружок со ★ */
 #hs-root .v101-major{position:relative;overflow:visible!important}
-#hs-root .v101-major::after{content:"";position:absolute;right:-5px;bottom:-5px;width:16px;height:16px;border-radius:50%;
-  background:#f5b81c url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6 6.9 19.3l1-5.7-4.1-4 5.7-.8z'/%3E%3C/svg%3E") center/11px no-repeat;
-  box-shadow:0 0 0 2px #13151a,0 2px 6px rgba(245,184,28,.45);pointer-events:none;z-index:2}
-#hs-root .hs-ev-tr.sm.v101-major::after{width:14px;height:14px;right:-4px;bottom:-4px;background-size:9px}
-#hs-root .v101-cupwrap{position:relative;display:inline-flex;line-height:0}
-#hs-root .v101-cupwrap.v101-major::after{width:20px;height:20px;right:0;top:2px;bottom:auto;background-size:13px}   /* у кубка в профиле — справа сверху, не перекрывает счётчик */
+#hs-root .v101-major::after{content:"★";position:absolute;right:-5px;bottom:-5px;min-width:16px;height:16px;border-radius:9px;
+  background:radial-gradient(circle at 35% 30%,#ffe9a1,#e2a72c 60%,#9a6a10);color:#fff;font:800 9.5px/16px Arial,sans-serif;text-align:center;
+  box-shadow:0 0 0 2px #13151a,0 2px 6px rgba(226,167,44,.4);pointer-events:none;z-index:2}
+#hs-root .hs-ev-tr.sm.v101-major::after{min-width:14px;height:14px;line-height:14px;font-size:8.5px;right:-4px;bottom:-4px}
+/* кубки в профиле команды */
+#hs-root .v101-cuphost{position:relative}
+#hs-root .v101-cuphost>i.v101-st{position:absolute;right:6px;bottom:22px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;
+  background:radial-gradient(circle at 35% 30%,#ffe9a1,#e2a72c 60%,#9a6a10);font:800 9.5px/17px Arial,sans-serif;font-style:normal;color:#fff;text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.45);pointer-events:none;z-index:2}
+/* в карточке кубка команды <i> — подпись года на всю ширину (v28/v30); звезда — отдельный кружок */
+#hs-root .tm-shelf>.tm-cup.v101-cuphost>i.v101-st,#hs-root .tm-cup.v101-cuphost>i.v101-st{display:block!important;position:absolute!important;width:auto!important;min-width:17px;height:17px;right:8px;left:auto;bottom:24px;padding:0 4px;margin:0!important;font:800 9.5px/17px Arial,sans-serif!important;color:#fff!important;text-align:center!important}

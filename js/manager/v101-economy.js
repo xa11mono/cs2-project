@@ -101,9 +101,10 @@
       const host = sv.closest('[title],[data-tip]') || sv.parentNode; if (!host) return;
       const txt = host.getAttribute('title') || host.getAttribute('data-tip') || host.textContent || '';
       if (!MAJOR_RE.test(txt) || /qualifier|квалиф|отбор|\brmr\b/i.test(txt)) return;
-      if (host.querySelector('.st, .v101-major')) return;   // у чипа уже есть своя звезда Мейджора
+      if (host.closest('.v101-major, .hs-ev-tr, .ax-cal-ic') || host.querySelector('.st, .v101-major, .v101-st')) return;   // у чипа уже есть своя звезда Мейджора
       if (/MVP турниров|Игрок года|топ-20/i.test(txt) && !/^[^•]*Major/i.test(txt.split('\n')[0])) return;   // чипы MVP/наград — не кубок Мейджора
-      const wrap = document.createElement('span'); wrap.className = 'v101-cupwrap v101-major'; sv.parentNode.insertBefore(wrap, sv); wrap.appendChild(sv);
+      // та же нижняя звезда, что у кубков в профиле игрока (.hs-achi i.st)
+      host.classList.add('v101-cuphost'); host.insertAdjacentHTML('beforeend', '<i class="st v101-st" title="Major">★</i>');
     });
   }
   (H.AFTER || []).push((pg, arg, root) => { try { markMajors(root); } catch (e) {} });
