@@ -56,15 +56,11 @@
 html.ax-on #hs-root .v111-t20 .v111-bar.v111-bar>i,#hs-root .v111-bar>i{background:rgba(255,255,255,.07)!important}
 #hs-root .v111-t20-box ul{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
 #hs-root .v111-t20-two .v111-t20-box ul{grid-template-columns:1fr}
-/* v111.1: кубки Мейджоров года рядом с игроком (как на постере HLTV Top 20): внизу справа, над «#N» */
-#hs-root .v111-t20-cups{position:absolute;right:0;bottom:84px;width:80%;height:56%;pointer-events:none;z-index:2}
-#hs-root .v111-t20-cups>span{position:absolute;bottom:0;display:block;filter:drop-shadow(0 12px 18px rgba(0,0,0,.75))}
-#hs-root .v111-t20-cups svg{display:block;width:100%;height:auto}
-#hs-root .v111-t20-cups .c0{width:58%;right:2%;z-index:3}
-#hs-root .v111-t20-cups .c1{width:50%;right:42%;bottom:6%;z-index:2;transform:rotate(-6deg)}
-#hs-root .v111-t20-cups .c2{width:42%;right:20%;bottom:34%;z-index:1;transform:rotate(5deg);filter:drop-shadow(0 12px 18px rgba(0,0,0,.75)) brightness(.8)}
-#hs-root .v111-t20-cups.n1 .c0{width:70%}
-#hs-root .v111-t20-cups:not(.mj) .c0{width:52%}
+/* v111.2: фон портрета — тёмная «сцена» без цвета команды: мягкий свет сзади, косые лучи, золотистый отблеск снизу */
+#hs-root .v111-t20{background:linear-gradient(160deg,#16161a,#0e0e11 60%,#0b0b0d)!important}
+#hs-root .v111-t20-r{background:radial-gradient(60% 55% at 55% 42%,rgba(210,215,230,.16),transparent 70%),radial-gradient(80% 30% at 50% 100%,rgba(242,207,134,.16),transparent 70%),linear-gradient(180deg,#1b1c21,#101114 70%,#0c0c0e)}
+#hs-root .v111-t20-r::before{background:repeating-linear-gradient(118deg,transparent 0 46px,rgba(255,255,255,.035) 46px 52px,transparent 52px 110px);-webkit-mask-image:linear-gradient(200deg,#000,transparent 75%);mask-image:linear-gradient(200deg,#000,transparent 75%)}
+#hs-root .v111-t20-r::after{content:"";position:absolute;inset:0;box-shadow:inset 18px 0 30px -12px #0e0e11;pointer-events:none;z-index:2}
 #hs-root .v111-t20-r>img{z-index:1}
 #hs-root .v111-t20-rank{z-index:3}
 #hs-root .ax-nvis img.v111-pub{border-radius:50%;object-fit:cover;box-shadow:0 0 0 1.5px rgba(255,255,255,.18),0 4px 10px rgba(0,0,0,.5)}

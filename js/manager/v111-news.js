@@ -92,12 +92,6 @@
     const t = teamName && H.teamBy(teamName);
     ((t && t.history) || []).forEach(h => { if (!h || h.isSeasonAward) return; const y = H.yearOf ? H.yearOf(h.season) : 2025 + (+h.season || 1); if (y !== d.year || !(h.isMajor || h.isElite)) return; const pl = +h.place; if (pl >= 1 && pl <= 3) places[pl].push(h.tournament); });
     (aw.ti || []).filter(x => +x.y === d.year).forEach(x => { if (!places[1].includes(x.n)) places[1].push(x.n); });
-    // v111.1: Мейджоры года — кубки за спиной игрока (как на постере HLTV); без Мейджора — главный титул года
-    const yearTi = (aw.ti || []).filter(x => +x.y === d.year);
-    let cups = yearTi.filter(x => x.k === 'major').slice(0, 3), cupKind = 'major';
-    if (!cups.length) { cups = yearTi.filter(x => /elite|tier1|s-tier|premier|^big$/i.test(String(x.k || ''))).slice(0, 1); cupKind = 'regular'; }
-    let cupHtml = '';
-    try { const F = W.CS2TrophyForge; if (F && cups.length) cupHtml = `<div class="v111-t20-cups n${cups.length}${cupKind === 'major' ? ' mj' : ''}">${cups.map((x, i) => `<span class="c${i}" title="${esc(x.n)}">${F.cup(x.n, x.s, cupKind)}</span>`).join('')}</div>`; } catch (e) {}
     // личная статистика
     const bars = L ? [
       ['Убийства за раунд', L.kpr, avg('kpr'), L.kpr.toFixed(2), 1.2],
@@ -135,7 +129,7 @@
         ${barHtml ? `<div class="v111-t20-box"><h4>Личная статистика <small>· отметка — среднее по топ-20</small></h4>${barHtml}</div>` : ''}
         ${notes.length ? `<div class="v111-t20-box"><h4>Заметные показатели</h4><ul class="v111-t20-notes">${notes.map(([t, r]) => `<li>${esc(t)} <b class="${r <= 3 ? 'hi' : ''}">(#${r})</b></li>`).join('')}</ul></div>` : ''}
       </div>
-      <div class="v111-t20-r">${cupHtml}${photo ? `<img src="${esc(photo)}" alt="" loading="lazy" decoding="async">` : ''}<div class="v111-t20-rank"><b>#${d.r}</b><small>HLTV TOP 20 / ${d.year}</small></div></div>
+      <div class="v111-t20-r">${photo ? `<img src="${esc(photo)}" alt="" loading="lazy" decoding="async">` : ''}<div class="v111-t20-rank"><b>#${d.r}</b><small>HLTV TOP 20 / ${d.year}</small></div></div>
     </section>`;
   }
 
