@@ -40,7 +40,8 @@
     let timer = null;
     const flush = () => { if (!timer) return; clearTimeout(timer); timer = null; try { base(); } catch (e) { console.warn('[v84 compact] save', e); } };
     const wrapped = function () {
-      if (W.v57BatchCalendarSkip) { if (timer) { clearTimeout(timer); timer = null; } return base.apply(this, arguments); }
+      // v131: при закрытии/скрытии страницы — сразу (иначе запись из обработчика закрытия v90 снова откладывалась и терялась)
+      if (W.v57BatchCalendarSkip || W.__cs2Unloading || document.visibilityState === 'hidden') { if (timer) { clearTimeout(timer); timer = null; } return base.apply(this, arguments); }
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => { timer = null; try { base(); } catch (e) { console.warn('[v84 compact] save', e); } }, 1500);
     };

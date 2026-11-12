@@ -1356,7 +1356,8 @@ if (typeof finalizeTournamentRating === 'function') {
 
 // База архива загружается из IndexedDB асинхронно. Ждём её готовности и только
 // затем сверяем старые MVP, когда уже зарегистрированы HS и единый RewardSystem.
-window.addEventListener('load', () => {
+// v131: скрипты могут запускаться уже после события load — тогда сразу
+((fn) => { if (document.readyState === 'complete') setTimeout(fn, 0); else window.addEventListener('load', fn); })(() => {
   const ready = window.hubArchiveReady;
   Promise.resolve(ready).catch(() => false).then(() => {
     setTimeout(() => reconcileExistingMvpAwards(), 0);

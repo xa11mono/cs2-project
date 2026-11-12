@@ -336,6 +336,60 @@ function loanImpl(team, why, found) {
   emit('loan', { player: np.nick, role: np.role, from: c.a.name, to: team.name, out: w.p.nick, age: np.age, reason: why || 'нужна свежая кровь в составе' });
   return true;
 }
+/* v131: продажа талантов в топ-30. Раньше игроки академий почти никогда не уходили в сильные клубы: свои клубы
+   поднимали воспитанника только при большом усилении, чужие брали лишь в аренду (и не лучших), а «лишних» академия
+   выгоняла в свободные агенты — их подбирали слабые команды. Теперь клуб из топ-30 со слабым звеном может купить
+   готового таланта из любой академии (свой клуб — в приоритете); деньги получает организация академии. */
+const parentOfAcademy = ac => ac && (ac.academyParent || ac.parentTeam || ACAD_PARENT[ac.name]) || '';
+const money131 = v => '$' + (Math.round(v / 10000) / 100).toFixed(2) + ' млн';
+function topBuyerFor(p, srcName, kind) {
+  const busy = busyTeams(), parent = srcName ? parentOfAcademy(teams.find(t => t.name === srcName)) : '';
+  let best = null;
+  pro().filter(t => t.name !== srcName && rankOf(t) <= 30 && !busy.has(t.name) && canChange(t)).forEach(t => {
+    try { const V = window.V31; if (V && V.managed() === t.name && !V.auto('market')) return; } catch (e) {}
+    const w = weakLink(t); if (!w || !roleFits(w.p, p.role) || !roleOk(t, w.p, p.role) || fitOf(t, p) < 0.55) return;
+    const g = coreGain(p, w.p); if (g < needGain(t, w.p)) return;
+    try { if (window.V31 && window.V31.org(t.name).budget < (window.V31.valueOf ? window.V31.valueOf(p) : 0)) return; } catch (e) {}
+    const sc = g + (t.name === parent ? 3 : 0) + (31 - rankOf(t)) * 0.03;
+    if (!best || sc > best.sc) best = { t, w, g, sc };
+  });
+  return best;
+}
+function sellTalentImpl(ac, p, b, kind) {
+  const buyer = b.t, w = weakLink(buyer); if (!w || w.p !== b.w.p) return false;
+  if (ac && !(ac.players || []).includes(p)) return false;
+  if (ac) { let rep = null; try { rep = findCompatibleFreeAgent(ac, p); } catch (e) {} if (!rep) return false;
+    const repP = clone(rep.p); transferState.freeAgents.splice(rep.idx, 1); repP.status = 'STARTER'; delete repP.reservedFor; newContract(repP, 1);
+    ac.players[ac.players.indexOf(p)] = repP;
+    emit('signing', { player: repP.nick, role: repP.role, from: 'Свободный агент', to: ac.name, reason: `замена проданному ${p.nick}`, quiet: true }); }
+  else { const i = (transferState.freeAgents || []).indexOf(p); if (i >= 0) transferState.freeAgents.splice(i, 1); }
+  const np = clone(p); np.status = 'STARTER'; np.joinedRun = run(); delete np.benchFrom; delete np.reservedFor; newContract(np, 3);
+  if (ac) { np.academyFrom = ac.name; if (parentOfAcademy(ac) === buyer.name) np.academyGrad = buyer.name; }
+  buyer.players[buyer.players.indexOf(w.p)] = np;
+  bench(buyer, w.p, `в запасе: ${(window.CS2OutWhy && window.CS2OutWhy(buyer, w.p, np)) || 'в состав куплен ' + np.nick}`);
+  let fee = 0; try { const V = window.V31; if (V) { fee = Math.round((V.valueOf ? V.valueOf(np) : 300000) / 10000) * 10000; const seller = ac ? (parentOfAcademy(ac) || ac.name) : (p.v131SellerOrg || '');
+    V.book(buyer.name, -fee, 'trans', `Покупка ${np.nick}${ac ? ' из ' + ac.name : ''}`); if (seller) V.book(seller, fee, 'trans', `Продажа ${np.nick} в ${buyer.name}`); } } catch (e) {}
+  try { ensurePlayerLayer(buyer); if (ac) ensurePlayerLayer(ac); } catch (e) {}
+  buyer.v30LastMoveRun = run(); noteChange(buyer);
+  emit('transfer', { player: np.nick, role: np.role, from: ac ? ac.name : (p.v131SellerOrg ? `${p.v131SellerOrg}: молодёжная программа` : 'Свободный агент'), to: buyer.name, out: w.p.nick,
+    reason: `талант ${ac ? 'академии ' + ac.name : 'молодёжной программы'} — продан${fee ? ' за ' + money131(fee) : ''}`, window: kind === 'big' ? 'post-major' : 'mid' });
+  return true;
+}
+function sellTalent(ac, p, b, kind) {
+  return RUN({ kind: 'buy', team: b.t, from: ac || null, out: b.w.p, incoming: p, fee: 1, reason: 'покупка таланта академии' }, () => sellTalentImpl(ac, p, b, kind));
+}
+// раз в окно: готовые таланты академий (19+ лет или потенциал 84+) предлагаются клубам топ-30
+function sellAcademyTalents(kind, cap) {
+  let n = 0; const busy = busyTeams();
+  teams.filter(a => a.isAcademy && !busy.has(a.name)).forEach(ac => {
+    if (n >= cap) return;
+    const cands = (ac.players || []).filter(p => p && !p.onLoan && ((+p.age || 0) >= 19 || (+p.pot || 0) >= 84)).sort((x, y) => val(y) - val(x));
+    for (const p of cands) { const b = topBuyerFor(p, ac.name, kind); if (b && sellTalent(ac, p, b, kind)) { n++; break; } }
+  });
+  return n;
+}
+window.v131SellTalent = (p, sellerOrg) => { try { p.v131SellerOrg = sellerOrg || ''; const b = topBuyerFor(p, null, 'mid'); if (!b) return null;
+  if (!(transferState.freeAgents || []).includes(p)) transferState.freeAgents.push(p); return sellTalent(null, p, b, 'mid') ? b.t.name : null; } catch (e) { return null; } };
 function returnLoans() {
   const s = M(), busy = busyTeams(); let n = 0;
   s.v30Loans = s.v30Loans.filter(l => {
@@ -375,6 +429,9 @@ function releaseBench() { // скамейка → свободные агент�
     const p = (transferState.freeAgents || []).find(x => lc(x.nick) === lc(b.nick));
     if (!p || onRoster(b.nick)) return false;
     if (run() - b.since < 2) return true;
+    // v131: молодой игрок с запасом роста — не выбрасываем сразу: сначала предложение клубам топ-30, иначе ждём дольше
+    const young = (+p.age || 25) <= 21 && (+p.pot || 0) - pow(p) >= 3;
+    if (young && run() - b.since < 8) { const b2 = topBuyerFor(p, b.team, 'mid'); if (b2 && sellTalent(null, p, b2, 'mid')) { n++; return false; } return true; }
     p.status = 'FREE AGENT'; delete p.benchFrom; delete p.reservedFor; p.v84FaSince = calNow(); p.v84FaTeam = b.team;
     emit('release', { player: p.nick, role: p.role, from: b.team, to: 'Свободный агент', reason: 'контракт расторгнут после скамейки' });
     n++; return false;
@@ -595,7 +652,13 @@ function tick(kind) {
     if (ok) { deals++; noteChange(t); }
   }
   // академии тоже живут: подписывают молодых, если кто-то провалился
-  teams.filter(a => a.isAcademy && !busy.has(a.name)).forEach(a => { if (deals < cap && rnd() < base * 0.2) { const w = weakLink(a); if (w && signFA(a, w.p, 'ротация в академии')) deals++; } });
+  // v131: таланты академий — в клубы топ-30 (а не в свободные агенты)
+  deals += sellAcademyTalents(kind, kind === 'big' ? 3 : 1);
+  // академии тоже живут: ротация — только если у слабого звена нет запаса роста (потенциал исчерпан) или ему 21+, и отставание большое
+  teams.filter(a => a.isAcademy && !busy.has(a.name)).forEach(a => { if (deals < cap && rnd() < base * 0.2) { const w = weakLink(a);
+    if (!w || w.gap < 5 || ((+w.p.age || 25) < 21 && (+w.p.pot || 0) - pow(w.p) >= 2)) return;
+    const b = topBuyerFor(w.p, a.name, kind); if (b && sellTalent(a, w.p, b, kind)) { deals++; return; }
+    if (signFA(a, w.p, 'ротация в академии')) deals++; } });
   if (kind === 'big') { window.__v34Force = true; try { deals += ambition(2); } finally { window.__v34Force = false; } }   // запрос игрока об уходе — вынужденное событие
   try { if (typeof window.repairRosters === 'function') window.repairRosters(true); } catch (e) {}
   teams.forEach(t => { try { ensurePlayerLayer(t); } catch (e) {} });

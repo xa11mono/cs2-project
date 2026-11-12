@@ -103,7 +103,7 @@
     box.addEventListener('click', e => { const b = e.target.closest('[data-lg]'); if (!b) return; if (b.dataset.lg === 'close') box.remove(); else choose(b.dataset.lg); });
     document.body.appendChild(box);
   }
-  setTimeout(() => showModal(false), 3500);
+  setTimeout(() => showModal(false), 1800);   // v131: игра стартует быстрее (загрузка из IndexedDB) — окно выбора раньше
   // пункт в меню «Игра»: окно выбора можно открыть вручную (например, если сохранение старое)
   const addGameItem = () => { try { const m = document.querySelector('.pt-menu[data-menu="game"]'); if (m && !m.querySelector('[data-lg-open]')) m.insertAdjacentHTML('beforeend', '<button type="button" data-lg-open>История CS до 2026</button>'); } catch (e) {} };
   setTimeout(addGameItem, 1600); if (H) (H.AFTER || []).push(addGameItem);

@@ -109,7 +109,8 @@ function newSponsor(name, o) {
 function book(name, amt, kind, note) {
   const o = org(name); o.budget = Math.round(o.budget + amt);
   o.ledger.unshift({ ts: calNow(), s: season(), amt: Math.round(amt), kind, note });
-  if (o.ledger.length > 80) o.ledger.length = 80;
+  // v131: у ИИ-клубов журнал короче (25 записей) — 133 журнала по 80 записей занимали ~1 МБ сохранения и переполняли localStorage
+  const cap = isManaged(name) ? 80 : 25; if (o.ledger.length > cap) o.ledger.length = cap;
   const y = o.hist[season()] || (o.hist[season()] = { inc: 0, exp: 0, prize: 0, spon: 0, wage: 0, trans: 0, fac: 0, owner: 0 });
   if (y.owner == null) y.owner = 0;   // v89: дивиденды владельцам — отдельная категория (раньше были только в общих расходах)
   if (amt >= 0) y.inc += amt; else y.exp += -amt;
@@ -761,7 +762,14 @@ function weekYouth() { // развитие: потенциал, возраст, 
   // v92: рост молодых игроков в составах к потенциалу считает годовая модель развития (CS2Develop) — здесь он больше не дублируется
   if (!window.CS2Develop) teams.forEach(t => { const lvl = org(t.name).fac.academy || 0; (t.players || []).forEach(p => { ensurePerson(p); if ((+p.age || 25) > 22) return; const room = p.pot - pow(p); if (room <= .5) return; const g = room * .006 * (1 + .3 * lvl) * (.7 + p.pers.prof / 30); ['firepower', 'clutch'].forEach(a => { p[a] = clamp(Math.round((+p[a] + g) * 100) / 100, 50, 99); }); }); });
 }
-function seasonAge() { const s = season(); Object.values(S().orgs).forEach(o => { if (o.aged === s) return; o.aged = s; (o.prospects || []).forEach(p => { p.age++; }); o.prospects = (o.prospects || []).filter(p => p.age <= 22); }); }
+// v131: воспитанник, переросший молодёжную программу (23+), больше не исчезает молча: клуб продаёт его в команду топ-30,
+// где он усиливает слабое звено (деньги — клубу); если покупателя нет — он уходит свободным агентом и об этом пишут новости.
+function seasonAge() { const s = season(); Object.entries(S().orgs).forEach(([name, o]) => { if (o.aged === s) return; o.aged = s; (o.prospects || []).forEach(p => { p.age++; });
+  (o.prospects || []).filter(p => p.age > 22).forEach(p => { try { delete p.hist; p.status = 'FREE AGENT'; p.salary = salaryOf(p, null);
+    const to = window.v131SellTalent ? window.v131SellTalent(p, name) : null;
+    if (!to) { if (!transferState.freeAgents.some(x => x.nick === p.nick)) transferState.freeAgents.push(p); emit('release', { player: p.nick, role: p.role, from: `${name}: молодёжная программа`, to: 'Свободный агент', reason: 'вырос из молодёжной программы, покупателя в топ-30 не нашлось' }); }
+  } catch (e) {} });
+  o.prospects = (o.prospects || []).filter(p => p.age <= 22); }); }
 function estPot(name, p) { // оценка скаута: погрешность зависит от скаутского отдела, детерминирована
   const lvl = org(name).fac.scouting || 0, err = [10, 7, 4, 2][lvl], d = (u01('est' + p.nick + name) - .5) * 2 * err;
   return { lo: Math.round(clamp(p.pot + d - err, 50, 99)), hi: Math.round(clamp(p.pot + d + err, 50, 99)), err };

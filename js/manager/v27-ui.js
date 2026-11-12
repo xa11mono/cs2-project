@@ -144,5 +144,5 @@ document.addEventListener('keydown', e => {
 
 function boot() { legacy(); moveCss(); setTimeout(moveCss, 800); setTimeout(moveCss, 2500); }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
-window.addEventListener('load', () => { moveCss(); legacy(); setTimeout(legacy, 50); });
+{ const onLoad = () => { moveCss(); legacy(); setTimeout(legacy, 50); }; if (document.readyState === 'complete') setTimeout(onLoad, 0); else window.addEventListener('load', onLoad); }   // v131: скрипты могут запускаться после load
 })();

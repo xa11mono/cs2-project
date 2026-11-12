@@ -47,7 +47,7 @@ for (const f of ['v17-smart-calendar-skip.js', 'v33-time.js', 'v63-simulation-ke
   const version = 114; // v114: all scripts share one cache version
   assert(html.includes(`${f}?v=${version}`), `${f} must bypass stale browser cache after the relevant patch`);
 }
-assert(html.includes('v56-autosave.js?v=131'), 'autosave snapshot scheduler must bypass the v80 browser cache');
+assert(html.includes('v56-autosave.js?v=131.1'), 'autosave snapshot scheduler must bypass the v80 browser cache');
 
 (async () => {
   let days = 0, parallelTicks = 0, yields = 0, finalAutosaves = 0, renders = 0, savesTeams = 0, savesSeason = 0;

@@ -408,6 +408,7 @@
     const l=ensureTeam(t), id=String(ev?.id||ev?.name||'event')+'|'+String(ev?.season||'')+'|'+String(ev?.completedAt||vrsNow());
     if(!l.earnings.some(x=>x.id===id)){
       l.earnings.push({id,date:Number(ev?.completedAt)||vrsNow(),amount,eventName:String(ev?.name||'Tournament'),prizePool:pool,eventWeight:eventWeight(ev)});
+      { const nowV = vrsNow(); l.earnings = l.earnings.filter(x => ageWeight(x.date, nowV) > 0 || nowV - Number(x.date || 0) < 400 * DAY); }   // v131: старые призовые без веса не храним
       invalidateOfferedReference();
     }
     l.earnings=l.earnings.filter(x=>Number(x.date||0)>=vrsNow()-SIX_MONTHS);

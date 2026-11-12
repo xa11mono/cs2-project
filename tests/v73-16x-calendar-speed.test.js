@@ -12,7 +12,7 @@ const portal = read('js/manager/v27-hltv-site.js');
 assert(/V15_SPEEDS\s*=\s*\[1,2,5,16\]/.test(source), '16x must be an allowed persisted calendar speed');
 assert(/data-calendar-speed="16"[^>]*onclick="setGameCalendarSpeed\(16\)"/.test(html), 'calendar UI must expose the 16x speed button');
 assert(/\[1, 2, 5, 16\]\.map/.test(portal), 'HLTV portal speed selector must also expose 16x');
-assert(/v27-hltv-site\.js\?v=114/.test(html), 'portal script cache version must be advanced');
+assert(/v27-hltv-site\.js\?v=131\.5/.test(html), 'portal script cache version must be advanced');
 assert(/v15-training-calendar-layer\.js\?v=114/.test(html) && /v15-training-calendar-styles\.css\?v=114/.test(html), 'cache-busting versions must be advanced');
 assert(/Number\(c\.speed\)>=16\?250:1000/.test(source), '16x mode must tick the virtual clock every 250ms');
 assert(/deferRender:true/.test(source) && /v15UpdateClockDisplay/.test(source), 'calendar DOM rendering must be throttled while clock ticks stay precise');

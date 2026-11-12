@@ -120,9 +120,20 @@
     await writable.write(text);
     await writable.close();
   }
+  // v131: игровая дата снимка (для защиты от перезаписи более позднего снимка более ранним)
+  const calOf = rec => { try { let st = rec && rec.payload && rec.payload.seasonState; if (typeof st === 'string') st = JSON.parse(st); return Number(st && st.calendar && st.calendar.currentMs) || 0; } catch (e) { return 0; } };
   async function saveBrowserSnapshot(payload, reason) {
     const now = Date.now();
     const current = await dbGet('browserAutosave');
+    // v131: игра открылась на более ранней дате (например, основное хранилище не записалось), а в автокопии — более
+    // поздняя игра. Не затираем её автоматически, пока игрок не решил в окне «Найдено более свежее сохранение».
+    try {
+      const curCal = calOf(current), newCal = calOf({ payload }), okCal = Number(localStorage.getItem('cs2_v131_snapshot_ok') || 0);
+      if (curCal && newCal && curCal - newCal > 2 * 864e5 && okCal < curCal && !['manual', 'factory-reset', 'import'].includes(reason)) {
+        status('Автокопия с более поздней игрой сохранена — выберите, загрузить ли её', 'warn');
+        return;
+      }
+    } catch (e) {}
     // IndexedDB stores the structured game object directly. Do not stringify a
     // multi-season career on Chromium's UI thread just to persist the browser copy.
     if (current && (current.payload || current.body) && now - lastBrowserBackupAt > 10 * 60 * 1000) {
@@ -425,7 +436,7 @@
         <p style="margin:0 0 16px;color:#8d99a6;font-size:13px">Основное хранилище браузера переполнено, поэтому последние сохранения попали только в автокопию.</p>
         <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" data-v131r="no" style="padding:9px 14px;border-radius:9px;border:1px solid #3a4350;background:#1c2128;color:#cfd6df;cursor:pointer">Оставить как есть</button>
         <button type="button" data-v131r="yes" style="padding:9px 14px;border-radius:9px;border:0;background:linear-gradient(180deg,#ffb04d,#f08a24);color:#1a0d00;font-weight:800;cursor:pointer">Загрузить автокопию</button></div></div>`;
-      box.addEventListener('click', async e => { const b = e.target.closest('[data-v131r]'); if (!b) return; box.remove(); if (b.dataset.v131r === 'yes') { try { await restoreBrowserSnapshot(); } catch (er) { status('Не удалось загрузить автокопию: ' + (er?.message || er), 'err'); } } });
+      box.addEventListener('click', async e => { const b = e.target.closest('[data-v131r]'); if (!b) return; box.remove(); if (b.dataset.v131r === 'no') { try { localStorage.setItem('cs2_v131_snapshot_ok', String(snapMs)); } catch (er) {} } if (b.dataset.v131r === 'yes') { try { await restoreBrowserSnapshot(); } catch (er) { status('Не удалось загрузить автокопию: ' + (er?.message || er), 'err'); } } });
       document.body.appendChild(box);
     } catch (e) { console.warn('[v131 autosave check]', e); }
   }

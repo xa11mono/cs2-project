@@ -119,9 +119,15 @@ function signals(t) {
   // не знал и почти никогда не доходил до «Поиска игроков». Звёзды без спада формы (CS2Stature) не помечаются.
   const vigl = p => (+p.tacticalIQ || 0) * .55 + (+p.utility || 0) * .2 + (+p.clutch || 0) * .15 + (+p.firepower || 0) * .1;
   const lvl = p => p.role === 'IGL' ? vigl(p) : vpow(p);
-  const gapThr = (window.CS2Config ? window.CS2Config.get('roster.levelGap', 3.5) : 3.5);
+  // v131: составу дают шанс. Порог «уровень ниже партнёров» выше у академий (7) и клубов вне топ-30 (5), чем у топ-30 (3.5):
+  // слабому клубу некого взять сильнее, а постоянная текучка не даёт игрокам вырасти. Новичок (меньше ~полугода в клубе)
+  // и молодой игрок с запасом роста не помечаются, пока отставание не станет очень большим (8+).
+  const baseThr = (window.CS2Config ? window.CS2Config.get('roster.levelGap', 3.5) : 3.5);
+  let rk = 99; try { rk = pro().sort((a, b) => (b.pts || 0) - (a.pts || 0)).indexOf(t) + 1 || 99; } catch (e) {}
+  const gapThr = t.isAcademy ? 7 : rk > 30 ? Math.max(baseThr, 5) : baseThr;
+  const patient = p => (Math.max(0, (now() - (+p.v31since || +p.v94joinedAt || 0)) / DAY) < 180) || ((+p.age || 25) <= 22 && (+p.pot || 0) - vpow(p) >= 2.5);
   const lagging = act.filter(p => { if (p.onLoan) return false; try { if (window.CS2Stature && window.CS2Stature.shielded && window.CS2Stature.shielded(p, t)) return false; } catch (e) {}
-    const rest = act.filter(x => x !== p); if (!rest.length) return false; const avg = rest.reduce((a, x) => a + (p.role === 'IGL' ? vigl(x) : vpow(x)), 0) / rest.length; return avg - lvl(p) >= gapThr; });
+    const rest = act.filter(x => x !== p); if (!rest.length) return false; const avg = rest.reduce((a, x) => a + (p.role === 'IGL' ? vigl(x) : vpow(x)), 0) / rest.length; const gap = avg - lvl(p); return gap >= (patient(p) ? Math.max(8, gapThr) : gapThr); });
   if (lagging.length && lagging.length < 3) out.push({ k: 'level', w: .7, t: `уровень ниже партнёров: ${lagging.map(p => p.nick).join(', ')}`, players: lagging.map(p => p.nick) });
   if (vets.length) out.push({ k: 'age', w: .7, t: `возраст и спад: ${vets.map(p => `${p.nick} (${p.age}, форма ${Math.round(+p.form || 100)}%)`).join(', ')}`, players: vets.map(p => p.nick) });
   // 4–5. сыгранность и уверенность
@@ -195,14 +201,20 @@ function fixRoles(t) {
   const iglsBefore = ps.filter(p => p.role === 'IGL'), iglBefore = iglsBefore[0]?.nick || null;
   let normalized = iglsBefore.length !== 1;   // v85: в базе не было ровно одного капитана — это правка данных, а не новость
   ps.forEach(p => { if (ROLE_FIX[p.nick] && p.role !== ROLE_FIX[p.nick] && !p.v34roleFixed) { if (p.role === 'IGL' || ROLE_FIX[p.nick] === 'IGL') normalized = true; p.role = ROLE_FIX[p.nick]; p.v34roleFixed = 1; ch = true; } });
+  // v131: временная замена роли. Когда капитан/снайпер выбывает (травма, личное), роль временно берёт другой игрок
+  // (v131tempRole — его прежняя роль). Вернувшийся игрок получает роль обратно, заменявший — свою прежнюю роль.
+  // Раньше «лишний» капитан определялся по тактике, и роли в составе перетасовывались после каждого отсутствия.
   const keepBest = (role, score) => { const list = ps.filter(p => p.role === role);
-    if (list.length > 1) { list.sort((a, b) => score(b) - score(a)).slice(1).forEach(p => { p.role = role === 'AWPer' ? 'Rifler' : (ROLE_FIX[p.nick] || 'Rifler'); p.v84roleLocked = 1; }); ch = true; } };
+    if (list.length > 1) { list.sort((a, b) => (a.v131tempRole === role ? 0 : a.v131tempRole ? -1000 : 0) - (b.v131tempRole ? -1000 : 0) + score(b) - score(a)).slice(1).forEach(p => {
+      p.role = p.v131tempRole && p.v131tempRole !== role ? p.v131tempRole : role === 'AWPer' ? 'Rifler' : (ROLE_FIX[p.nick] || 'Rifler'); delete p.v131tempRole; p.v84roleLocked = 1; }); ch = true; } };
   keepBest('IGL', p => (+p.tacticalIQ || 0) + tenureDays(p) / 120 + (ROLE_FIX[p.nick] === 'IGL' ? 50 : 0));
   keepBest('AWPer', p => (+p.firepower || 0) + (ROLE_FIX[p.nick] === 'AWPer' ? 50 : 0));
   // v86: капитан без капитана — тот, кто к роли ближе всего (тактика, опыт; энтри-фраггер — в последнюю очередь)
   const capScore = window.CS2CaptainScore || (p => +p.tacticalIQ || 0);
-  if (!ps.some(p => p.role === 'IGL')) { const c = ps.filter(p => p.role !== 'AWPer').sort((a, b) => capScore(b) - capScore(a))[0]; if (c) { c.role = 'IGL'; c.v84roleLocked = 1; ch = true; } }
-  if (!ps.some(p => p.role === 'AWPer')) { const c = ps.filter(p => p.role !== 'IGL').sort((a, b) => (+b.firepower || 0) - (+a.firepower || 0))[0]; if (c) { c.role = 'AWPer'; c.v84roleLocked = 1; ch = true; } }
+  // у команды в составе нет капитана/снайпера: если штатный есть в клубе, но временно отсутствует — роль временная
+  const absentHolder = role => !!(t.tempStandIn && t.tempStandIn.original && t.tempStandIn.original.role === role) || (t.players || []).some(p => p && p.role === role && !ps.includes(p) && !/BENCH|RESERVE|FREE/.test(p.status || ''));
+  if (!ps.some(p => p.role === 'IGL')) { const c = ps.filter(p => p.role !== 'AWPer').sort((a, b) => capScore(b) - capScore(a))[0]; if (c) { if (absentHolder('IGL') && !c.v131tempRole) c.v131tempRole = c.role; c.role = 'IGL'; c.v84roleLocked = 1; ch = true; } }
+  if (!ps.some(p => p.role === 'AWPer')) { const c = ps.filter(p => p.role !== 'IGL').sort((a, b) => (+b.firepower || 0) - (+a.firepower || 0))[0]; if (c) { if (absentHolder('AWPer') && !c.v131tempRole) c.v131tempRole = c.role; c.role = 'AWPer'; c.v84roleLocked = 1; ch = true; } }
   // игроки скамейки с ролью IGL/AWPer, пока не в составе, этой роли в команде не занимают
   const igl = ps.find(p => p.role === 'IGL');
   if (igl && iglBefore && !normalized && igl.nick !== iglBefore && !t.isAcademy) { try { window.V29News?.add?.({ cat: 'transfer', icon: '🧠', imp: 5, team: t.name, player: igl.nick, title: `${igl.nick} — новый капитан ${t.name}`, lead: `Роль IGL в ${t.name} переходит к ${igl.nick}.`, body: [iglBefore ? `Прежний капитан ${iglBefore} больше не ведёт команду.` : 'Прежний капитан покинул основной состав.'], tags: [{ t: 'player', v: igl.nick }, { t: 'team', v: t.name }] }); } catch (e) {} }
