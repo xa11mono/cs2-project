@@ -56,3 +56,19 @@
 html.ax-on #hs-root .v111-t20 .v111-bar.v111-bar>i,#hs-root .v111-bar>i{background:rgba(255,255,255,.07)!important}
 #hs-root .v111-t20-box ul{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
 #hs-root .v111-t20-two .v111-t20-box ul{grid-template-columns:1fr}
+/* v111.1: кубки Мейджоров года рядом с игроком (как на постере HLTV Top 20): внизу справа, над «#N» */
+#hs-root .v111-t20-cups{position:absolute;right:0;bottom:84px;width:80%;height:56%;pointer-events:none;z-index:2}
+#hs-root .v111-t20-cups>span{position:absolute;bottom:0;display:block;filter:drop-shadow(0 12px 18px rgba(0,0,0,.75))}
+#hs-root .v111-t20-cups svg{display:block;width:100%;height:auto}
+#hs-root .v111-t20-cups .c0{width:58%;right:2%;z-index:3}
+#hs-root .v111-t20-cups .c1{width:50%;right:42%;bottom:6%;z-index:2;transform:rotate(-6deg)}
+#hs-root .v111-t20-cups .c2{width:42%;right:20%;bottom:34%;z-index:1;transform:rotate(5deg);filter:drop-shadow(0 12px 18px rgba(0,0,0,.75)) brightness(.8)}
+#hs-root .v111-t20-cups.n1 .c0{width:70%}
+#hs-root .v111-t20-cups:not(.mj) .c0{width:52%}
+#hs-root .v111-t20-r>img{z-index:1}
+#hs-root .v111-t20-rank{z-index:3}
+#hs-root .ax-nvis img.v111-pub{border-radius:50%;object-fit:cover;box-shadow:0 0 0 1.5px rgba(255,255,255,.18),0 4px 10px rgba(0,0,0,.5)}
+#hs-root .ax-nvis.v111-pubvis>img.v111-pub{width:48px!important;height:48px!important}
+#hs-root .v111-src.bare{padding-left:7px}
+#hs-root .v111-t20-box .v111-t20-pl ul{grid-template-columns:minmax(0,1fr)}
+#hs-root .v111-t20-pl li{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.3}

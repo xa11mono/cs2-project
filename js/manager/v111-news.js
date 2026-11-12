@@ -34,16 +34,29 @@
     it.src = id;
     return SRC[id];
   }
-  const chip = s => `<span class="v111-src v111-src-${s.id}" title="Источник: ${esc(s.name)}">${s.logo ? `<img src="${esc(s.logo)}" alt="" width="16" height="16" loading="lazy" decoding="async">` : '<i>H</i>'}<b>${esc(s.name)}</b></span>`;
+  const chip = (s, noLogo) => `<span class="v111-src v111-src-${s.id}${noLogo ? ' bare' : ''}" title="Источник: ${esc(s.name)}">${noLogo ? '' : s.logo ? `<img src="${esc(s.logo)}" alt="" width="16" height="16" loading="lazy" decoding="async">` : '<i>H</i>'}<b>${esc(s.name)}</b></span>`;
+  // v111.1: у новостей пабликов логотип паблика стоит на превью на месте логотипа команды (подпись — без логотипа)
+  const BOX = '.v37-story-media, .nl-img, .hs-news-img, .hs-top-img, [class*="story-img"]';
+  const pubImg = (s, px, cls) => `<img class="v111-pub${cls ? ' ' + cls : ''}" src="${esc(s.logo)}" alt="${esc(s.name)}" width="${px}" height="${px}" loading="lazy" decoding="async">`;
+  function thumbLogo(el, s) {
+    const box = el.querySelector(BOX); if (!box || !box.dataset.axs || box.dataset.v111pub) return;   // ждём, пока v100 оформит превью
+    box.dataset.v111pub = s.id;
+    const vis = box.querySelector('.ax-nvis');
+    if (vis && vis.classList.contains('pl')) { const l = vis.querySelector('.ax-nvis-l'); if (l) l.remove(); vis.insertAdjacentHTML('beforeend', pubImg(s, 22, 'ax-nvis-l')); }
+    else if (vis) { vis.innerHTML = pubImg(s, 48); vis.classList.add('v111-pubvis'); }
+    else { box.classList.add('ax-has-vis'); box.insertAdjacentHTML('beforeend', `<span class="ax-nvis tm v111-pubvis">${pubImg(s, 48)}</span>`); }
+  }
   function decorate(root) {
     (root || document).querySelectorAll('[data-art]:not([data-v111src])').forEach(el => {
       el.setAttribute('data-v111src', '1');
       const it = N.get ? N.get(el.dataset.art) : null; if (!it) return;
       const s = srcOf(it); if (s.id === 'hltv') return;   // HLTV — по умолчанию, без значка в ленте
+      el.setAttribute('data-v111pub', s.id);
       const host = el.querySelector('.nl-k, .hs-news-k, .ax-nw-k') || el.querySelector('h4, b');
-      if (!host) return;
-      if (host.matches('h4, b')) host.insertAdjacentHTML('beforebegin', `<div class="v111-src-row">${chip(s)}</div>`); else host.insertAdjacentHTML('afterbegin', chip(s));
+      const thumb = !!el.querySelector(BOX);
+      if (host) { if (host.matches('h4, b')) host.insertAdjacentHTML('beforebegin', `<div class="v111-src-row">${chip(s, thumb)}</div>`); else host.insertAdjacentHTML('afterbegin', chip(s, thumb)); }
     });
+    (root || document).querySelectorAll('[data-v111pub]').forEach(el => { try { thumbLogo(el, SRC[el.getAttribute('data-v111pub')]); } catch (e) {} });
   }
   // уведомление о новости подписывает v29-news (V111News.srcOf)
 
@@ -79,6 +92,12 @@
     const t = teamName && H.teamBy(teamName);
     ((t && t.history) || []).forEach(h => { if (!h || h.isSeasonAward) return; const y = H.yearOf ? H.yearOf(h.season) : 2025 + (+h.season || 1); if (y !== d.year || !(h.isMajor || h.isElite)) return; const pl = +h.place; if (pl >= 1 && pl <= 3) places[pl].push(h.tournament); });
     (aw.ti || []).filter(x => +x.y === d.year).forEach(x => { if (!places[1].includes(x.n)) places[1].push(x.n); });
+    // v111.1: Мейджоры года — кубки за спиной игрока (как на постере HLTV); без Мейджора — главный титул года
+    const yearTi = (aw.ti || []).filter(x => +x.y === d.year);
+    let cups = yearTi.filter(x => x.k === 'major').slice(0, 3), cupKind = 'major';
+    if (!cups.length) { cups = yearTi.filter(x => /elite|tier1|s-tier|premier|^big$/i.test(String(x.k || ''))).slice(0, 1); cupKind = 'regular'; }
+    let cupHtml = '';
+    try { const F = W.CS2TrophyForge; if (F && cups.length) cupHtml = `<div class="v111-t20-cups n${cups.length}${cupKind === 'major' ? ' mj' : ''}">${cups.map((x, i) => `<span class="c${i}" title="${esc(x.n)}">${F.cup(x.n, x.s, cupKind)}</span>`).join('')}</div>`; } catch (e) {}
     // личная статистика
     const bars = L ? [
       ['Убийства за раунд', L.kpr, avg('kpr'), L.kpr.toFixed(2), 1.2],
@@ -116,7 +135,7 @@
         ${barHtml ? `<div class="v111-t20-box"><h4>Личная статистика <small>· отметка — среднее по топ-20</small></h4>${barHtml}</div>` : ''}
         ${notes.length ? `<div class="v111-t20-box"><h4>Заметные показатели</h4><ul class="v111-t20-notes">${notes.map(([t, r]) => `<li>${esc(t)} <b class="${r <= 3 ? 'hi' : ''}">(#${r})</b></li>`).join('')}</ul></div>` : ''}
       </div>
-      <div class="v111-t20-r">${photo ? `<img src="${esc(photo)}" alt="" loading="lazy" decoding="async">` : ''}<div class="v111-t20-rank"><b>#${d.r}</b><small>HLTV TOP 20 / ${d.year}</small></div></div>
+      <div class="v111-t20-r">${cupHtml}${photo ? `<img src="${esc(photo)}" alt="" loading="lazy" decoding="async">` : ''}<div class="v111-t20-rank"><b>#${d.r}</b><small>HLTV TOP 20 / ${d.year}</small></div></div>
     </section>`;
   }
 
