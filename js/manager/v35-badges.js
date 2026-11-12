@@ -23,6 +23,8 @@ function coinTag(name) {
   return { color: org ? org[1] : '#9aa5b1', org: org ? org[2] : 'MAJOR', city: (rest[0] || (org ? org[2] : 'MAJOR')).toUpperCase().slice(0, 10) };
 }
 function coinSvg(name, year, lv, size = 56) {
+  // v125: монета в стиле CS2 (обод с надписями, эмаль цвета города, рельефный символ) — из генератора стикеров
+  try { const A = window.CS2StickerArt, S = window.CS2Stickers; if (A && A.coin && S && S.theme) return A.coin(S.theme({ name: String(name || ''), year: year || '' }), lv, size); } catch (e) {}
   lv = Math.max(0, Math.min(LV.length - 1, Number(lv) || 0)); const holo = lv === LV.length - 1;
   const h = h32(name), [, , c] = LV[lv], id = 'c' + h.toString(36) + lv, tg = coinTag(name);
   const shape = h % 3, notches = 8 + (h >> 3) % 9, emblem = (Math.imul(h, 2654435761) >>> 24) % 8, pattern = (h >>> 17) % 3, hue = (Math.imul(h, 40503) >>> 7) % 360, tilt = (h >> 11) % 360;

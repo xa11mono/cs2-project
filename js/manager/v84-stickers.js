@@ -72,7 +72,13 @@
 
   // ---------------------------------------------------------------- виды стикеров
   function logoUrl(team) { try { return W.V31Media?.url?.('team', team) || ''; } catch (e) { return ''; } }
+  // v125: художественные стикеры из v114-sticker-art.js (рамки с вырубкой, городские символы, шрифты автографов);
+  // если генератор не загрузился — рисуем прежним способом
+  const ART = () => W.CS2StickerArt;
+  const artCtx = () => ({ D: new Defs(), GOLD, HOLO, overlay });
+  function viaArt(fn) { try { const A = ART(); return A && typeof A[fn.name] === 'function' ? fn(A) : ''; } catch (e) { return ''; } }
   function eventSticker(major, finish) {
+    const art = viaArt(function eventSticker(A) { return A.eventSticker(theme(major), finish, artCtx(), `${major.name} (${finish})`); }); if (art) return art;
     const th = theme(major), seed = h32(major.name + finish), em = (h32('emb|' + major.name) >>> 3) % 3;
     return render(D => {
       const bg = D.add(`<radialGradient id="$ID" cx=".5" cy=".42" r=".7"><stop offset="0" stop-color="${th.acc}"/><stop offset=".75" stop-color="${th.bg}"/></radialGradient>`);
@@ -89,6 +95,7 @@
     }, th, finish, seed, `${major.name} (${finish})`);
   }
   function teamSticker(major, team, finish) {
+    const art = viaArt(function teamSticker(A) { return A.teamSticker(theme(major), team, logoUrl(team), finish, artCtx(), `${team} — ${major.name} (${finish})`); }); if (art) return art;
     const th = theme(major), seed = h32(team + major.name + finish), url = logoUrl(team);
     return render(D => {
       const bg = finish === 'paper' ? th.ink : D.lin([[0, '#ffffff'], [1, th.ink]], 0, 1);
@@ -114,7 +121,8 @@
     return `<g transform="rotate(${rot} 50 ${y}) skewX(${skew})" transform-origin="50 ${y}"><text x="50" y="${y}" text-anchor="middle" font-family="${fonts[h % fonts.length]}" font-style="italic" font-size="${n2(size)}" fill="${ink}" stroke="${ink}" stroke-width=".35">${esc(nick)}</text>` +
       `<path d="${flourish}" fill="none" stroke="${ink}" stroke-width="1.6" stroke-linecap="round"/>${dot}</g>`;
   }
-  function autograph(major, nick, team, finish) {
+  function autograph(major, nick, team, finish, tier) {
+    const art = viaArt(function autograph(A) { return A.autograph(theme(major), nick, team, logoUrl(team), finish, artCtx(), `Автограф ${nick} — ${major.name} (${finish})`, tier || (major.champion && major.champion === team ? 'champion' : '')); }); if (art) return art;
     const th = theme(major), seed = h32(nick + major.name + finish), url = logoUrl(team);
     return render(D => {
       const card = finish === 'paper' ? '#f7f5ef' : finish === 'gold' ? '#fbf3dc' : '#f3f6ff';
@@ -204,7 +212,7 @@
       const list = capsules(), f = H.S.stk;
       if (!list.length) return `<div class="hs-head"><h1>Стикеры Мейджоров</h1></div>` + H.box('Капсулы', H.empty('Капсула выйдет к старту ближайшего Мейджора'));
       const cap = list.find(c => c.name === f.major) || list[0];
-      const maj = { name: cap.name, year: cap.year };
+      const maj = { name: cap.name, year: cap.year, champion: cap.champion || '' };
       const chips = list.map(c => `<button type="button" class="hs-chip${c === cap ? ' on' : ''}" data-stkmajor="${esc(c.name)}">${esc(c.name)}</button>`).join('');
       const fin = FINISHES.map(([k, l]) => `<button type="button" class="hs-chip${f.finish === k ? ' on' : ''}" data-stkfin="${k}">${l}</button>`).join('');
       const views = [['teams', 'Команды'], ['autos', 'Автографы']].map(([k, l]) => `<button type="button" class="hs-chip${f.view === k ? ' on' : ''}" data-stkview="${k}">${l}</button>`).join('');
