@@ -193,12 +193,41 @@
     if (!accepted) { log(`Заявка на ${ev.name} отклонена`); try { W.V99Mail && W.V99Mail.add({ team: m, icon: '⛔', from: ev.name, title: `Заявка на ${ev.name} отклонена`, text: `Поле сильнее: ваше место #${myR}, худшее в поле #${worst}.`, nav: 'clubev', btn: 'Турниры клуба' }); } catch (e) {} save(); return { ok: false, why: `Организаторы отказали: поле сильнее (ваше место #${myR}, худшее в поле #${worst})` }; }
     const weakest = list.slice().sort((a, b2) => rank(b2) - rank(a))[0];
     ev.participants = list.filter(n => n !== weakest).concat([m]);
+    S().ev.joined = S().ev.joined || {}; S().ev.joined[id] = now();   // v114: заявка принята — клуб остаётся в поле
     rebuild(ev);
     log(`Заявка принята: ${ev.name} (вместо ${weakest})`); try { W.V99Mail && W.V99Mail.add({ team: m, icon: '📝', from: ev.name, title: `Вы в сетке ${ev.name}`, text: `Старт ${fdate(+ev.startMs)}.`, nav: 'clubev', btn: 'Турниры клуба' }); } catch (e) {}
     try { W.V29News && W.V29News.add({ cat: 'tournament', icon: '📝', imp: 3, title: `${m} сыграют на ${ev.name}`, lead: `Клуб подал заявку и занял место ${weakest}.`, body: [], tags: [{ t: 'team', v: m }] }); } catch (e) {}
     try { W.saveSeasonState && W.saveSeasonState(); } catch (e) {}
     return { ok: true, out: weakest };
   }
+  /* v114: регистрация на Tier-2/3 — по заявке клуба, а не автоматически. Раньше планировщик вписывал клуб менеджера в поле
+     наравне с ИИ («Ближайший турнир — Galaxy Battle», хотя заявки не было), и оставалось только отказываться (−1 репутации).
+     Теперь клуб без заявки из поля убирается (место — команде близкого уровня, без штрафа), а в почту приходит приглашение. */
+  function optInSweep() {
+    const m = me(); if (!m) return 0;
+    const s = S(); s.ev.joined = s.ev.joined || {}; s.ev.invited = s.ev.invited || {};
+    let n = 0; const fresh = [];
+    (seasonState.parallelSchedule || []).forEach(ev => {
+      if (!ev || ev.qual || ev.kind === 'academy' || ev.status !== 'scheduled' || !(+ev.startMs > now() + DAY)) return;
+      const list = names(ev.participants);
+      if (list.includes(m) && !s.ev.joined[ev.id]) {
+        const busy = new Set(); (seasonState.parallelSchedule || []).forEach(o => { if (o !== ev && o.status !== 'completed' && overlaps(+ev.startMs, +ev.endMs || +ev.startMs + 3 * DAY, +o.startMs, +o.endMs || +o.startMs + 3 * DAY)) names(o.participants).forEach(x => busy.add(x)); });
+        const repl = H.ranked().filter(t => !t.isAcademy && t.name !== m && !list.includes(t.name) && !busy.has(t.name)).sort((a, b) => Math.abs(rank(a.name) - rank(m)) - Math.abs(rank(b.name) - rank(m)))[0];
+        ev.participants = list.filter(x => x !== m).concat(repl ? [repl.name] : []); rebuild(ev); n++;
+      }
+      // приглашение — за 3 недели до старта, если клуб подходит полю по уровню; одно письмо на все новые
+      if (!s.ev.invited[ev.id] && !s.ev.joined[ev.id] && !s.ev.declined[ev.id] && +ev.startMs - now() <= 21 * DAY && names(ev.participants).length) {
+        const rk = names(ev.participants).map(rank).sort((a, b) => a - b), worst = rk[rk.length - 1] || 999;
+        if (rank(m) <= worst + 5) { s.ev.invited[ev.id] = now(); fresh.push(ev); }
+      }
+    });
+    if (fresh.length) { try { W.V99Mail && W.V99Mail.add({ team: m, icon: '📨', info: true, from: 'Организаторы турниров', title: fresh.length === 1 ? `Открыта регистрация: ${fresh[0].name}` : `Открыта регистрация на ${fresh.length} турнира`, text: fresh.map(e => `${e.name} — старт ${fdate(+e.startMs)}`).join('; ') + '. Подайте заявку, если хотите сыграть.', nav: 'clubev', btn: 'Турниры клуба' }); } catch (e) {} }
+    if (n) { try { W.saveSeasonState && W.saveSeasonState(); } catch (e) {} }
+    return n;
+  }
+  const everyOpt = (W.CS2Loop && W.CS2Loop.every) || ((f, ms) => setInterval(f, ms));
+  everyOpt(() => { try { optInSweep(); } catch (e) {} }, 3000, 'v114-optin');
+  W.V114OptIn = optInSweep;
   H.S.v99ev = H.S.v99ev || { msg: '' };
   function pageEvents() {
     const t = team(); if (!t) return W.V96Pick ? W.V96Pick.html() : '<div class="hs-empty">Выберите клуб</div>';

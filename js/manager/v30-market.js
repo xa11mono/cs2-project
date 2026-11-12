@@ -306,6 +306,9 @@ function findLoan(team, w) {
   const cands = [];
   teams.filter(a => a.isAcademy && !busy.has(a.name) && (a.academyParent || a.parentTeam || ACAD_PARENT[a.name]) !== team.name).forEach(a => (a.players || []).forEach(p => {
     if (p.onLoan || (+p.age || 25) > 22 || !roleFits(w.p, p.role) || !roleOk(team, w.p, p.role)) return;
+    // v114: два лучших игрока академии и таланты с потенциалом 86+ — резерв своего клуба, в чужую аренду не уходят
+    const best2 = (a.players || []).filter(Boolean).slice().sort((x, y) => pow(y) - pow(x)).slice(0, 2);
+    if (best2.includes(p) || (+p.pot || 0) >= 86) return;
     if (fitOf(team, p) < 0.55) return;   // v86: язык общения
     const g = coreGain(p, w.p); if (g >= need) cands.push({ a, p, g });   // v89: по позиции (капитан — по тактике)
   }));

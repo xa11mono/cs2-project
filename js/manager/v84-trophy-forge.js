@@ -607,7 +607,7 @@
 
   const ORGS = [
     { key: 'IEM-big', re: /^IEM\s+(?:Cologne|Katowice|Krak)|^ESL One/i, pick: (r) => iemPool(r) },
-    { key: 'IEM', re: /^IEM\b|^Intel Extreme|^ESL Challenger/i, pick: (r, name) => Object.assign(iemPool(r), { sub: (String(name).replace(/^IEM\s+/i, '').replace(/\s*\(.*\)/, '').replace(/\s+20\d\d$/, '').toUpperCase()).slice(0, 14) }) },
+    { key: 'IEM', re: /^IEM\b|^Intel Extreme/i, pick: (r, name) => Object.assign(iemPool(r), { sub: (String(name).replace(/^IEM\s+/i, '').replace(/\s*\(.*\)/, '').replace(/\s+20\d\d$/, '').toUpperCase()).slice(0, 14) }) },
     { key: 'EPL', re: /^ESL Pro League|^EPL\b/i, pick: (r) => ({ d: 'eplTower', metal: ['gold', 'pale', 'gold', 'rose'][r % 4] }) },
     // v112: BLAST — в основном яркое цветное стекло (синий, фиолетовый, бирюзовый, красный, зелёный, янтарный, розовый); металл — реже
     { key: 'BLAST', re: /^BLAST/i, pick: (r, name) => /spring final|fall final/i.test(name) ? [{ d: 'blastTri', glass: 'blue', big: true }, { d: 'blastTri', glass: 'violet', big: true }, { d: 'blastTri', metal: 'gold', big: true }, { d: 'blastTri', glass: 'red', big: true }][r % 4] : /world final/i.test(name)

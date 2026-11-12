@@ -262,6 +262,8 @@
     });
     Object.entries(x.after).forEach(([nick, a]) => {
       if (a.done || now < a.at) return; a.done = now;
+      // v114: за время ожидания игрок мог стать тренером — тогда новости «стал аналитиком» нет (было расхождение с профилем)
+      try { if (W.CS2Coaches?.roleOf?.(nick) || W.CS2Coaches?.state?.()?.pool?.some(c => c.name === nick)) return; } catch (e) {}
       let where = '';
       if (!a.kind || a.kind[0] === 'coach') return; // старые сейвы: тренерство — только через рынок тренеров
       if (a.kind[0] === 'coach') { const tm = (typeof teams !== 'undefined' ? teams : []).filter(t => !t.isAcademy).sort((p, q) => h32(nick + p.name) - h32(nick + q.name))[0]; where = tm ? ` в ${tm.name}` : ''; }

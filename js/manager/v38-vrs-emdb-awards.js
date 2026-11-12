@@ -130,10 +130,13 @@
         t.vrsLedger.rosterKey = key;
         t.vrsRosterChange = { at:vrsNow(), retained:overlap, rule:'3-of-5 continuity: результаты сохранены' };
       } else {
-        const newBase = Math.round(400 + (current - 400) * 0.35);
+        // v114: доля сохранённых очков — по числу оставшихся игроков (0 → 35%, 1 → 50%, 2 → 65%), и в таблицу изменение
+        // попадает со следующей публикацией VRS. Раньше в межсезонье команда без трёх игроков основы сразу падала до 35%
+        // («Рейтинг недели: Team Spirit −577»), мимо квартальной публикации.
+        const newBase = Math.round(400 + (current - 400) * (0.35 + 0.15 * Math.max(0, overlap)));
         t.vrsLedger = { version:1, rosterKey:key, basePts:newBase, matches:[], earnings:[], startedAt:vrsNow() };
         invalidateOfferedReference();
-        t.pts = newBase; t.vrsShown = newBase; t.vrsShownAt = vrsNow();
+        t.vrsShown = newBase; t.vrsShownAt = vrsNow();
         t.vrsRosterChange = { at:vrsNow(), retained:overlap, rule:'новый состав: результаты обнулены' };
       }
     }
@@ -281,8 +284,9 @@
     const pa = pubAt(now);
     if (window.CS2VRSLivePts || !Number.isFinite(Number(t.pts)) || t.vrsPubAt == null) { t.pts = Math.round(clamp(shown, 400, 2000)); t.vrsPubAt = pa; }
     else if (pa > Number(t.vrsPubAt) || pa < Number(t.vrsPubAt) - 200 * DAY) {   // новая публикация (или сохранение «из будущего»)   // v113: публикация сдвигает очки на 65% пути к расчётным — без скачков на 8–10 мест за раз
-      const prev = Number(t.pts), blend = CF('vrs.pubBlend', 0.65);
-      t.pts = Math.round(clamp(prev + (shown - prev) * blend, 400, 2000)); t.vrsPubAt = pa;
+      // v114: 45% пути и не больше ±250 очков за публикацию (замер: на стыке сезонов было ±500–700 — команда прыгала на 15–20 мест)
+      const prev = Number(t.pts), blend = CF('vrs.pubBlend2', 0.45), cap = CF('vrs.pubCap', 250);
+      t.pts = Math.round(clamp(prev + clamp((shown - prev) * blend, -cap, cap), 400, 2000)); t.vrsPubAt = pa;
     }
   }
   function computeScores(list, now = vrsNow()) {

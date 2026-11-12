@@ -55,6 +55,8 @@
       // v112: подпись — в строку рубрики; <b> внутри логотипа (инициалы .hs-logo) хостом быть не может — иначе значок попадал в логотип и сдвигал его
       const host = el.querySelector('.nl-k, .hs-news-k, .ax-nw-k, .v84-spot-tx small') || [...el.querySelectorAll('h4, b')].find(x => !x.closest('.hs-logo, .v84-spot-logo, .ax-nvis'));
       const thumb = !!el.querySelector(BOX);
+      if (host && host.matches('b') && host.parentElement === el && el.matches('.hs-more-n, .hm-ev, .v84-my-n, button')) {   // v114: компактная строка — значок прямо в заголовке
+        host.insertAdjacentHTML('afterbegin', `<span class="v111-src v111-src-${s.id} mini" title="Источник: ${esc(s.name)}"><img src="${esc(s.logo)}" alt="" width="14" height="14"></span>`); return; }
       if (host) { if (host.matches('h4, b')) host.insertAdjacentHTML('beforebegin', `<div class="v111-src-row">${chip(s, thumb)}</div>`); else host.insertAdjacentHTML('afterbegin', chip(s, thumb)); }
     });
     (root || document).querySelectorAll('[data-v111pub]').forEach(el => { try { thumbLogo(el, SRC[el.getAttribute('data-v111pub')]); } catch (e) {} });

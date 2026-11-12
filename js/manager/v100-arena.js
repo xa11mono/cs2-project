@@ -134,7 +134,7 @@
     let n = 0;
     try { const V9 = W.V96Windows; if (V9) n += V9.events().length; } catch (e) {}          // нерешённые события (решили — ушли из счёта)
     try { const T = W.V99Talks; if (T) n += T.open().length; } catch (e) {}                  // разговоры без ответа
-    try { if (W.V99Mail) n += W.V99Mail.unread().length; } catch (e) {}
+    try { if (W.V99Mail) n += W.V99Mail.unread().filter(x => !x.info).length; } catch (e) {}   // v114: информационные письма (приглашения) — без счётчика дел
     return n;
   }
   function badgeFor(k) {
@@ -398,8 +398,10 @@
     const mineEv = nm && nm.ev ? nm.ev : '';
     cal = cal.filter(e => e.kind !== 'qual' || String(e.name).includes(mineEv.split(' — ')[0] || '§')).slice(0, 4);
     const KI = { qual: 'flag', awards: 'crown', top20: 'crown', major: 'trophy', elite: 'events', tier1: 'events', tier2: 'trophy', tier3: 'trophy', academy: 'squad' };
+    // v114: строка календаря ведёт на страницу турнира (раньше клик уходил в календарь)
+    let evIx = null; const evIdOf = e => { if (/awards|top20/.test(String(e.kind || e.calType || ''))) return ''; if (!evIx) { evIx = new Map(); try { (H.events ? H.events() : []).forEach(x => { if (x && x.name && x.id) evIx.set(x.name, x.id); }); } catch (er) {} } return evIx.get(e.name) || e.id || ''; };
     const calendar = `<section class="ax-card ax-cal"><header class="ax-h"><h3><span class="ax-h-ic">${IC.calendar}</span>Календарь</h3><button type="button" class="ax-link" data-nav="calendar">открыть ${IC.arrow}</button></header>
-      ${cal.length ? `<ul class="ax-cal-l">${cal.map(e => { const live = e.status === 'live' || (e.startMs <= now() && e.endMs >= now()); const mine = mineEv && String(e.name) === mineEv; return `<li class="${mine ? 'mine' : ''}"><span class="ax-cal-d">${live ? '<i class="ax-live">LIVE</i>' : `<b>${new Date(e.startMs).getDate()}</b><small>${esc(new Date(e.startMs).toLocaleDateString('ru-RU', { month: 'short' }).replace('.', ''))}</small>`}</span><span class="ax-cal-ic">${IC[KI[e.kind]] || IC.trophy}</span><span class="ax-cal-n"><b>${esc(e.name)}</b><small>${esc(tierL(e))}</small></span>${mine ? `<span class="ax-cal-me">${logoImg(name, 20)}</span>` : ''}</li>`; }).join('')}</ul>`
+      ${cal.length ? `<ul class="ax-cal-l">${cal.map(e => { const live = e.status === 'live' || (e.startMs <= now() && e.endMs >= now()); const mine = mineEv && String(e.name) === mineEv; return `<li class="${mine ? 'mine' : ''}"${evIdOf(e) ? ` data-event="${esc(evIdOf(e))}" role="button" tabindex="0" style="cursor:pointer"` : ''}><span class="ax-cal-d">${live ? '<i class="ax-live">LIVE</i>' : `<b>${new Date(e.startMs).getDate()}</b><small>${esc(new Date(e.startMs).toLocaleDateString('ru-RU', { month: 'short' }).replace('.', ''))}</small>`}</span><span class="ax-cal-ic">${IC[KI[e.kind]] || IC.trophy}</span><span class="ax-cal-n"><b>${esc(e.name)}</b><small>${esc(tierL(e))}</small></span>${mine ? `<span class="ax-cal-me">${logoImg(name, 20)}</span>` : ''}</li>`; }).join('')}</ul>`
         : `<div class="ax-empty">${IC.coffee}<b>Свободные дни</b><span>Время для тренировок.</span></div>`}</section>`;
 
     return `<div class="ax-dash">${hero}${next}${overview}${results}${news}${tasks}${calendar}</div>`;
@@ -610,7 +612,9 @@
     const h1 = hero.querySelector('h1'), name = h1 ? h1.textContent.replace(/\s+/g, ' ').trim() : '';
     const st = ST(), ev = st && (st.seasonSchedule || []).find(e => e && e.name === name);
     let list = ev ? ((ev.v35Roster && ev.v35Roster.participants) || ev.v45Participants || ev.v35Invites || []) : [];
-    if (!list.length) list = pro().slice().sort((a, b) => (b.pts || 0) - (a.pts || 0)).slice(0, 8).map(t => t.name);
+    const nations = /nations|наций|сборн/i.test(name) || (ev && /nations/i.test(String(ev.kind || ev.tier || '')));
+    if (!list.length && !nations) list = pro().slice().sort((a, b) => (b.pts || 0) - (a.pts || 0)).slice(0, 8).map(t => t.name);
+    if (nations) list = list.filter(n => !teams.some(t => t && t.name === n));   // v114: у турнира сборных фаворитами клубы не показываются
     list = list.slice().sort((a, b) => (rankOf(a) || 999) - (rankOf(b) || 999)).slice(0, 8);
     const start = ev && ev.calendar && ev.calendar.startMs, days = start ? Math.ceil((start - now()) / DAY) : null;
     const prize = ev && (ev.prizePool || ev.prize);

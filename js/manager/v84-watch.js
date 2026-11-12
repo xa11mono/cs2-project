@@ -49,9 +49,11 @@
   }
   function spotCard(n) {
     const k = spotKind(n), tm = spotTeam(n), c = N.CATS?.[n.cat] || { l: 'Новости' };
-    return `<button type="button" class="v84-spot ${k}${legend(tm) ? ' legend' : ''}${tm && tm === favTeam() ? ' mine' : ''}" data-art="${esc(n.id)}">
+    // v114: «👑 Легендарный клуб» — только у новостей о наследии/эпохах, а не у любой новости с легендарной командой
+    const lg = legend(tm) && (n.cat === 'legacy' || /эпох|наследи|легенд|в истори/i.test(String(n.title || '')));
+    return `<button type="button" class="v84-spot ${k}${lg ? ' legend' : ''}${tm && tm === favTeam() ? ' mine' : ''}" data-art="${esc(n.id)}">
       <span class="v84-spot-logo">${tm ? H.logo(tm, 'lg') : `<span class="v84-spot-ic">${esc(n.icon || '🎙️')}</span>`}</span>
-      <span class="v84-spot-tx"><small>${k === 'streamer' ? '🎥 Стримеры' : tm === favTeam() && tm ? '★ Ваша команда' : legend(tm) ? '👑 Легендарный клуб' : '🔥 Громко'} · ${esc(c.l)}</small><b>${esc(n.title)}</b><span>${esc(n.lead || '')}</span></span></button>`;
+      <span class="v84-spot-tx"><small>${k === 'streamer' ? '🎥 Стримеры' : tm === favTeam() && tm ? '★ Ваша команда' : lg ? '👑 Легендарный клуб' : '🔥 Громко'} · ${esc(c.l)}</small><b>${esc(n.title)}</b><span>${esc(n.lead || '')}</span></span></button>`;
   }
 
   // ------------------------------------------------------------ матч дня

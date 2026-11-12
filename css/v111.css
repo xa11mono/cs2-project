@@ -115,3 +115,13 @@ html.ax-on #hs-root .ax-scened.ax-has-vis>.v112-t20badge{display:block!important
 /* v113: портрет на карточке топ-20 — всегда во всю высоту колонки (у маленьких файлов фото было в натуральный размер) */
 #hs-root .v111-t20-r>img{position:absolute!important;left:50%;bottom:0;height:94%!important;max-height:none!important;width:auto!important;max-width:120%;transform:translateX(-50%);object-fit:contain;object-position:bottom}
 #hs-root .nl-pin-t{display:inline-block;margin-right:8px;font:800 10px/1.4 var(--f-ui);letter-spacing:.04em;color:#f1d27a}
+/* v114: значок паблика в компактных строках («Ещё новости», «Моя лента») */
+#hs-root .v111-src.mini{height:16px;padding:0;margin:0 6px 0 0;background:none;box-shadow:none;vertical-align:-3px}
+#hs-root .v111-src.mini img{width:16px;height:16px}
+/* v114: титулы тренера в профиле */
+#hs-root .v114-ctr-l{display:flex;flex-wrap:wrap;gap:10px}
+#hs-root .v114-ctr{display:flex;flex-direction:column;align-items:center;width:64px}
+#hs-root .v114-ctr svg{width:56px;height:66px}
+#hs-root .v114-ctr small{font-size:10.5px;color:var(--c-text-3)}
+/* v114: медали и значки в профиле болельщика-бота */
+#hs-root .v114-umedals{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0 4px}

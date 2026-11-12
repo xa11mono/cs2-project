@@ -274,8 +274,8 @@
     if (!deltas.length) return;
     const up = deltas[0], down = deltas[deltas.length - 1];
     N.add({ cat: 'ranking', icon: '📈', imp: 4, team: up.n, id: `v84-wr-${Math.floor(nowMs() / 6048e5)}`,
-      title: `Рейтинг недели: ${up.n} ${up.d > 0 ? '+' : ''}${Math.round(up.d)}${down && down.d < 0 ? `, ${down.n} ${Math.round(down.d)}` : ''}`,
-      lead: `Главные движения в рейтинге VRS за неделю.`,
+      title: `Обновление VRS: ${up.n} ${up.d > 0 ? '+' : ''}${Math.round(up.d)}${down && down.d < 0 ? `, ${down.n} ${Math.round(down.d)}` : ''}`,
+      lead: `Новая публикация рейтинга VRS (выходит 4 раза за сезон) — главные изменения с прошлой публикации.`,
       body: deltas.slice(0, 5).map(x => `${x.n}: ${x.d > 0 ? '+' : ''}${Math.round(x.d)} (сейчас №${rankOf(x.n)})`).concat(down && down.d < 0 ? [`Сильнее всех потерял: ${down.n} (${Math.round(down.d)}).`] : []),
       tags: [T(up.n)].concat(down && down.d < 0 ? [T(down.n)] : []), ts: nowMs() });
   }

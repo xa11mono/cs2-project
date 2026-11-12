@@ -115,7 +115,11 @@ function botItems(nick) {
 // у комментаторов — любимая команда (у ботов — по нику, примерно у двух третей) и лучшая монета
 function fanTeam(nick, mine) {
   if (mine) { try { return JSON.parse(localStorage.getItem('cs2_fan_profile') || '{}').team || window.V33Comments?.prof?.()?.team || ''; } catch (e) { return ''; } }
-  const list = H.ranked().filter(t => !t.isAcademy).slice(0, 40), i = h32('fan|' + nick) % 60; return list[i] ? list[i].name : '';
+  // v114: если ник похож на команду или её игрока — болеет за неё (как в профиле пользователя), иначе — по нику
+  const low = String(nick || '').toLowerCase(), all = H.ranked().filter(t => !t.isAcademy);
+  const byName = all.find(t => { const k = String(t.name).toLowerCase().replace(/^team\s+/, '').split(' ')[0]; return k.length >= 3 && low.includes(k); }) || all.find(t => (t.players || []).some(p => p && String(p.nick).length >= 3 && low.includes(String(p.nick).toLowerCase())));
+  if (byName) return byName.name;
+  const list = all.slice(0, 40), i = h32('fan|' + nick) % 60; return list[i] ? list[i].name : '';
 }
 function mini(nick, mine, team) {
   const it = mine ? myItems() : botItems(nick), coin = it.coins.slice().sort((a, b) => b.lv - a.lv)[0], t = team !== undefined ? team : fanTeam(nick, mine);
@@ -149,7 +153,7 @@ if (origFan) H.PAGES.fan = arg => {
 };
 function refreshBadges(){ try { trackCoin(); seasonAwards(); header(); } catch(e){} }
 (globalThis.CS2Loop?.every || ((f, ms) => (typeof setInterval === "function" ? setInterval : window.setInterval)(f, ms)))(() => { if(window.v57BatchCalendarSkip) return; refreshBadges(); }, 1500);
-window.V35Badges = { coinSvg, mini, myItems, botItems, LV, headerHtml, trackCoin, refresh: refreshBadges };
+window.V35Badges = { coinSvg, mini, myItems, botItems, fanTeam, badgeHtml, LV, headerHtml, trackCoin, refresh: refreshBadges };
 try { trackCoin(); } catch (e) {}
 console.info('[v35] медали и значки');
 })();

@@ -51,7 +51,10 @@
     const low = nick.toLowerCase();
     const byName = TEAMS().find(t => low.includes(String(t.name).toLowerCase().replace(/^team\s+/, '').split(' ')[0])) ||
       TEAMS().find(t => (t.players || []).some(p => low.includes(String(p.nick).toLowerCase())));
-    const fav = byName?.name || top[h % Math.max(1, top.length)]?.name || '';
+    // v114: та же любимая команда, что у значка рядом с ником в комментариях (V35Badges.fanTeam), — раньше профиль и комментарии расходились
+    let fav = sr ? (byName?.name || '') : '';
+    if (!fav && !sr) { try { fav = W.V35Badges && W.V35Badges.fanTeam ? W.V35Badges.fanTeam(nick, false) : ''; } catch (e) {} }
+    if (!fav && sr) fav = top[h % Math.max(1, top.length)]?.name || '';
     const style = sr ? (/Аналитик/.test(sr.role) ? 'analyst' : /Кастер/.test(sr.role) ? 'veteran' : 'meme') : /analyst|demo|utility|map_pool|review/.test(low) ? 'analyst' : /stat|kast|math|swing|rating/.test(low) ? 'stats' : STYLE_KEYS[(h >>> 4) % STYLE_KEYS.length];
     return {
       nick, cc: cc || sr?.cc || COUNTRIES[(h >>> 8) % COUNTRIES.length], fav, style, streamer: !!sr, plat: sr?.plat || null, region: sr?.region || null, role: sr?.role || null,
@@ -209,13 +212,16 @@
   // ------------------------------------------------------------ страница профиля
   function profilePage(arg) {
     const nick = decodeURIComponent(String(arg || '')); if (!nick) return empty('Профиль не найден');
-    const p = persona(nick), S = STYLES[p.style];
+    // v114: флаг — из комментариев этого пользователя (там страна хранится у каждого комментария)
+    let ccC = ''; try { for (const it of (N.all() || []).slice(0, 160)) { const c = (N.comments(it) || []).find(x => x.nick === nick && x.cc); if (c) { ccC = c.cc; break; } } } catch (e) {}
+    const p = persona(nick, ccC || undefined), S = STYLES[p.style];
     const pk = pickemHistory(p), posts = postsBy(p), cms = commentsBy(nick);
+    let medals = ''; try { const B = W.V35Badges; if (B && B.botItems && !p.streamer) { const it = B.botItems(nick); medals = `<div class="v114-umedals">${it.coins.map(c => `<span class="v35-hci" data-tip="${H.esc(c.tip || '')}">${String(c.html).replace(/width="\d+" height="\d+"/, 'width="34" height="34"')}</span>`).join('')}${(it.badges || []).map(b => B.badgeHtml ? B.badgeHtml(b) : '').join('')}</div>`; } } catch (e) {}
     const acc = pk.filter(x => x.hits != null), accTxt = acc.length ? `${acc.reduce((a, x) => a + x.hits, 0)}/${acc.length * 10}` : '—';
     const tab = H.S.userTab || 'overview';
     const tabs = [['overview', 'Обзор'], ['pickem', `Pick'Em · ${pk.length}`], ['posts', `Посты · ${posts.length}`], ['comments', `Комментарии · ${cms.length}`]].concat(p.streamer ? [['streams', 'Стримы']] : [])
       .map(([k, l]) => `<button type="button" class="hs-chip${tab === k ? ' on' : ''}" data-usertab="${k}">${esc(l)}</button>`).join('');
-    const head = `${H.back()}<section class="v84-user-head"><div class="v84-user-ava">${avatar(p, 96)}</div><div class="v84-user-id"><div class="v84-user-role">${p.streamer ? `${esc(p.role || 'Стример')} · ${esc(p.plat)}` : esc(S.l)}</div><h1>${H.flag(p.cc)} ${esc(p.nick)}</h1><p>${p.streamer ? `${p.followers.toLocaleString('ru-RU')} подписчиков · регион ${esc(p.region)}` : esc(S.d)}</p>
+    const head = `${H.back()}<section class="v84-user-head"><div class="v84-user-ava">${avatar(p, 96)}</div><div class="v84-user-id"><div class="v84-user-role">${p.streamer ? `${esc(p.role || 'Стример')} · ${esc(p.plat)}` : esc(S.l)}</div><h1>${H.flag(p.cc)} ${esc(p.nick)}</h1>${medals}<p>${p.streamer ? `${p.followers.toLocaleString('ru-RU')} подписчиков · регион ${esc(p.region)}` : esc(S.d)}</p>
       <div class="v84-user-kpis"><div><small>На HLTV с</small><b>${p.joined}</b></div><div><small>Карма</small><b>${p.karma.toLocaleString('ru-RU')}</b></div><div><small>Pick'Em</small><b>${accTxt}</b></div><div><small>Болеет за</small><b data-team="${esc(p.fav)}">${p.fav ? logo(p.fav, 'xs') + ' ' + esc(p.fav) : '—'}</b></div></div></div></section>
       <div class="hs-filters v84-user-tabs">${tabs}</div>`;
     let body = '';
