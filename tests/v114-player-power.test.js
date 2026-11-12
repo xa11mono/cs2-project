@@ -1,0 +1,33 @@
+// v114 — unit tests for the unified player power model.
+// Run: node tests/v114-player-power.test.js
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const context = { console: { info() {} }, localStorage: { getItem(){ return null; }, setItem(){} } };
+context.window = context;
+vm.createContext(context);
+vm.runInContext(fs.readFileSync(require('node:path').join(__dirname, '../js/manager/v90-config.js'), 'utf8'), context);
+vm.runInContext(fs.readFileSync(require('node:path').join(__dirname, '../js/manager/v114-player-power.js'), 'utf8'), context);
+const P = context.CS2Power;
+assert.equal(P.version, 1);
+const player = { nick: 'test', role: 'Rifler', firepower: 90, tacticalIQ: 80, clutch: 70, utility: 60, form: 100, morale: 80, fatigue: 0, conf: 60, pot: 96 };
+assert.equal(P.overall(player), 79);
+assert.equal(P.base(player), P.overall(player));
+assert.notEqual(P.role(player, 'IGL'), P.role(player, 'AWPer'));
+assert.equal(P.overall(player), 79, 'role projection must not mutate Base Overall');
+assert.ok(P.current({ ...player, form: 120 }) > P.overall(player), 'good form raises only current strength');
+assert.equal(P.overall({ ...player, form: 120 }), P.overall(player), 'form must not change base strength');
+assert.ok(P.current({ ...player, fatigue: 80 }) < P.overall(player), 'fatigue lowers current strength');
+assert.equal(P.potential(player), 96);
+assert.equal(P.potential({ ...player, pot: undefined, potential: 91 }), 91);
+assert.equal(P.potential({ ...player, pot: undefined, potential: undefined }), null);
+const squad = P.team({ players: [player, { ...player, nick: '2' }, { ...player, nick: '3' }, { ...player, nick: '4' }, { ...player, nick: '5' }] });
+assert.equal(squad.count, 5);
+assert.equal(squad.power, 79);
+assert.equal(squad.currentPower, 79);
+assert.equal(squad.roleCoverage, 0);
+assert.equal(P.team({ players: [] }).count, 0);
+const d = P.diagnostics(player);
+assert.equal(d.overall, 79);
+assert.equal(Object.keys(d.contributions).length, 4);
+console.log('v114 player power tests passed');

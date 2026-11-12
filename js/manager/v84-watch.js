@@ -192,7 +192,7 @@
   // карточки игроков: рейтинг 50–99 по уровню и форме; редкость — по весу карьеры; еженедельный набор из трёх карт
   function cardOf(p, team) {
     const pow = (+p.firepower || 70) * .4 + (+p.tacticalIQ || 70) * .25 + (+p.clutch || 70) * .2 + (+p.utility || 70) * .15;
-    const ovr = Math.max(50, Math.min(99, Math.round(pow + ((+p.form || 100) - 100) * .15)));
+    const ovr = Math.max(50, Math.min(99, Math.round(W.CS2Power ? W.CS2Power.current(p) : pow + ((+p.form || 100) - 100) * .15)));
     const tier = W.CS2Stature?.tier?.(p) || 'regular', rar = tier === 'franchise' ? 'icon' : ovr >= 88 ? 'gold' : ovr >= 82 ? 'silver' : 'bronze';
     return { nick: p.nick, team, ovr, rar, role: p.role || '', cc: p.country || '' };
   }

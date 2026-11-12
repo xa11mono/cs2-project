@@ -28,10 +28,10 @@ const emit = (type, data) => { try { window.v29Emit && window.v29Emit(type, data
 const calNow = () => Number(seasonState.calendar?.currentMs) || Date.now();
 const lc = s => String(s || '').toLowerCase();
 const UNIQUE = ['AWPer', 'IGL'];
-const pow = p => (+p.firepower || 0) * .4 + (+p.tacticalIQ || 0) * .25 + (+p.clutch || 0) * .2 + (+p.utility || 0) * .15;
+const pow = p => window.CS2Power ? window.CS2Power.overall(p) : (+p.firepower || 0) * .4 + (+p.tacticalIQ || 0) * .25 + (+p.clutch || 0) * .2 + (+p.utility || 0) * .15;
 // v86: капитана оценивают по тому, как он ведёт игру, а не по стрельбе (иначе хороший IGL всегда «слабое звено»)
-const iglPow = p => (+p.tacticalIQ || 0) * .55 + (+p.utility || 0) * .2 + (+p.clutch || 0) * .15 + (+p.firepower || 0) * .1;
-const val = (p, role) => (role || p?.role) === 'IGL' ? iglPow(p) : pow(p);
+const iglPow = p => window.CS2Power ? window.CS2Power.role(p, 'IGL') : (+p.tacticalIQ || 0) * .55 + (+p.utility || 0) * .2 + (+p.clutch || 0) * .15 + (+p.firepower || 0) * .1;
+const val = (p, role) => window.CS2Power ? window.CS2Power.role(p, role || p?.role) : ((role || p?.role) === 'IGL' ? iglPow(p) : pow(p));
 const fitOf = (team, p) => { try { return typeof teamIdentityFit === 'function' ? teamIdentityFit(team, p) : 1; } catch (e) { return 1; } };
 const pro = () => teams.filter(t => !t.isAcademy);
 const rankOf = t => pro().sort((a, b) => b.pts - a.pts).indexOf(t) + 1;

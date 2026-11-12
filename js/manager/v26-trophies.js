@@ -1021,7 +1021,7 @@ window.twAddTeamAward = a => { if (!a || !a.team || !a.type || !a.year) return f
 window.twAwardsClear = () => { clearTimeout(awTimer); awTimer = null; AW = { v: 3, p: {}, seasons: [], teamAwards: [], teamTitles: [] }; try { localStorage.removeItem(AW_KEY); } catch (e) {} }; // отложенная запись тоже отменяется — иначе при перезагрузке награды записались бы обратно
 
 const esc2 = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const ovr = p => Math.round((+p.firepower || 0) * .40 + (+p.tacticalIQ || 0) * .25 + (+p.clutch || 0) * .20 + (+p.utility || 0) * .15);
+const ovr = p => Math.round(W.CS2Power ? W.CS2Power.overall(p) : (+p.firepower || 0) * .40 + (+p.tacticalIQ || 0) * .25 + (+p.clutch || 0) * .20 + (+p.utility || 0) * .15);
 const yearOf = s => 2026 + ((+s || 1) - 1);
 const KIND_LABEL = { major: 'Major', elite: 'S-Tier', regular: 'Tier-1', tier2: 'Tier-2', tier3: 'Tier-3', academy: 'Академии', qual: 'Квалификация' };
 function rememberTeamTitle(ev) {

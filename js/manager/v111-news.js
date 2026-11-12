@@ -60,6 +60,13 @@
       if (host) { if (host.matches('h4, b')) host.insertAdjacentHTML('beforebegin', `<div class="v111-src-row">${chip(s, thumb)}</div>`); else host.insertAdjacentHTML('afterbegin', chip(s, thumb)); }
     });
     (root || document).querySelectorAll('[data-v111pub]').forEach(el => { try { thumbLogo(el, SRC[el.getAttribute('data-v111pub')]); } catch (e) {} });
+    // v114: уровни важности в лентах — главное (9–10), важное (6–8), мелочь (≤3)
+    (root || document).querySelectorAll('[data-art]:not([data-v114imp])').forEach(el => {
+      el.setAttribute('data-v114imp', '1');
+      const it = N.get ? N.get(el.dataset.art) : null; if (!it) return;
+      const imp = Number(it.imp) || 4;
+      el.classList.add(imp >= 9 ? 'imp-top' : imp >= 6 ? 'imp-mid' : imp <= 3 ? 'imp-low' : 'imp-std');
+    });
     // v112: новости «Топ-20 игроков» / «HLTV Awards» выделяются в ленте — золотая рамка и значок места на превью
     (root || document).querySelectorAll('[data-art]:not([data-v112t20])').forEach(el => {
       el.setAttribute('data-v112t20', '1');

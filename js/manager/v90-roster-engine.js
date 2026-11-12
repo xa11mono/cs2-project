@@ -28,9 +28,9 @@
   const lc = s => String(s || '').toLowerCase();
   const now = () => Number(seasonState.calendar && seasonState.calendar.currentMs) || Date.now();
   const season = () => Number(seasonState.currentSeason) || 1;
-  const pow = p => (+p.firepower || 0) * .4 + (+p.tacticalIQ || 0) * .25 + (+p.clutch || 0) * .2 + (+p.utility || 0) * .15;
-  const iglPow = p => (+p.tacticalIQ || 0) * .55 + (+p.utility || 0) * .2 + (+p.clutch || 0) * .15 + (+p.firepower || 0) * .1;
-  const val = (p, role) => ((role || p.role) === 'IGL' ? iglPow(p) : pow(p));
+  const pow = p => W.CS2Power ? W.CS2Power.overall(p) : (+p.firepower || 0) * .4 + (+p.tacticalIQ || 0) * .25 + (+p.clutch || 0) * .2 + (+p.utility || 0) * .15;
+  const iglPow = p => W.CS2Power ? W.CS2Power.role(p, 'IGL') : (+p.tacticalIQ || 0) * .55 + (+p.utility || 0) * .2 + (+p.clutch || 0) * .15 + (+p.firepower || 0) * .1;
+  const val = (p, role) => W.CS2Power ? W.CS2Power.role(p, role || p.role) : ((role || p.role) === 'IGL' ? iglPow(p) : pow(p));
   const starters = t => (t && t.players || []).filter(p => p && (!p.status || p.status === 'STARTER'));
   const pro = () => teams.filter(t => t && !t.isAcademy);
   const rankOf = t => { const l = pro().slice().sort((a, b) => (b.pts || 0) - (a.pts || 0)); const i = l.indexOf(t); return i < 0 ? 999 : i + 1; };
