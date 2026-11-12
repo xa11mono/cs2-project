@@ -571,6 +571,180 @@
   // ---------------------------------------------------------------- монета Pick'Em Мейджора (как в CS2): металлический обод с надписями
   // «CS2 MAJOR» и «ГОРОД ГОД», звёзды и гравировка по бокам, эмалевый диск цвета города с узором и рельефным символом города.
   // Уровни: 0 бронза, 1 серебро, 2 золото, 3 алмаз (радужный). Всё процедурно от города и года.
+  // v126: детальные символы городов для монет Мейджора (поле 100×100, низ на y=66; по ширине — в пределах x≈20…80,
+  // чтобы всё помещалось во внутренний круг). f — металл, d — тени/проёмы, l — блики и кромки. Стикеры используют L.
+  const pt = (pts) => 'M' + pts.map(p => n2(p[0]) + ' ' + n2(p[1])).join('L') + 'z';
+  const lancet = (cx, top, bot, w, fill) => `<path d="M${n2(cx - w)} ${bot}V${n2(top + w)}Q${n2(cx - w)} ${top} ${cx} ${n2(top - w * .7)}Q${n2(cx + w)} ${top} ${n2(cx + w)} ${n2(top + w)}V${bot}z" fill="${fill}"/>`;
+  const LX = {
+    cologne: (f, d, l) => { // Кёльнский собор: башни с ажурными шпилями, краббы, стрельчатые окна, роза и портал
+      let s = '';
+      for (const x of [36, 64]) {
+        s += `<path d="M${x - 6.4} 66V38H${x + 6.4}V66z" fill="${f}"/><path d="M${x} 38H${x + 6.4}V66H${x}z" fill="${d}" opacity=".32"/>`;
+        s += `<path d="M${x - 4.8} 38V27.6H${x + 4.8}V38z" fill="${f}"/><path d="M${x} 27.6H${x + 4.8}V38H${x}z" fill="${d}" opacity=".32"/>`;
+        s += `<path d="M${x - 4.2} 27.8L${x} 5.5L${x + 4.2} 27.8z" fill="${f}"/><path d="M${x} 5.5L${x + 4.2} 27.8H${x}z" fill="${d}" opacity=".38"/>`;
+        // ажур шпиля: горизонтальные пояса и краббы по рёбрам
+        for (let i = 1; i < 7; i++) { const t = i / 7, y = 27.8 - 22.3 * t, w = 4.2 * (1 - t);
+          s += `<path d="M${n2(x - w * .85)} ${n2(y)}H${n2(x + w * .85)}" stroke="${d}" stroke-width=".3" opacity=".75"/>` +
+            `<path d="M${n2(x - w)} ${n2(y)}l-.9 -1.1M${n2(x + w)} ${n2(y)}l.9 -1.1" stroke="${f}" stroke-width=".55" stroke-linecap="round"/>`; }
+        s += `<path d="M${x} 9V27M${x - 2} 20L${x} 14L${x + 2} 20" stroke="${l}" stroke-width=".25" fill="none" opacity=".7"/>`;
+        s += `<path d="M${x} 5.8V2M${x - 1.1} 3.3H${x + 1.1}" stroke="${l}" stroke-width=".55"/>`;
+        // пинакли на углах ярусов
+        for (const dx of [-6.4, 6.4]) s += `<path d="M${n2(x + dx - 1.2)} 38.2L${n2(x + dx)} 31L${n2(x + dx + 1.2)} 38.2z" fill="${f}"/><path d="M${n2(x + dx)} 31V29.6" stroke="${f}" stroke-width=".4"/>`;
+        for (const dx of [-4.8, 4.8]) s += `<path d="M${n2(x + dx - .9)} 27.8L${n2(x + dx)} 22.6L${n2(x + dx + .9)} 27.8z" fill="${f}"/>`;
+        s += `<path d="M${x - 6.8} 38.2H${x + 6.8}M${x - 6.6} 50.4H${x + 6.6}M${x - 5.2} 27.8H${x + 5.2}" stroke="${l}" stroke-width=".55"/>`;
+        // контрфорсы
+        s += `<path d="M${x - 6.4} 66V40M${x + 6.4} 66V40M${x} 66V52" stroke="${d}" stroke-width=".35" opacity=".6"/>`;
+        // стрельчатые окна с импостами
+        s += lancet(x - 2.5, 41, 48.6, 1.25, d) + lancet(x + 2.5, 41, 48.6, 1.25, d) + lancet(x - 2.5, 53, 62, 1.25, d) + lancet(x + 2.5, 53, 62, 1.25, d) + lancet(x, 30.2, 36.6, 1.5, d);
+        s += `<path d="M${x - 2.5} 42.2V48.6M${x + 2.5} 42.2V48.6M${x - 2.5} 54.2V62M${x + 2.5} 54.2V62M${x} 31.2V36.6M${x - 3.6} 45H${x - 1.4}M${x + 1.4} 45H${x + 3.6}" stroke="${l}" stroke-width=".22" opacity=".8"/>`;
+      }
+      // фасад между башнями: щипец, роза, портал
+      s += `<path d="M42.4 66V44.4L50 35.4L57.6 44.4V66z" fill="${f}"/><path d="M50 35.4L57.6 44.4V66H50z" fill="${d}" opacity=".28"/>`;
+      s += `<path d="M49.1 36.2L50 30.4L50.9 36.2z" fill="${f}"/><path d="M42.4 44.4L50 35.4L57.6 44.4" stroke="${l}" stroke-width=".5" fill="none"/>`;
+      s += `<circle cx="50" cy="46.6" r="3.9" fill="${d}"/><circle cx="50" cy="46.6" r="3.9" fill="none" stroke="${l}" stroke-width=".45"/>`;
+      for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2; s += `<path d="M50 46.6L${n2(50 + Math.cos(a) * 3.6)} ${n2(46.6 + Math.sin(a) * 3.6)}" stroke="${l}" stroke-width=".25"/>`; }
+      s += `<circle cx="50" cy="46.6" r=".9" fill="${l}"/>`;
+      s += `<path d="M45.8 66V58.2Q45.8 53 50 51.6Q54.2 53 54.2 58.2V66z" fill="${d}"/><path d="M47.2 66V58.8Q47.2 55 50 54Q52.8 55 52.8 58.8V66M50 54V66" fill="none" stroke="${l}" stroke-width=".3"/>`;
+      s += `<path d="M26 66H74V67.8H26z" fill="${f}"/><path d="M26 66H74" stroke="${l}" stroke-width=".5"/>`;
+      return s;
+    },
+    texas: (f, d, l) => { // Капитолий Техаса: звезда, богиня на фонаре, рёбра купола, барабан с колоннами, портик, крылья
+      const star = (cx, cy, r) => { const p = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, q = i % 2 ? r * .4 : r; p.push([cx + Math.cos(a) * q, cy + Math.sin(a) * q]); } return pt(p); };
+      let s = `<path d="${star(50, 6.6, 4.4)}" fill="${l}"/><path d="${star(50, 6.6, 4.4)}" fill="none" stroke="${d}" stroke-width=".3"/>`;
+      s += `<path d="M49.4 11.6H50.6V14.6H49.4z" fill="${f}"/><path d="M48 18Q48 14.8 50 14.4Q52 14.8 52 18z" fill="${f}"/>`;
+      s += `<path d="M47.6 18H52.4V24H47.6z" fill="${f}"/>` + [48.5, 50, 51.5].map(x => `<rect x="${x - .35}" y="19" width=".7" height="4" fill="${d}"/>`).join('');
+      s += `<path d="M38.6 39Q38.6 25.6 50 24Q61.4 25.6 61.4 39z" fill="${f}"/><path d="M50 24Q61.4 25.6 61.4 39H50z" fill="${d}" opacity=".3"/>`;
+      for (const k of [-8.5, -5, -1.7, 1.7, 5, 8.5]) s += `<path d="M50 24.2Q${n2(50 + k * .9)} 28 ${n2(50 + k * 1.3)} 39" stroke="${d}" stroke-width=".3" fill="none" opacity=".8"/>`;
+      s += `<path d="M41 33Q50 31 59 33" stroke="${l}" stroke-width=".3" fill="none"/>` + [43, 46.5, 50, 53.5, 57].map(x => `<circle cx="${x}" cy="${n2(31.4 + Math.abs(x - 50) * .12)}" r=".5" fill="${d}"/>`).join('');
+      s += `<path d="M37 39H63V40.6H37z" fill="${l}"/><path d="M38 40.6H62V46.4H38z" fill="${f}"/>`;
+      for (let x = 39.2; x < 61.5; x += 2.2) s += `<rect x="${n2(x)}" y="41.2" width="1.1" height="4.6" fill="${d}" opacity=".8"/>`;
+      s += `<path d="M35.6 46.4H64.4V48.4H35.6z" fill="${d}"/>`;
+      // крылья
+      for (const [x0, x1] of [[21, 39.4], [60.6, 79]]) {
+        s += `<path d="M${x0} 66V52.4H${x1}V66z" fill="${f}"/><path d="M${x0 - .6} 52.4H${x1 + .6}V50.8H${x0 - .6}z" fill="${d}"/><path d="M${x0 - .6} 50.8H${x1 + .6}" stroke="${l}" stroke-width=".4"/>`;
+        for (let x = x0 + 1.4; x < x1 - 1; x += 3) s += `<path d="M${n2(x)} 59.2V55.6Q${n2(x + .7)} 54.6 ${n2(x + 1.4)} 55.6V59.2z" fill="${d}"/><rect x="${n2(x)}" y="61" width="1.4" height="2.6" fill="${d}"/>`;
+        s += `<path d="M${x0} 60.2H${x1}" stroke="${l}" stroke-width=".3" opacity=".7"/>`;
+      }
+      // центральный корпус и портик
+      s += `<path d="M39.4 66V48.4H60.6V66z" fill="${f}"/><path d="M40.4 53.6L50 49.2L59.6 53.6z" fill="${f}"/><path d="M40.4 53.6L50 49.2L59.6 53.6z" fill="none" stroke="${l}" stroke-width=".45"/><circle cx="50" cy="51.8" r=".8" fill="${d}"/>`;
+      s += `<path d="M40.8 53.6H59.2V62.6H40.8z" fill="${d}"/>` + [41.6, 44.6, 47.6, 50.6, 53.6, 56.6].map(x => `<rect x="${x}" y="53.8" width="1.8" height="8.8" fill="${f}"/><rect x="${x}" y="53.8" width=".5" height="8.8" fill="${l}" opacity=".6"/>`).join('');
+      s += `<path d="M42 62.6H58V63.8H42zM43 63.8H57V65H43zM44 65H56V66H44z" fill="${f}"/><path d="M42 62.6H58M43 63.8H57M44 65H56" stroke="${l}" stroke-width=".25"/>`;
+      s += `<path d="M18 66H82V67.8H18z" fill="${f}"/><path d="M18 66H82" stroke="${l}" stroke-width=".5"/>`;
+      return s;
+    },
+    copenhagen: (f, d, l) => { // Нюхавн: дома с разными фронтонами, окна в рамах, двери, мачты лодок в канале
+      let s = ''; const xs = [19.5, 30, 40.5, 51, 61.5, 72], w = 10;
+      xs.forEach((x, i) => { const top = 33 + [2, 0, 4, 1, 3, 0][i], g = i % 3, cx = x + w / 2;
+        const shape = g === 0 ? `M${x} 66V${top + 6}L${cx} ${top}L${x + w} ${top + 6}V66z` // щипец
+          : g === 1 ? `M${x} 66V${top + 6}H${x + 1.6}V${top + 4}H${x + 3.2}V${top + 2}H${x + 4}V${top}H${x + 6}V${top + 2}H${x + 6.8}V${top + 4}H${x + 8.4}V${top + 6}H${x + w}V66z` // ступенчатый
+          : `M${x} 66V${top + 6}Q${x + 1.4} ${top + 6} ${x + 2.2} ${top + 3.6}Q${cx} ${top - 1} ${x + 7.8} ${top + 3.6}Q${x + 8.6} ${top + 6} ${x + w} ${top + 6}V66z`; // барочный
+        s += `<path d="${shape}" fill="${f}"/><path d="${shape}" fill="${d}" opacity="${[0, .18, .08, .25, .12, .2][i]}"/><path d="${shape}" fill="none" stroke="${d}" stroke-width=".4"/>`;
+        s += `<circle cx="${cx}" cy="${top + 4.2}" r=".9" fill="${d}"/>`;
+        for (let r = 0; r < 3; r++) for (const wx of [x + 1.6, x + 4.3, x + 7]) s += `<rect x="${n2(wx)}" y="${top + 8.4 + r * 5.6}" width="1.5" height="2.8" fill="${d}"/><path d="M${n2(wx)} ${top + 9.8 + r * 5.6}h1.5M${n2(wx + .75)} ${top + 8.4 + r * 5.6}v2.8" stroke="${l}" stroke-width=".2"/>`;
+        s += `<path d="M${cx - 1.2} 66V62.6Q${cx} 61.4 ${cx + 1.2} 62.6V66z" fill="${d}"/>`;
+        s += `<path d="M${x} ${top + 6.6}H${x + w}M${x} 60.6H${x + w}" stroke="${l}" stroke-width=".3" opacity=".7"/>`;
+      });
+      s += `<path d="M18 66H82V67.6H18z" fill="${f}"/>`;
+      // мачты и такелаж лодок
+      for (const [x, h] of [[27, 30], [57.5, 26], [70, 38]]) s += `<path d="M${x} 68V${h}M${x} ${h + 1}L${x + 6} 66M${x} ${h + 1}L${x - 4.5} 66M${x - 2.6} ${h + 9}H${x + 3}" stroke="${l}" stroke-width=".35" fill="none" opacity=".85"/>` +
+        `<path d="M${x} ${h + 2}L${x + 5} 64H${x}z" fill="${l}" opacity=".22"/>`;
+      return s;
+    },
+    budapest: (f, d, l) => { // Парламент: рёбристый купол со шпилем, башенки, ряд пинаклей, аркады
+      let s = `<path d="M20 66V50.6H80V66z" fill="${f}"/><path d="M50 50.6H80V66H50z" fill="${d}" opacity=".18"/>`;
+      s += `<path d="M19.4 50.6H80.6" stroke="${l}" stroke-width=".5"/>`;
+      for (let x = 21.2; x <= 79; x += 2.6) s += `<path d="M${n2(x - .9)} 50.6L${n2(x)} 45.6L${n2(x + .9)} 50.6z" fill="${f}"/>`;
+      for (let x = 22; x < 78; x += 2.6) s += `<path d="M${n2(x)} 57.4V54Q${n2(x + .6)} 53 ${n2(x + 1.2)} 54V57.4z" fill="${d}"/><rect x="${n2(x)}" y="59.6" width="1.2" height="3.6" fill="${d}"/>`;
+      s += `<path d="M20 58.4H80" stroke="${l}" stroke-width=".3" opacity=".7"/>`;
+      // центральный ризалит, барабан и купол
+      s += `<path d="M39 66V44.4H61V66z" fill="${f}"/><path d="M38.4 44.4H61.6" stroke="${l}" stroke-width=".5"/>`;
+      for (let x = 40.4; x < 60; x += 2.8) s += `<path d="M${n2(x)} 54V48.6Q${n2(x + .7)} 47.4 ${n2(x + 1.4)} 48.6V54z" fill="${d}"/>`;
+      s += `<path d="M44.6 66V60Q50 55.6 55.4 60V66z" fill="${d}"/>`;
+      s += `<path d="M41.4 44.4V40.6H58.6V44.4z" fill="${f}"/>` + [42.6, 45, 47.4, 49.8, 52.2, 54.6, 57].map(x => `<rect x="${x}" y="41.2" width=".9" height="2.8" fill="${d}"/>`).join('');
+      s += `<path d="M41.4 40.6Q41.4 29.4 50 27.6Q58.6 29.4 58.6 40.6z" fill="${f}"/><path d="M50 27.6Q58.6 29.4 58.6 40.6H50z" fill="${d}" opacity=".3"/>`;
+      for (const k of [-6, -3, 0, 3, 6]) s += `<path d="M50 27.8Q${n2(50 + k * .8)} 32 ${n2(50 + k * 1.3)} 40.6" stroke="${d}" stroke-width=".3" fill="none"/>`;
+      s += `<path d="M48.6 27.8L50 12L51.4 27.8z" fill="${f}"/><path d="M50 12L51.4 27.8H50z" fill="${d}" opacity=".35"/><path d="M50 12V9.4" stroke="${l}" stroke-width=".5"/>`;
+      for (const x of [41.4, 58.6]) s += `<path d="M${n2(x - .8)} 40.8L${x} 33L${n2(x + .8)} 40.8z" fill="${f}"/>`;
+      // боковые башенки
+      for (const x of [29, 71]) s += `<path d="M${x - 2} 50.6V40H${x + 2}V50.6z" fill="${f}"/><path d="M${x - 2.2} 40L${x} 30.6L${x + 2.2} 40z" fill="${f}"/><path d="M${x} 40L${x + 2.2} 40L${x} 30.6z" fill="${d}" opacity=".35"/>` +
+        `<rect x="${x - .5}" y="42.6" width="1" height="3.4" fill="${d}"/>`;
+      s += `<path d="M18 66H82V67.8H18z" fill="${f}"/>`;
+      return s;
+    },
+    rio: (f, d, l) => { // Корковаду с Христом, Урка и Сахарная Голова, канатная дорога, парусник
+      let s = `<path d="M18 66Q22 44 28 40Q31 38 34 42Q38 50 40 66z" fill="${d}" opacity=".55"/>`;
+      s += `<path d="M28.4 40.2V36.4M26.8 37.6H30" stroke="${l}" stroke-width=".6"/>`;
+      s += `<path d="M30 66Q34 50 40 48Q45 47 48 54Q50 58 51 66z" fill="${f}"/><path d="M40 48Q45 47 48 54Q50 58 51 66H44Q44 54 40 48z" fill="${d}" opacity=".35"/>`;
+      s += `<path d="M46 66Q50 30 60 21.4Q67 17.6 72 26Q78 38 80 66z" fill="${f}"/><path d="M60 21.4Q67 17.6 72 26Q78 38 80 66H68Q70 40 60 21.4z" fill="${d}" opacity=".35"/>`;
+      // рельеф скалы: прожилки и лес у подножия
+      for (const [a, b, c2] of [[56, 30, 52], [61, 25, 60], [66, 24, 68], [71, 30, 75]]) s += `<path d="M${a} ${b}Q${n2((a + c2) / 2 - 1)} ${n2((b + 64) / 2)} ${c2} 64" stroke="${d}" stroke-width=".35" fill="none" opacity=".7"/>`;
+      s += `<path d="M58 23Q62 21 66 21.6" stroke="${l}" stroke-width=".5" fill="none"/>`;
+      for (let i = 0; i < 26; i++) { const x = 47 + (i * 37 % 33), y = 60 + (i * 13 % 6); s += `<circle cx="${n2(x)}" cy="${n2(y)}" r="${n2(.7 + (i % 3) * .25)}" fill="${d}" opacity=".55"/>`; }
+      // канатная дорога
+      s += `<path d="M40.4 48L60 21.6" stroke="${l}" stroke-width=".35"/><path d="M40.6 49L60.2 22.6" stroke="${l}" stroke-width=".2" opacity=".6"/>`;
+      s += `<rect x="47.6" y="37.2" width="3.2" height="2.4" rx=".5" fill="${l}"/><path d="M49.2 37.2V35.4" stroke="${l}" stroke-width=".3"/><rect x="48" y="37.8" width="2.4" height=".9" fill="${d}"/>`;
+      // парусник
+      s += `<path d="M30 64.6H37L36 66H31z" fill="${f}"/><path d="M33.4 64.6V56L37 64.2zM33 64.4V58.4L30.4 64.2z" fill="${l}" opacity=".85"/>`;
+      s += `<path d="M18 66H82V67.6H18z" fill="${f}"/>`;
+      return s;
+    },
+    shanghai: (f, d, l) => { // Восточная жемчужина (ножки, сферы с поясами), Шанхайская башня, «открывашка», Цзинь Мао
+      let s = '';
+      // дальние башни
+      s += `<path d="M62 66V14Q64 8 66 7Q68 9 69 14L70.6 66z" fill="${d}"/><path d="M64.4 14Q66 30 64 66M66.8 9Q68 30 67.6 66" stroke="${l}" stroke-width=".25" fill="none" opacity=".6"/>`;
+      for (let y = 16; y < 64; y += 3) s += `<path d="M${n2(62.4 + (y - 16) * .005)} ${y}H70.2" stroke="${f}" stroke-width=".18" opacity=".45"/>`;
+      s += `<path d="M72 66V22L78 20V66z" fill="${f}"/><path d="M73.6 24.6H76.4V27.4H73.6z" fill="${d}"/><path d="M75 20.6V66" stroke="${d}" stroke-width=".25" opacity=".5"/>`;
+      s += `<path d="M54 66V34L55 31.6H56L56.6 28H57.6L58.2 31.6H59.2L60.2 34V66z" fill="${f}"/>` + [38, 44, 50, 56].map(y => `<path d="M54 ${y}H60.2" stroke="${d}" stroke-width=".35"/>`).join('') + `<path d="M57.1 28V24" stroke="${f}" stroke-width=".4"/>`;
+      s += `<path d="M21 66V50H26V46H29V66zM30.4 66V54H34.6V66z" fill="${d}"/>`;
+      // Восточная жемчужина
+      s += `<path d="M33.6 66L38.4 50.6H40.2L36.2 66zM46.4 66L41.6 50.6H39.8L43.8 66z" fill="${f}"/><path d="M39.2 66V50.6H40.8V66z" fill="${d}"/>`;
+      s += `<circle cx="40" cy="45.4" r="7" fill="${f}"/><path d="M40 38.4A7 7 0 0 1 40 52.4z" fill="${d}" opacity=".3"/><path d="M33.2 44Q40 46.6 46.8 44M33.4 47.4Q40 49.6 46.6 47.4" stroke="${d}" stroke-width=".45" fill="none"/>`;
+      s += `<circle cx="37.4" cy="42.8" r="2" fill="${l}" opacity=".7"/>`;
+      s += `<path d="M38 38.6V26.8H39.2V38.6zM40.8 38.6V26.8H42V38.6z" fill="${f}"/><path d="M38.2 32.6H41.8" stroke="${f}" stroke-width=".6"/>`;
+      s += `<circle cx="40" cy="23.4" r="4.2" fill="${f}"/><path d="M40 19.2A4.2 4.2 0 0 1 40 27.6z" fill="${d}" opacity=".3"/><path d="M36 22.8Q40 24.4 44 22.8" stroke="${d}" stroke-width=".4" fill="none"/><circle cx="38.6" cy="21.8" r="1.1" fill="${l}" opacity=".7"/>`;
+      s += `<path d="M39.5 19.4V14.4H40.5V19.4z" fill="${f}"/><circle cx="40" cy="12.6" r="1.8" fill="${f}"/><path d="M40 10.8V3.6" stroke="${f}" stroke-width=".5"/>`;
+      s += `<path d="M18 66H82V67.6H18z" fill="${f}"/>`;
+      return s;
+    },
+    paris: (f, d, l) => { // Эйфелева башня: решётка-раскосы, платформы, арка, антенна
+      let s = `<path d="M50 5L51.6 19L53.6 33L56.8 43.2H62.4L68.6 66H59.4Q50 51.4 40.6 66H31.4L37.6 43.2H43.2L46.4 33L48.4 19z" fill="${f}"/>`;
+      s += `<path d="M50 5L51.6 19L53.6 33L56.8 43.2H62.4L68.6 66H59.4Q55 57.6 50 56z" fill="${d}" opacity=".35"/>`;
+      s += `<path d="M44.2 33H55.8V34.8H44.2zM36.4 43.2H63.6V45.4H36.4zM47.6 19H52.4V20.4H47.6z" fill="${l}"/>`;
+      // раскосы
+      const X = (y0, y1, xl0, xl1, xr0, xr1, n) => { let r = ''; for (let i = 0; i < n; i++) { const t0 = i / n, t1 = (i + 1) / n, ya = y0 + (y1 - y0) * t0, yb = y0 + (y1 - y0) * t1;
+        const la = xl0 + (xl1 - xl0) * t0, lb = xl0 + (xl1 - xl0) * t1, ra = xr0 + (xr1 - xr0) * t0, rb = xr0 + (xr1 - xr0) * t1;
+        r += `<path d="M${n2(la)} ${n2(ya)}L${n2(rb)} ${n2(yb)}M${n2(ra)} ${n2(ya)}L${n2(lb)} ${n2(yb)}" stroke="${d}" stroke-width=".3"/>`; } return r; };
+      s += X(20.4, 33, 48.4, 46.6, 51.6, 53.4, 4) + X(34.8, 43.2, 46.2, 44, 53.8, 56, 3);
+      s += X(45.4, 60, 38, 34, 44, 46, 4) + X(45.4, 60, 56, 54, 62, 66, 4);
+      s += `<path d="M42 66Q50 53.6 58 66" stroke="${l}" stroke-width=".4" fill="none"/><path d="M50 5V1.6" stroke="${f}" stroke-width=".6"/>`;
+      s += `<path d="M24 66H76V67.6H24z" fill="${f}"/>` + [27, 72].map(x => `<path d="M${x} 66V60.4M${x - 1.6} 60.4H${x + 1.6}" stroke="${l}" stroke-width=".4"/>`).join('');
+      return s;
+    },
+    riyadh: (f, d, l) => { // Kingdom Centre: парабола с мостом наверху, сетка фасада; Аль-Файсалия с шаром
+      let s = `<path d="M24 66V38.4L26.4 22L28.8 38.4V66z" fill="${d}"/><circle cx="26.4" cy="33.6" r="2.4" fill="${f}"/><path d="M26.4 22V18" stroke="${d}" stroke-width=".4"/>`;
+      s += `<path d="M41 66L42.4 18Q50 4.6 57.6 18L59 66z" fill="${f}"/><path d="M50 8Q55.4 10 57.6 18L59 66H50z" fill="${d}" opacity=".3"/>`;
+      s += `<path d="M45.2 34Q46 17 50 14.6Q54 17 54.8 34z" fill="${d}"/><path d="M45.6 25H54.4V26.6H45.6z" fill="${f}"/><path d="M45.6 25H54.4" stroke="${l}" stroke-width=".3"/>`;
+      for (let y = 36; y < 65; y += 2.4) s += `<path d="M${n2(41.6 - (y - 36) * .03)} ${y}H${n2(58.4 + (y - 36) * .03)}" stroke="${d}" stroke-width=".22" opacity=".7"/>`;
+      for (const x of [44.6, 47.3, 50, 52.7, 55.4]) s += `<path d="M${x} 34V66" stroke="${d}" stroke-width=".18" opacity=".6"/>`;
+      s += `<path d="M42.6 18.4Q50 6 57.4 18.4" stroke="${l}" stroke-width=".45" fill="none"/>`;
+      s += `<path d="M62 66V52H68V48H72V66zM73 66V56H79V66zM32 66V54H38V66z" fill="${d}"/>` + [63.4, 65.6, 74.4, 76.6, 33.4, 35.6].map(x => `<rect x="${x}" y="57" width="1" height="1.4" fill="${l}" opacity=".7"/>`).join('');
+      s += `<path d="M18 66H82V67.6H18z" fill="${f}"/>`;
+      return s;
+    },
+    katowice: (f, d, l) => { // «Сподек»: рёбра крыши, остеклённый пояс, наклонные опоры; за ним шахтный копёр — символ Силезии
+      let s = `<path d="M68 66V36H70.6V66zM75.4 66V36H78V66z" fill="${d}"/><path d="M68 36L73 26L78 36" stroke="${d}" stroke-width="1" fill="none"/><path d="M68.6 40L77.4 48M77.4 40L68.6 48" stroke="${d}" stroke-width=".45"/>` +
+        `<circle cx="73" cy="26" r="2" fill="none" stroke="${d}" stroke-width=".7"/><path d="M66.6 36H79.4" stroke="${d}" stroke-width=".8"/>`;
+      s += `<path d="M32 66L37.6 50.6H41L36.6 66zM68 66L62.4 50.6H59L63.4 66z" fill="${f}"/><path d="M40 66L42.4 51H57.6L60 66z" fill="${d}"/>` +
+        [44, 47, 50, 53, 56].map(x => `<path d="M${x} 52V66" stroke="${l}" stroke-width=".22" opacity=".6"/>`).join('');
+      s += `<path d="M22 46Q50 30 78 46Q50 56 22 46z" fill="${f}"/><path d="M50 34.6Q68 38 78 46Q60 52 50 51.4z" fill="${d}" opacity=".25"/>`;
+      s += `<path d="M22 46Q50 56 78 46L77.4 48Q50 58.4 22.6 48z" fill="${d}"/><path d="M23 47.2Q50 57 77 47.2" stroke="${l}" stroke-width=".3" fill="none" stroke-dasharray=".6 .9"/>`;
+      for (let i = 0; i <= 12; i++) { const x = 24 + i * 4.33; s += `<path d="M50 36.2Q${n2((50 + x) / 2)} ${n2(37 + Math.abs(x - 50) * .05)} ${n2(x)} ${n2(46 + 4.6 * Math.sin((x - 22) / 56 * Math.PI))}" stroke="${d}" stroke-width=".25" fill="none" opacity=".7"/>`; }
+      s += `<ellipse cx="50" cy="36.4" rx="5" ry="1.2" fill="${l}" opacity=".85"/><path d="M30 41Q50 30.6 70 41" stroke="${l}" stroke-width=".6" fill="none"/>`;
+      s += `<path d="M18 66H82V67.6H18z" fill="${f}"/>`;
+      return s;
+    }
+  };
+
   let CUID = 0;
   const COIN_METAL = [
     ['#2a1608', '#5e3517', '#9a5d2c', '#d39a5f', '#f6cf9c', '#b97b43'],
@@ -622,8 +796,25 @@
     const skull = `<path d="M50 30C40 30 37 37 38 44C39 50 44 52 45 56L47 66H53L55 56C56 52 61 50 62 44C63 37 60 30 50 30z" fill="${lf}" stroke="${ld}" stroke-width=".6"/><path d="M38 38C30 38 18 34 10 26C16 36 26 42 38 43zM62 38C70 38 82 34 90 26C84 36 74 42 62 43z" fill="${lf}" stroke="${ld}" stroke-width=".6"/><path d="M44 42l3 3-3 2zM56 42l-3 3 3 2z" fill="${ld}"/><path d="M48 58H52M48.5 61H51.5" stroke="${ld}" stroke-width=".7"/>`;
     const ch = (k) => (holo ? ['#1d2340', '#4a5684', '#8c9bcb', '#cfd9f5', '#f4f7ff'] : M.slice(0, 5)).map(x => (parseInt(x.slice(1 + k * 2, 3 + k * 2), 16) / 255).toFixed(3)).join(' ');
     const tone = add(`<filter id="$ID" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="${ch(0)}"/><feFuncG type="table" tableValues="${ch(1)}"/><feFuncB type="table" tableValues="${ch(2)}"/></feComponentTransfer></filter>`);
-    const sym = `<g filter="url(#${tone})">` + (lm === 'skull' ? `<g transform="translate(50 50) scale(.76) translate(-50 -46)">${skull}</g>`
-      : `<g transform="translate(50 50) scale(.74) translate(-50 -38)">${(L[lm] || L.generic)(lf, ld, ll, h)}</g>`) + '</g>';
+    // v126: символ — детальная версия (LX), всегда внутри внутреннего круга (клип), с гравировкой, отражением в воде,
+    // сиянием за ним и дальним силуэтом города; по краю диска — жемчужный поясок
+    const art = lm === 'skull' ? skull : (LX[lm] || L[lm] || L.generic)(lf, ld, ll, h), skullLm = lm === 'skull';
+    const T = skullLm ? 'translate(50 50) scale(.76) translate(-50 -46)' : 'translate(50 51) scale(.74) translate(-50 -38)', gy = 71.7;
+    const wm = add(`<filter id="$ID" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0"/></filter>`);
+    const hm = add(`<mask id="$ID" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><g filter="url(#${wm})"><g transform="${T}">${art}</g></g></mask>`);
+    const hp = add(`<pattern id="$ID" patternUnits="userSpaceOnUse" width="1" height="1" patternTransform="rotate(62)"><path d="M0 .25H1" stroke="#000" stroke-width=".2"/></pattern>`);
+    const sym = `<g filter="url(#${tone})"><g transform="${T}">${art}</g><rect x="15" y="15" width="70" height="70" fill="url(#${hp})" mask="url(#${hm})" opacity=".2"/></g>`;
+    const glow = `<circle cx="50" cy="${skullLm ? 48 : gy - 15}" r="27" fill="url(#${add(`<radialGradient id="$ID"><stop offset="0" stop-color="#fff" stop-opacity="${holo ? .5 : .38}"/><stop offset=".55" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>`)})"/>`;
+    const far = skullLm || st === 'vitrage' ? '' : `<g opacity=".3" transform="translate(50 ${gy}) scale(.74 .42) translate(-50 -66)">${L.generic(e2, mix(e2, '#000000', .3), lc, h ^ 0x9e37)}</g>`;
+    let ripple = ''; for (let i = 0; i < 6; i++) { const w = 24 - i * 1.6 + ((h >>> i) % 5); ripple += `<path d="M${n2(50 - w)} ${n2(gy + 1.5 + i * 1.65)}H${n2(50 + w)}" stroke="${lc}" stroke-width=".32" opacity="${n2(.55 - i * .06)}" stroke-dasharray="${3 + i} 1.2 ${6 - i * .5} 1.6"/>`; }
+    const wg = add(`<linearGradient id="$ID" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${e2}"/><stop offset="1" stop-color="${mix(e2, '#000000', .45)}"/></linearGradient>`);
+    const fadeG = add(`<linearGradient id="$ID" gradientUnits="userSpaceOnUse" x1="0" y1="${gy}" x2="0" y2="${gy + 9}"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>`);
+    const fadeM = add(`<mask id="$ID" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><rect x="0" y="${gy}" width="100" height="20" fill="url(#${fadeG})"/></mask>`);
+    const water = skullLm ? '' : `<rect x="16" y="${gy}" width="68" height="14" fill="url(#${wg})"/>` +
+      `<g mask="url(#${fadeM})" opacity=".32"><g transform="translate(0 ${n2(gy * 2 + 1.2)}) scale(1 -1)"><g filter="url(#${tone})"><g transform="${T}">${art}</g></g></g></g>` + ripple;
+    const twinkle = [[29, 33, .9], [72, 27, .75], [69, 39, .55], [33, 46, .5]].map(([x, y, r]) => `<path d="M${x} ${n2(y - r * 2)}Q${x} ${y} ${n2(x + r * 2)} ${y}Q${x} ${y} ${x} ${n2(y + r * 2)}Q${x} ${y} ${n2(x - r * 2)} ${y}Q${x} ${y} ${x} ${n2(y - r * 2)}z" fill="#fff" opacity=".75"/>`).join('');
+    const beads = Array.from({ length: 64 }, (_, i) => { const a = i / 64 * Math.PI * 2; return `<circle cx="${n2(50 + Math.cos(a) * 32.4)}" cy="${n2(50 + Math.sin(a) * 32.4)}" r=".46"/>`; }).join('');
+    const scene = `<g clip-path="url(#${clip})">${glow}${far}${skullLm ? '' : twinkle}${water}<g filter="url(#${emb})">${sym}</g></g>`;
     // надписи по дуге и гравировка обода
     const rT = 39.2, top = add(`<path id="$ID" d="M${50 - rT} 50A${rT} ${rT} 0 0 1 ${50 + rT} 50"/>`), bot = add(`<path id="$ID" d="M${50 - rT} 50A${rT} ${rT} 0 0 0 ${50 + rT} 50"/>`);
     const ink = holo ? '#5a6488' : M[0], hi = holo ? '#ffffff' : M[4], fs = font === 'StkCinzel' ? 8 : 9;
@@ -646,8 +837,8 @@
       `<g fill="none" stroke="${M[1]}" stroke-width=".5" opacity=".6">${knurl}</g>` +
       `<circle cx="50" cy="50" r="46.2" fill="${bandG}" stroke="${M[1]}" stroke-width=".5"/>` +
       `<g filter="url(#${emb})">${arcTxt(top, opts.top || 'CS2 MAJOR', 1.6)}${arcTxt(bot, cityTxt, lsB)}${side}</g>` +
-      `<circle cx="50" cy="50" r="33.2" fill="${rimG}" stroke="${M[0]}" stroke-width=".4"/>${enamel}<circle cx="50" cy="50" r="31.6" fill="none" stroke="${M[0]}" stroke-width=".6" opacity=".6"/>` +
-      `<g filter="url(#${emb})">${sym}</g>${sparkle}` +
+      `<circle cx="50" cy="50" r="33.4" fill="${rimG}" stroke="${M[0]}" stroke-width=".4"/>${enamel}${scene}<circle cx="50" cy="50" r="31.6" fill="none" stroke="${M[0]}" stroke-width=".6" opacity=".7"/>` +
+      `<g fill="${holo ? '#ffffff' : M[4]}" stroke="${holo ? '#8a93b8' : M[1]}" stroke-width=".18">${beads}</g>${sparkle}` +
       `<path d="M14 30A40 40 0 0 1 40 10" stroke="#fff" stroke-opacity=".45" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
     return `<svg class="v35-coin cs2-coin${holo ? ' holo' : ''}" viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>${defs.join('')}</defs>${body}</svg>`;
   }
