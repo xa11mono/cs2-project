@@ -22,29 +22,10 @@
   const me = () => { try { return V.managed() || ''; } catch (e) { return ''; } };
   const money = n => { try { return V.money(n); } catch (e) { return '$' + Math.round(n); } };
 
-  /* ------------------------------------------------------------ 1. сила */
-  const ANCHOR = {
-    zywoo: 95.5, donk: 95.5, m0nesy: 94.5, sh1ro: 93.5, ropz: 93, niko: 92.8, flamez: 92.3, kscerato: 92, torzsi: 92,
-    spinx: 91.5, frozen: 91.5, molodoy: 91.5, xantares: 91, xertion: 90.8, b1t: 90.5, im: 90.5, jl: 90.5, kyousuke: 90.5,
-    broky: 90, twistzz: 90, yuurih: 90, wicadia: 90, w0nderful: 89.5, s1mple: 89.5, mezii: 89, zont1x: 89, jimpphat: 89.5,
-    // капитаны — тактика не делает их лучшими стрелками сцены
-    magixx: 87.5, aleksib: 86.5, siuhy: 87, karrigan: 85, apex: 85, chopper: 85, fallen: 84, hooxi: 84, maj3r: 85, nexa: 85, blitz: 86, snappi: 84, bymas: 88
-  };
-  const NON_ANCHOR_CAP = 91.5;
-  function target(p) {
-    const k = String(p.nick || '').toLowerCase(), cur = pow(p);
-    if (ANCHOR[k] != null) return ANCHOR[k];
-    let t = cur;
-    if (p.role === 'IGL') t -= .4 * Math.max(0, (+p.tacticalIQ || 0) - (+p.firepower || 0)) + 1;
-    return Math.min(t, NON_ANCHOR_CAP);
-  }
-  function shift(p, d) {
-    if (Math.abs(d) < .05) return;
-    ['firepower', 'tacticalIQ', 'clutch', 'utility'].forEach(a => { p[a] = clamp(Math.round(((+p[a] || 70) + d) * 10) / 10, 50, 99); });
-    const lv = pow(p); if (!(+p.pot >= lv)) p.pot = Math.round((lv + ((+p.age || 25) <= 22 ? 2 : 0)) * 10) / 10;
-  }
-  function recalibrate() { return 0; // v114: старые ручные anchors и cap 91.5 отключены; атрибуты старых сейвов не переписываем.
-  }
+  /* ------------------------------------------------------------ 1. сила
+     v114: индивидуальный Overall рассчитывает js/manager/v114-player-power.js.
+     v101 сохраняет только совместимые legacy helpers; атрибуты игроков и VRS не калибруются по никам.
+  */
 
   /* ------------------------------------------------------------ 1б. стартовый рейтинг новой игры
      В базе у части клубов стартовые очки расходятся с составом (3DMAX: состав #12 по силе, очки #73 — за сезон
@@ -134,7 +115,7 @@
   const every = (W.CS2Loop && W.CS2Loop.every) || ((f, ms) => setInterval(f, ms));
   every(() => { if (W.v57BatchCalendarSkip) return; try { if (!seasonState.v101Pow) recalibrate(); if (!seasonState.v101Seed && seasonState.v88Seed) reseed(); snapValues(); } catch (e) {} }, 4000, 'v101-economy');
 
-  W.CS2Power = { target, recalibrate, reseed, ANCHOR, pow, trend };
+  W.CS2Power = { recalibrate, reseed, pow, trend }; // v114-player-power.js подключается следующим и публикует полный API.
   W.V101Deals = { cancel };
   W.V101MarkMajors = (root, pg) => markMajors(root, pg || (H.S && H.S.page));
 })();
