@@ -79,6 +79,14 @@
       rawTeams().forEach(t => (t?.vrsLedger?.matches || []).forEach(x => { if (x && x.low && Number(x.sig) > 0 && Number(x.sig) < 1 && Number(x.eventWeight) > Number(x.sig)) x.eventWeight = Number(x.sig); }));
       seasonState.v101VrsW = 1;
     } catch (e) {}
+    try {   // v113: старые сохранения — одна запись на матч (раньше на карту)
+      if (typeof seasonState === 'undefined' || !seasonState || seasonState.v113VrsDedup) return;
+      rawTeams().forEach(t => { const l = t && t.vrsLedger; if (!l || !Array.isArray(l.matches)) return;
+        const out = [], at = new Map();
+        l.matches.forEach(x => { if (!x) return; const k = Number(x.date) + '|' + x.opponent + '|' + (x.eventName || ''); if (at.has(k)) out[at.get(k)] = x; else { at.set(k, out.length); out.push(x); } });
+        l.matches = out; });
+      seasonState.v113VrsDedup = 1;
+    } catch (e) {}
   }
   const isLan = ev => {
     if (ev?.isLAN === true || ev?.lan === true || ev?.offline === true) return true;
@@ -140,7 +148,9 @@
   function metricsFor(t, now) {
     const l = t?.vrsLedger || { matches:[], earnings:[] };
     const earnings = (l.earnings || []).filter(x => ageWeight(x.date, now) > 0)
-      .map(x => Math.max(0,Number(x.amount)||0) * ageWeight(x.date, now)).sort((a,b)=>b-a).slice(0,10);
+      // v113: призовые взвешены уровнем турнира (Tier-1 = 1, Tier-2 ≈ 0.35, Tier-3/отборы ≈ 0.12–0.3, не ниже 0.15). Раньше
+      // деньги Tier-2 шли в «призовые» как деньги Tier-1: серия титулов United21/ESL Challenger поднимала клуб в топ-10.
+      .map(x => Math.max(0,Number(x.amount)||0) * ageWeight(x.date, now) * clamp(x.eventWeight ?? 1, 0.15, 1)).sort((a,b)=>b-a).slice(0,10);
     const matches = (l.matches || []).filter(x => ageWeight(x.date, now) > 0);
     const bounty = matches.filter(x => x.won).map(x => Math.max(0,Number(x.oppBounty)||0) * ageWeight(x.date,now) * clamp(x.eventWeight ?? 0,0,1)).sort((a,b)=>b-a).slice(0,10);
     const network = matches.filter(x => x.won).map(x => Math.max(0,Number(x.network)||0) * ageWeight(x.date,now) * clamp(x.eventWeight ?? 0,0,1)).sort((a,b)=>b-a).slice(0,10);
@@ -218,7 +228,7 @@
     const coverage=clamp(m.evidence,0,1);
     const resultPts=400+1600*average;
     const startPts=clamp(seed*(1-coverage)+resultPts*coverage,400,2000);
-    const hc=CF('vrs.h2hClamp',200), h2h=clamp(m.h2h,-hc,hc);
+    const hc=CF('vrs.h2hClamp2',120), h2h=clamp(m.h2h,-hc,hc);   // v113: ±120 (было ±200 — личные встречи перетасовывали лидеров)
     const evidenceOffset=startPts-seed;
     const pts=Math.round(clamp(startPts+h2h,400,2000));
     return {pts,startPts,factors,components:{offered:m.offeredRaw,collected:m.collectedRaw,network:m.network,lan:m.lan,h2h:Math.round(h2h),coverage,average:Number(average.toFixed(4)),seedPts:seed,resultPts:Math.round(resultPts),evidenceOffset:Number(evidenceOffset.toFixed(1))}};
@@ -234,14 +244,17 @@
   let pubCache = { key: '', dates: [] };
   function pubDates() {
     let st = null; try { st = seasonState; } catch (e) {}
-    const sch = (st && st.seasonSchedule) || [], key = (st && st.currentSeason) + '|' + sch.length;
+    const sch = (st && st.seasonSchedule) || [];
+    const majors = sch.filter(e => e && /major/i.test(e.name || '') && !/qualif|отбор|rmr/i.test(e.name || '') && e.calendar && e.calendar.startMs);
+    // v113: ключ — с датами Мейджоров (календарь сдвигает их по ходу сезона; раньше даты публикаций устаревали)
+    const key = (st && st.currentSeason) + '|' + sch.length + '|' + majors.map(e => e.calendar.startMs + ':' + (e.calendar.endMs || '')).join(',');
     if (pubCache.key === key && pubCache.dates.length) return pubCache.dates;
     const starts = sch.map(e => Number(e && e.calendar && e.calendar.startMs)).filter(x => x > 0);
     const out = [];
     if (starts.length) {
       const first = Math.min(...starts), y = new Date(first).getUTCFullYear();
       out.push(Date.UTC(y, 0, 1));
-      sch.filter(e => e && /major/i.test(e.name || '') && !/qualif|отбор|rmr/i.test(e.name || '') && e.calendar && e.calendar.startMs).forEach(e => {
+      majors.forEach(e => {
         const a = Number(e.calendar.startMs), b = Number(e.calendar.endMs) || a + 14 * DAY;
         out.push(a - PUB_BEFORE, b + DAY);
       });
@@ -266,7 +279,11 @@
     if (dt >= 1) { shown += (r.pts - shown) * (1 - Math.exp(-dt / VRS_TAU_DAYS)); at = now; }
     t.vrsShown = shown; t.vrsShownAt = at;
     const pa = pubAt(now);
-    if (window.CS2VRSLivePts || !Number.isFinite(Number(t.pts)) || t.vrsPubAt == null || Number(t.vrsPubAt) !== pa) { t.pts = Math.round(clamp(shown, 400, 2000)); t.vrsPubAt = pa; }
+    if (window.CS2VRSLivePts || !Number.isFinite(Number(t.pts)) || t.vrsPubAt == null) { t.pts = Math.round(clamp(shown, 400, 2000)); t.vrsPubAt = pa; }
+    else if (pa > Number(t.vrsPubAt) || pa < Number(t.vrsPubAt) - 200 * DAY) {   // новая публикация (или сохранение «из будущего»)   // v113: публикация сдвигает очки на 65% пути к расчётным — без скачков на 8–10 мест за раз
+      const prev = Number(t.pts), blend = CF('vrs.pubBlend', 0.65);
+      t.pts = Math.round(clamp(prev + (shown - prev) * blend, 400, 2000)); t.vrsPubAt = pa;
+    }
   }
   function computeScores(list, now = vrsNow()) {
     const safeList=[...new Set((Array.isArray(list)?list:[]).map(resolveTeam).filter(Boolean))];
@@ -295,7 +312,11 @@
   function addEntry(t, entry) {
     if (!entry) return;
     const l=ensureTeam(t); if (!l) return;
-    l.matches.push({...entry});
+    // v113: одна запись на матч, а не на карту. Раньше BO3 2:0 давал две «победы», и победы, LAN и «сила побеждённых»
+    // считались вдвое у команд, игравших много BO3 (отборы, стадии Мейджора). Следующая карта того же матча (тот же день,
+    // соперник и турнир) заменяет предыдущую — остаётся решающая карта, её выигрывает победитель матча.
+    const i=l.matches.findIndex(x=>x && Number(x.date)===Number(entry.date) && x.opponent===entry.opponent && (x.eventName||'')===(entry.eventName||''));
+    if (i>=0) l.matches[i]={...entry}; else l.matches.push({...entry});
     const cutoff=vrsNow()-SIX_MONTHS;
     l.matches=l.matches.filter(x=>Number(x.date||0)>=cutoff);
   }

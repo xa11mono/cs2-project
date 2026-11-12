@@ -80,3 +80,7 @@ html.ax-on #hs-root .ax-scened.ax-has-vis>.v112-t20badge{display:block!important
 #hs-root .v84-spot-tx small .v111-src{display:inline-flex!important;-webkit-line-clamp:unset!important;overflow:visible!important;opacity:1!important;font-size:inherit!important;height:18px;margin:0 6px 0 0;padding:0 6px 0 2px;vertical-align:-4px;text-transform:none;letter-spacing:0}
 #hs-root .v84-spot-tx small .v111-src img{width:14px;height:14px}
 #hs-root .v84-spot-tx small .v111-src b{font-size:9.5px!important;letter-spacing:.04em}
+/* v113: места команд в сетке — VRS и HLTV рядом с названием */
+#hs-root .br-t:has(.v113-rk) .nm{flex:0 1 auto}
+#hs-root .br-t .v113-rk{flex:none;margin:0 auto 0 6px;padding-right:6px;font:600 10px/1 var(--f-ui);color:var(--c-text-3);white-space:nowrap;opacity:.85}
+@media (max-width:700px){#hs-root .br-t .v113-rk{display:none}}
