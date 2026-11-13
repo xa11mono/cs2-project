@@ -50,7 +50,7 @@
   /* ---------- статьи сезона ---------- */
   function lines(t) {
     const o = V.org(t.name), fac = o.fac || {};
-    const spon = (o.sponsor ? o.sponsor.perSeason || 0 : 0) * (1 + 0.1 * (fac.media || 0));
+    const spon = ((o.sponsor ? o.sponsor.perSeason || 0 : 0) + (o.partners || []).reduce((a, x) => a + (x.perSeason || 0), 0)) * (1 + 0.1 * (fac.media || 0));
     const media = Math.round(Math.pow(popOf(t), 1.5) * C('econ.mediaK', 840) * (1 + 0.15 * (fac.media || 0)));
     const wages = V.wageBill(t), upkeep = V.facUpkeep(o);
     let staff = 0; try { if (W.CS2Staff) { const s = W.CS2Staff.of(t); staff = Math.round(((s.analyst.salary || 0) + (s.perf.salary || 0)) * tierK(t)); } } catch (e) {}
@@ -114,8 +114,34 @@
   }
   const pick = (t, list) => list.slice().sort((a, b) => b.perSeason * (demandOk(t, b) ? 1 : 0.7) - a.perSeason * (demandOk(t, a) ? 1 : 0.7))[0];
   // еженедельно: требования, штрафы, окончание контракта и новые предложения (вместо простого спонсора v31)
+  /* v138: несколько спонсоров — кроме генерального, партнёры поменьше: у клуба топ-10 — два, топ-40 — один, у остальных —
+     один местный (если репутация от 20). Требование — место в рейтинге; 8 недель подряд не выполняется — партнёр уходит.
+     Контракт на 1–2 сезона, выплаты — каждую неделю (как у генерального). */
+  function partnersWeek(t, o) {
+    const rk = rankOf(t), slots = rk <= 10 ? C('econ.partnersTop10', 2) : rk <= 40 ? C('econ.partnersTop40', 1) : ((o.rep || 0) >= 20 ? 1 : 0);
+    const P = o.partners = Array.isArray(o.partners) ? o.partners : [];
+    // выплаты и требования
+    for (let i = P.length - 1; i >= 0; i--) {
+      const x = P[i];
+      if (rk <= (x.target || 99)) x.miss = 0; else x.miss = (x.miss || 0) + 1;
+      if (x.until < season() || x.miss >= 8) { journal('FINANCE', { team: t.name, action: 'partner-end', reason: `${x.name}: ${x.miss >= 8 ? 'требование по рейтингу не выполнялось' : 'контракт завершён'}` }); P.splice(i, 1); continue; }
+      try { V.book(t.name, (x.perSeason || 0) / 48, 'spon', x.name); } catch (e) {}
+    }
+    // свободные места — новые партнёры
+    while (P.length < slots) {
+      const k = P.length, off = offers(t, o, 3)[(k + 1) % 3], share = rk <= 10 ? C('econ.partnerShareTop', 0.3) : rk <= 40 ? C('econ.partnerShareMid', 0.3) : C('econ.partnerShareLow', 0.2);
+      const x = { id: off.id + 'p' + k, name: off.name + (P.some(q => q.name === off.name) ? ' ' + (k + 2) : ''), industry: off.industry, industryL: off.industryL, perSeason: Math.round(baseAmount(t, o) * share * (0.85 + u('pt', t.name, season(), k) * 0.3) / 1000) * 1000,
+        until: season() + (h32(t.name + 'pt' + k + season()) % 2), target: clamp(rk + 6, 1, 80), since: now(), miss: 0 };
+      if (x.name === (o.sponsor && o.sponsor.name)) x.name = x.name + ' Partner';
+      P.push(x);
+      journal('FINANCE', { team: t.name, action: 'partner', reason: `${x.name} (${x.industryL}): ${money(x.perSeason)} за сезон до сезона ${x.until}; требование — место не ниже ${x.target}` });
+      if (t.name === managed()) { try { V.careerLog(`Новый спонсор-партнёр: ${x.name}, ${money(x.perSeason)}/сезон`); } catch (e) {} }
+    }
+    if (P.length > slots && P.length) { const x = P.pop(); journal('FINANCE', { team: t.name, action: 'partner-end', reason: `${x.name}: клуб опустился в рейтинге — партнёр не продлевает` }); }
+  }
   function sponsorWeek(t, o) {
     if (t.isAcademy) return;
+    try { partnersWeek(t, o); } catch (e) { console.warn('[v138 partners]', e); }
     // спонсор из старого сохранения (v31: без отрасли) — становится партнёром на тех же деньгах и сроке
     if (o.sponsor && !o.sponsor.industry) { const old = o.sponsor, x = offers(t, o, 1)[0]; o.sponsor = Object.assign(x, { name: old.name && !/партн|спонсор/i.test(old.name) ? old.name : x.name, perSeason: old.perSeason || x.perSeason, until: old.until || x.until, bonus: old.bonus || x.bonus, strikes: 0, since: now() }); }
     const sp = o.sponsor;
@@ -231,7 +257,7 @@
         ${row('Зарплаты игроков и главного тренера', -L.wages)}${row('Штаб (аналитик, тренер по нагрузке)', -L.staff)}${row('Объекты', -L.upkeep)}${L.academy ? row('Академия', -L.academy) : ''}
         <tr><td class="l"><b>Итог сезона</b></td><td class="${f.season.net >= 0 ? 'up' : 'dn'}"><b>${money(f.season.net)}</b></td></tr></tbody></table>
         <p class="hs-note">Бюджет сейчас ${money(f.budget)} → на конец сезона ${money(f.end)} → через сезон ${money(f.next)} · ${polL}.</p>`)}</div>
-      <div class="hs-col">${H.box('Генеральный партнёр', spHtml + (offHtml ? '<p><b>Предложения</b></p>' + offHtml : ''))}</div></div>`;
+      <div class="hs-col">${H.box('Спонсоры', '<p><b>Генеральный партнёр</b></p>' + spHtml + ((o.partners || []).length ? '<p><b>Партнёры</b></p>' + (o.partners || []).map(x => `<p><b>${esc(x.name)}</b> · ${esc(x.industryL || '')} · ${money(x.perSeason)} за сезон до сезона ${x.until}<br><small>Требование: место не ниже ${x.target} — ${rankOf(t) <= x.target ? '<span class="up">выполняется</span>' : `<span class="dn">не выполняется (${x.miss || 0}/8 нед.)</span>`}</small></p>`).join('') : '<p class="hs-note">Партнёры появляются у клубов топ-40 (у остальных — местный партнёр при репутации от 20).</p>') + (offHtml ? '<p><b>Предложения генеральных партнёров</b></p>' + offHtml : ''))}</div></div>`;
   }
   if (H.PAGES && H.PAGES.finance && !H.PAGES.finance.__v94) {
     const f = H.PAGES.finance; const w = function () { let h = f.apply(this, arguments); try { const t = byName(managed()); if (t) { const fb = financeBox(t); h = h.replace(/(<div class="hs-head">[\s\S]*?<\/div>)/, m => m + fb); } } catch (e) { console.warn('[v94 finance page]', e); } return h; };

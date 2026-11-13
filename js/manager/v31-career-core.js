@@ -171,7 +171,9 @@ function payPrizes(snap) {
     // v94: Мейджор платит и за стадии: вылет на Stage 2 (17–24) и Stage 1 (25–32) — небольшие выплаты, как в реальных Мейджорах
     const stageShare = p => snap.prestige === 'major' ? (p <= 24 ? .005 : p <= 32 ? .0035 : 0) : 0;
     snap.results.forEach(r => { const sh = SPLIT[r.p] || (r.p <= 16 ? .0125 : stageShare(r.p)); if (!sh || !byName(r.n)) return;
-      const amt = pool * sh; book(r.n, amt, 'prize', `${snap.name}: ${r.p}-е место`);
+      // v138: призовые делятся — игрокам основы большая часть (в их карьерных заработках), клубу — своя доля
+      const CFp = (k, d) => { try { return window.CS2Config ? window.CS2Config.get(k, d) : d; } catch (e) { return d; } }, clubShare = CFp('econ.prizeClubShare', 0.4);
+      const amt = pool * sh * clubShare; book(r.n, amt, 'prize', `${snap.name}: ${r.p}-е место (доля клуба ${Math.round(clubShare * 100)}%)`);
       const o = org(r.n); if (r.p === 1) { o.rep = clamp(o.rep + (snap.prestige === 'major' ? 8 : snap.prestige === 'elite' ? 4 : 2), 0, 100); if (o.sponsor && ['major', 'elite', 'regular'].includes(snap.prestige)) book(r.n, o.sponsor.bonus, 'spon', `Бонус спонсора за титул (${o.sponsor.name})`); } });
     // v95: стадия Мейджора — репутация организации (титул уже +8 выше): финал +4, полуфинал +3, плей-офф +2, Stage 3 +1
     if (snap.prestige === 'major') snap.results.forEach(r => { if (!byName(r.n) || r.p === 1) return; const d = r.p === 2 ? 4 : r.p <= 4 ? 3 : r.p <= 8 ? 2 : r.p <= 16 ? 1 : 0; if (d) { const o = org(r.n); o.rep = clamp(o.rep + d, 0, 100); } });
