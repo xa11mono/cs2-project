@@ -102,6 +102,7 @@ HS.PAGES.settings = () => {
         <button type="button" class="hs-btn ghost warn" data-set="clear">Очистить историю турниров</button>
         <button type="button" class="hs-btn ghost danger" data-set="reset">Сбросить всё к исходному</button></div>
         <p class="hs-note">Очистка истории удаляет архив сеток, титулы и награды игроков. Сброс возвращает исходные команды и начинает с первого сезона. Оба действия спрашивают подтверждение.</p>`)}
+      ${window.CS2JerseySwap?.settingsHtml?.() || ''}
     </div></div>`;
 };
 HS.AFTER.push(page => { if (page !== 'settings') return; const row = $('pt-addteam-row'), host = $('pt-addteam-host'); if (row && host) { row.setAttribute('data-mounted', ''); host.appendChild(row); } });

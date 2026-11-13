@@ -10,7 +10,7 @@
    • Сборка для релиза: node tools/build/build.mjs → dist/ (один минифицированный JS и один CSS). */
 (function () {
   'use strict';
-  const BUILD = '146';
+  const BUILD = '147';
   const CSS = [
     'css/base/app.css',  // base
     'css/base/match-modal.css',
@@ -241,6 +241,7 @@
     'js/career/matchday.js',  // career
     'js/career/map-training.js',
     'js/calendar/tier1-calendar.js',  // calendar
+    'js/media/jersey-swap.js',  // media: automatic AI jersey replacement
   ];
   window.CS2_MANIFEST = Object.freeze({ build: BUILD, css: Object.freeze(CSS), js: Object.freeze(JS), bundled: false });
 })();

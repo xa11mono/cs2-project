@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 dist/
 tests/.logs/
+tools/jerseys/node_modules/
+tools/jerseys/.env
+assets/media/generated-jerseys/

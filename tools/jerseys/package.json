@@ -1,0 +1,9 @@
+{
+  "name": "cs2-jersey-helper",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "engines": { "node": ">=20.11" },
+  "scripts": { "start": "node server.mjs", "check": "node --check server.mjs" },
+  "dependencies": { "@huggingface/inference": "4.13.32" }
+}
