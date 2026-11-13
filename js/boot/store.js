@@ -22,7 +22,7 @@
   const UNSAVED = '__cs2_unsaved__', ver = new Map(), uncommitted = new Set();
   const proto = Storage.prototype, raw = { get: proto.getItem, set: proto.setItem, remove: proto.removeItem, clear: proto.clear };
   let db = null, flushT = null, active = false, unloading = false;
-  const diag = window.CS2Store = { active: false, loadMs: 0, writes: 0, lastFlush: 0, errors: 0, keys: () => [...MEM.keys()], flush: () => flush() };
+  const diag = window.CS2Store = { active: false, loadMs: 0, writes: 0, lastFlush: 0, errors: 0, keys: () => [...MEM.keys()], flush: () => flush(), clearAll: () => clearAll() };
   const isLS = s => { try { return s === window.localStorage; } catch (e) { return false; } };
 
   function openDb() {
@@ -44,7 +44,7 @@
   }
   function flush() {
     clearTimeout(flushT); flushT = null;
-    if (!db) return;
+    if (!db || isResetting()) return;
     if (!dirty.size) { if (unloading) emergencyCopy(); return; }
     const keys = [...dirty]; dirty.clear();
     const sent = new Map(keys.map(k => [k, ver.get(k) || 0])), t = Date.now();
@@ -63,7 +63,25 @@
     if (unloading) emergencyCopy();
   }
   // синхронная аварийная копия неподтверждённых ключей (только при выгрузке страницы)
+  // v145: полный сброс игры. Большие ключи живут здесь, в IndexedDB, и не видны через localStorage.key() — сброс
+  // (js/core/factory-reset.js) их не находил, и после перезагрузки возвращался прежний сезон (с v131). Плюс аварийные
+  // копии UNSAVED+ключ (v144) не попадали под шаблон сброса. Теперь: память, IndexedDB и аварийные копии очищаются,
+  // а до перезагрузки любые записи больших ключей игнорируются — отложенное сохранение не вернёт старый сезон.
+  let resetting = false;
+  const isResetting = () => resetting || !!window.__CS2_FACTORY_RESET_IN_PROGRESS;
+  function clearAll() {
+    resetting = true; clearTimeout(flushT); flushT = null;
+    MEM.clear(); dirty.clear(); uncommitted.clear();
+    BIG.forEach(k => { try { raw.remove.call(window.localStorage, k); raw.remove.call(window.localStorage, UNSAVED + k); } catch (e) {} });
+    try { for (let i = window.localStorage.length - 1; i >= 0; i--) { const k = window.localStorage.key(i); if (k && k.startsWith(UNSAVED)) raw.remove.call(window.localStorage, k); } } catch (e) {}
+    if (!db) return Promise.resolve(true);
+    return new Promise(res => {
+      try { const tx = db.transaction(ST, 'readwrite'); tx.objectStore(ST).clear(); tx.oncomplete = () => res(true); tx.onerror = tx.onabort = () => res(false); }
+      catch (e) { res(false); }
+    });
+  }
   function emergencyCopy() {
+    if (isResetting()) return;
     uncommitted.forEach(k => {
       try {
         if (MEM.has(k)) raw.set.call(window.localStorage, UNSAVED + k, JSON.stringify({ t: Date.now(), v: MEM.get(k) }));
@@ -77,7 +95,7 @@
 
   function install() {
     proto.getItem = function (k) { if (active && isLS(this) && BIG.has(k)) return MEM.has(k) ? MEM.get(k) : null; return raw.get.call(this, k); };
-    proto.setItem = function (k, v) { if (active && isLS(this) && BIG.has(k)) { MEM.set(k, String(v)); touch(k); dirty.add(k); schedule(); return; } return raw.set.call(this, k, v); };
+    proto.setItem = function (k, v) { if (active && isLS(this) && BIG.has(k)) { if (isResetting()) return; MEM.set(k, String(v)); touch(k); dirty.add(k); schedule(); return; } return raw.set.call(this, k, v); };
     proto.removeItem = function (k) { if (active && isLS(this) && BIG.has(k)) { MEM.delete(k); touch(k); dirty.add(k); schedule(); try { raw.remove.call(this, UNSAVED + k); } catch (e) {} } return raw.remove.call(this, k); };
     proto.clear = function () { if (active && isLS(this)) { [...MEM.keys()].forEach(k => { touch(k); dirty.add(k); }); MEM.clear(); schedule(); } return raw.clear.call(this); };
     const now = () => { unloading = true; window.__cs2Unloading = true; flush(); };

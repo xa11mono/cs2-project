@@ -96,6 +96,10 @@
       catch (e) { console.warn('[v58 reset] fallback archive cleanup failed:', e); }
     }
     try { window.hltvSiteReset?.(); } catch (e) {}
+    // v145: основное сохранение (IndexedDB js/boot/store.js) и его аварийные копии — иначе после перезагрузки
+    // возвращался прежний сезон с новостями
+    let storeCleared = false;
+    try { storeCleared = !!(await window.CS2Store?.clearAll?.()); } catch (e) { console.warn('[v58 reset] store cleanup failed:', e); }
 
     // The database is spread across versioned localStorage keys. Clear the
     // complete game namespace instead of maintaining a fragile hand-written list.
@@ -113,7 +117,7 @@
     // Custom media assets (cs2-media IndexedDB) are deliberately preserved;
     // they are user artwork, not part of the game database. Autosave JSON files
     // have been deleted or their inaccessible folder handle was forgotten.
-    console.info('[v58 reset] completed', { archiveCleared, autosaveDbCleared, autosaveResult });
+    console.info('[v58 reset] completed', { archiveCleared, autosaveDbCleared, storeCleared, autosaveResult });
     try { window.location.reload(); }
     catch (e) { location.reload(); }
     return true;
