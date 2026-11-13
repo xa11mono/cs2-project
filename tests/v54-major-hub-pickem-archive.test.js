@@ -13,7 +13,7 @@ const pickem = read('js/fan/pickem.js');
 const badges = read('js/fan/medals.js');
 const guard = read('js/core/storage-guard.js');
 const sim = read('js/base/game.js');
-const html = read('index.html');
+const html = require('./lib/project').pageSources();
 const css = read('css/portal/tokens.css');
 
 // One Major group contains the three related destinations; Pick'em remains date-gated.

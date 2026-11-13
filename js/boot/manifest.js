@@ -80,6 +80,7 @@
     'js/calendar/schedule-speed.js',
     'js/calendar/schedule-resync.js',
     'js/competition/hltv-hub.js',  // competition
+    'js/data/trophy-arts.js',  // data: контуры кубков (вынесены из trophy-forge)
     'js/awards/trophy-forge.js',  // awards
     'js/awards/trophies.js',
     'js/rosters/roster-integrity.js',  // rosters

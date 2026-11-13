@@ -12,7 +12,7 @@ const batchSkip = read('js/calendar/skip-days.js');
 const v17 = read('js/calendar/smart-skip.js');
 const career = read('js/rosters/player-career-stats.js');
 const css = read('css/portal/profile-performance.css');
-const html = read('index.html');
+const html = require('./lib/project').pageSources();
 const calendar = read('js/calendar/training-calendar.js');
 
 // Major Path groups teams by their most likely stage (3 → 2 → 1), then sorts each group by overall invite probability descending.

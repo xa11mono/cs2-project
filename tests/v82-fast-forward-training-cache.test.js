@@ -2,7 +2,7 @@
 const fs = require('fs'); const path = require('path'); const vm = require('vm');
 const assert = (v,m) => { if(!v) throw new Error(m); };
 const root=path.resolve(__dirname,'..'); const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const career=read('js/career/career-core.js'), calendar=read('js/calendar/smart-skip.js'), batch=read('js/calendar/skip-days.js'), html=read('index.html'), site=read('js/portal/hltv-site.js');
+const career=read('js/career/career-core.js'), calendar=read('js/calendar/smart-skip.js'), batch=read('js/calendar/skip-days.js'), html=require('./lib/project').pageSources(), site=read('js/portal/hltv-site.js');
 const aiStart=career.indexOf('function aiTrainingPlan('), helpersStart=career.indexOf('const v31TrainingDiagnostics =');
 assert(helpersStart>=0 && aiStart>helpersStart,'training index helper section exists');
 assert(/function getTrainingMatches\(\)[\s\S]*?window\.HS\.matchIndex\(\)/.test(career),'training should use lightweight match index rather than full player stats');

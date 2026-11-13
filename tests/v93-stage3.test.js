@@ -120,7 +120,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     return { era, fans, tier, strat, career: !!document.querySelector('#hs-page .v93-career') };
   });
   assert(pg.era && pg.fans && pg.career && pg.tier && pg.strat, 'страницы: ' + JSON.stringify(pg));
-  const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+  const html = require('./lib/project').pageSources();
   assert(['js/rosters/careers.js', 'js/career/eras.js', 'js/career/fans.js'].every(x => html.includes(x)) && !html.includes('?v=93'), 'модули v93 подключены');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v93: team page shows era, fans, Tier status and strategy; player page shows career; modules wired; no page errors');

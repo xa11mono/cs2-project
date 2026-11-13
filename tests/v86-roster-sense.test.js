@@ -155,8 +155,8 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   console.log('PASS v86: academy promotion does not make a rookie the captain (' + JSON.stringify(promo) + ')');
 
   // 8. все скрипты грузятся с новой версией кэша
-  const html = fs.readFileSync(path.resolve(__dirname, '..', 'index.html'), 'utf8');
-  assert(!/\?v=8[5-7]\b/.test(html) && /v84-trophy-forge\.js\?v=(9[5-9]|1\d\d)\b/.test(html), 'scripts must bypass the v85 browser cache');
+  const html = require('./lib/project').pageSources();
+  assert(html.includes('js/awards/trophy-forge.js') && Number(require('./lib/project').manifest().build) >= 95, 'scripts must bypass the v85 browser cache (manifest BUILD)');
   console.log('PASS v86: cache version bumped');
 
   assert(!errs.length, 'page errors: ' + errs.slice(0, 3).join(' | '));

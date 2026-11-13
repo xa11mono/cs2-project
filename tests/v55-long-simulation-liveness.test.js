@@ -9,7 +9,7 @@ const core = read('js/base/game.js');
 const v17 = read('js/calendar/smart-skip.js');
 const v21 = read('js/competition/parallel-tournaments.js');
 const v55 = read('js/core/sim-liveness.js');
-const html = read('index.html');
+const html = require('./lib/project').pageSources();
 
 // Season-end work must be linear, and the new season must rebuild all 14 Tier-1 events.
 const seasonFn = core.slice(core.indexOf('function finalizeTournamentRating()'), core.indexOf('function getTeamCurrentPts('));
@@ -21,7 +21,7 @@ assert(/window\.v21GenerateTier1Schedule\(false\)/.test(roll), 'season rollover 
 assert(/function v21YearStart\(\)[\s\S]*?seasonPlanSeason[\s\S]*?next\.setDate\(next\.getDate\(\)\+1\)/.test(v21), 'calendar anchor must move forward when season changes after January');
 assert(/window\.v21GenerateTier1Schedule\s*=\s*v21GenerateTier1Schedule/.test(v21), 'season schedule builder must be exposed to the core rollover');
 assert(/v55RepairTournamentProgress/.test(v17) && /getNextPlayableMatch/.test(v17), 'day skip must invoke recovery and use the canonical fallback match resolver');
-assert(/v55-simulation-liveness\.js/.test(html), 'v55 recovery module must load after prior gameplay layers');
+assert(html.includes('js/core/sim-liveness.js'), 'v55 recovery module must load after prior gameplay layers');
 
 // Execute v55's public repair API in a minimal deterministic context.
 const apiWindow = {};

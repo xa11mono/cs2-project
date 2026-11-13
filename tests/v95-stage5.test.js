@@ -133,7 +133,8 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   await p.evaluate(n => window.HS.nav('player', n), nick); await p.waitForTimeout(900);
   const dos = await p.evaluate(() => { const r = document.getElementById('hs-page'); const tabs = Array.from(r.querySelectorAll('.hs-ptabs .hs-ptab')).map(x => x.textContent); return { tabs }; });
   await p.evaluate(() => { const g = document.getElementById('v96-gate'); if (g) g.remove(); });
-  await p.click('.hs-ptabs [data-ptab="v95con"]', { force: true }); await p.waitForTimeout(600);
+  await p.click('.hs-ptabs [data-ptab="v95con"]', { force: true });
+  await p.waitForFunction(() => /Контракт/.test((document.querySelector('#hs-page .hs-ptabs .hs-ptab.on') || {}).textContent || '') && /Рыночная зарплата/.test((document.querySelector('#hs-page .hs-ptab-body') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
   const con = await p.evaluate(() => { const r = document.getElementById('hs-page'); return { on: (r.querySelector('.hs-ptabs .hs-ptab.on') || {}).textContent, body: (r.querySelector('.hs-ptab-body') || {}).textContent || '' }; });
   assert(['Развитие', 'Контракт', 'Характер', 'Обзор', 'Статистика'].every(x => dos.tabs.includes(x)) && con.on === 'Контракт' && /Рыночная зарплата/.test(con.body), 'досье игрока: ' + JSON.stringify({ dos, on: con.on, body: con.body.slice(0, 120) }));
   await p.evaluate(() => { window.HS.S.ptab = 'overview'; });
@@ -151,11 +152,14 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     const young = list[0], vet = Object.assign({}, young, { age: 33, pot: 70 });
     const low = pro[60], top = pro[3];
     // фонд зарплат по средствам: клуб ИИ с раздутыми зарплатами в новом сезоне урезает их (не больше 20%)
-    const t = pro[45], F = window.CS2Finance; t.players.forEach(x => { x.salary = Math.round((+x.salary || 100000) * 3); });
+    const t = pro[45], F = window.CS2Finance;
+    // зарплаты раздуваем относительно доходов клуба (с v138 доход от партнёров у клубов разный): фонд ≈ 2× доходов
+    { const L0 = F.lines(t), inc0 = L0.spon + L0.media + L0.prize + L0.stickers, f = Math.max(3, 2 * inc0 / Math.max(1, L0.wages)); t.players.forEach(x => { x.salary = Math.round((+x.salary || 100000) * f); }); }
     const w0 = window.V31.wageBill(t); seasonState.v94SalarySeason = -1; F.seasonStart(); const w1 = window.V31.wageBill(t);
     return { n, uniq: nicks.size === list.length && !dup, ages: [Math.min(...list.map(x => x.age)), Math.max(...list.map(x => x.age))], pots: list.filter(x => x.pot > window.CS2Develop.pow(x) + 5).length,
-      bLow: G.ageBonus(low, young), bTop: G.ageBonus(top, young), bVet: G.ageBonus(low, vet), cut: 1 - w1 / w0,
-      j: (transferState.v90Journal || []).some(e => e.type === 'FINANCE' && e.action === 'wage-cap' && e.team === t.name) };
+      bLow: G.ageBonus(low, young), bTop: G.ageBonus(top, young), bVet: G.ageBonus(low, vet), cut: 1 - w1 / w0, wage: { team: t.name, managed: window.V31.managed(), w0, w1, lines: F.lines(t) },
+      // потолок фонда (wage-cap) или, если клуб ушёл в режим экономии, пересмотр до рыночных (salary-cut)
+      j: (transferState.v90Journal || []).some(e => e.type === 'FINANCE' && (e.action === 'wage-cap' || e.action === 'salary-cut') && e.team === t.name) };
   });
   assert(gen.n >= 40 && gen.uniq && gen.ages[0] >= 16 && gen.ages[1] <= 19 && gen.pots >= gen.n * 0.8 && gen.bLow > 1 && gen.bTop === 0 && gen.bVet < 0 && gen.cut > 0.15 && gen.j, 'смена поколений: ' + JSON.stringify(gen));
   pass(`v95: generations — ${gen.n} new talents aged ${gen.ages.join('–')}; potential counts for club #61 (+${gen.bLow.toFixed(1)}), not for top-12; veteran ${gen.bVet.toFixed(1)}; bloated wage bill cut by ${Math.round(gen.cut * 100)}%`);

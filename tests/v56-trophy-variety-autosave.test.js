@@ -8,7 +8,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
 const trophySource = read('js/awards/trophies.js');
 const autoSource = read('js/core/autosave.js');
 const coreSource = read('js/base/game.js');
-const html = read('index.html');
+const html = require('./lib/project').pageSources();
 const css = read('css/core/autosave.css');
 
 // Dynamic trophy generation: each organizer has its own disjoint silhouette family and palette.
@@ -72,7 +72,7 @@ assert(/CS2Manager-Autosave\.json/.test(autoSource) && /CS2Manager-Autosave\.bac
 assert(/localStorageSnapshot/.test(autoSource) && /hubArchiveExport/.test(autoSource), 'autosave must include browser key state and full IndexedDB bracket archive');
 assert(/v56RestoreAutosave/.test(autoSource), 'folder autosave must expose restore action');
 assert(/v56ChooseAutosaveFolder/.test(html) && /v56RestoreAutosave/.test(html) && /v56-autosave-status/.test(html), 'settings UI must expose folder selection and restore');
-assert(/v56-autosave\.js/.test(html) && /v56-autosave\.css/.test(html), 'v56 autosave script and styles must load');
+assert(html.includes('js/core/autosave.js') && html.includes('css/core/autosave.css'), 'v56 autosave script and styles must load');
 assert(/parsed\.localStorageSnapshot/.test(coreSource), 'standard import must restore the extra localStorage snapshot');
 assert(/data-state="ok"/.test(css), 'autosave UI must expose success status styling');
 console.log('v56 trophy variety + autosave tests passed');

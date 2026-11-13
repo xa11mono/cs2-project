@@ -5,7 +5,7 @@ const root=path.resolve(__dirname,'..');
 const v21=fs.readFileSync(path.join(root,'js/competition/parallel-tournaments.js'),'utf8');
 const v63=fs.readFileSync(path.join(root,'js/core/sim-kernel.js'),'utf8');
 const core=fs.readFileSync(path.join(root,'js/base/game.js'),'utf8');
-const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const html=require('./lib/project').pageSources();
 assert(v21.includes('window.v21InvalidateParallelWake = v21InvalidateParallelWake'),'parallel wake index must be explicitly invalidatable');
 assert(v21.includes('window.CS2ParallelSchedulerDiagnostics=') && v21.includes('overdueMatches:v21CountOverdueMatches(now)'),'scheduler should expose an actionable backlog diagnostic for legacy-save debugging');
 assert(v21.includes('window.v21ReconcileImportedSave = function(reason=\'save import\')'),'import recovery must reconcile imported schedules');

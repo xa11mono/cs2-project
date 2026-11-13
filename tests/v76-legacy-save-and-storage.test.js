@@ -61,7 +61,7 @@ assert(/archiveLocalCacheDisabled = true/.test(hub), 'QuotaExceededError must di
 assert(/tx\.oncomplete = \(\) => resolve\(true\)/.test(hub) && /const BATCH = 20/.test(hub), 'archive history must be committed in small transactions before removing its local copy');
 assert(/hubArchiveUsesIndexedDB/.test(guard), 'storage compaction must understand when archive data is safely in IndexedDB');
 assert(/основной автосейв продолжает использовать IndexedDB/.test(guard), 'quota warning must not falsely imply data loss when browser autosave is active');
-const html = read('index.html');
+const html = require('./lib/project').pageSources();
 assert(html.includes('js/base/game.js') && html.includes('js/competition/hltv-hub.js') && html.includes('js/competition/vrs.js') && html.includes('js/core/storage-guard.js'), 'all patched scripts must use the matching cache busting versions');
 
 console.log('PASS v76: old JSON team-name strings are converted into team records and duplicates are removed');

@@ -18,10 +18,11 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   await go('#/watch');
   const s1 = await p.evaluate(() => ({ mode: document.documentElement.dataset.v97Mode, pg: document.getElementById('hs-page').dataset.pg,
     caps: [...document.querySelectorAll('#gs-side .ax-nav > .ax-it[data-nav]')].map(x => x.dataset.nav), more: !!document.querySelector('#gs-side .v97-moretg'), dim: document.querySelectorAll('#gs-side .gs-it.v97-dim').length,
-    org: !!document.querySelector('#gs-side .gs-it[data-nav="org"]'), off: !!document.querySelector('#hs-page .v97-off'), nav: !!document.querySelector('#hs-page .v97-off [data-nav="matches"]') }));
+    org: !!document.querySelector('#gs-side .gs-it[data-nav="org"]'), off: !!document.querySelector('#hs-page .v97-off'), nav: !!document.querySelector('#hs-page .v97-off [data-nav="matches"]'), predictAny: !!document.querySelector('#gs-side [data-nav="predict"], #gs-side [data-ax-folder] [data-nav="predict"]') }));
   assert(s1.mode === 'spectator' && s1.pg === 'watch', JSON.stringify(s1));
   // v100: меню наблюдателя — эфир, матчи, турниры, Pick'Em, прогнозы…; страниц клуба в нём нет
-  assert(['home', 'watch', 'matches', 'pickem', 'predict'].every(k => s1.caps.includes(k)) && !s1.caps.includes('squad') && !s1.more && s1.dim === 0, 'меню наблюдателя: ' + JSON.stringify(s1));
+  // v143: «Прогнозы» — в папке «Фан-зона», не в главном списке
+  assert(['home', 'watch', 'matches', 'pickem'].every(k => s1.caps.includes(k)) && !s1.caps.includes('predict') && !s1.caps.includes('squad') && !s1.more && s1.dim === 0, 'меню наблюдателя: ' + JSON.stringify(s1));
   assert(s1.off && s1.nav, 'экран ожидания эфира');
   pass('наблюдатель: меню ' + s1.caps.join(' / ') + ', экран ожидания эфира');
 
@@ -96,7 +97,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   }
   pass('страницы карьеры и эфира: без ошибок, содержимое не шире окна на 1672 и 390 px');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
-  const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+  const html = require('./lib/project').pageSources();
   assert(html.includes('css/portal/design.css') && html.includes('js/portal/design.js'), 'v97 подключён');
   console.log('v97 design: all checks passed');
   await ctx.close();

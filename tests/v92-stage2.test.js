@@ -115,7 +115,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     return out;
   });
   assert(pg.staff && pg.tactics && pg.training && pg.dev, 'страницы: ' + JSON.stringify(pg));
-  const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+  const html = require('./lib/project').pageSources();
   assert(['js/rosters/develop.js', 'js/career/staff.js', 'js/match/tactics.js'].every(x => html.includes(x)) && !html.includes('?v=93'), 'модули v92 подключены');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v92: staff, tactics and player development pages render; modules wired; no page errors');

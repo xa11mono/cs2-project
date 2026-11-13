@@ -117,7 +117,7 @@ for (const event of ['BLAST Premier Qualifier','PGL Regional Qualifier','ESL Ope
 const site = read('js/portal/hltv-site.js');
 const news = read('js/media/news-feed.js');
 const pickem = read('js/fan/pickem.js');
-const html = read('index.html');
+const html = require('./lib/project').pageSources();
 assert(site.includes("['publishers', 'Паблики Pick’Em']") && site.includes('publicPickemArticle'), 'Pick’Em publisher page and article renderer must be wired');
 assert(news.includes("'pickem-pub'") && news.includes('publishPublicPickem') && news.includes('publicPickem:'), 'public posts must use the common news store');
 assert(pickem.includes('publicContext') && pickem.includes('window.V33Pickem'), 'public Pick’Em must read the real Major roster context');

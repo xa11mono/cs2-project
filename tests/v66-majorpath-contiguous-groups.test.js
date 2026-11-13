@@ -4,7 +4,7 @@ const path = require('path');
 const vm = require('vm');
 const root = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(root, 'js/competition/major-path-odds.js'), 'utf8');
-const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const index = require('./lib/project').pageSources();
 const css = fs.readFileSync(path.join(root, 'css/portal/tokens.css'), 'utf8');
 const assert = (value, message) => { if (!value) throw new Error(message); };
 const H = { PAGES: {}, SECTION_OF: {}, esc: s => String(s ?? ''), box: (t, b) => `${t}${b}`, empty: s => s };

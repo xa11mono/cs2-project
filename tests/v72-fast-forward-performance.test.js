@@ -18,7 +18,7 @@ const autoScript = read('js/base/game.js');
 const spectator = read('js/match/spectator.js');
 const v30Market = read('js/rosters/market.js');
 const v31Career = read('js/career/career-core.js');
-const html = read('index.html');
+const html = require('./lib/project').pageSources();
 
 assert(!/setTimeout\(r,\s*45\)/.test(batch), 'there must be no fixed 45ms sleep for every virtual day');
 assert(/requestAnimationFrame/.test(batch) && /await yieldToBrowser\(\)/.test(batch) && /await oneDay\(\)/.test(batch), 'the batch should yield to an actual browser paint after each virtual day');
@@ -44,8 +44,8 @@ assert(/if \(window\.v57BatchCalendarSkip \|\| !b\.running/.test(autoScript) && 
 assert(/if\(wasRunning && !window\.v57BatchCalendarSkip/.test(v17) && /batchBroadcastWasRunning/.test(batch) && /startTVBroadcastMode\(\)/.test(batch), 'a previously active live broadcast should resume once after the batch, not after each day');
 assert(/window\.v57BatchCalendarSkip \|\| H\.S\.page/.test(spectator), 'spectator UI polling should suspend during long fast-forward');
 for (const f of ['js/calendar/smart-skip.js', 'js/calendar/skip-days.js', 'js/core/sim-kernel.js', 'js/competition/parallel-tournaments.js', 'js/base/game.js', 'js/match/spectator.js']) {
-  const version = 114; // v114: all scripts share one cache version
-  assert(html.includes(`${f}?v=${version}`), `${f} must bypass stale browser cache after the relevant patch`);
+  // кэш сбрасывается одной версией BUILD из js/boot/manifest.js для всех файлов
+  assert(html.includes(f), `${f} must be listed in the module manifest`);
 }
 assert(html.includes('js/core/autosave.js'), 'autosave snapshot scheduler must bypass the v80 browser cache');
 

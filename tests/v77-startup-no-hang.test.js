@@ -15,7 +15,7 @@ assert(hub.includes('const BATCH = 20') && hub.includes('setTimeout(resolve, 0)'
 assert(hub.includes('if (archiveDbOk) {'),'archive must avoid sync localStorage serialization while IndexedDB migration is active');
 const autosave=read('js/core/autosave.js');
 assert(autosave.includes('const canonical = /^(?:cs2_season_state_v61') && autosave.includes('if (key == null || canonical.test(key)) continue'),'autosave must not duplicate canonical save data in localStorageSnapshot');
-const html=read('index.html');
+const html=require('./lib/project').pageSources();
 for(const f of ['js/base/game.js','js/competition/hltv-hub.js','js/core/autosave.js']) assert(html.includes(f),'cache bust '+f);
 console.log('PASS v77: no full-team synchronous write during startup');
 console.log('PASS v77: O(n+m) legacy team lookup and one-pass roster supplementation');

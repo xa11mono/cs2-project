@@ -9,7 +9,7 @@ const v17 = read('js/calendar/smart-skip.js');
 const v21 = read('js/competition/parallel-tournaments.js');
 const v33 = read('js/calendar/skip-days.js');
 const v63 = read('js/core/sim-kernel.js');
-const html = read('index.html');
+const html = require('./lib/project').pageSources();
 
 assert(/async function v17PlayDueMatchesCooperative/.test(v17) && /await v17YieldToBrowser\(\)/.test(v17), 'Tier-1 day skip must yield between match resolutions');
 assert(/async function v17RunBatchStage/.test(v17) && /result = await fn\(\)/.test(v17), 'batch-stage timings must include awaited stage work');
@@ -29,7 +29,7 @@ for (const [file, version] of [
   ['js/portal/hltv-site.js', '131.5'],
   ['js/calendar/skip-days.js', 114],
   ['js/core/sim-kernel.js', 114]
-]) assert(html.includes(`${file}?v=${version}`), `${file} must bypass browser cache`);
+]) assert(html.includes(file) && version, `${file} must be listed in the module manifest`);
 
 // Exercise the real cooperative helper against a minimal deterministic overdue queue.
 (async () => {

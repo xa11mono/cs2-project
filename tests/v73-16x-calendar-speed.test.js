@@ -6,14 +6,13 @@ const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
 const source = read('js/calendar/training-calendar.js');
-const html = read('index.html');
+const html = require('./lib/project').pageSources();
 const css = read('css/base/training-calendar.css');
 const portal = read('js/portal/hltv-site.js');
 assert(/V15_SPEEDS\s*=\s*\[1,2,5,16\]/.test(source), '16x must be an allowed persisted calendar speed');
 assert(/data-calendar-speed="16"[^>]*onclick="setGameCalendarSpeed\(16\)"/.test(html), 'calendar UI must expose the 16x speed button');
 assert(/\[1, 2, 5, 16\]\.map/.test(portal), 'HLTV portal speed selector must also expose 16x');
-assert(/v27-hltv-site\.js\?v=131\.5/.test(html), 'portal script cache version must be advanced');
-assert(/v15-training-calendar-layer\.js\?v=114/.test(html) && /v15-training-calendar-styles\.css\?v=114/.test(html), 'cache-busting versions must be advanced');
+assert(html.includes('js/portal/hltv-site.js') && html.includes('js/calendar/training-calendar.js') && html.includes('css/base/training-calendar.css'), 'portal and calendar modules must be listed in the manifest (one BUILD cache version)');
 assert(/Number\(c\.speed\)>=16\?250:1000/.test(source), '16x mode must tick the virtual clock every 250ms');
 assert(/deferRender:true/.test(source) && /v15UpdateClockDisplay/.test(source), 'calendar DOM rendering must be throttled while clock ticks stay precise');
 assert(/repeat\(4,1fr\)/.test(css), 'calendar layout must make room for the fourth speed option');

@@ -5,7 +5,7 @@ const path = require('path'), fs = require('fs'), os = require('os');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 (async () => {
   const dir = path.resolve(__dirname, '..');
-  const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+  const html = require('./lib/project').pageSources();
   ['js/core/perf.js', 'js/career/talks.js', 'js/career/transfers.js', 'js/career/scouting.js', 'js/match/spectator-stats.js', 'css/career/manager.css'].forEach(f => assert(html.includes(f), 'подключён ' + f));
   const ctx = await chromium.launchPersistentContext(fs.mkdtempSync(path.join(os.tmpdir(), 'cs2-v99-')), { viewport: { width: 1600, height: 900 } });
   const p = ctx.pages()[0] || await ctx.newPage(); const errs = [];
@@ -61,9 +61,19 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
 
   // окно «Требует решения»: новый разговор открывается сам
   await p.evaluate(() => { const t = HS.teamBy(V31.managed()); V99Talks.start(t.players[1].nick, 'family', { good: true }, true); });
-  await p.waitForTimeout(1800);
+  // в окне может стоять несколько дел (талант академии, события клуба) — откладываем их до разговора;
+  // стартовое окно «с нуля / с историей» под нагрузкой появляется позже и блокирует окна решений — закрываем его
+  for (let i = 0; i < 40; i++) {
+    const st = await p.evaluate(() => {
+      const lg = document.querySelector('#v84-legacy-modal [data-lg="history"]'); if (lg && getComputedStyle(document.getElementById('v84-legacy-modal')).display !== 'none') { lg.click(); return 'legacy'; }
+      const g = document.getElementById('v96-gate'); if (!g || g.hidden) return 'closed';
+      if (g.querySelector('.v99-opt')) return 'talk';
+      const l = g.querySelector('[data-v96later]'); if (l) { l.click(); return 'skip'; } return 'other'; });
+    if (st === 'talk' || st === 'other') break; await p.waitForTimeout(300);
+  }
   const gate = await p.evaluate(() => { const g = document.getElementById('v96-gate'); return g && !g.hidden ? g.querySelectorAll('.v99-opt').length : -1; });
-  assert(gate === 3, 'разговор в окне «Требует решения»: ' + gate);
+  const gdiag = gate === 3 ? '' : await p.evaluate(() => JSON.stringify({ blockers: V96Windows.blockers().length, open: V96Windows.isOpen(), modals: [...document.querySelectorAll('.modal-backdrop,#v84-legacy-modal,#dice-modal')].filter(m => { const c = getComputedStyle(m); return c.display !== 'none' && c.visibility !== 'hidden'; }).map(m => m.id || m.className), vis: document.visibilityState, convs: (V99Talks.state ? 1 : 0) }));
+  assert(gate === 3, 'разговор в окне «Требует решения»: ' + gate + ' ' + gdiag);
   await p.click('#v96-gate .v99-opt'); await p.waitForTimeout(300);
   assert(await p.evaluate(() => !!document.querySelector('#v96-gate .v99-done')), 'после ответа — итог разговора в окне');
   await p.evaluate(() => { const x = document.querySelector('#v96-gate [data-v96next]') || document.querySelector('#v96-gate [data-v96close]'); x && x.click(); });
@@ -75,7 +85,8 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     const other = HS.ranked().filter(t => !t.isAcademy && t.name !== n)[3].players[0];
     out.fog = !!V99Scout.fog(other) && /–/.test(V99Scout.fog(other).pot);
     out.send = V99Scout.send(other.nick).ok;
-    seasonState.calendar.currentMs += 13 * 864e5; await new Promise(r => setTimeout(r, 2600));
+    seasonState.calendar.currentMs += 13 * 864e5;
+    for (let i = 0; i < 40 && V99Scout.fog(other) !== null; i++) await new Promise(r => setTimeout(r, 250));   // отчёт приходит на тике игрового цикла
     out.clear = V99Scout.fog(other) === null;
     out.own = V99Scout.fog(HS.teamBy(n).players[0]) === null;
     const pt = V99Scrims.partners()[0].name; const r = V99Scrims.play(pt, 'show'); out.scrim = r.ok || !!r.refused;
@@ -104,7 +115,11 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     const n = V31.managed(); V31.org(n).budget = 9e6;
     const star = HS.ranked().filter(t => !t.isAcademy)[0].players.slice().sort((a, b) => V31.pow(b) - V31.pow(a))[0];
     const blocked = V99Transfers.start(star.nick); out.blocked = blocked && blocked.st === 'failed' && blocked.log.length > 1;
-    const seller = HS.ranked().filter(x => !x.isAcademy && x.name !== n)[25], pl = seller.players.find(x => x.role !== 'AWPer' && x.role !== 'IGL');
+    // игрок середины рейтинга, который может общаться с командой (v135: языковое правило блокирует переговоры)
+    const me = HS.teamBy(n), fit = x => { try { return typeof teamIdentityFit === 'function' ? teamIdentityFit(me, x) : 1; } catch (e) { return 1; } };
+    const sellers = HS.ranked().filter(x => !x.isAcademy && x.name !== n).slice(20, 60);
+    const pick = sellers.map(sl => [sl, sl.players.find(x => x.role !== 'AWPer' && x.role !== 'IGL' && fit(x) >= 0.75)]).find(([, x]) => x) || [sellers[5], sellers[5].players[1]];
+    const seller = pick[0], pl = pick[1];
     const ng = V99Transfers.start(pl.nick); out.started = ng && ng.st === 'offer';
     const m0 = V99Mail.list().length; V98Squad.queue(ng.id, 'offer', [ng.ask]);
     for (let i = 0; i < 8 && ng.wait; i++) { skipGameCalendarDay(); await new Promise(r => setTimeout(r, 0)); V98Squad.settle(); }

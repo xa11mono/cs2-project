@@ -54,7 +54,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     const more = SP.askMore(t, offs[1] && offs[1].id);
     SP.accept(t, id, 'тест');
     // нарушение требования копит «страйки», после 6 — выплата урезана
-    o.sponsor.demand = 'stability'; o.budget = -1; for (let i = 0; i < 6; i++) SP.week(t, o);
+    o.sponsor.demand = 'stability'; o.budget = -5e6; for (let i = 0; i < 6; i++) SP.week(t, o);   // v138: партнёры платят внутри week — долг должен быть больше недельных выплат
     return { conv, n: offs.length, inds: [...new Set(offs.map(x => x.industry))], amt0, longerAmt, years, more: more.ok !== undefined, accepted: o.sponsor && o.sponsor.id === id, strikes: o.sponsor.strikes, cut: !!o.sponsor.cut };
   });
   assert(sp.conv && sp.n === 3 && sp.longerAmt < sp.amt0 && sp.years >= 2 && sp.more && sp.accepted, 'партнёры и переговоры: ' + JSON.stringify(sp));
@@ -104,7 +104,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   // 7. страница финансов
   const pg = await p.evaluate(async () => { HS.nav('finance'); await new Promise(r => setTimeout(r, 300)); const h = document.getElementById('hs-page').innerHTML; return { ok: !/Не удалось показать страницу/.test(h), forecast: /Прогноз сезона/.test(h), partner: /Генеральный партнёр/.test(h) }; });
   assert(pg.ok && pg.forecast && pg.partner, 'страница финансов: ' + JSON.stringify(pg));
-  const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+  const html = require('./lib/project').pageSources();
   assert(html.includes('js/career/economy.js') && !html.includes('?v=93'), 'модуль v94 подключён');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v94: finance page shows the season forecast and the partner; module wired; no page errors');

@@ -9,12 +9,12 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
 const v36 = read('js/awards/calendar-year-fixes.js');
 const v53 = read('js/awards/season-awards.js');
 const sim = read('js/base/game.js');
-const index = read('index.html');
+const index = require('./lib/project').pageSources();
 
 assert(/function tickCalendarAwards\(\)[\s\S]*?return false;/.test(v36), 'December-only awards trigger must be disabled');
 assert(/\/awp\|snip\|снайпер\//.test(v36), 'AWP/AWPer/Sniper role aliases should be recognized');
 assert(/\['awper', choose\(/.test(v36), 'yearly AWPer category should be present');
-assert(/v53-season-awards-and-no-popups\.js/.test(index) && index.indexOf('js/awards/season-awards.js') < index.indexOf('</body>'), 'v53 module must load before body closes');
+assert(require('./lib/project').manifest().js.includes('js/awards/season-awards.js'), 'v53 module must be listed in the module manifest');
 assert(!/alert\([`"']🎯 Топ-8 команд вышли на LAN-финал/.test(sim), 'Bounty qualification success alert must be removed');
 assert(!/alert\([`"']🇨🇭 Швейцарский этап завершен/.test(sim), 'Swiss qualification success alert must be removed');
 assert(!/alert\(`🎉 СЕЗОН \$\{seasonState\.currentSeason - 1\} ЗАВЕРШЕН/.test(sim), 'season completion success alert must be removed');

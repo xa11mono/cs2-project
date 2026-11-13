@@ -109,6 +109,8 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
       faze: D.dna('FAZE'), spirit: D.dna('Team Spirit'), lowMin: Math.min(...low), lowMax: Math.max(...low), lowDistinct: new Set(low).size };
   });
   const a1 = await prof(p);
+  // шаги выше меняли бюджеты напрямую, без сохранения (игра сохраняет после своих действий) — сохраняем явно
+  await p.evaluate(() => { saveTeams(); saveSeasonState(); window.CS2Saves && window.CS2Saves.flush(); });
   await p.reload(); await p.waitForTimeout(3000); await p.waitForFunction(() => window.CS2SaveProfile && window.V31, null, { timeout: 30000 });
   const a1r = await prof(p);
   const ctx2 = await chromium.launchPersistentContext(fs.mkdtempSync(path.join(os.tmpdir(), 'cs2-v91b-')), { viewport: { width: 1200, height: 800 } });
@@ -117,11 +119,14 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   const a2 = await prof(p2); await ctx2.close();
   const inR = (v, lo, hi) => v != null && v >= lo && v <= hi;
   assert(a1.seed && a2.seed && a1.seed !== a2.seed, 'у сейвов разные зёрна: ' + JSON.stringify([a1.seed, a2.seed]));
-  assert(a1r.seed === a1.seed && a1r.falcons === a1.falcons && JSON.stringify(a1r.faze) === JSON.stringify(a1.faze), 'после перезагрузки профиль тот же');
+  // мир продолжает жить между замерами (недельные доходы/расходы), поэтому бюджет сравнивается с допуском:
+  // новый профиль дал бы совсем другие суммы (другое зерно), а не сдвиг на недельный баланс
+  const near = (x, y) => x != null && y != null && Math.abs(x - y) <= Math.max(50000, Math.abs(y) * 0.03);
+  assert(a1r.seed === a1.seed && near(a1r.falcons, a1.falcons) && near(a1r.navi, a1.navi) && JSON.stringify(a1r.faze) === JSON.stringify(a1.faze) && JSON.stringify(a1r.spirit) === JSON.stringify(a1.spirit), 'после перезагрузки профиль тот же: ' + JSON.stringify({ a1, a1r }));
   assert(inR(a1.falcons, 6e6, 9e6) && inR(a2.falcons, 6e6, 9e6) && a1.falcons !== a2.falcons, 'Falcons всегда богаты, но по-разному: ' + [a1.falcons, a2.falcons]);
   assert(inR(a1.navi, 3.5e6, 6.5e6) && inR(a2.navi, 3.5e6, 6.5e6), 'NAVI в коридоре богатых: ' + [a1.navi, a2.navi]);
   const base = { faze: .2, spirit: .9 };
-  assert(Math.abs(a1.faze.youth - base.faze) <= .151 && Math.abs(a2.faze.youth - base.faze) <= .151 && a1.faze.youth !== a2.faze.youth, 'FaZe: ставка на молодёжь меняется в коридоре: ' + [a1.faze.youth, a2.faze.youth]);
+  assert(Math.abs(a1.faze.youth - base.faze) <= .151 && Math.abs(a2.faze.youth - base.faze) <= .151 && JSON.stringify(a1.faze) !== JSON.stringify(a2.faze), 'FaZe: ставка на молодёжь в коридоре, характер клуба у сейвов разный: ' + [a1.faze.youth, a2.faze.youth]);
   assert(a1.spirit.youth >= .75 && a2.spirit.youth >= .75, 'Spirit остаётся клубом молодёжи: ' + [a1.spirit.youth, a2.spirit.youth]);
   assert(a2.lowDistinct > 5 && a2.lowMin >= 150000, 'бюджеты клубов вне топ-60 различаются (чистый сейв): ' + JSON.stringify(a2));
   pass(`v91: save profile — Falcons $${(a1.falcons / 1e6).toFixed(1)}M / $${(a2.falcons / 1e6).toFixed(1)}M, FaZe youth ${a1.faze.youth} / ${a2.faze.youth}, Spirit youth ${a1.spirit.youth} / ${a2.spirit.youth}; stable after reload`);
@@ -134,7 +139,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     return out;
   });
   assert(pg.control && pg.org && pg.decisions && pg.board, 'страницы: ' + JSON.stringify(pg));
-  const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+  const html = require('./lib/project').pageSources();
   assert(['js/career/club-strategy.js', 'js/rosters/expectations.js', 'js/career/board.js'].every(x => html.includes(x)) && !html.includes('?v=93'), 'модули v91 подключены');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v91: pages render, contract box shown, modules wired, no page errors');

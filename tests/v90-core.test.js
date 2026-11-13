@@ -148,7 +148,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   // 10. страницы
   const pg = await p.evaluate(async () => { const out = {}; for (const k of ['control', 'decisions']) { HS.nav(k); await new Promise(r => setTimeout(r, 150)); out[k] = !/Не удалось показать страницу/.test(document.getElementById('hs-page').innerHTML) && !!document.querySelector('#hs-page h1'); } return out; });
   assert(pg.control && pg.decisions, 'страницы: ' + JSON.stringify(pg));
-  const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+  const html = require('./lib/project').pageSources();
   assert(['js/core/config.js', 'js/rosters/roster-engine.js', 'js/career/control.js'].every(s => html.includes(s)) && !html.includes('?v=93'), 'модули v90 подключены');
   assert(html.indexOf('js/core/config.js') < html.indexOf('js/rosters/stature.js'), 'конфиг загружается раньше модулей, которые его читают');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));

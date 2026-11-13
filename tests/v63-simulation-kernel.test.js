@@ -103,7 +103,7 @@ const schedulingLayers = [
   'js/competition/parallel-tournaments.js', 'js/calendar/schedule-fix.js'
 ];
 for (const file of schedulingLayers) {
-  const text = fs.readFileSync(path.join(root, 'js/manager', file), 'utf8');
+  const text = fs.readFileSync(path.join(root, file), 'utf8');
   assert(!/setInterval\s*\(/.test(text), `${file} must register tasks rather than own a recurring scheduler timer`);
 }
 const v33 = fs.readFileSync(path.join(root, 'js/calendar/skip-days.js'), 'utf8');

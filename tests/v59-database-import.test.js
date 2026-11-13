@@ -35,7 +35,7 @@ function createSandbox() {
   ctx.CS2ParallelTournamentPools = { extend(groups) { ctx.lastParallel = groups; }, list() { return {}; } };
   ctx.window.CS2ParallelTournamentPools = ctx.CS2ParallelTournamentPools;
   vm.createContext(ctx);
-  const modulePath = path.join(__dirname, '..', 'js', 'manager', 'js/core/database-import.js');
+  const modulePath = path.join(__dirname, '..', 'js/core/database-import.js');
   vm.runInContext(fs.readFileSync(modulePath, 'utf8'), ctx, { filename: modulePath });
   return { ctx, store, nodes };
 }
@@ -45,13 +45,13 @@ async function fakeFile(fileName) {
   return { name: path.basename(full), text: async () => fs.readFileSync(full, 'utf8') };
 }
 
-const siteSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'manager', 'js/portal/hltv-site.js'), 'utf8');
-const uiSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'manager', 'js/portal/game-ui.js'), 'utf8');
-const htmlSource = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+const siteSource = fs.readFileSync(path.join(__dirname, '..', 'js/portal/hltv-site.js'), 'utf8');
+const uiSource = fs.readFileSync(path.join(__dirname, '..', 'js/portal/game-ui.js'), 'utf8');
+const htmlSource = require('./lib/project').pageSources();
 assert.match(siteSource, /NAV_MORE = \[.*\['settings', 'Сейвы и базы'\]/, 'save/base settings should be directly discoverable under More');
 assert.match(uiSource, /Выбрать папку для автосейва/, 'folder picker must be present on the visible settings page');
 assert.match(uiSource, /v59-roster-file-page[\s\S]*?multiple/, 'roster importer should allow selecting multiple files');
-assert.match(htmlSource, /v59-database-import\.js\?v=114/, 'v59 database importer must be loaded with a cache-busting version');
+assert.ok(htmlSource.includes('js/core/database-import.js'), 'v59 database importer must be loaded with a cache-busting version');
 
 (async () => {
   // The real EMDB and legacy CS2_REAL JS assignment formats parse as passive objects.

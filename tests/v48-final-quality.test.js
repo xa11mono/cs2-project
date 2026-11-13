@@ -26,7 +26,7 @@ assert(/rosterState\?\.pools \|\| window\.v45MajorStagePools/.test(events) && /s
 assert(/sync: \(\) => syncAfterCalendarAdvance\(\)/.test(pickem), 'calendar sync must reconcile Pick\'Em after skipped days');
 assert(/function syncAfterCalendarAdvance\(\)/.test(pickem) && /scoreMajorStagePickem\(i\)/.test(pickem) && /selectNextOpenStage\(\)/.test(pickem), 'completed stage picks should be scored and the next stage should become active after a skip');
 assert(/function normalizePickCategory\(\)/.test(pickem) && /p\.threeZero/.test(pickem), 'saved stage picks should reopen on the first unfilled category');
-assert(/function openPickemModal\(\)[\s\S]*?window\.hltvSiteOpen\('pickem'\)/.test(legacy) && !/id="pickem-modal"/.test(read('index.html')), 'legacy Pick\'Em entry points should redirect to the medal-first portal page, not open the old modal');
+assert(/function openPickemModal\(\)[\s\S]*?window\.hltvSiteOpen\('pickem'\)/.test(legacy) && !/id="pickem-modal"/.test(require('./lib/project').pageSources()), 'legacy Pick\'Em entry points should redirect to the medal-first portal page, not open the old modal');
 assert(/Math\.max\(12, Math\.min\(28/.test(pathMajor), 'Major invitation forecast should model realistic uncertainty for teams close to the regional cutoff');
 assert(/99\.5%\+/.test(pathMajor), 'near-certain simulations should not be rounded to a misleading exact 100%');
 assert(/meta\?\.photo/.test(logos), 'logos should fall back to EMDB metadata for teams advancing from Stage II/III');

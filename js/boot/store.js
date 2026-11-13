@@ -14,6 +14,12 @@
   const BIG = new Set(['cs2_season_state_v61', 'cs2_season_teams_v61', 'cs2_transfer_market_v1', 'cs2_player_awards_v1', 'cs2_news_v1', 'cs2_fan_v1']);
   const DB = 'cs2manager_v131_store', ST = 'kv';
   const MEM = new Map(), dirty = new Set();
+  // v144: ключи, последнее значение которых ещё не подтверждено IndexedDB (транзакция не завершилась).
+  // При выгрузке страницы браузер может оборвать транзакцию IndexedDB — тогда терялись изменения последних
+  // секунд (воспроизводилось тестом v91 под нагрузкой: после перезагрузки бюджеты клубов откатывались).
+  // Поэтому при выгрузке такие ключи дополнительно пишутся СИНХРОННО в localStorage (аварийная копия UNSAVED+ключ),
+  // а при запуске берётся более свежая из двух версий.
+  const UNSAVED = '__cs2_unsaved__', ver = new Map(), uncommitted = new Set();
   const proto = Storage.prototype, raw = { get: proto.getItem, set: proto.setItem, remove: proto.removeItem, clear: proto.clear };
   let db = null, flushT = null, active = false, unloading = false;
   const diag = window.CS2Store = { active: false, loadMs: 0, writes: 0, lastFlush: 0, errors: 0, keys: () => [...MEM.keys()], flush: () => flush() };
@@ -38,25 +44,42 @@
   }
   function flush() {
     clearTimeout(flushT); flushT = null;
-    if (!db || !dirty.size) return;
+    if (!db) return;
+    if (!dirty.size) { if (unloading) emergencyCopy(); return; }
     const keys = [...dirty]; dirty.clear();
+    const sent = new Map(keys.map(k => [k, ver.get(k) || 0])), t = Date.now();
     try {
       const tx = db.transaction(ST, 'readwrite'), s = tx.objectStore(ST);
-      keys.forEach(k => { if (MEM.has(k)) s.put({ v: MEM.get(k), t: Date.now() }, k); else s.delete(k); });
+      keys.forEach(k => { uncommitted.add(k); if (MEM.has(k)) s.put({ v: MEM.get(k), t }, k); else s.delete(k); });
       tx.oncomplete = () => { diag.writes += keys.length; diag.lastFlush = Date.now();
-        // после успешной записи в IndexedDB освобождаем квоту localStorage от дубликата
-        keys.forEach(k => { try { raw.remove.call(window.localStorage, k); } catch (e) {} }); };
+        keys.forEach(k => {
+          if ((ver.get(k) || 0) !== sent.get(k)) return;   // пока писали, значение уже сменилось
+          uncommitted.delete(k);
+          // после успешной записи в IndexedDB освобождаем квоту localStorage от дубликата и аварийной копии
+          try { raw.remove.call(window.localStorage, k); raw.remove.call(window.localStorage, UNSAVED + k); } catch (e) {}
+        }); };
       tx.onerror = () => { diag.errors++; keys.forEach(k => dirty.add(k)); };
     } catch (e) { diag.errors++; keys.forEach(k => dirty.add(k)); }
+    if (unloading) emergencyCopy();
   }
+  // синхронная аварийная копия неподтверждённых ключей (только при выгрузке страницы)
+  function emergencyCopy() {
+    uncommitted.forEach(k => {
+      try {
+        if (MEM.has(k)) raw.set.call(window.localStorage, UNSAVED + k, JSON.stringify({ t: Date.now(), v: MEM.get(k) }));
+        else raw.remove.call(window.localStorage, UNSAVED + k);
+      } catch (e) { diag.errors++; }   // не влезло в квоту — остаётся только запись IndexedDB (как раньше)
+    });
+  }
+  const touch = k => ver.set(k, (ver.get(k) || 0) + 1);
   // при закрытии/скрытии страницы — сразу (игра пишет свои отложенные сохранения в обработчиках закрытия)
   const schedule = () => { if (unloading) { flush(); return; } if (!flushT) flushT = setTimeout(flush, 300); };
 
   function install() {
     proto.getItem = function (k) { if (active && isLS(this) && BIG.has(k)) return MEM.has(k) ? MEM.get(k) : null; return raw.get.call(this, k); };
-    proto.setItem = function (k, v) { if (active && isLS(this) && BIG.has(k)) { MEM.set(k, String(v)); dirty.add(k); schedule(); return; } return raw.set.call(this, k, v); };
-    proto.removeItem = function (k) { if (active && isLS(this) && BIG.has(k)) { MEM.delete(k); dirty.add(k); schedule(); } return raw.remove.call(this, k); };
-    proto.clear = function () { if (active && isLS(this)) { [...MEM.keys()].forEach(k => dirty.add(k)); MEM.clear(); schedule(); } return raw.clear.call(this); };
+    proto.setItem = function (k, v) { if (active && isLS(this) && BIG.has(k)) { MEM.set(k, String(v)); touch(k); dirty.add(k); schedule(); return; } return raw.set.call(this, k, v); };
+    proto.removeItem = function (k) { if (active && isLS(this) && BIG.has(k)) { MEM.delete(k); touch(k); dirty.add(k); schedule(); try { raw.remove.call(this, UNSAVED + k); } catch (e) {} } return raw.remove.call(this, k); };
+    proto.clear = function () { if (active && isLS(this)) { [...MEM.keys()].forEach(k => { touch(k); dirty.add(k); }); MEM.clear(); schedule(); } return raw.clear.call(this); };
     const now = () => { unloading = true; window.__cs2Unloading = true; flush(); };
     window.addEventListener('pagehide', now); window.addEventListener('beforeunload', now);
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { unloading = true; try { window.CS2Saves && window.CS2Saves.flush && window.CS2Saves.flush(); } catch (e) {} flush(); } else { unloading = false; window.__cs2Unloading = false; } });
@@ -76,7 +99,9 @@
     db = d;
     BIG.forEach(k => {
       const rec = all[k];
-      if (rec && typeof rec.v === 'string') MEM.set(k, rec.v);
+      let bk = null; try { bk = JSON.parse(raw.get.call(window.localStorage, UNSAVED + k) || 'null'); } catch (e) {}
+      if (bk && typeof bk.v === 'string' && (!rec || !(rec.t > bk.t))) { MEM.set(k, bk.v); dirty.add(k); uncommitted.add(k); diag.recovered = (diag.recovered || 0) + 1; }   // аварийная копия свежее
+      else if (rec && typeof rec.v === 'string') MEM.set(k, rec.v);
       else { let v = null; try { v = raw.get.call(window.localStorage, k); } catch (e) {} if (v != null) { MEM.set(k, v); dirty.add(k); } }   // миграция из localStorage
     });
     active = diag.active = true; install(); if (dirty.size) schedule();

@@ -23,16 +23,18 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     const major = { name: 'Test Major', prizePool: 1250000, isMajor: true };
     const pro = teams.filter(t => !t.isAcademy).sort((a, b) => b.pts - a.pts);
     const d = ev => window.CS2VRSModel.delta(pro[40], pro[41], ev).win;
-    return { s2: sc(t2), s3: sc(t3), sm: sc(major), w2: d(t2), w3: d(t3), wm: d(major) };
+    const lw = window.CS2VRSLevelWeight || (() => 0);
+    return { s2: sc(t2), s3: sc(t3), sm: sc(major), l2: lw(t2), l3: lw(t3), w2: d(t2), w3: d(t3), wm: d(major) };
   });
-  assert(Math.abs(v.s2 - 0.35) < 1e-9 && Math.abs(v.s3 - 0.12) < 1e-9 && v.sm === 1, 'вес турниров: ' + JSON.stringify(v));
+  // v135/v140: значимость фонового турнира — вес уровня (vrs.levelWeight: Tier-2 0.6, Tier-3 0.18) вместо pointsMult турнира
+assert(v.l2 > 0 && v.l3 > 0 && v.s2 <= v.l2 + 1e-9 && Math.abs(v.s3 - v.l3) < 1e-9 && v.s3 < v.s2 && v.s2 < 1 && v.sm === 1, 'вес турниров: ' + JSON.stringify(v));
   assert(v.w3 < v.w2 && v.w2 < v.wm, 'прибавка за победу растёт со значимостью: ' + JSON.stringify(v));
   pass(`v89: tournament significance drives H2H (Tier-3 +${v.w3}, Tier-2 +${v.w2}, Major +${v.wm})`);
 
   // 2. H2H — ограниченный набор: 60 побед на Tier-3 дают не больше лимита, топ-12 побед — не сумма всех
   const h = await p.evaluate(() => {
     const H = window.CS2VRSH2H, now = seasonState.calendar.currentMs;
-    const low = Array.from({ length: 60 }, () => ({ date: now, won: true, h2hDelta: 5, low: true }));
+    const low = Array.from({ length: 60 }, () => ({ date: now, won: true, h2hDelta: 8, low: true }));   // 12 лучших × 8 = 96 > потолка (v140: 65)
     const hi = Array.from({ length: 30 }, () => ({ date: now, won: true, h2hDelta: 10, low: false, eventWeight: 0.8, isLAN: true }));
     const loss = Array.from({ length: 30 }, () => ({ date: now, won: false, h2hDelta: -3, low: true }));
     return { low: H.sum(low, now), hi: H.sum(hi, now), mix: H.sum(hi.concat(low, loss), now), oldLow: H.isLowEntry({ eventWeight: 0.12, isLAN: false }), cap: H.LOW_CAP, top: H.TOP };
@@ -55,7 +57,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     const added = me.vrsLedger.matches.slice(before);
     return { gain: h1 - h0, low: added.every(m => m.low === true), sig: added[0] && added[0].sig };
   });
-  assert(run.low && run.sig === 0.12, 'записи фонового турнира помечены: ' + JSON.stringify(run));
+  assert(run.low && run.sig === 0.18, 'записи фонового турнира помечены весом уровня (v140: Tier-3 0.18): ' + JSON.stringify(run));
   assert(run.gain <= 40.01, '50 побед на Tier-3 дают не больше 40 очков H2H: ' + JSON.stringify(run));
   pass('v89: 50 Tier-3 wins add only +' + run.gain.toFixed(1) + ' H2H');
 
@@ -222,6 +224,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     const snap = { id: 'P-V89-Q', name: 'V89 Qualifier', prestige: 'qual', season: seasonState.currentSeason, results: pro.map((n, i) => ({ n, p: i + 1 })), prizePool: 20000 };
     V.payPrizes(snap); V.payPrizes(snap);
     out.paid = (V.org(pro[0]).ledger || []).filter(x => x.kind === 'prize' && /V89 Qualifier/.test(x.note || '')).map(x => x.amt);
+    out.share = window.CS2Config.get('econ.prizeClubShare', 1);   // v138/v139: клубу — доля призовых, остальное игрокам
     // дивиденды
     const y = V.org(pro[0]).hist[seasonState.currentSeason]; out.ownerCat = y && 'owner' in y;
     // тренировки: слабейшая карта, работа над картой
@@ -238,13 +241,13 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     return out;
   });
   assert(misc.hltv, 'HLTV World Ranking видит фоновые турниры');
-  assert(misc.paid.length === 1 && misc.paid[0] === 8000, 'призовые квалификации (40% от $20 000), один раз: ' + JSON.stringify(misc.paid));
+  assert(misc.paid.length === 1 && misc.paid[0] === Math.round(8000 * misc.share), 'призовые квалификации (40% от $20 000, клубу его доля), один раз: ' + JSON.stringify(misc));
   assert(misc.ownerCat, 'категория дивидендов в годовой истории');
   assert(misc.plan && misc.plan.map === 'Nuke' && misc.plan.mapWork && misc.plan.focus === 'mapcontrol', 'тренировка — контроль слабейшей карты: ' + JSON.stringify(misc));
   assert(misc.again === false, 'карту не тренируют две недели подряд: ' + JSON.stringify(misc));
   pass('v89: HLTV ranking gets background events, qualifier pays ' + misc.paid + ', owner category, training plan ' + JSON.stringify(misc.plan));
 
-  const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+  const html = require('./lib/project').pageSources();
   assert(html.includes('js/competition/fair-rating.js') && !html.includes('?v=93'), 'cache version bumped');
   assert(!errs.length, 'ошибки страницы: ' + errs.join(' | '));
   pass('v89: no page errors, cache version bumped');

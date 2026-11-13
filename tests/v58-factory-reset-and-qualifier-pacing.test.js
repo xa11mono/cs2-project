@@ -6,7 +6,7 @@ const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
 const reset = read('js/core/factory-reset.js');
-const html = read('index.html');
+const html = require('./lib/project').pageSources();
 const hub = read('js/competition/hltv-hub.js');
 const autosave = read('js/core/autosave.js');
 const calendar = read('js/calendar/training-calendar.js');
@@ -23,7 +23,7 @@ assert(/RESET_KEY_RE/.test(reset) && /cs2\(\_|\-|\$\)/.test(reset), 'factory res
 assert(/window\.resetToDefault = resetToDefaultV58/.test(reset), 'reset buttons must use the v58 async reset handler');
 assert(/hubArchiveClear = \(\) =>[\s\S]*?tx\.oncomplete = \(\) => resolve\(true\)/.test(hub), 'archive clear must resolve after the IndexedDB transaction commits');
 assert(/v56PrepareFactoryReset/.test(autosave) && /handle\.removeEntry\(name\)/.test(autosave), 'autosave helper must delete the current and backup JSON files before reset');
-assert(/v58-factory-reset\.js/.test(html) && html.indexOf('js/core/factory-reset.js') > html.indexOf('js/core/autosave.js'), 'reset override must load after autosave and legacy reset definitions');
+assert(html.indexOf('js/core/factory-reset.js') > html.indexOf('js/core/autosave.js'), 'reset override must load after autosave and legacy reset definitions');
 assert(/CS2 Manager <i class="pt-ver">v86<\/i>/.test(site), 'visible header version must be v81');
 
 // Pause must freeze the calendar itself and all background competition ticks.

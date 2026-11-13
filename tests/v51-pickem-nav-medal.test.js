@@ -8,7 +8,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
 
 const pickem = read('js/fan/pickem.js');
 const portal = read('js/portal/hltv-site.js');
-const html = read('index.html');
+const html = require('./lib/project').pageSources();
 const css = read('css/portal/tokens.css');
 
 // v54 groups Pick’Em, Major Path and Major winners into one top navigation menu.
