@@ -216,7 +216,7 @@
     let ccC = ''; try { for (const it of (N.all() || []).slice(0, 160)) { const c = (N.comments(it) || []).find(x => x.nick === nick && x.cc); if (c) { ccC = c.cc; break; } } } catch (e) {}
     const p = persona(nick, ccC || undefined), S = STYLES[p.style];
     const pk = pickemHistory(p), posts = postsBy(p), cms = commentsBy(nick);
-    let medals = ''; try { const B = W.V35Badges; if (B && B.botItems && !p.streamer) { const it = B.botItems(nick); medals = `<div class="v114-umedals">${it.coins.map(c => `<span class="v35-hci" data-tip="${H.esc(c.tip || '')}">${String(c.html).replace(/width="\d+" height="\d+"/, 'width="34" height="34"')}</span>`).join('')}${(it.badges || []).map(b => B.badgeHtml ? B.badgeHtml(b) : '').join('')}</div>`; } } catch (e) {}
+    let medals = ''; try { const B = W.V35Badges; if (B && B.botItems && !p.streamer) { const it = B.botItems(nick, { joined: p.joined, karma: p.karma, posts: posts.length, comments: cms.length }); medals = `<div class="v114-umedals">${it.coins.map(c => `<span class="v35-hci" data-tip="${H.esc(c.tip || '')}">${String(c.html).replace(/width="\d+" height="\d+"/, 'width="34" height="34"')}</span>`).join('')}${(it.badges || []).map(b => B.badgeHtml ? B.badgeHtml(b) : '').join('')}</div>`; } } catch (e) {}
     const acc = pk.filter(x => x.hits != null), accTxt = acc.length ? `${acc.reduce((a, x) => a + x.hits, 0)}/${acc.length * 10}` : '—';
     const tab = H.S.userTab || 'overview';
     const tabs = [['overview', 'Обзор'], ['pickem', `Pick'Em · ${pk.length}`], ['posts', `Посты · ${posts.length}`], ['comments', `Комментарии · ${cms.length}`]].concat(p.streamer ? [['streams', 'Стримы']] : [])

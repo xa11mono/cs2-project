@@ -183,8 +183,10 @@
   function goldish(c) { const m = /^#([0-9a-f]{6})$/i.exec(c || ''); if (!m) return false; const v = parseInt(m[1], 16), r = v >> 16, g = (v >> 8) & 255, b = v & 255; return r > 150 && g > 100 && b < 110 && r - b > 90 && r >= g; }
   function eventSticker(th, finish, ctx, label) {
     if (finish !== 'gold' && goldish(th.acc)) th = Object.assign({}, th, { acc: ['#e23d4b', '#2f8cff', '#19c39a', '#ff7a1a'][h32('pa|' + th.city) % 4] });
-    const D = ctx.D, h = h32('ev|' + th.city + th.year + th.org);
-    const shape = ['circle', 'shield', 'hex', 'badge', 'burst', 'ticket'][h % 6], font = DISPLAY[(h >>> 4) % DISPLAY.length];
+    th = edTheme(th);
+    const D = ctx.D, h = h32('ev|' + th.city + th.year + th.org), hc = h32('evc|' + th.city), yr = edYear(th);
+    // форма и узор зависят от года выпуска: соседние Мейджоры одного города никогда не совпадают
+    const shape = ['circle', 'shield', 'hex', 'badge', 'burst', 'ticket'][(hc + yr) % 6], font = DISPLAY[(hc + yr * 5) % DISPLAY.length];
     const metal = finish === 'gold' ? D.lin(ctx.GOLD) : finish === 'holo' ? D.lin(ctx.HOLO, 1, .5) : null;
     const fg = metal || th.ink, acc = metal || th.acc;
     const bg = D.add(`<radialGradient id="$ID" cx=".5" cy=".38" r=".78"><stop offset="0" stop-color="${mix(th.acc, th.bg, .25)}"/><stop offset=".55" stop-color="${th.bg}"/><stop offset="1" stop-color="${mix(th.bg, '#000000', .55)}"/></radialGradient>`);
@@ -192,10 +194,10 @@
     const lf = metal || D.lin([[0, mix(th.ink, '#ffffff', .2)], [1, mix(th.acc, th.ink, .35)]], 0, 1), ld = mix(th.bg, '#000000', .35), ll = finish === 'gold' ? '#fff4c4' : mix(th.acc, '#ffffff', .5);
     const glow = D.add(`<radialGradient id="$ID" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="${th.acc}" stop-opacity=".55"/><stop offset="1" stop-color="${th.acc}" stop-opacity="0"/></radialGradient>`);
     const arc = D.add(`<path id="$ID" d="M16 50A34 34 0 0 1 84 50"/>`);
-    const inner = `<rect width="100" height="100" fill="url(#${bg})"/>` + pattern(D, ['rays', 'dots', 'stripes', 'grid', 'waves', 'stars'][(h >>> 8) % 6], th.ink, h) +
+    const inner = `<rect width="100" height="100" fill="url(#${bg})"/>` + pattern(D, ['rays', 'dots', 'stripes', 'grid', 'waves', 'stars'][((hc >>> 8) + yr * 7) % 6], th.ink, h) +
       `<ellipse cx="50" cy="44" rx="34" ry="28" fill="url(#${glow})"/>` +
       `<text font-family="${font}" font-size="8.4" letter-spacing="1.6" fill="${fg}"><textPath href="#${arc}" startOffset="50%" text-anchor="middle">${esc(th.tag)}</textPath></text>` +
-      `<g transform="translate(9 13.5) scale(.82)">${L[lm](lf, ld, ll, h)}</g>` +
+      `<g transform="translate(9 13.5) scale(.82)">${symbolFor(lm, th)(lf, ld, ll, h)}</g>` +
       `<path d="M14 61H86" stroke="${acc}" stroke-width=".6" opacity=".8"/>` +
       banner(D, /hex|shield/.test(shape) ? 62.5 : 64, 'MAJOR ' + (th.year || ''), finish === 'gold' ? mix('#6e4a05', th.bg, .3) : th.acc, finish === 'paper' ? th.bg : '#fff', font, finish === 'gold' ? '#f7d36a' : '#ffffff') +
       `<text x="50" y="${/hex|shield/.test(shape) ? 81.4 : 84.6}" text-anchor="middle" font-family="StkBebas,Arial" font-size="${/hex|shield/.test(shape) ? 4.6 : 5.6}" letter-spacing="2.2" fill="${fg}" opacity=".9">${esc(th.org)} · CS2</text>`;
@@ -276,26 +278,52 @@
   }
 
   // ---------------------------------------------------------------- стиль Мейджора: орнамент + надпись города
+  // v128: у каждого города — свой мотив, который больше нигде не встречается; новые города получают свободный мотив из запаса
   const MSTYLE = [
-    [/budapest|moscow|petersburg|kazan|minsk|krak|warsaw|wroc|bucharest|cluj|kyiv|kiev|belgrade|prague/i, 'folk'],
-    [/austin|dallas|arlington|texas|houston|denver/i, 'horns'],
-    [/\brio\b|s[ãa]o paulo|buenos|mexico|singapore|bangkok|miami|sydney|melbourne/i, 'tropic'],
-    [/cologne|k[öo]ln/i, 'vitrage'],
-    [/antwerp|paris|london|berlin|lisbon|vienna|madrid/i, 'baroque'],
-    [/copenhagen|stockholm|oslo|helsinki|malm|herning/i, 'nordic'],
-    [/riyadh|jeddah|abu dhabi|doha|muscat|kuwait|cairo|istanbul|baku/i, 'arabesque'],
-    [/dubai|new york|hong kong|las vegas|toronto|chicago|columbus/i, 'skyline'],
-    [/shanghai|chengdu|beijing|tokyo|seoul|astana|osaka|macau/i, 'deco'],
-    [/katowice|boston|atlanta/i, 'hexcut']
+    [/cologne|k[öo]ln/i, 'vitrage'], [/katowice/i, 'hexcut'], [/stockholm|malm|j[öo]nk/i, 'snow'], [/copenhagen|herning|aarhus/i, 'nordic'],
+    [/paris|lyon|marseille/i, 'baroque'], [/\brio\b|s[ãa]o paulo/i, 'tropic'], [/austin/i, 'horns'], [/dallas|arlington|fort worth/i, 'chevron'],
+    [/shanghai/i, 'deco'], [/budapest/i, 'folk'], [/astana/i, 'zigzag'], [/almaty/i, 'sunray'], [/berlin|hamburg|hannover/i, 'gears'],
+    [/london|birmingham|manchester/i, 'laurel'], [/antwerp|brussels/i, 'compass'], [/bucharest|cluj|wallachia/i, 'petals'], [/krak[óo]w|warsaw|wroc/i, 'crown'],
+    [/riyadh/i, 'arabesque'], [/abu dhabi|dubai|doha/i, 'domes'], [/jeddah|muscat/i, 'mashrabiya'], [/lisbon|porto/i, 'lattice'], [/sydney|melbourne|brisbane/i, 'shells'],
+    [/chengdu|beijing|shenzhen/i, 'ziggurat'], [/new york|las vegas|toronto|chicago/i, 'skyline']
   ];
-  const STYLE_FONT = { folk: 'StkFraktur', horns: 'StkRye', tropic: 'StkOleo', baroque: 'StkPirata', nordic: 'StkCinzel', deco: 'StkCinzel', hexcut: 'StkRusso', arabesque: 'StkCinzel', skyline: 'StkRighteous', vitrage: 'StkPirata', laurel: 'StkSancreek' };
-  function styleOf(th) { const m = MSTYLE.find(x => x[0].test(th.city || '')); return m ? m[1] : ['laurel', 'baroque', 'hexcut', 'deco', 'folk'][h32('sty|' + th.city + th.year) % 5]; }
+  const SPARE = ['mountains', 'skyline', 'ziggurat', 'sunray', 'chevron', 'mashrabiya', 'domes'];
+  const motifReg = (() => { try { return JSON.parse(localStorage.getItem('cs2_motif_reg_v1') || '{}'); } catch (e) { return {}; } })();
+  function spareFor(city) {
+    const k = String(city || '').toLowerCase().trim(); if (motifReg[k]) return motifReg[k];
+    const taken = new Set(Object.values(motifReg)), base = h32('sty|' + k);
+    let m = SPARE[base % SPARE.length]; for (let i = 0; i < SPARE.length; i++) { const c = SPARE[(base + i) % SPARE.length]; if (!taken.has(c)) { m = c; break; } }
+    motifReg[k] = m; try { localStorage.setItem('cs2_motif_reg_v1', JSON.stringify(motifReg)); } catch (e) {} return m;
+  }
+  // номер выпуска: один и тот же город в разные годы — разная форма, фон, узор, палитра
+  const edYear = th => { const y = parseInt(th && th.year, 10); return isFinite(y) ? y : 2026; };
+  function hueRot(hex, deg) { const m = /^#([0-9a-f]{6})$/i.exec(hex || ''); if (!m || !deg) return hex; let v = parseInt(m[1], 16), r = (v >> 16) / 255, g = ((v >> 8) & 255) / 255, b = (v & 255) / 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn; if (!d) return hex; let hh = 0; const sat = d / (1 - Math.abs(2 * l - 1));
+    hh = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; hh = (hh * 60 + deg + 720) % 360;
+    const c = (1 - Math.abs(2 * l - 1)) * sat, x = c * (1 - Math.abs((hh / 60) % 2 - 1)), mm = l - c / 2, [R, G, B] = hh < 60 ? [c, x, 0] : hh < 120 ? [x, c, 0] : hh < 180 ? [0, c, x] : hh < 240 ? [0, x, c] : hh < 300 ? [x, 0, c] : [c, 0, x];
+    return '#' + [R, G, B].map(q => Math.round((q + mm) * 255).toString(16).padStart(2, '0')).join(''); }
+  const edHue = th => { const k = edYear(th) - 2026; return ((k % 8) + 8) % 8 * 45; };   // 8 разных палитр подряд
+  function edTheme(th) { const d = edHue(th); return d ? Object.assign({}, th, { bg: hueRot(th.bg, d), acc: hueRot(th.acc, d) }) : th; }
+  const STYLE_FONT = { snow: 'StkCinzel', chevron: 'StkRye', zigzag: 'StkRusso', sunray: 'StkCinzel', gears: 'StkBlackOps', compass: 'StkCinzel', petals: 'StkOleo', crown: 'StkFraktur', domes: 'StkCinzel', mashrabiya: 'StkCinzel', lattice: 'StkPirata', shells: 'StkRighteous', ziggurat: 'StkRusso', mountains: 'StkAnton', folk: 'StkFraktur', horns: 'StkRye', tropic: 'StkOleo', baroque: 'StkPirata', nordic: 'StkCinzel', deco: 'StkCinzel', hexcut: 'StkRusso', arabesque: 'StkCinzel', skyline: 'StkRighteous', vitrage: 'StkPirata', laurel: 'StkSancreek' };
+  function styleOf(th) { const m = MSTYLE.find(x => x[0].test(th.city || '')); return m ? m[1] : spareFor(th.city); }
   // палитра орнамента для Paper (у каждого стиля своя), для других исполнений — материал
-  const STYLE_COLS = { folk: ['#e94f6a', '#3fbf74', '#ffb340', '#4a8ee8', '#b05ee0'], horns: ['#f1e2c0', '#b98a4e', '#5a3a1e', '#d9b36c'], tropic: ['#2fae5f', '#1e7a44', '#8fdc5a', '#ffb347'],
+  const STYLE_COLS = { snow: ['#dff1ff', '#8ec9f0', '#ffffff', '#4a8fc8'], chevron: ['#d64545', '#f4ead2', '#2c4a7a', '#ffd34d'], zigzag: ['#f2c14e', '#2f8fd6', '#ffffff', '#b8892f'], sunray: ['#ffcf5a', '#e07a2a', '#fff3c4'],
+    gears: ['#c9ced6', '#6b7480', '#ff5a4a'], compass: ['#bfe2ff', '#6fa8e0', '#ffffff', '#2d5a8c'], petals: ['#ff8fb1', '#e0457a', '#ffd6e4', '#7bc96f'], crown: ['#f2c14e', '#c0392b', '#fff1c4'],
+    domes: ['#e8c26a', '#1d6b5e', '#f4ead2'], mashrabiya: ['#c9a25a', '#3b2a1a', '#f4ead2'], lattice: ['#2f6fe0', '#ffffff', '#8fb8ff', '#f2c14e'], shells: ['#ffffff', '#ffb347', '#3fb6e8'], ziggurat: ['#f2d27a', '#b8892f', '#222'], mountains: ['#9fd0c0', '#3d7a6a', '#ffffff', '#ffcf5a'], folk: ['#e94f6a', '#3fbf74', '#ffb340', '#4a8ee8', '#b05ee0'], horns: ['#f1e2c0', '#b98a4e', '#5a3a1e', '#d9b36c'], tropic: ['#2fae5f', '#1e7a44', '#8fdc5a', '#ffb347'],
     baroque: ['#e8d6a8', '#b8975a', '#6e5733'], nordic: ['#cfe6ff', '#6ea8e8', '#ffffff'], deco: ['#f2d27a', '#b8892f', '#222'], hexcut: ['#9aa3ae', '#5c6570', '#e6e9ec'], arabesque: ['#d9b45a', '#1d6b5e', '#f4ead2', '#9c7426'], skyline: ['#3fa9f5', '#1b3f73', '#e8f4ff', '#ffc65c'], vitrage: ['#2fa58a', '#d8dcd9', '#1d6f8c', '#8fdcc1'], laurel: ['#d9c17a', '#8a7330'] };
+  // v128: подложка-мотив меняется от выпуска к выпуску: мотив города → символ города водяным знаком → чистая подложка
   function ornament(D, ctx, th, finish, seed, area) {
-    const st = styleOf(th), C = STYLE_COLS[st];
+    const v = ((edYear(th) - 2026) % 3 + 3) % 3, lm = landmarkOf(th.city);
+    if (v === 0 || lm === 'generic') return ornamentMotif(D, ctx, th, finish, seed, area);
+    if (v === 2) return '';
+    const C = STYLE_COLS[styleOf(th)] || STYLE_COLS.laurel, alts = ALT[lm] || [], fn = alts.length ? alts[(edYear(th) >> 1) % alts.length] : (LX[lm] || L[lm]);
+    const f = finish === 'paper' ? mix(th.acc, '#ffffff', .25) : mat(D, ctx, finish, th.acc, seed + 5), dd = mix(th.acc, '#000000', .45), ll = mix(th.acc, '#ffffff', .7);
+    return `<g transform="translate(50 36) scale(1.18) translate(-50 -40)" opacity=".85">${fn(f, dd, ll, seed)}</g>`;
+  }
+  function ornamentMotif(D, ctx, th, finish, seed, area) {
+    const st = styleOf(th), C0 = STYLE_COLS[st] || STYLE_COLS.laurel, off = ((edYear(th) - 2026) % C0.length + C0.length) % C0.length, C = C0.slice(off).concat(C0.slice(0, off));
     const col = (i) => finish === 'paper' ? C[i % C.length] : mat(D, ctx, finish, C[i % C.length], seed + i);
+    const mir = (edYear(th) % 2) ? '' : ' transform="translate(100 0) scale(-1 1)"';   // чётные годы — зеркально
     const dk = finish === 'gold' ? '#6e4a05' : '#222';
     let s = '';
     if (st === 'folk') { // народные цветы венком сверху и по бокам
@@ -317,8 +345,8 @@
     } else if (st === 'nordic') { // волны и северные звёзды
       for (let i = 0; i < 3; i++) s += `<path d="M6 ${66 - i * 3}Q17 ${62 - i * 3} 28 ${66 - i * 3}T50 ${66 - i * 3}T72 ${66 - i * 3}T94 ${66 - i * 3}" fill="none" stroke="${col(i % 2)}" stroke-width="1.1" opacity="${1 - i * .25}"/>`;
       for (const [x, y, r] of [[24, 16, 3], [76, 18, 2.4], [32, 8, 1.6], [68, 9, 1.8]]) s += `<path d="M${x} ${y - r * 2}L${x + r * .4} ${y - r * .4}L${x + r * 2} ${y}L${x + r * .4} ${y + r * .4}L${x} ${y + r * 2}L${x - r * .4} ${y + r * .4}L${x - r * 2} ${y}L${x - r * .4} ${y - r * .4}z" fill="${col(2)}" stroke="${dk}" stroke-width=".25"/>`;
-    } else if (st === 'arabesque') { // восточный орнамент: у каждого города свой мотив — звезда-розетка, купола с минаретами или резная арка-машрабия
-      const city = String(th.city || '').toLowerCase(), v = /riyadh|doha/.test(city) ? 0 : /abu dhabi|istanbul|cairo/.test(city) ? 1 : /jeddah|muscat/.test(city) ? 2 : h32('ar|' + city) % 3;
+    } else if (st === 'arabesque' || st === 'domes' || st === 'mashrabiya') { // восточные мотивы: звезда-розетка (Эр-Рияд), купола с минаретами, резная арка-машрабия — у каждого города свой
+      const v = st === 'arabesque' ? 0 : st === 'domes' ? 1 : 2;
       if (v === 0) { const sq = (r, a0) => Array.from({ length: 4 }, (_, k) => { const a = a0 + k * Math.PI / 2; return `${n2(50 + Math.cos(a) * r)} ${n2(38 + Math.sin(a) * r)}`; }).join('L');
         s = `<path d="M${sq(34, Math.PI / 4)}zM${sq(34, 0)}z" fill="${col(1)}" stroke="${col(0)}" stroke-width="1.6" stroke-linejoin="round" fill-rule="nonzero"/><path d="M${sq(27, Math.PI / 4)}zM${sq(27, 0)}z" fill="none" stroke="${col(2)}" stroke-width=".7"/>` +
           Array.from({ length: 8 }, (_, k) => { const a = k * Math.PI / 4; return `<circle cx="${n2(50 + Math.cos(a) * 34)}" cy="${n2(38 + Math.sin(a) * 34)}" r="1.8" fill="${col(0)}" stroke="${dk}" stroke-width=".3"/>`; }).join('');
@@ -332,10 +360,10 @@
       const T = [[12, 40, 7], [20, 30, 6], [27, 46, 6], [34, 24, 5], [62, 26, 5], [68, 44, 6], [75, 30, 6], [82, 38, 7]]; let tw = '';
       for (const [x, hh, w] of T) { tw += `<path d="M${x} 72V${72 - hh}H${x + w}V72z" fill="${col(1)}" stroke="${col(0)}" stroke-width=".7"/>`; for (let yy = 72 - hh + 3; yy < 70; yy += 4) tw += `<path d="M${x + 1.4} ${yy}H${x + w - 1.4}" stroke="${col(2)}" stroke-width=".7" stroke-dasharray="1 .9" opacity=".8"/>`; }
       s = `<circle cx="50" cy="30" r="27" fill="${col(3)}" opacity="${finish === 'paper' ? .9 : 1}"/>` + tw + `<path d="M50 1L52 26L55 40L57 72H43L45 40L48 26z" fill="${col(1)}" stroke="${col(0)}" stroke-width=".8"/><path d="M8 72H92" stroke="${col(0)}" stroke-width="2"/>`;
-    } else if (st === 'deco' && (/shanghai/i.test(th.city || '') ? 0 : h32('dc|' + th.city) % 3) === 1) { // ар-деко: солнце из лучей по кругу
+    } else if (st === 'sunray') { // ар-деко: солнце из лучей по кругу
       let r = ''; for (let k = 0; k < 24; k++) { const a = k / 24 * Math.PI * 2; r += `<path d="M50 38L${n2(50 + Math.cos(a - .06) * 36)} ${n2(38 + Math.sin(a - .06) * 36)}L${n2(50 + Math.cos(a + .06) * 36)} ${n2(38 + Math.sin(a + .06) * 36)}z"/>`; }
       s = `<g fill="${col(0)}">${r}</g><circle cx="50" cy="38" r="26" fill="none" stroke="${col(1)}" stroke-width="1.4"/>`;
-    } else if (st === 'deco' && (/shanghai/i.test(th.city || '') ? 0 : h32('dc|' + th.city) % 3) === 2) { // ар-деко: ступенчатый зиккурат
+    } else if (st === 'ziggurat') { // ар-деко: ступенчатый зиккурат
       s = `<path d="M14 72V60H22V50H30V40H38V30H62V40H70V50H78V60H86V72z" fill="${col(0)}" stroke="${col(1)}" stroke-width="1.2"/><path d="M26 72V62H34V52H42V42H58V52H66V62H74V72" fill="none" stroke="${col(2)}" stroke-width=".7"/>`;
     } else if (st === 'deco') { // ар-деко: веер лучей и ступенчатые уголки
       let r = ''; for (let k = 0; k < 11; k++) { const a = Math.PI + (k + .5) / 11 * Math.PI; r += `<path d="M50 40L${n2(50 + Math.cos(a - .05) * 48)} ${n2(40 + Math.sin(a - .05) * 44)}L${n2(50 + Math.cos(a + .05) * 48)} ${n2(40 + Math.sin(a + .05) * 44)}z"/>`; }
@@ -345,17 +373,51 @@
       s = `<path d="${hx(42, 40)}" fill="${col(1)}" stroke="${dk}" stroke-width=".6"/><path d="${hx(37, 40)}" fill="${finish === 'paper' ? mix(th.bg, '#000000', .2) : col(0)}" stroke="${col(2)}" stroke-width=".8"/>`;
       for (const [x, y] of [[29, 9], [71, 9], [29, 71], [71, 71], [10, 40], [90, 40]]) s += `<circle cx="${x}" cy="${y}" r="1.5" fill="${col(2)}" stroke="${dk}" stroke-width=".35"/>`;
     } else if (st === 'vitrage') { // витраж-роза (Кёльнский собор): стёкла, свинцовые перемычки, кольцо медальонов
-      const G = finish === 'paper' ? ['#2fa58a', '#8fdcc1', '#1d6f8c', '#c9efe0', '#5bbf8f'] : null, gc = (i) => G ? G[i % G.length] : col(i);
+      const G = finish === 'paper' ? ['#2fa58a', '#8fdcc1', '#1d6f8c', '#c9efe0', '#5bbf8f'].map(c => hueRot(c, edHue(th))) : null, gc = (i) => G ? G[(i + edYear(th)) % G.length] : col(i);
       const R = 34, cy = 40; let p = '';
       for (let k = 0; k < 12; k++) { const a0 = k / 12 * Math.PI * 2, a1 = (k + 1) / 12 * Math.PI * 2;
         p += `<path d="M50 ${cy}L${n2(50 + Math.cos(a0) * 26)} ${n2(cy + Math.sin(a0) * 26)}A26 26 0 0 1 ${n2(50 + Math.cos(a1) * 26)} ${n2(cy + Math.sin(a1) * 26)}z" fill="${gc(k)}"/>`;
         const am = (a0 + a1) / 2; p += `<circle cx="${n2(50 + Math.cos(am) * 30)}" cy="${n2(cy + Math.sin(am) * 30)}" r="3.4" fill="${gc(k + 2)}" stroke="#20302c" stroke-width=".9"/>`; }
       s = `<circle cx="50" cy="${cy}" r="${R}" fill="#20302c"/>` + p + `<g fill="none" stroke="#20302c" stroke-width="1"><circle cx="50" cy="${cy}" r="26"/><circle cx="50" cy="${cy}" r="12"/>${Array.from({ length: 12 }, (_, k) => { const a = k / 12 * Math.PI * 2; return `<path d="M50 ${cy}L${n2(50 + Math.cos(a) * 26)} ${n2(cy + Math.sin(a) * 26)}"/>`; }).join('')}</g><circle cx="50" cy="${cy}" r="${R}" fill="none" stroke="${finish === 'paper' ? '#d8dcd9' : col(1)}" stroke-width="1.6"/>`;
+    } else if (st === 'snow') { // снежинки и ледяной венок
+      const flake = (x, y, r) => { let p = ''; for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3, X = n2(x + Math.cos(a) * r), Y = n2(y + Math.sin(a) * r), bx = x + Math.cos(a) * r * .55, by = y + Math.sin(a) * r * .55;
+        p += `<path d="M${x} ${y}L${X} ${Y}M${n2(bx)} ${n2(by)}L${n2(bx + Math.cos(a + .7) * r * .3)} ${n2(by + Math.sin(a + .7) * r * .3)}M${n2(bx)} ${n2(by)}L${n2(bx + Math.cos(a - .7) * r * .3)} ${n2(by + Math.sin(a - .7) * r * .3)}"/>`; } return p; };
+      s = `<g fill="none" stroke="${col(1)}" stroke-width="1.3" stroke-linecap="round">${flake(16, 22, 8)}${flake(84, 24, 7)}${flake(22, 58, 6)}${flake(80, 58, 6.5)}${flake(50, 6, 4.5)}</g>` +
+        `<circle cx="50" cy="38" r="35" fill="none" stroke="${col(0)}" stroke-width="1.4" stroke-dasharray="1.5 3"/>`;
+    } else if (st === 'petals') { // кольцо лепестков
+      for (let k = 0; k < 16; k++) { const a = k / 16 * Math.PI * 2, x = 50 + Math.cos(a) * 36, y = 39 + Math.sin(a) * 33; s += `<ellipse cx="${n2(x)}" cy="${n2(y)}" rx="3.6" ry="7.4" transform="rotate(${n2(a * 180 / Math.PI + 90)} ${n2(x)} ${n2(y)})" fill="${col(k % 2)}" stroke="${dk}" stroke-width=".35"/>`; }
+      for (let k = 0; k < 16; k++) { const a = (k + .5) / 16 * Math.PI * 2; s += `<circle cx="${n2(50 + Math.cos(a) * 30)}" cy="${n2(39 + Math.sin(a) * 27.5)}" r="1.3" fill="${col(3)}"/>`; }
+    } else if (st === 'chevron') { // шевроны по бокам и звезда-одиночка
+      for (let i = 0; i < 4; i++) { const y = 24 + i * 9; s += `<path d="M4 ${y}L14 ${y + 6}L4 ${y + 12}V${y + 8}L9 ${y + 6}L4 ${y + 4}zM96 ${y}L86 ${y + 6}L96 ${y + 12}V${y + 8}L91 ${y + 6}L96 ${y + 4}z" fill="${col(i % 2 ? 2 : 0)}" stroke="${dk}" stroke-width=".3"/>`; }
+      s += `<path d="M50 0l3.5 7.4 8 .9-6 5.5 1.7 8L50 17.7 42.8 21.8l1.7-8-6-5.5 8-.9z" fill="${col(3)}" stroke="${dk}" stroke-width=".5"/>`;
+    } else if (st === 'compass') { // огранённая восьмиконечная звезда за логотипом
+      for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2 - Math.PI / 2, r = k % 2 ? 30 : 42, a1 = a - Math.PI / 8, a2 = a + Math.PI / 8;
+        s += `<path d="M50 38L${n2(50 + Math.cos(a1) * 12)} ${n2(38 + Math.sin(a1) * 12)}L${n2(50 + Math.cos(a) * r)} ${n2(38 + Math.sin(a) * r)}z" fill="${col(0)}" stroke="${dk}" stroke-width=".3"/><path d="M50 38L${n2(50 + Math.cos(a) * r)} ${n2(38 + Math.sin(a) * r)}L${n2(50 + Math.cos(a2) * 12)} ${n2(38 + Math.sin(a2) * 12)}z" fill="${col(1)}" stroke="${dk}" stroke-width=".3"/>`; }
+    } else if (st === 'lattice') { // плитка-азулежу: четырёхлистники в квадратах
+      const cl = D.add(`<clipPath id="$ID"><circle cx="50" cy="38" r="38"/></clipPath>`); let t = '';
+      for (let y = 0; y < 80; y += 12) for (let x = 2; x < 100; x += 12) t += `<rect x="${x}" y="${y}" width="12" height="12" fill="${col(1)}" stroke="${col(0)}" stroke-width=".6"/><path d="M${x + 6} ${y + 1.5}Q${x + 9} ${y + 6} ${x + 6} ${y + 10.5}Q${x + 3} ${y + 6} ${x + 6} ${y + 1.5}zM${x + 1.5} ${y + 6}Q${x + 6} ${y + 3} ${x + 10.5} ${y + 6}Q${x + 6} ${y + 9} ${x + 1.5} ${y + 6}z" fill="${col(0)}"/><circle cx="${x + 6}" cy="${y + 6}" r="1.2" fill="${col(3)}"/>`;
+      s = `<g clip-path="url(#${cl})">${t}</g><circle cx="50" cy="38" r="38" fill="none" stroke="${col(0)}" stroke-width="2"/>`;
+    } else if (st === 'gears') { // шестерни по бокам
+      const gear = (x, y, r, n, c) => { let p = ''; for (let k = 0; k < n; k++) { const a = k / n * Math.PI * 2; p += `<rect x="${n2(x - 2)}" y="${n2(y - r - 3)}" width="4" height="5" transform="rotate(${n2(a * 180 / Math.PI)} ${x} ${y})" fill="${c}"/>`; }
+        return p + `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" stroke="${dk}" stroke-width=".5"/><circle cx="${x}" cy="${y}" r="${n2(r * .4)}" fill="${finish === 'paper' ? '#fff' : col(2)}" stroke="${dk}" stroke-width=".5"/>`; };
+      s = gear(14, 30, 11, 10, col(0)) + gear(86, 46, 12, 11, col(1)) + gear(70, 8, 6, 8, col(2));
+    } else if (st === 'crown') { // корона над логотипом и звёзды
+      s = `<path d="M30 14L36 2L43 10L50 0L57 10L64 2L70 14L68 20H32z" fill="${col(0)}" stroke="${dk}" stroke-width=".6"/><path d="M32 17H68" stroke="${col(2)}" stroke-width="1"/>` +
+        [36, 50, 64].map(x => `<circle cx="${x}" cy="${x === 50 ? 2 : 4}" r="1.8" fill="${col(1)}" stroke="${dk}" stroke-width=".3"/>`).join('') +
+        [[12, 40], [88, 40], [18, 62], [82, 62]].map(([x, y]) => `<path d="M${x} ${y - 4}l1.2 2.6 2.8.4-2 2 .5 2.8-2.5-1.3-2.5 1.3.5-2.8-2-2 2.8-.4z" fill="${col(0)}" stroke="${dk}" stroke-width=".3"/>`).join('');
+    } else if (st === 'zigzag') { // степной орнамент: завитки «бараньи рога» сверху и зигзаг снизу
+      const horn = (x, sx) => `<path d="M${x} 16c${sx * 6} -10 ${sx * 18} -8 ${sx * 16} 2c${sx * -1} 5 ${sx * -7} 5 ${sx * -7} 0" fill="none" stroke="${col(0)}" stroke-width="2.2" stroke-linecap="round"/>`;
+      s = horn(50, -1) + horn(50, 1) + horn(28, -1) + horn(72, 1) + `<path d="M8 70L14 64L20 70L26 64L32 70L38 64L44 70L50 64L56 70L62 64L68 70L74 64L80 70L86 64L92 70" fill="none" stroke="${col(1)}" stroke-width="2"/>`;
+    } else if (st === 'shells') { // паруса-раковины веером за логотипом
+      for (let k = 0; k < 5; k++) { const a = -70 + k * 35; s += `<path d="M50 66Q${n2(50 + Math.sin(a * Math.PI / 180) * 30)} 20 ${n2(50 + Math.sin(a * Math.PI / 180) * 46)} ${n2(38 - Math.cos(a * Math.PI / 180) * 30)}Q${n2(50 + Math.sin(a * Math.PI / 180) * 20)} 40 50 66z" fill="${col(k % 2)}" stroke="${dk}" stroke-width=".5"/>`; }
+      s += `<path d="M6 70Q28 64 50 70T94 70" fill="none" stroke="${col(2)}" stroke-width="2"/>`;
+    } else if (st === 'mountains') { // горная гряда и солнце
+      s = `<circle cx="50" cy="26" r="14" fill="${col(3)}"/><path d="M4 70L22 38L32 52L50 22L66 48L76 36L96 70z" fill="${col(1)}" stroke="${dk}" stroke-width=".6"/><path d="M50 22L44 33L50 30L55 34zM22 38L18 45L23 43L26 46z" fill="${col(2)}"/>`;
     } else { // laurel
       for (const k of [-1, 1]) for (let i = 0; i < 9; i++) { const t = i / 8, a = (210 - t * 125) * Math.PI / 180, x = 50 - k * Math.cos(a) * 38, yy = 42 - Math.sin(a) * 34;
         s += `<ellipse cx="${n2(x)}" cy="${n2(yy)}" rx="2" ry="4.6" transform="rotate(${n2(k * (t * 75 - 15))} ${n2(x)} ${n2(yy)})" fill="${col(i % 2)}" stroke="${dk}" stroke-width=".3"/>`; }
     }
-    return s;
+    return `<g${mir}>${s}</g>`;
   }
   // надпись Мейджора: город шрифтом стиля + год. Раскладка разная: снизу/сверху, ровно/наискосок/дугой, крупно/мелко
   function layoutOf(key) {
@@ -386,11 +448,18 @@
     return `<g transform="translate(${cx} ${y}) rotate(${lay.rot || 0}) scale(${lay.k}) translate(${-cx} ${-y})">${main}${sub}</g>`;
   }
   // всё содержимое уменьшается до безопасной зоны, чтобы с белой высечкой ничего не выходило за край
+  // v128: подложка выпуска — у каждого года своя форма и цвет, поэтому стикеры одного города разных лет не совпадают
+  function backdrop(D, ctx, th, finish, seed) {
+    const yr = edYear(th), shape = ['circle', 'hex', 'shield', 'burst', 'badge', 'ticket'][(h32('bd|' + th.city) + yr) % 6];
+    const c = finish === 'paper' ? mix(th.acc, '#ffffff', .62) : mat(D, ctx, finish, mix(th.acc, '#ffffff', .3), seed + 31);
+    return `<g transform="translate(50 40) scale(.84) translate(-50 -50)" opacity="${finish === 'paper' ? .9 : .7}"><path d="${shapePath(shape, 3)}" fill="${c}"/><path d="${shapePath(shape, 6)}" fill="none" stroke="${mix(th.acc, '#000000', .2)}" stroke-width="1.2" stroke-dasharray="${yr % 2 ? '0' : '2 1.6'}"/></g>`;
+  }
   const SAFE = (s) => `<g transform="translate(50 50) scale(.86) translate(-50 -50)">${s}</g>`;
 
   // ---------------------------------------------------------------- стикер команды: логотип + орнамент Мейджора + надпись города
   function teamSticker(th, team, logo, finish, ctx, label) {
-    const D = ctx.D, h = h32('tm|' + team + th.city), [c1] = teamColors(team), f = F(D), centred = /hexcut|vitrage|deco/.test(styleOf(th));
+    th = edTheme(th);
+    const D = ctx.D, h = h32('tm|' + team + th.city), [c1] = teamColors(team), f = F(D), centred = /hexcut|vitrage|deco|sunray|ziggurat|compass|lattice|petals/.test(styleOf(th));
     let lay = layoutOf('t' + team + th.city + th.year);
     // у центрированных подложек (шестиугольник, витраж, веер) надпись не идёт наверх — логотип остаётся ровно в центре фигуры
     if (centred && lay.top) lay = layoutOf('t2' + team + th.city + th.year).top ? { y: 82, rot: -5, k: .95 } : layoutOf('t2' + team + th.city + th.year);
@@ -399,7 +468,7 @@
     const big = styleOf(th) === 'vitrage' ? 46 : lay.top ? 48 : lay.k < .85 ? 60 : 56;
     const mark = logo ? logoIn(D, ctx, finish, logo, 50, 38 + dy, big, h)
       : `<text x="50" y="${50 + dy}" text-anchor="middle" font-family="${DISPLAY[(h >>> 3) % 4]}" font-size="30" fill="${mat(D, ctx, finish, c1, h)}" stroke="#141414" stroke-width="1.6" paint-order="stroke" filter="url(#${f.ring})">${esc(ini)}</text>`;
-    const body = `<g filter="url(#${f.cut})">${SAFE(ornament(D, ctx, th, finish, h) + mark + wordmark(D, ctx, th, finish, lay, h))}</g>`;
+    const body = `<g filter="url(#${f.cut})">${SAFE(backdrop(D, ctx, th, finish, h) + ornament(D, ctx, th, finish, h) + mark + wordmark(D, ctx, th, finish, lay, h))}</g>`;
     return `<svg class="v84-stk-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(label)}"><defs>${D.d.join('')}</defs>${body}</svg>`;
   }
 
@@ -467,7 +536,7 @@
       slots: [(m2 >>> 6) % 6, (m2 >>> 9) % 6, (m2 >>> 12) % 6],
       tag: (m2 >>> 15) % 5 === 0 ? ((base >>> 7) % 4 === 0 ? String(10 + base % 90) : TAGS[(m2 >>> 18) % TAGS.length]) : null,
       ink: [0, 0, 0, 1, 1, 2, 2, 3, 3, 0][h32('ink|' + nick + '|' + major) % 10],
-      abbr: String(nick).length >= 5 && h32('ab|' + nick + major) % 10 < 3 ? (base >>> 13) % 3 : -1,
+      abbr: -1, // v128: ник всегда целиком, без сокращений
       lfx: LFX[(base >>> 4) % 5 === 0 ? (m >>> 18) % LFX.length : (base >>> 8) % LFX.length], lfx2: (m >>> 20) % 3 === 0 ? LFX[(m >>> 22) % 7] : null
     };
   }
@@ -547,14 +616,15 @@
   // ---------------------------------------------------------------- автограф: орнамент Мейджора, логотип команды с обводкой, подпись, надпись города.
   // Одинаков для всех стадий. Чемпионский автограф — всегда золотой, с кубком и плашкой CHAMPION.
   function autograph(th, nick, team, logo, finish, ctx, label, tier) {
+    th = edTheme(th);
     const D = ctx.D, h = h32('au|' + nick + th.city), [c1] = teamColors(team), f = F(D);
     const champ = tier === 'champion';
     if (champ) finish = 'gold';
     let lay = layoutOf('a' + nick + th.city + th.year);
-    if (/hexcut|vitrage|deco/.test(styleOf(th)) && lay.top) lay = { y: 82, rot: 4, k: .92 };
+    if (/hexcut|vitrage|deco|sunray|ziggurat|compass|lattice|petals/.test(styleOf(th)) && lay.top) lay = { y: 82, rot: 4, k: .92 };
     if (champ) lay = { y: 89, rot: 0, k: .82 }; // у чемпиона надпись всегда ровно внизу, под плашкой CHAMPION
     const dy = lay.top ? 12 : 0;
-    let back = ornament(D, ctx, th, finish, h);
+    let back = backdrop(D, ctx, th, finish, h) + ornament(D, ctx, th, finish, h);
     if (champ) {
       const g = D.lin(ctx.GOLD, .8, 1), dk = '#6e4a05';
       back += `<g transform="translate(50 2) scale(.55)"><path d="M-12 2H12L11 13Q10 21 0 22Q-10 21 -11 13z" fill="${g}" stroke="${dk}" stroke-width=".6"/><path d="M-12 4Q-20 4 -18 11Q-16 15 -10 14M12 4Q20 4 18 11Q16 15 10 14" fill="none" stroke="${g}" stroke-width="2"/><path d="M-2.4 22H2.4L3.4 28H-3.4zM-7 28H7V31.6H-7z" fill="${g}" stroke="${dk}" stroke-width=".5"/></g>`;
@@ -752,7 +822,181 @@
     ['#3a2604', '#7a5408', '#c08a1a', '#ecc251', '#fff0b0', '#d9a632'],
     ['#4a4f63', '#8a93b8', '#c9d4f0', '#eef2ff', '#ffffff', '#b8c4e8']
   ];
-  const ENAMEL = { horns: ['#19b5a5', '#0f8a9e'], folk: ['#8e3fd0', '#b04cc8'], nordic: ['#2f78d6', '#3fa0e8'], baroque: ['#b3203a', '#2747a8'], tropic: ['#17a35a', '#0f8a6e'],
+  // v128: запасные символы городов — у каждого Мейджора года свой рисунок (Кёльн не всегда собор и т.д.).
+  // Поле 100×100, земля на y=66, по ширине x≈20…80. f — металл/заливка, d — тени, l — блики. Символы принадлежат только своему городу.
+  const ground = (f, l) => `<path d="M18 66H82V67.8H18z" fill="${f}"/><path d="M18 66H82" stroke="${l}" stroke-width=".5"/>`;
+  const water = (l, y) => [0, 1, 2].map(i => `<path d="M${22 + i * 3} ${y + i * 2}H${78 - i * 3}" stroke="${l}" stroke-width=".4" stroke-dasharray="${5 - i} 1.5" opacity="${.7 - i * .2}"/>`).join('');
+  const ALT = {
+    cologne: [
+      (f, d, l) => { // мост Гогенцоллернов: три стальные арки над Рейном
+        let s = '';
+        for (const [x0, x1] of [[18, 40], [40, 60], [60, 82]]) { const cx = (x0 + x1) / 2;
+          s += `<path d="M${x0} 52Q${cx} 30 ${x1} 52" fill="none" stroke="${f}" stroke-width="2.4"/><path d="M${x0} 52Q${cx} 36 ${x1} 52" fill="none" stroke="${f}" stroke-width="1"/>`;
+          for (let k = 1; k < 6; k++) { const x = x0 + (x1 - x0) * k / 6, y = 52 - Math.sin(k / 6 * Math.PI) * 15; s += `<path d="M${n2(x)} ${n2(y)}V52" stroke="${d}" stroke-width=".6"/>`; } }
+        s += `<path d="M16 52H84V55H16z" fill="${f}"/>` + [18, 40, 60, 82].map(x => `<path d="M${x - 2} 55H${x + 2}V66H${x - 2}z" fill="${f}"/>`).join('');
+        return s + `<path d="M16 61H84" stroke="${d}" stroke-width=".6"/>` + water(l, 62) + ground(f, l);
+      },
+      (f, d, l) => { // Кранхойзер: три дома-«крана» на набережной
+        let s = '';
+        for (const x of [24, 42, 60]) { s += `<path d="M${x} 66V40H${x + 4}V28H${x + 18}V36H${x + 8}V66z" fill="${f}"/><path d="M${x + 4} 28H${x + 18}V36H${x + 4}z" fill="${d}" opacity=".35"/>`;
+          for (let y = 44; y < 64; y += 4) s += `<path d="M${x + 1} ${y}H${x + 7}" stroke="${d}" stroke-width=".7"/>`;
+          s += `<path d="M${x + 5} 31H${x + 17}M${x + 5} 33.5H${x + 17}" stroke="${l}" stroke-width=".4"/>`; }
+        return s + water(l, 60) + ground(f, l);
+      }
+    ],
+    texas: [
+      (f, d, l) => { // Пеннибэкер-бридж: арка над рекой и холмы
+        let s = `<path d="M18 50Q30 40 42 46Q56 36 82 46V66H18z" fill="${d}" opacity=".4"/><path d="M24 50Q50 18 76 50" fill="none" stroke="${f}" stroke-width="3"/><path d="M18 48H82V51H18z" fill="${f}"/>`;
+        for (let k = 1; k < 10; k++) { const x = 24 + k * 5.2, y = 50 - Math.sin(k / 10 * Math.PI) * 25.6; s += `<path d="M${n2(x)} ${n2(y + 1)}V48" stroke="${l}" stroke-width=".5"/>`; }
+        return s + water(l, 58) + ground(f, l);
+      },
+      (f, d, l) => { // одинокая звезда в круге с лучами и лассо
+        let s = `<circle cx="50" cy="38" r="22" fill="none" stroke="${f}" stroke-width="2.4"/><circle cx="50" cy="38" r="18" fill="none" stroke="${l}" stroke-width=".6" stroke-dasharray="1.4 1.2"/>`;
+        const p = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 6.4 : 15; p.push([50 + Math.cos(a) * r, 38 + Math.sin(a) * r]); }
+        s += `<path d="${pt(p)}" fill="${f}"/><path d="${pt(p)}" fill="none" stroke="${d}" stroke-width=".5"/>`;
+        return s + `<path d="M28 60Q50 70 72 60" fill="none" stroke="${f}" stroke-width="1.6"/><path d="M26 62Q50 72 74 62" fill="none" stroke="${l}" stroke-width=".5"/>` + ground(f, l);
+      }
+    ],
+    copenhagen: [
+      (f, d, l) => // Русалочка на камне
+        `<path d="M30 66Q34 54 44 52Q56 50 62 56Q70 60 72 66z" fill="${d}"/><path d="M48 52Q46 44 48 38Q50 32 54 32Q57 33 56 37Q55 41 52 42Q54 46 52 50Q58 52 62 50Q66 49 66 46" fill="none" stroke="${f}" stroke-width="3" stroke-linecap="round"/>` +
+        `<circle cx="54.5" cy="30" r="3.4" fill="${f}"/><path d="M62 50Q68 48 69 44L66 45" fill="none" stroke="${f}" stroke-width="2"/>` + water(l, 60) + ground(f, l),
+      (f, d, l) => { // Круглая башня
+        let s = `<path d="M36 66V24Q50 20 64 24V66z" fill="${f}"/><path d="M50 22Q64 24 64 24V66H50z" fill="${d}" opacity=".3"/><path d="M34 24H66V20H34z" fill="${f}"/>`;
+        for (let x = 35; x < 66; x += 3) s += `<path d="M${x} 20V17H${x + 1.6}V20" fill="${f}"/>`;
+        for (const y of [30, 40, 50]) for (const x of [40, 47, 54]) s += `<path d="M${x} ${y + 5}V${y + 1.6}Q${x + 1.5} ${y} ${x + 3} ${y + 1.6}V${y + 5}z" fill="${d}"/>`;
+        return s + `<path d="M46 66V58Q50 54 54 58V66z" fill="${d}"/>` + ground(f, l);
+      }
+    ],
+    budapest: [
+      (f, d, l) => { // Цепной мост: две арочные опоры и провисающие цепи
+        let s = '';
+        for (const x of [34, 66]) s += `<path d="M${x - 6} 60V30H${x + 6}V60z" fill="${f}"/><path d="M${x - 3} 60V40Q${x} 34 ${x + 3} 40V60z" fill="${d}"/><path d="M${x - 7} 30H${x + 7}V27H${x - 7}z" fill="${f}"/>`;
+        s += `<path d="M14 50Q24 52 28 30M40 30Q50 46 60 30M72 30Q76 52 86 50" fill="none" stroke="${f}" stroke-width="1.6"/><path d="M14 52H86V55H14z" fill="${f}"/>`;
+        return s + water(l, 60) + ground(f, l);
+      },
+      (f, d, l) => { // Рыбацкий бастион: конические башенки и аркада
+        let s = `<path d="M20 66V48H80V66z" fill="${f}"/>`;
+        for (let x = 22; x < 80; x += 6) s += `<path d="M${x} 62V54Q${x + 2} 51 ${x + 4} 54V62z" fill="${d}"/>`;
+        for (const [x, h] of [[26, 18], [40, 24], [50, 32], [60, 24], [74, 18]]) s += `<path d="M${x - 4} 48V${48 - h * .4}H${x + 4}V48z" fill="${f}"/><path d="M${x - 5} ${48 - h * .4}L${x} ${48 - h}L${x + 5} ${48 - h * .4}z" fill="${f}"/><path d="M${x} ${48 - h}L${x + 5} ${48 - h * .4}H${x}z" fill="${d}" opacity=".35"/>`;
+        return s + ground(f, l);
+      }
+    ],
+    rio: [
+      (f, d, l) => // Христос-Искупитель крупно на вершине
+        `<path d="M26 66Q38 46 50 44Q62 46 74 66z" fill="${d}" opacity=".6"/><path d="M47 44V22H53V44z" fill="${f}"/><path d="M26 24H74V28H26z" fill="${f}"/><circle cx="50" cy="17.5" r="3.6" fill="${f}"/>` +
+        `<path d="M47 28L45 44H55L53 28z" fill="${f}"/><path d="M50 28V44" stroke="${d}" stroke-width=".5"/><path d="M26 26H74" stroke="${l}" stroke-width=".4"/>` + ground(f, l),
+      (f, d, l) => { // Маракана: овальная чаша стадиона
+        let s = `<ellipse cx="50" cy="52" rx="32" ry="12" fill="${f}"/><ellipse cx="50" cy="50" rx="26" ry="8" fill="${d}"/><ellipse cx="50" cy="51" rx="18" ry="5" fill="${l}" opacity=".5"/>`;
+        for (let k = 0; k < 18; k++) { const a = k / 18 * Math.PI * 2, x = 50 + Math.cos(a) * 30; if (Math.sin(a) < 0) continue; s += `<path d="M${n2(x)} ${n2(52 + Math.sin(a) * 11)}V66" stroke="${d}" stroke-width=".7"/>`; }
+        return s + `<path d="M18 52Q50 34 82 52" fill="none" stroke="${l}" stroke-width=".6"/>` + ground(f, l);
+      }
+    ],
+    shanghai: [
+      (f, d, l) => { // Шанхайская башня: закрученный силуэт
+        let s = `<path d="M42 66Q40 40 46 14Q48 8 52 6Q56 10 58 24Q60 44 58 66z" fill="${f}"/><path d="M52 6Q56 10 58 24Q60 44 58 66H52z" fill="${d}" opacity=".3"/>`;
+        for (let y = 14; y < 64; y += 4) s += `<path d="M${n2(44 - (y - 14) * .02)} ${y}Q50 ${y + 1.4} ${n2(58 + (y - 40) * 0)} ${y - 1}" fill="none" stroke="${l}" stroke-width=".35" opacity=".7"/>`;
+        return s + `<path d="M26 66V50H34V66zM66 66V44H74V66z" fill="${d}"/>` + water(l, 60) + ground(f, l);
+      },
+      (f, d, l) => { // пагода сада Юйюань: изогнутые крыши ярусами
+        let s = '';
+        [[30, 22, 52], [36, 16, 40], [42, 10, 28]].forEach(([w, hh, y]) => { s += `<path d="M${50 - w / 2} ${y + 10}V${y + 2}H${50 + w / 2}V${y + 10}z" fill="${f}"/><path d="M${50 - w / 2 - 6} ${y + 2}Q50 ${y - 6} ${50 + w / 2 + 6} ${y + 2}L${50 + w / 2 + 8} ${y - 1}Q50 ${y - 4} ${50 - w / 2 - 8} ${y - 1}z" fill="${f}"/>`;
+          for (let x = 50 - w / 2 + 3; x < 50 + w / 2 - 2; x += 4) s += `<rect x="${n2(x)}" y="${y + 4}" width="1.6" height="5" fill="${d}"/>`; });
+        return s + `<path d="M50 20V12M48 14H52" stroke="${f}" stroke-width="1"/>` + ground(f, l);
+      }
+    ],
+    paris: [
+      (f, d, l) => // Триумфальная арка
+        `<path d="M26 66V30H74V66H60V52Q50 40 40 52V66z" fill="${f}"/><path d="M26 30H74V24H26z" fill="${f}"/><path d="M24 24H76" stroke="${l}" stroke-width=".7"/><path d="M26 36H74" stroke="${d}" stroke-width=".7"/>` +
+        `<path d="M30 40H36V58H30zM64 40H70V58H64z" fill="${d}" opacity=".5"/><path d="M40 52Q50 40 60 52" fill="none" stroke="${l}" stroke-width=".5"/>` + ground(f, l),
+      (f, d, l) => { // пирамида Лувра
+        let s = `<path d="M50 20L76 64H24z" fill="${f}"/><path d="M50 20L76 64H50z" fill="${d}" opacity=".3"/>`;
+        for (let k = 1; k < 7; k++) { const y = 20 + k * 6.3, w = (y - 20) * .59; s += `<path d="M${n2(50 - w)} ${n2(y)}H${n2(50 + w)}" stroke="${l}" stroke-width=".4"/>`; }
+        for (let k = -3; k <= 3; k++) s += `<path d="M50 20L${50 + k * 8.6} 64" stroke="${l}" stroke-width=".35"/>`;
+        return s + `<path d="M18 64H82" stroke="${f}" stroke-width="1.2"/>` + water(l, 66);
+      }
+    ],
+    riyadh: [
+      (f, d, l) => // башня Аль-Файсалия: игла с шаром
+        `<path d="M44 66L48 26H52L56 66z" fill="${f}"/><path d="M50 26H52L56 66H50z" fill="${d}" opacity=".3"/><circle cx="50" cy="22" r="6" fill="${f}"/><circle cx="48" cy="20" r="2" fill="${l}" opacity=".6"/><path d="M50 16V6" stroke="${f}" stroke-width="1"/>` +
+        `<path d="M36 66V56H42V66zM58 66V52H64V66z" fill="${d}"/>` + ground(f, l),
+      (f, d, l) => { // оазис: финиковые пальмы и дюны
+        const palm = (x, h) => { let p = `<path d="M${x} 66Q${x - 2} ${66 - h / 2} ${x + 1} ${66 - h}" stroke="${f}" stroke-width="2" fill="none"/>`;
+          for (let k = 0; k < 6; k++) { const a = -150 + k * 24; p += `<path d="M${x + 1} ${66 - h}q${n2(Math.cos(a * Math.PI / 180) * 10)} ${n2(Math.sin(a * Math.PI / 180) * 6 - 2)} ${n2(Math.cos(a * Math.PI / 180) * 14)} ${n2(Math.sin(a * Math.PI / 180) * 4 + 4)}" stroke="${f}" stroke-width="1.6" fill="none"/>`; } return p; };
+        return `<path d="M18 66Q34 54 50 62Q66 56 82 66z" fill="${d}" opacity=".5"/>` + palm(40, 34) + palm(58, 26) + ground(f, l);
+      }
+    ],
+    katowice: [
+      (f, d, l) => { // шахтный копёр с колёсами
+        return `<path d="M36 66L46 22H54L64 66H58L52 30H48L42 66z" fill="${f}"/><path d="M40 50H60M38 58H62M44 38H56" stroke="${f}" stroke-width="1.4"/>` +
+          `<circle cx="50" cy="20" r="7" fill="none" stroke="${f}" stroke-width="1.6"/><path d="M43 20H57M50 13V27M45 15L55 25M55 15L45 25" stroke="${f}" stroke-width=".6"/>` +
+          `<path d="M66 66V46H80V66z" fill="${d}"/>` + [69, 74].map(x => `<rect x="${x}" y="50" width="3" height="4" fill="${l}" opacity=".6"/>`).join('') + ground(f, l);
+      },
+      (f, d, l) => // скрещённые шахтёрские молоты и лампа
+        `<path d="M30 60L66 22M70 60L34 22" stroke="${f}" stroke-width="2.6" stroke-linecap="round"/><path d="M60 18L72 28L68 32L56 22zM40 18L28 28L32 32L44 22z" fill="${f}"/>` +
+        `<path d="M44 46H56V58Q50 62 44 58z" fill="${f}"/><path d="M46 46Q50 38 54 46" fill="none" stroke="${f}" stroke-width="1.4"/><circle cx="50" cy="52" r="2.4" fill="${l}"/>` + ground(f, l)
+    ],
+    stockholm: [
+      (f, d, l) => // корабль «Васа»
+        `<path d="M24 54H76L70 64H30z" fill="${f}"/><path d="M66 54V46H76z" fill="${f}"/><path d="M40 54V16M54 54V20M30 54V28" stroke="${f}" stroke-width="1.2"/>` +
+        `<path d="M41 18H52L50 30H43zM41 32H53L51 44H43zM55 22H64L62 32H56zM31 30H38L37 40H32z" fill="${l}" opacity=".85"/><path d="M28 58H72" stroke="${d}" stroke-width=".8" stroke-dasharray="2 1.5"/>` + water(l, 63)
+    ],
+    london: [
+      (f, d, l) => // Тауэрский мост
+        `<path d="M28 66V22L32 16L36 22V66zM64 66V22L68 16L72 22V66z" fill="${f}"/><path d="M36 30H64V33H36zM36 36H64" fill="${f}" stroke="${f}" stroke-width=".8"/>` +
+        `<path d="M16 50H84V53H16z" fill="${f}"/><path d="M16 36Q22 48 28 50M72 50Q78 48 84 36" fill="none" stroke="${f}" stroke-width="1.2"/>` +
+        `<path d="M30 28H34V32H30zM66 28H70V32H66z" fill="${d}"/>` + water(l, 58) + ground(f, l)
+    ],
+    berlin: [
+      (f, d, l) => // телебашня на Александерплац
+        `<path d="M48 66L49 32H51L52 66z" fill="${f}"/><circle cx="50" cy="28" r="7" fill="${f}"/><path d="M43 28H57" stroke="${d}" stroke-width="1.2"/><circle cx="48" cy="26" r="2" fill="${l}" opacity=".6"/><path d="M50 21V4" stroke="${f}" stroke-width="1.2"/>` +
+        `<path d="M30 66V54H40V66zM60 66V50H72V66z" fill="${d}"/>` + ground(f, l)
+    ],
+    krakow: [
+      (f, d, l) => { // Суконные ряды: аркада и аттик
+        let s = `<path d="M20 66V42H80V66z" fill="${f}"/>`;
+        for (let x = 22; x < 80; x += 7) s += `<path d="M${x} 66V56Q${x + 2.5} 52 ${x + 5} 56V66z" fill="${d}"/>`;
+        for (let x = 20; x <= 80; x += 6) s += `<path d="M${x - 2} 42L${x} 36L${x + 2} 42z" fill="${f}"/>`;
+        return s + `<path d="M44 42V28H56V42z" fill="${f}"/><path d="M42 28L50 20L58 28z" fill="${f}"/>` + ground(f, l);
+      }
+    ],
+    astana: [
+      (f, d, l) => // шатёр «Хан Шатыр»
+        `<path d="M22 66Q34 50 44 20L50 8L56 20Q66 50 78 66z" fill="${f}"/><path d="M50 8L56 20Q66 50 78 66H50z" fill="${d}" opacity=".3"/>` +
+        [30, 40, 50, 60, 70].map(x => `<path d="M50 10L${x} 66" stroke="${l}" stroke-width=".4"/>`).join('') + ground(f, l)
+    ],
+    antwerp: [
+      (f, d, l) => // вокзал Антверпена: купол с часами
+        `<path d="M24 66V40H76V66z" fill="${f}"/><path d="M34 40Q34 20 50 16Q66 20 66 40z" fill="${f}"/><path d="M50 16Q66 20 66 40H50z" fill="${d}" opacity=".3"/><circle cx="50" cy="30" r="4" fill="${d}"/><path d="M50 30V27.5M50 30H52" stroke="${l}" stroke-width=".6"/>` +
+        `<path d="M30 66V52Q34 46 38 52V66zM62 66V52Q66 46 70 52V66zM44 66V50Q50 42 56 50V66z" fill="${d}"/><path d="M50 16V10" stroke="${f}" stroke-width="1"/>` + ground(f, l)
+    ],
+    bucharest: [
+      (f, d, l) => { // Дворец парламента: ступенчатый массив с колоннадой
+        let s = `<path d="M18 66V50H82V66zM26 50V40H74V50zM36 40V32H64V40zM44 32V24H56V32z" fill="${f}"/>`;
+        for (let x = 20; x < 82; x += 4) s += `<rect x="${x}" y="54" width="1.4" height="10" fill="${d}"/>`;
+        for (let x = 28; x < 74; x += 4) s += `<rect x="${x}" y="43" width="1.2" height="6" fill="${d}"/>`;
+        return s + ground(f, l);
+      }
+    ],
+    lisbon: [
+      (f, d, l) => // трамвай 28 на холме
+        `<path d="M18 66L82 54" stroke="${f}" stroke-width="1.6"/><path d="M28 60L70 52L70 36L28 44z" fill="${f}"/><path d="M28 44Q49 34 70 36" fill="none" stroke="${l}" stroke-width=".6"/>` +
+        [32, 40, 48, 56, 63].map((x, i) => `<path d="M${x} ${46 - i * 1.6}h5v6h-5z" fill="${d}"/>`).join('') + `<path d="M50 40L46 28M46 28H54" stroke="${f}" stroke-width=".8"/>` +
+        `<circle cx="36" cy="61" r="2.4" fill="${d}"/><circle cx="62" cy="56" r="2.4" fill="${d}"/>`
+    ],
+    sydney: [
+      (f, d, l) => // мост Харбор-Бридж
+        `<path d="M18 52Q50 18 82 52" fill="none" stroke="${f}" stroke-width="3"/><path d="M22 52Q50 28 78 52" fill="none" stroke="${f}" stroke-width="1.2"/><path d="M16 50H84V53H16z" fill="${f}"/>` +
+        `<path d="M18 53V66H26V53zM74 53V66H82V53z" fill="${f}"/>` + [30, 38, 46, 54, 62, 70].map(x => `<path d="M${x} ${n2(52 - Math.sin((x - 18) / 64 * Math.PI) * 25)}V50" stroke="${l}" stroke-width=".5"/>`).join('') + water(l, 58)
+    ]
+  };
+  // символ выпуска: 2026 — основной, дальше по кругу запасные (у каждого города свои)
+  function symbolFor(lm, th) {
+    const all = [LX[lm] || L[lm] || L.generic].concat(ALT[lm] || []), k = ((edYear(th) - 2026) % all.length + all.length) % all.length;
+    return all[k];
+  }
+  const ENAMEL = { snow: ['#3f8fd0', '#5aa8e0'], chevron: ['#2c4a7a', '#b32d3a'], zigzag: ['#1f8fd0', '#c99a2a'], sunray: ['#d0782a', '#b8432a'], gears: ['#4a525e', '#a8322a'], compass: ['#2d5a8c', '#3a7ab0'], petals: ['#c0386e', '#8e3fd0'], crown: ['#a8243a', '#c99a2a'],
+    domes: ['#1d6b5e', '#2f5a9c'], mashrabiya: ['#6e4a20', '#1d5a6b'], lattice: ['#1f4fb0', '#2f7ad0'], shells: ['#1f8fc0', '#e08a2a'], ziggurat: ['#2a3f6e', '#8a2a3a'], mountains: ['#2f7a6a', '#3a6ab0'], horns: ['#19b5a5', '#0f8a9e'], folk: ['#8e3fd0', '#b04cc8'], nordic: ['#2f78d6', '#3fa0e8'], baroque: ['#b3203a', '#2747a8'], tropic: ['#17a35a', '#0f8a6e'],
     deco: ['#1d2f6e', '#a8243a'], arabesque: ['#0f7d63', '#1f6fa8'], skyline: ['#2f8fe0', '#d24a2a'], hexcut: ['#3f6c99', '#5a4fb0'], laurel: ['#a8243a', '#1f7a6e'], vitrage: ['#2fa58a', '#2f78d6'] };
   function coin(th, lv, size, opts) {
     lv = Math.max(0, Math.min(3, Number(lv) || 0)); size = size || 64; opts = opts || {};
@@ -769,10 +1013,10 @@
     const emb = add(`<filter id="$ID" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation=".7" result="b"/><feSpecularLighting in="b" surfaceScale="2.4" specularConstant="1" specularExponent="16" lighting-color="#ffffff" result="s"><feDistantLight azimuth="230" elevation="46"/></feSpecularLighting><feComposite in="s" in2="SourceAlpha" operator="in" result="s2"/><feOffset in="SourceAlpha" dx=".5" dy=".7" result="o"/><feComposite in="SourceAlpha" in2="o" operator="out" result="edge"/><feFlood flood-color="#000" flood-opacity=".35"/><feComposite in2="edge" operator="in" result="dk"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="dk"/></feMerge><feComposite in2="s2" operator="arithmetic" k2="1" k3=".75"/></filter>`);
     const sh = add(`<filter id="$ID" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1.6" stdDeviation="1.4" flood-color="#000" flood-opacity=".5"/></filter>`);
     // эмаль
-    const ec = ENAMEL[st] || ENAMEL.laurel, e1 = ec[(h >>> 5) % 2], e2 = mix(e1, '#000000', .45), e0 = holo ? mix(e1, '#ffffff', .45) : mix(e1, '#ffffff', .22);
+    const ec = ENAMEL[st] || ENAMEL.laurel, e1 = hueRot(ec[edYear(th) % 2], edHue(th) / 3), e2 = mix(e1, '#000000', .45), e0 = holo ? mix(e1, '#ffffff', .45) : mix(e1, '#ffffff', .22);
     const enG = 'url(#' + add(`<radialGradient id="$ID" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="${e0}"/><stop offset=".6" stop-color="${e1}"/><stop offset="1" stop-color="${e2}"/></radialGradient>`) + ')';
     const clip = add(`<clipPath id="$ID"><circle cx="50" cy="50" r="31.5"/></clipPath>`);
-    const pv = st === 'vitrage' ? 4 : (h >>> 9) % 4, lc = mix(e1, '#ffffff', .45);
+    const pv = st === 'vitrage' && ((edYear(th) - 2026) % 3 + 3) % 3 === 0 ? 4 : (h32('cpv|' + city) + edYear(th)) % 4, lc = mix(e1, '#ffffff', .45);
     let pat = '';
     if (pv === 0) { // филигрань: завитки-«огурцы»
       for (let y = 16; y < 86; y += 10) for (let x = 16 + ((y / 10) % 2) * 5; x < 86; x += 10) pat += `<path d="M${x} ${y}c2.6-2.6 6-.6 4.4 2.2c-1 1.6-3.2 1.2-3-.4" fill="none" stroke="${lc}" stroke-width=".55" opacity=".55"/>`;
@@ -784,21 +1028,21 @@
     } else if (pv === 3) { // чешуя / волны
       for (let y = 14; y < 90; y += 4) for (let x = 14 + (y % 8 ? 2.5 : 0); x < 90; x += 5) pat += `<path d="M${x - 2.5} ${y}a2.5 2.5 0 0 1 5 0" fill="none" stroke="${lc}" stroke-width=".4" opacity=".5"/>`;
     } else { // витраж: цветные стёкла в свинцовых перемычках
-      const G = ['#9fd8ff', '#ffb3d9', '#bff2d9', '#d9c9ff', '#fff2b3', '#7fc8f0', '#f0a0c8'];
-      for (let r = 0; r < 4; r++) { const r0 = 31.5 - r * 7.6, r1 = r0 - 7.6, n = 10 + (3 - r) * 4;
+      const G = ['#9fd8ff', '#ffb3d9', '#bff2d9', '#d9c9ff', '#fff2b3', '#7fc8f0', '#f0a0c8'].map(c => hueRot(c, edHue(th) * 1.5)), nr = 3 + edYear(th) % 3;
+      for (let r = 0; r < nr + 1; r++) { const r0 = 31.5 - r * (31.5 / (nr + 1)), r1 = r0 - 31.5 / (nr + 1), n = 8 + (nr - r) * (3 + edYear(th) % 3);
         for (let k = 0; k < n; k++) { const a0 = k / n * Math.PI * 2 + r * .3, a1 = (k + 1) / n * Math.PI * 2 + r * .3, P2 = (rr, a) => `${n2(50 + Math.cos(a) * rr)} ${n2(50 + Math.sin(a) * rr)}`;
           pat += `<path d="M${P2(r0, a0)}A${r0} ${r0} 0 0 1 ${P2(r0, a1)}L${P2(Math.max(0, r1), a1)}A${Math.max(0, r1)} ${Math.max(0, r1)} 0 0 0 ${P2(Math.max(0, r1), a0)}z" fill="${G[(k + r * 3 + h) % G.length]}" stroke="#4a5560" stroke-width=".7"/>`; } }
     }
     const enamel = `<g clip-path="url(#${clip})"><circle cx="50" cy="50" r="32" fill="${enG}"/>${pat}<circle cx="50" cy="50" r="32" fill="url(#${add(`<radialGradient id="$ID" cx=".35" cy=".25" r=".6"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>`)})"/></g>`;
     // символ города рельефным металлом
-    const lm = st === 'horns' && h % 2 === 0 ? 'skull' : landmarkOf(th.city);
+    const lm = st === 'horns' && (edYear(th) % 4) === 1 ? 'skull' : landmarkOf(th.city);
     const lf = holo ? lin([[0, '#ffffff'], [.5, '#d7defa'], [1, '#9aa6cc']], 0, 0, .6, 1) : lin([[0, M[4]], [.45, M[3]], [1, M[1]]], 0, 0, .5, 1), ld = M[1], ll = M[4];
     const skull = `<path d="M50 30C40 30 37 37 38 44C39 50 44 52 45 56L47 66H53L55 56C56 52 61 50 62 44C63 37 60 30 50 30z" fill="${lf}" stroke="${ld}" stroke-width=".6"/><path d="M38 38C30 38 18 34 10 26C16 36 26 42 38 43zM62 38C70 38 82 34 90 26C84 36 74 42 62 43z" fill="${lf}" stroke="${ld}" stroke-width=".6"/><path d="M44 42l3 3-3 2zM56 42l-3 3 3 2z" fill="${ld}"/><path d="M48 58H52M48.5 61H51.5" stroke="${ld}" stroke-width=".7"/>`;
     const ch = (k) => (holo ? ['#1d2340', '#4a5684', '#8c9bcb', '#cfd9f5', '#f4f7ff'] : M.slice(0, 5)).map(x => (parseInt(x.slice(1 + k * 2, 3 + k * 2), 16) / 255).toFixed(3)).join(' ');
     const tone = add(`<filter id="$ID" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="table" tableValues="${ch(0)}"/><feFuncG type="table" tableValues="${ch(1)}"/><feFuncB type="table" tableValues="${ch(2)}"/></feComponentTransfer></filter>`);
     // v126: символ — детальная версия (LX), всегда внутри внутреннего круга (клип), с гравировкой, отражением в воде,
     // сиянием за ним и дальним силуэтом города; по краю диска — жемчужный поясок
-    const art = lm === 'skull' ? skull : (LX[lm] || L[lm] || L.generic)(lf, ld, ll, h), skullLm = lm === 'skull';
+    const art = lm === 'skull' ? skull : symbolFor(lm, th)(lf, ld, ll, h), skullLm = lm === 'skull';
     const T = skullLm ? 'translate(50 50) scale(.76) translate(-50 -46)' : 'translate(50 51) scale(.74) translate(-50 -38)', gy = 71.7;
     const wm = add(`<filter id="$ID" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0"/></filter>`);
     const hm = add(`<mask id="$ID" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><g filter="url(#${wm})"><g transform="${T}">${art}</g></g></mask>`);
@@ -911,5 +1155,5 @@
     });
   }
   const inl = fn => function () { ensureFonts(); return fontsInline(fn.apply(this, arguments)); };
-  W.CS2StickerArt = { ensureFonts, eventSticker: inl(eventSticker), teamSticker: inl(teamSticker), autograph: inl(autograph), coin: inl(coin), fontsInline, landmarkOf, inspect, styleOf, SIG, DISPLAY };
+  W.CS2StickerArt = { styleOf, MSTYLE, hueRot, ensureFonts, eventSticker: inl(eventSticker), teamSticker: inl(teamSticker), autograph: inl(autograph), coin: inl(coin), fontsInline, landmarkOf, inspect, styleOf, SIG, DISPLAY };
 })();

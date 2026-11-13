@@ -58,7 +58,35 @@ function ensurePreviewPickem() {
 }
 const ST_CATS = [['threeZero', '3:0', 2, 'adv'], ['advance', '3:1 · 3:2 — выход', 6, 'adv'], ['zeroThree', '0:3', 2, 'out']];
 const PO_CATS = [['qf', 'Победители ¼ финала', 4, 'adv'], ['sf', 'Победители ½ финала', 2, 'adv'], ['champion', 'Чемпион', 1, 'gold']];
-const UI = { tab: '1', cat: 'threeZero' };
+const UI = { tab: '1', cat: 'threeZero', manual: false, lastDone: -1 };
+// v131: после завершения Мейджора Pick'Em остаётся открытым ещё ~1,5 месяца (pickem.afterDays): можно посмотреть все
+// свои прогнозы по стадиям и плей-офф с итогами и потратить жетоны. Снимок фиксируется в момент завершения
+// (seasonState.v131PickemDone), потому что currentTournament вскоре переключается на следующий турнир.
+const DAYMS = 864e5;
+const afterDays = () => (window.CS2Config ? window.CS2Config.get('pickem.afterDays', 45) : 45);
+function doneSnap() {
+  const s = SS(), d = s && s.v131PickemDone; if (!d) return null;
+  const ct = CT(); if (ct?.isMajor && !ct.completed) return null;
+  if (gameNow() - (Number(d.at) || 0) > afterDays() * DAYMS) return null;
+  const nx = upcomingMajor(); if (nx && nx.locked && nx.entry.name !== d.name) return null;   // открылся Pick'Em следующего Мейджора
+  return d;
+}
+function captureDone() {
+  const ct = CT(), s = SS(); if (!s || !ct?.isMajor || !ct.completed || !Array.isArray(ct.majorStages)) return;
+  const season = ct.season || s.currentSeason || 1, prev = s.v131PickemDone;
+  if (prev && prev.name === ct.name && prev.season === season) return;
+  const picks = (typeof currentPickem !== 'undefined' && currentPickem.major && currentPickem.major.t === ct.name) ? currentPickem.major : (s.v33Pickem?.t === ct.name ? s.v33Pickem.major : null);
+  const sp = (picks && picks.scoredPlayoffPicks) || {}, poRes = { qf: [], sf: [], champion: null };
+  Object.keys(sp).forEach(k => { const i = k.indexOf(':'), kind = k.slice(0, i), n = k.slice(i + 1); if (kind === 'qf') poRes.qf.push(n); else if (kind === 'sf') poRes.sf.push(n); else if (kind === 'champion') poRes.champion = n; });
+  if (!poRes.champion && ct.champion) poRes.champion = ct.champion;
+  const st3 = ct.majorStages[2];
+  s.v131PickemDone = { name: ct.name, season, at: gameNow(),
+    stages: ct.majorStages.map(st => st ? { teams: (st.teams || []).map(t => ({ name: t.name, wins: t.wins, losses: t.losses })), rounds: JSON.parse(JSON.stringify(st.rounds || [])), completed: true } : null),
+    poRoster: st3 ? (st3.teams || []).filter(t => t.wins >= 3).map(t => t.name) : [], poRes,
+    picks: JSON.parse(JSON.stringify({ stages: (picks && picks.stages) || {}, playoffs: (picks && picks.playoffs) || { qf: [], sf: [], champion: null }, earnedPoints: (picks && picks.earnedPoints) || 0 })) };
+  try { saveSeasonState(); } catch (e) {}
+}
+window.v131PickemDone = () => doneSnap();
 let categoryManual = false;
 
 // Кнопка Pick'Em появляется только в день фиксации состава (Pick'Em Day) и
@@ -66,6 +94,7 @@ let categoryManual = false;
 function pickemNavAvailable() {
   const ct = CT();
   if (ct?.isMajor && !ct.completed) return true;
+  try { captureDone(); if (doneSnap()) return true; } catch (e) {}   // v131: ещё ~1,5 месяца после Мейджора
   const s = SS(); if (!s) return false;
   const idx = Number(s.tournamentIndex) || 1;
   const schedule = s.seasonSchedule || [];
@@ -142,6 +171,11 @@ function restore() { // после перезагрузки вернуть пи�
 }
 function selectNextOpenStage() {
   const ct = CT(); if (!ct?.isMajor || ct.completed || UI.tab === 'po') return;
+  // v131: игрок сам открыл вкладку (например, завершённую Stage I — посмотреть свои пики) — не перекидываем,
+  // пока не завершится ещё одна стадия
+  const doneN = (ct.majorStages || []).filter(x => x && x.completed).length;
+  if (doneN !== UI.lastDone) { UI.lastDone = doneN; UI.manual = false; }
+  if (UI.manual) return;
   const current = Number(UI.tab) || 1, active = stageOf(current);
   if (active && !active.completed) return;
   for (let i = 1; i <= 3; i++) {
@@ -157,6 +191,7 @@ function normalizePickCategory() {
   if (UI.cat === 'zeroThree' && (p.zeroThree || []).length >= 2) UI.cat = 'advance';
 }
 function syncAfterCalendarAdvance() {
+  try { captureDone(); } catch (e) {}
   restore();
   const ct = CT();
   if (ct?.isMajor && !ct.completed && typeof currentPickem !== 'undefined') {
@@ -179,19 +214,21 @@ function persist() {
 }
 const major = () => {
   const ct = CT();
+  { const d = !(ct?.isMajor && !ct.completed) && doneSnap(); if (d) return d.picks; }
   if (ct?.isMajor && !ct.completed && typeof currentPickem !== 'undefined') { return liveMajorPicks(ct); }
   return ensurePreviewPickem();
 };
 const stageOf = i => {
   const ct = CT();
   if (ct?.isMajor && !ct.completed) return ct.majorStages?.[i - 1] || null;
+  { const d = doneSnap(); if (d) return d.stages[i - 1] || null; }
   return i === 1 ? upcomingMajor()?.stage1 || null : null;
 };
 const started = st => (st?.rounds || []).some(r => (r || []).some(m => m && m.winner));
 function stagePicks(i) { const m = major(); const p = m.stages[i] || (m.stages[i] = { threeZero: [], advance: [], zeroThree: [] }); return p; }
 function poPicks() { const m = major(); m.playoffs = m.playoffs || { qf: [], sf: [], champion: null }; return m.playoffs; }
-function poRoster() { const st = stageOf(3); return st?.completed ? st.teams.filter(t => t.wins >= 3).map(t => t.name) : []; }
-const poStarted = () => { const ct = CT(); return !!ct && (ct.matches || []).some(m => m && !m.isSwiss && m.winner && /четверть|quarter|¼/i.test(String(m.stage || m.round || ''))); };
+function poRoster() { { const ct = CT(), d = !(ct?.isMajor && !ct.completed) && doneSnap(); if (d) return d.poRoster || []; } const st = stageOf(3); return st?.completed ? st.teams.filter(t => t.wins >= 3).map(t => t.name) : []; }
+const poStarted = () => { const ct = CT(); if (!(ct?.isMajor && !ct.completed) && doneSnap()) return true; return !!ct && (ct.matches || []).some(m => m && !m.isSwiss && m.winner && /четверть|quarter|¼/i.test(String(m.stage || m.round || ''))); };
 function pickemCanEditStage(i) {
   const ct=CT();
   if(ct?.isMajor && !ct.completed) {
@@ -248,31 +285,33 @@ function pPickem(arg) {
   selectNextOpenStage();
   normalizePickCategory();
   const ct = CT(), s = SS() || {};
-  const liveMajor = !!(ct && ct.isMajor && !ct.completed), nx = liveMajor ? null : upcomingMajor();
-  const title = liveMajor ? ct.name : nx?.entry?.name;
+  const liveMajor = !!(ct && ct.isMajor && !ct.completed), D = liveMajor ? null : doneSnap(), nx = liveMajor || D ? null : upcomingMajor();
+  const title = liveMajor ? ct.name : D ? D.name : nx?.entry?.name;
   if (!title) return `<div class="hs-head"><h1>Pick'Em Major</h1><span class="pk-head-note">Медаль Major появится после открытия прогнозов</span></div>${box('Прогнозы на Major', empty('Ближайшего Major в этом сезоне нет.'))}`;
-  if (!liveMajor && UI.tab !== '1') { UI.tab = '1'; UI.cat = 'threeZero'; }
+  if (!liveMajor && !D && UI.tab !== '1') { UI.tab = '1'; UI.cat = 'threeZero'; }
   const pickemDay = nx?.lockAt ? H.fdate(nx.lockAt) : '';
-  const preBanner = liveMajor ? '' : (nx?.locked
+  const preBanner = liveMajor ? '' : D ? `<div class="pk-bar"><span class="pk-st done">Мейджор завершён · Pick'Em открыт до ${H.fdate((Number(D.at) || 0) + afterDays() * DAYMS)}: смотрите свои прогнозы по стадиям и тратьте жетоны</span></div>` : (nx?.locked
     ? `<div class="pk-bar"><span class="pk-st open">Состав Major зафиксирован · Pick'Em открыт с ${pickemDay || "дня Pick'Em"}</span></div>`
     : `<div class="pk-bar"><span class="pk-st lock">Состав участников ещё предварительный. Pick'Em откроется после фиксации состава · ${pickemDay || 'за сутки до старта'}</span></div>`);
   const tabs = [1, 2, 3].map(i => { const st = stageOf(i); return `<button type="button" class="pk-tab${UI.tab === String(i) ? ' on' : ''}${st ? '' : ' off'}" data-pktab="${i}" ${st ? '' : 'disabled'}>${st?.completed ? '✓ ' : ''}Stage ${'I'.repeat(i)}</button>`; }).join('') +
     `<button type="button" class="pk-tab${UI.tab === 'po' ? ' on' : ''}${poRoster().length ? '' : ' off'}" data-pktab="po" ${poRoster().length ? '' : 'disabled'}>Плей-офф</button>`;
   let body = '';
   if (UI.tab === 'po') {
-    const ros = poRoster(), p = poPicks(), lock = poStarted() || (!liveMajor && !nx?.locked);
+    const ros = poRoster(), p = poPicks(), lock = !!D || poStarted() || (!liveMajor && !nx?.locked);
     const cand = { qf: ros, sf: p.qf, champion: p.sf };
     if (!(UI.cat in cand)) UI.cat = 'qf';
     const all = { qf: p.qf, sf: p.sf, champion: p.champion ? [p.champion] : [] };
-    body = layout(cand[UI.cat], PO_CATS, all, lock, 'po', null);
+    // v131: после Мейджора — с отметками угадано/нет
+    const poRes = D ? { qf: D.poRes.qf || [], sf: D.poRes.sf || [], champion: D.poRes.champion ? [D.poRes.champion] : [] } : null;
+    body = layout(D ? ros : cand[UI.cat], PO_CATS, all, lock, 'po', poRes);
   } else {
     const i = +UI.tab, st = stageOf(i); if (!st) { UI.tab = '1'; return pPickem(arg); }
     if (!ST_CATS.some(c => c[0] === UI.cat)) UI.cat = 'threeZero';
-    const p = stagePicks(i), lock = liveMajor ? (started(st) || st.completed) : !nx?.locked;
+    const p = stagePicks(i), lock = liveMajor ? (started(st) || st.completed) : D ? true : !nx?.locked;
     const res = st.completed ? { threeZero: st.teams.filter(t => t.wins === 3 && t.losses === 0).map(t => t.name), advance: st.teams.filter(t => t.wins >= 3).map(t => t.name), zeroThree: st.teams.filter(t => t.wins === 0 && t.losses === 3).map(t => t.name) } : null;
     body = layout(st.teams.map(t => t.name), ST_CATS, p, lock, String(i), res, st);
   }
-  const majorSeason = liveMajor ? (ct.season || s.currentSeason || 1) : (nx?.entry?.season || s.currentSeason || 1);
+  const majorSeason = liveMajor ? (ct.season || s.currentSeason || 1) : D ? D.season : (nx?.entry?.season || s.currentSeason || 1);
   const medalPanel = majorMedalPanel(title, majorSeason);
   return `<div class="hs-head"><h1>Pick'Em · ${esc(title)}</h1><span class="pk-head-note">Прогнозы Major · награда сверху</span></div>
     <div class="pk-page-grid"><section class="pk-play-area">${preBanner}<div class="pk-tabs">${tabs}</div>${body}</section>${medalPanel}</div>`;
@@ -355,9 +394,12 @@ function autoFill() {
 }
 const rer = () => { const y = window.scrollY; H.render(); window.scrollTo(0, y); document.getElementById('hs-page')?.classList.remove('hs-anim'); };
 H.PAGES.pickem = pPickem;
+// v131: снимок завершённого Мейджора — по таймеру и во время перемотки (через публикации Pick'Em)
+try { (globalThis.CS2Loop?.every || ((f, ms) => setInterval(f, ms)))(() => { try { captureDone(); } catch (e) {} }, 3000); } catch (e) {}
+setTimeout(() => { try { const pub = window.V70PickemPublications; if (pub && typeof pub.sync === 'function' && !pub.sync.__v131) { const b = pub.sync; pub.sync = function () { try { captureDone(); } catch (e) {} return b.apply(this, arguments); }; pub.sync.__v131 = true; } } catch (e) {} }, 2000);
 // Pick'Em находится в раскрывающемся разделе Major верхней навигации.
 H.SECTION_OF.pickem = 'major';
-H.CLICKS.push(['[data-pktab]', el => { UI.tab = el.dataset.pktab; UI.cat = UI.tab === 'po' ? 'qf' : 'threeZero'; categoryManual = false; normalizePickCategory(); rer(); }]);
+H.CLICKS.push(['[data-pktab]', el => { UI.manual = true; UI.tab = el.dataset.pktab; UI.cat = UI.tab === 'po' ? 'qf' : 'threeZero'; categoryManual = false; normalizePickCategory(); rer(); }]);
 H.CLICKS.push(['[data-pkteam]', el => { addTeam(el.dataset.pkteam); rer(); }]);
 H.CLICKS.push(['[data-pkdrop]', el => { if (!pickemCanEdit()) return; const [k, n] = el.dataset.pkdrop.split('|'); const c = curPicks(); c.set(k, (c.get(k) || []).filter(x => x !== n)); if (UI.tab === 'po') { const p = poPicks(); p.sf = p.sf.filter(x => p.qf.includes(x)); if (p.champion && !p.sf.includes(p.champion)) p.champion = null; } UI.cat = k; categoryManual = true; persist(); rer(); }]);
 H.CLICKS.push(['[data-pkcat]', el => { UI.cat = el.dataset.pkcat; categoryManual = true; rer(); }]);   // ячейка — после клика по команде в ячейке

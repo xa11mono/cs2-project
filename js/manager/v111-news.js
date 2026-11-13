@@ -40,6 +40,7 @@
   const pubImg = (s, px, cls) => `<img class="v111-pub${cls ? ' ' + cls : ''}" src="${esc(s.logo)}" alt="${esc(s.name)}" width="${px}" height="${px}" loading="lazy" decoding="async">`;
   function thumbLogo(el, s) {
     const box = el.querySelector(BOX); if (!box || !box.dataset.axs || box.dataset.v111pub) return;   // ждём, пока v100 оформит превью
+    if (box.querySelector('.nc')) { box.dataset.v111pub = s.id; return; }   // v126: обложка-шаблон уже показывает паблик
     box.dataset.v111pub = s.id;
     const vis = box.querySelector('.ax-nvis');
     if (vis && vis.classList.contains('pl')) { const l = vis.querySelector('.ax-nvis-l'); if (l) l.remove(); vis.insertAdjacentHTML('beforeend', pubImg(s, 22, 'ax-nvis-l')); }

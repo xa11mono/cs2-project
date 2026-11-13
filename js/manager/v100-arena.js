@@ -115,7 +115,7 @@
   const TAB_PAGES = new Set(['training', 'tactics', 'staff', 'academy', 'finance', 'control', 'manage', 'pick', 'inbox', 'dm', 'debrief', 'decisions', 'scout', 'season', 'settings', 'gs', 'veto', 'desk']);
   const GROUPS = [
     ['hist', 'История', 'history', ['majorpath', 'majors', 'awards', 'hof', 'records', 'eras', 'rivalries', 'archive', 'nations', 'stats']],
-    ['comm', 'Фан-зона', 'community', ['news', 'transfers', 'predict', 'community', 'forum', 'fantasy', 'fpl', 'betting', 'cards', 'stickers', 'fan']]
+    ['comm', 'Фан-зона', 'community', ['news', 'transfers', 'predict', 'community', 'forum', 'fantasy', 'fpl', 'betting', 'cards', 'stickers', 'capsules', 'fan']]
   ];
   const labelOf = b => { const c = b.cloneNode(true); c.querySelectorAll('i,b,small,.gs-badge,svg').forEach(n => n.remove()); return c.textContent.replace(/\s+/g, ' ').trim(); };
   function allNav() {   // все разделы, которые модули зарегистрировали в старой навигации
@@ -526,6 +526,9 @@
   function newsVisual(n) {
     const { pl, tm } = newsWho(n), u = pl ? photo(pl.p) : null, c = tm ? tint(tm) : [255, 122, 26];
     const scene = tm ? sceneByTint(c) : sceneFor(n);
+    // v126: обложки-шаблоны (v126-news-covers.js): паблик на всю обложку, трансфер «откуда → куда», цифра, счёт, цитата…
+    if (n && n.title && W.CS2NewsCovers) { try { const html = W.CS2NewsCovers.cover(n, { pl, tm, photo: u, teams: TEAMS(), logoFor: x => media('team', x), tintFor: x => tint(x), force: n.__force });
+      if (html) return { scene, html }; } catch (e) { console.warn('[v126 covers]', e); } }
     if (u) return { scene, html: `<span class="ax-nvis pl" style="--tc:${rgb(c, .55)}"><img src="${esc(u)}" alt="" loading="lazy" decoding="async">${tm && media('team', tm) ? logoImg(tm, 22, 'ax-nvis-l') : ''}</span>` };
     if (tm && media('team', tm)) return { scene, html: `<span class="ax-nvis tm" style="--tc:${rgb(c, .5)}">${logoImg(tm, 48)}</span>` };
     return { scene: sceneFor(n), html: '' };
@@ -878,5 +881,5 @@
   D.addEventListener('keydown', e => { if (e.key === 'Escape') D.documentElement.classList.remove('ax-drawer'); });
   D.addEventListener('click', e => { if (D.documentElement.classList.contains('ax-drawer') && !e.target.closest('#gs-side, .ax-burger')) D.documentElement.classList.remove('ax-drawer'); });
 
-  W.CS2Arena = { renderSide, paintTop, nextMatch, deskPage, IC, sound: SND };
+  W.CS2Arena = { renderSide, paintTop, nextMatch, deskPage, IC, sound: SND, newsVisual };
 })();
