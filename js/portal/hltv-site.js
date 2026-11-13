@@ -25,8 +25,15 @@ function flag(code, fb) { if (!/^[A-Z]{2}$/.test(code || '') && fb) { const cps 
   if (/^[A-Z]{2}$/.test(code || '')) return window.V34Flags ? window.V34Flags.html(code) : String.fromCodePoint(...[...code].map(c => 127397 + c.charCodeAt(0))); return fb && !/🌍/.test(fb) ? fb : (window.V34Flags ? '<span class="flg none" title="Страна неизвестна"></span>' : '🌍'); } // v34: SVG-флаги вместо эмодзи (в Windows эмодзи флагов нет)
 const pFlag = p => flag(p?.country, p?.flag);
 function initials(name) { const w = String(name || '?').replace(/^Team\s+/i, '').split(/[\s.]+/).filter(Boolean); return (w.length >= 2 ? w[0][0] + w[1][0] : String(w[0] || '?').slice(0, 2)).toUpperCase(); }
-const photoOf = p => (p && ((window.V31Media && window.V31Media.url('player', p.nick)) || p.photo)) || null; // v31: свои фото пользователя
-const photoHtml = (p, full) => { const u = full && p && window.V31Media ? (window.V31Media.full(p.nick) || photoOf(p)) : photoOf(p); return `<span class="cs2-portrait${u ? '' : ' empty'}">${u ? `<img src="${esc(u)}" alt="" loading="lazy" decoding="async">` : SIL}</span>`; };
+const photoOf = p => {
+  const original = (p && ((window.V31Media && window.V31Media.url('player', p.nick)) || p.photo)) || null;
+  return window.CS2JerseySwap ? window.CS2JerseySwap.photoFor(p, original, 'portrait') : original;
+}; // v147: generated club kit is selected by current roster, source media remains immutable
+const photoHtml = (p, full) => {
+  const original = full && p && window.V31Media ? (window.V31Media.full(p.nick) || photoOf(p)) : photoOf(p);
+  const u = window.CS2JerseySwap ? window.CS2JerseySwap.photoFor(p, original, full ? 'full' : 'portrait') : original;
+  return `<span class="cs2-portrait${u ? '' : ' empty'}">${u ? `<img src="${esc(u)}" alt="" loading="lazy" decoding="async">` : SIL}</span>`;
+};
 function logo(name, cls) {
   const t = teamBy(name), h = 190 + (hash(name) % 140);
   const media = window.V31Media && window.V31Media.url('team', name);
