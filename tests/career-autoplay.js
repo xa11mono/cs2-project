@@ -44,6 +44,15 @@ const path = require('path'), fs = require('fs'), os = require('os');
     A.starters = t => (t.players || []).filter(x => x && (!x.status || x.status === 'STARTER'));
     A.snap = () => { const t = A.me(); return t ? A.starters(t).map(x => x.nick).sort() : []; };
     A.roster0 = A.snap();
+    // трекер исходного состава: где игрок и кто менял статус (стек)
+    A.trail = []; A.lastLoc = {};
+    A.where = nick => { for (const t of teams) { const x = (t.players || []).find(y => y && y.nick === nick); if (x) return { x, at: t.name + '/' + (x.status || 'STARTER') }; }
+      const f = (transferState.freeAgents || []).find(y => y && y.nick === nick); if (f) return { x: f, at: 'FA/' + (f.status || '') + (f.reservedFor ? '>' + f.reservedFor : '') };
+      return { x: null, at: 'НЕТ' }; };
+    A.track = () => { const d = new Date(seasonState.calendar.currentMs).toISOString().slice(0, 10);
+      (A.roster0 || []).forEach(n => { const w = A.where(n), x = w.x;
+        if (x && !x.__trap) { try { let v = x.status; Object.defineProperty(x, 'status', { configurable: true, enumerable: true, get() { return v; }, set(nv) { if (nv !== v) A.trail.push({ d: new Date(seasonState.calendar.currentMs).toISOString().slice(0, 10), nick: n, set: (v || '') + '→' + (nv || ''), stack: (new Error().stack || '').split('\n').slice(2, 7).map(l => l.trim().replace(/^at /, '').replace(/file:\/\/\S*\/js\/manager\//, '')).join(' | ') }); v = nv; } }); Object.defineProperty(x, '__trap', { value: 1 }); } catch (e) {} }
+        if (A.lastLoc[n] !== w.at) { A.trail.push({ d, nick: n, loc: (A.lastLoc[n] || '?') + ' ⇒ ' + w.at }); A.lastLoc[n] = w.at; } }); };
     A.allPlayers = () => { const out = []; teams.forEach(t => (t.players || []).forEach(x => x && out.push({ p: x, t }))); return out; };
     // кандидаты на усиление: роль слабейшего игрока основы, сила выше, бюджет позволяет
     A.targets = (opts) => {
@@ -122,7 +131,9 @@ const path = require('path'), fs = require('fs'), os = require('os');
       for (let k = 0; k < 14 && seasonState.calendar.currentMs < target - 3600e3; k++) {
         const left = Math.max(1, Math.round((target - seasonState.calendar.currentMs) / DAY));
         try { A.decide(); } catch (e) {}
+        try { A.track(); } catch (e) {}
         try { await window.v33SkipDays(left); } catch (e) {}
+        try { A.track(); } catch (e) {}
         document.querySelectorAll('#v84-legacy-modal').forEach(x => x.remove());
         try { window.V98Squad.settle(); A.pump(); } catch (e) {}
       }
@@ -182,7 +193,7 @@ const path = require('path'), fs = require('fs'), os = require('os');
       bestAcad: acad.flatMap(t => st(t).map(x => ({ nick: x.nick, team: t.name, pow: Math.round(A.pow(x)), age: x.age }))).sort((a, b) => b.pow - a.pow).slice(0, 5) };
     const t = A.me();
     return { team: me, strat: A.strat, fired: A.fired, finalRank: rank(me), roster0: A.roster0, roster1: t ? st(t).map(x => x.nick).sort() : [], bench: t ? (t.players || []).filter(x => x && x.status === 'BENCH').map(x => x.nick) : [],
-      bySeason, deals: A.deals, decisions: A.decisions, weeks: A.weeks, journal: J.filter(e => e.team === me || e.from === me || (e.players || []).some(x => (A.roster0 || []).includes(x))).slice(-80).map(e => ({ d: new Date(e.ts).toISOString().slice(0, 10), type: e.type, team: e.team, from: e.from, kind: e.kind, actor: e.actor, player: e.player, out: e.out, reason: e.reason })), world, careerLog: (window.V31.S().career.log || []).slice(-40) };
+      bySeason, trail: A.trail.slice(-300), deals: A.deals, decisions: A.decisions, weeks: A.weeks, journal: J.filter(e => e.team === me || e.from === me || (e.players || []).some(x => (A.roster0 || []).includes(x))).slice(-80).map(e => ({ d: new Date(e.ts).toISOString().slice(0, 10), type: e.type, team: e.team, from: e.from, kind: e.kind, actor: e.actor, player: e.player, out: e.out, reason: e.reason })), world, careerLog: (window.V31.S().career.log || []).slice(-40) };
   });
   rep.errors = errs.slice(0, 20); rep.minutes = Math.round((Date.now() - t0) / 600) / 100;
   fs.writeFileSync(reportFile, JSON.stringify(rep, null, 1));
