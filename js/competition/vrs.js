@@ -269,6 +269,9 @@
         const a = Number(e.calendar.startMs), b = Number(e.calendar.endMs) || a + 14 * DAY;
         out.push(a - PUB_BEFORE, b + DAY);
       });
+      // v146: плюс ежемесячная публикация (1-е число). Раньше таблица стояла по 2–3 месяца и потом прыгала разом
+      // на 7–15 мест; теперь те же изменения приходят малыми шагами (см. vrs.pubBlend3 / vrs.pubCap3).
+      if (CF('vrs.pubMonthly', 1)) for (let m = 1; m < 24; m++) out.push(Date.UTC(y, m, 1));
     }
     pubCache = { key, dates: out.sort((a, b) => a - b) };
     return pubCache.dates;
@@ -293,7 +296,7 @@
     if (window.CS2VRSLivePts || !Number.isFinite(Number(t.pts)) || t.vrsPubAt == null) { t.pts = Math.round(clamp(shown, 400, 2000)); t.vrsPubAt = pa; }
     else if (pa > Number(t.vrsPubAt) || pa < Number(t.vrsPubAt) - 200 * DAY) {   // новая публикация (или сохранение «из будущего»)   // v113: публикация сдвигает очки на 65% пути к расчётным — без скачков на 8–10 мест за раз
       // v114: 45% пути и не больше ±250 очков за публикацию (замер: на стыке сезонов было ±500–700 — команда прыгала на 15–20 мест)
-      const prev = Number(t.pts), blend = CF('vrs.pubBlend2', 0.45), cap = CF('vrs.pubCap', 250);
+      const monthly = CF('vrs.pubMonthly', 1), prev = Number(t.pts), blend = monthly ? CF('vrs.pubBlend3', 0.2) : CF('vrs.pubBlend2', 0.45), cap = monthly ? CF('vrs.pubCap3', 100) : CF('vrs.pubCap', 250);   // v146: при ежемесячной публикации шаг меньше (за квартал ≈ прежние 45%)
       t.pts = Math.round(clamp(prev + clamp((shown - prev) * blend, -cap, cap), 400, 2000)); t.vrsPubAt = pa;
     }
   }

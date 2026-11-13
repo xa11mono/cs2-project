@@ -101,7 +101,9 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
     return { fit, r: [r.width, r.height, b.width, b.height].map(Math.round), inside: (fit === 'contain' || !!img.closest('.v37-story-logo')) && r.width <= b.width + 0.5 && r.height <= b.height + 0.5 };
   }));
   if (shots) { const rail = await p.$('.v37-news-rail'); if (rail) await rail.screenshot({ path: path.join(shots, 'v88-stories.png') }); }
-  assert(l.length >= 1 && l.every(x => x.inside), 'логотипы в новостях не обрезаны: ' + JSON.stringify(l));
+  // v146: истории на «Главной» случайны (обложка-кубок или фото вместо логотипа) — проверяем те логотипы, что есть
+  assert(l.every(x => x.inside), 'логотипы в новостях не обрезаны: ' + JSON.stringify(l));
+  if (!l.length) console.log('  (в историях на «Главной» сейчас нет логотипов — проверка обрезки пропущена)');
   pass(`v88: story logos fit their frame (${l.length} checked)`);
 
   // 6. рынок: сезон сделок без ошибок, ни одна сделка ИИ не ухудшила состав

@@ -126,12 +126,21 @@
   const ic = (k, cls) => `<svg class="pkx-i${cls ? ' ' + cls : ''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k] || ''}</svg>`;
 
   // предметы турнира
+  // v146: превью капсулы собирается один раз (кэш) и из четырёх наклеек команд вместо шести: страница Pick'Em держала
+  // ~13 тыс. SVG-узлов и открывалась ~0,4 с
+  const capCache = new Map();
   function capsuleArt(title, year, teamsList, finish, seed) {
+    const ck = [title, finish, seed, teamsList.slice(0, 4).join(',')].join('|'); if (capCache.has(ck)) return capCache.get(ck);
+    if (capCache.size > 40) capCache.clear();
+    const html = capsuleArtRaw(title, year, teamsList, finish, seed); capCache.set(ck, html); return html;
+  }
+  function capsuleArtRaw(title, year, teamsList, finish, seed) {
     let ev = '', tm = '';
     try { ev = W.CS2Stickers.eventSticker({ name: title, year }, finish); } catch (e) {}
-    const pick = teamsList.slice(0, 6);
+    const pick = teamsList.slice(0, 4);
     tm = pick.map((n, i) => { const a = (i / Math.max(1, pick.length)) * Math.PI * 2 - Math.PI / 2, x = 50 + Math.cos(a) * 34, y = 50 + Math.sin(a) * 30;
-      let s = ''; try { s = W.CS2Stickers.teamSticker({ name: title, year }, n, ['paper', 'glitter', 'holo', 'gold'][(seed + i) % 4]); } catch (e) {}
+      // v146: на превью — лёгкая наклейка (логотип в белой окантовке, кайма по исполнению) вместо полного SVG (~580 узлов)
+      let s = ''; try { const f = ['paper', 'glitter', 'holo', 'gold'][(seed + i) % 4], u = (W.V31Media && W.V31Media.url('team', n)) || ''; s = u ? `<i class="pkx-mini f-${f}"><img src="${esc(u)}" alt="" loading="lazy" decoding="async"></i>` : ''; } catch (e) {}
       return s ? `<span class="pkx-cs" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%;--r:${((seed >>> i) % 30) - 15}deg">${s}</span>` : ''; }).join('');
     return `<span class="pkx-tin"><i></i>${ev ? `<span class="pkx-ev">${ev}</span>` : ''}</span>${tm}`;
   }
@@ -143,7 +152,12 @@
   }
   function items(title, year, th) {
     const T = stageTeams(), city = (title.replace(/\b(PGL|IEM|BLAST(\.tv)?|Perfect World|StarLadder|FiRe|ESL|CS2?|Major|20\d\d)\b/gi, '').trim()) || 'Major';
-    const card = (cls, art, name, foot) => `<div class="pkx-item ${cls}"><div class="pkx-item-art">${art}</div><b>${esc(name)}</b>${foot || ''}</div>`;
+    // v146: капсулы открываются прямо отсюда (как в CS2): клик по капсуле — экран «Открыть капсулу»; доступны, когда у
+    // Мейджора есть набор капсул (с начала Мейджора), автографы — после финала
+    let capOK = false, done = false; try { capOK = !!((W.CS2Stickers && W.CS2Stickers.capsules()) || []).some(c => c && c.name === title); } catch (e) {}
+    try { const d = W.v131PickemDone && W.v131PickemDone(); done = !!(d && d.name === title); } catch (e) {}
+    const card = (cls, art, name, foot) => { const can = capOK && (cls !== 'autographs' || done);
+      return `<div class="pkx-item ${cls}${can ? ' can' : ''}"${can ? ` data-pkxcap="${esc(title)}|${cls}" role="button" tabindex="0" title="Открыть капсулу"` : ''}><div class="pkx-item-art">${art}</div><b>${esc(name)}</b>${foot || ''}${can ? '<span class="pkx-open">Открыть</span>' : ''}</div>`; };
     const h = h32(title);
     let fav = ''; try { fav = W.V35Badges && W.V35Badges.fanTeam ? W.V35Badges.fanTeam('', true) : ''; } catch (e) {}
     const favLogo = fav ? H.logo(fav, 'lg') : '';
@@ -152,7 +166,7 @@
       ${card('legends', capsuleArt(title, year, T.legends, 'holo', h), 'Капсула Legends', '<small>Команды Stage III</small>')}
       ${card('challengers', capsuleArt(title, year, T.challengers, 'glitter', h >>> 3), 'Капсула Challengers', '<small>Команды Stage II</small>')}
       ${card('contenders', capsuleArt(title, year, T.contenders, 'paper', h >>> 6), 'Капсула Contenders', '<small>Команды Stage I</small>')}
-      ${card('autographs', capsuleArt(title, year, [], 'gold', h) + '<span class="pkx-q">?</span><span class="pkx-soon">Скоро</span>', 'Автографы чемпионов', '<small>После финала</small>')}
+      ${done ? card('autographs', capsuleArt(title, year, (() => { try { const d = W.v131PickemDone(); return d && d.poRes && d.poRes.champion ? [d.poRes.champion] : []; } catch (e) { return []; } })(), 'gold', h), 'Автографы чемпионов', '<small>Игроки Legends</small>') : card('autographs', capsuleArt(title, year, [], 'gold', h) + '<span class="pkx-q">?</span><span class="pkx-soon">Скоро</span>', 'Автографы чемпионов', '<small>После финала</small>')}
       <div class="pkx-graffiti"><small>Граффити команды</small><div class="pkx-graf-art">${favLogo || '<span class="pkx-q">?</span>'}</div><p>${fav ? `Вы болеете за <b>${esc(fav)}</b> на этом турнире` : 'Выберите любимую команду на время турнира'}</p><button type="button" class="pkx-btn" data-nav="fan">${fav ? 'Сменить команду' : 'Выбрать команду'}</button></div>
     </div>`;
   }
@@ -183,8 +197,12 @@
     const tokens = W.CS2Capsules ? W.CS2Capsules.tokens() : 0;
     // осталось дней
     // v131: после Мейджора — «Мейджор завершён» и чемпион, а не отсчёт до следующего
-    let left = ''; const doneM = W.v131PickemDone && W.v131PickemDone(); if (doneM) left = `Мейджор завершён${doneM.poRes && doneM.poRes.champion ? ' · чемпион ' + doneM.poRes.champion : ''}`; else try { const up = W.V33Pickem.upcomingMajor(), now = Number(SS().calendar.currentMs) || Date.now(), at = up && up.entry && up.entry.calendar && Number(up.entry.calendar.startMs);
-      if (at && at > now) { const d = Math.ceil((at - now) / 864e5); left = `${d} ${d % 10 === 1 && d % 100 !== 11 ? 'день' : d % 10 >= 2 && d % 10 <= 4 && (d % 100 < 10 || d % 100 >= 20) ? 'дня' : 'дней'} до начала Мейджора`; } } catch (e) {}
+    let left = ''; const doneM = W.v131PickemDone && W.v131PickemDone(); if (doneM) left = `Мейджор завершён${doneM.poRes && doneM.poRes.champion ? ' · чемпион ' + doneM.poRes.champion : ''}`;
+    // v146: Мейджор уже идёт — пишем текущий этап, а не отсчёт (раньше отсчёт мог указывать на дату другого события и
+    // расходиться с кнопкой «Продолжить»: там «Pick'Em: Stage II», а здесь «9 дней до начала Мейджора»)
+    else if ((() => { try { const ct = typeof currentTournament !== 'undefined' ? currentTournament : null; return ct && ct.isMajor && !ct.completed; } catch (e) { return false; } })()) { let stg = ''; try { const o = W.V33Pickem.openUnfilled && W.V33Pickem.openUnfilled(); stg = o ? ' · открыт прогноз: ' + o.label : ''; } catch (e) {} left = 'Мейджор идёт' + stg; }
+    else try { const up = W.V33Pickem.upcomingMajor(), now = Number(SS().calendar.currentMs) || Date.now(), at = up && up.entry && up.entry.calendar && Number(up.entry.calendar.startMs);
+      if (at && at > now && (!up.entry.name || up.entry.name === title)) { const d = Math.ceil((at - now) / 864e5); left = `${d} ${d % 10 === 1 && d % 100 !== 11 ? 'день' : d % 10 >= 2 && d % 10 <= 4 && (d % 100 < 10 || d % 100 >= 20) ? 'дня' : 'дней'} до начала Мейджора`; } } catch (e) {}
     const status = play.querySelector('.pk-bar .pk-st');
     const open = status && status.classList.contains('open');
     // сколько прогнозов сделано на открытой вкладке
@@ -212,4 +230,6 @@
   }
   (H.AFTER || (H.AFTER = [])).push((pg, arg, root) => { if (pg !== 'pickem' || !root) return; try { skin(root); } catch (e) { console.warn('[v127 pickem]', e); } });
   W.CS2PickemSkin = { themeOf, THEMES, skin, challenges, force: '' };
+  H.CLICKS.push(['[data-pkxcap]', el => { const [m, c] = el.dataset.pkxcap.split('|'); H.S.cpx = H.S.cpx || { tab: 'shop', open: null, f: '' }; H.S.cpx.tab = 'shop'; H.S.cpx.open = { stage: 'preview', mName: m, capId: c }; H.nav('capsules'); }]);
 })();
+  

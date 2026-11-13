@@ -10,7 +10,7 @@
    • Сборка для релиза: node tools/build/build.mjs → dist/ (один минифицированный JS и один CSS). */
 (function () {
   'use strict';
-  const BUILD = '145';
+  const BUILD = '146';
   const CSS = [
     'css/base/app.css',  // base
     'css/base/match-modal.css',

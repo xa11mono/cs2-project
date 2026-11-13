@@ -661,3 +661,21 @@ html.ax-on #hs-root .pp-thbox.ax-scened.ax-has-vis>.pp-thw:not(.ax-nvis),html #h
 .pp-n3-band h3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .pp-qn-band h3,.pp-f-band h3,.pp-ft-h h3{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .pp-qn-band{padding-bottom:8cqw!important}
+/* v146: подпись-плашка (ТУРНИР, ИНТЕРВЬЮ…) всегда над фото — раньше игрок из верхнего слоя (z-index 2–3) наезжал на неё */
+.pp-f-band,.pp-n3-band,.pp-qn-band,.pp-s3-band,.pp-ts-band{z-index:6}
+/* v146: в статье с постом канала — одни реакции и комментарии, в стиле Telegram: старая полоса реакций убрана,
+   старый блок комментариев открывается только по «N комментариев» в посте */
+#hs-root .hs-article.pp-has-post .hs-reacts{display:none!important}
+#hs-root .hs-col:has(.hs-article.pp-has-post) > .hs-cmts:not(.pp-open){display:none!important}
+#hs-root .pp-art .pp-cm{cursor:pointer}
+/* v146: «Главная» — 2–3 поста пабликов на месте «После финала» */
+#hs-root .pp-pin-g.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:1180px){#hs-root .pp-pin-g.n3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){#hs-root .pp-pin-g.n3{grid-template-columns:1fr}}
+#hs-root .v37-editorial.pp-slot:empty{display:none}
+#hs-root .v37-editorial.pp-filled{padding:0;background:none;border:0;box-shadow:none}
+/* v146: тройка игроков — центральный позади двух боковых и чуть крупнее (раньше он был спереди и его обрезало) */
+.pp-n3-tri.p0{z-index:1;left:26cqw;width:50cqw;height:70cqw}
+.pp-n3-tri.p1,.pp-n3-tri.p2{z-index:2}
+.pp-ft-p.p0{z-index:1;left:25cqw;width:52cqw;height:72cqw}
+.pp-ft-p.p1,.pp-ft-p.p2{z-index:2}

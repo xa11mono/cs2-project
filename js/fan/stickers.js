@@ -171,8 +171,15 @@
     const ct = typeof currentTournament !== 'undefined' ? currentTournament : null;
     if (!ct || !ct.isMajor || ct.completed || !ct.name) return null;
     const S = store(); if (S[ct.name]) return S[ct.name];
-    const tm = (ct.participants || []).map(x => typeof x === 'string' ? x : x?.name).filter(Boolean);
+    let tm = (ct.participants || []).map(x => typeof x === 'string' ? x : x?.name).filter(Boolean);
     if (tm.length < 8) return null;
+    // v146: порядок команд — Stage III, Stage II, Stage I (капсулы Legends/Challengers/Contenders берут 8/8/остальных):
+    // раньше брался порядок участников, и в Legends попадали команды Stage I, а не те, что показаны в Pick'Em
+    try {
+      const sch = (typeof seasonState !== 'undefined' && seasonState.seasonSchedule) || [], ent = sch.find(e => e && e.name === ct.name);
+      const pools = (ent && (W.v45MajorStagePools?.(sch.indexOf(ent)) || ent.v45StagePools)) || null, nm = x => typeof x === 'string' ? x : x?.name;
+      if (pools) { const ord = [].concat(pools.stage3 || [], pools.stage2 || [], pools.stage1 || []).map(nm).filter(n => n && tm.includes(n)); tm = ord.concat(tm.filter(n => !ord.includes(n))); }
+    } catch (e) {}
     const cap = S[ct.name] = { name: ct.name, year: yearFromName(ct.name) || (2025 + (ct.season || 1)), season: ct.season, at: nowMs(), teams: tm.map(n => ({ name: n, players: lineupOf(teamBy(n)) })) };
     const nPl = cap.teams.reduce((a, t) => a + t.players.length, 0);
     try {

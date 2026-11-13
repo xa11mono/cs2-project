@@ -394,7 +394,7 @@
   function voiceCap(ch, n, nick, team) {
     const V = VOICE[ch] || VOICE.cs2news, k = 'v|' + n.id, pre = pickOf(V.pre, k + 'p'), tail = pickOf(V.tail, k + 't');
     const em = ch === 'eco' ? ['😂', '🤡', '💀', '🗿'][h32(k) % 4] : V.em(n);
-    let c = para(`${em ? em + ' ' : ''}<b>${esc(n.title)}</b>`) + (n.lead ? para(`${pre ? esc(pre) + ' ' : ''}${esc(pre ? n.lead.charAt(0).toLowerCase() + n.lead.slice(1) : n.lead)}`) : '');
+    let c = para(`${em ? em + ' ' : ''}<b>${esc(n.title)}</b>`) + (n.lead ? para(`${pre ? esc(pre) + ' ' : ''}${esc(pre ? (/^[А-ЯЁ][а-яё]/.test(n.lead) && !/^[А-ЯЁ][а-яё]+\s+[А-ЯЁA-Z]/.test(n.lead) ? n.lead.charAt(0).toLowerCase() + n.lead.slice(1) : n.lead) : n.lead)}`) : '');
     if (ch === 'chron' || ch === 'hltv') (n.body || []).slice(0, 1).forEach(b => { c += para(esc(b)); });
     // слух «от игрока»: намёк в стриме
     if ((n.rumor || n.cat === 'rumor') && team && (ch === 'insider' || ch === 'eco' || ch === 'cs3news')) { const pl = rosterOf(team)[h32(k + 's') % 5]; if (pl) c += `<blockquote class="pp-bq">💬 <b>${esc(pl)}</b> на стриме: «${esc(pickOf(STREAM_PHR, k + 'q'))}»</blockquote>`; }
@@ -627,6 +627,8 @@
     art.querySelectorAll('.pp-re').forEach(b => { const [, ee] = b.dataset.ppre.split('|'), num = b.querySelector('b'); const base = +(b.dataset.base || (b.dataset.base = String(parseK(num.textContent) - (b.classList.contains('on') ? 1 : 0))));
       const on = m[id] === ee; b.classList.toggle('on', on); num.textContent = kfmt(base + (on ? 1 : 0)); if (on && ee === e) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); } }); }]);
   const parseK = t => { t = String(t || '').trim(); const v = parseFloat(t); return /K$/.test(t) ? Math.round(v * 1e3) : /M$/.test(t) ? Math.round(v * 1e6) : v || 0; };
+  // v146: «N комментариев» в посте внутри статьи — раскрывает обсуждение (поле ввода и ветку) под статьёй
+  H.CLICKS.push(['.pp-art .pp-cm', el => { const c = el.closest('.hs-col') && el.closest('.hs-col').querySelector(':scope > .hs-cmts'); if (c) { c.classList.add('pp-open'); c.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }]);
   H.CLICKS.push(['[data-art-open]', el => { if (W.hltvSiteOpenArticle) W.hltvSiteOpenArticle(el.dataset.artOpen); }]);
   const BOX = '.v37-story-media, .nl-img, .hs-news-img, .hs-top-img, [class*="story-img"]';
   // превью новости = карточка поста. Свой элемент рядом со старым превью (старое прячем): другие модули перерисовывают
@@ -669,8 +671,25 @@
           if (host) { host.insertAdjacentHTML(host.matches('h1') ? 'afterend' : 'beforebegin', `<div class="pp-art"><div class="pp-art-k">Пост канала <b>${esc(CH[p.ch].name)}</b></div>${bubble(p)}</div>`); root.querySelector('.hs-article')?.classList.add('pp-has-post'); } }
       }
       if (pg === 'home' && !root.querySelector('.pp-pins')) {
-        const P = pinned().concat(posts().filter(p => !p.id.startsWith('n-') && !p.id.startsWith('dg2-')).slice(-2).reverse()).filter((p, i, A) => A.findIndex(x => x.id === p.id) === i).slice(0, 2);
-        const nb = root.querySelector('.hm-news'); if (P.length && nb) nb.insertAdjacentHTML('beforebegin', `<section class="pp-pins home"><header><span>📌</span><b>Паблики</b><small>закреплённые сообщения</small><button type="button" class="hs-more" data-nav="news">все новости →</button></header><div class="pp-pin-g n${P.length}">${P.map(p => bubble(p, { pin: true, open: artIdOf(p) })).join('')}</div></section>`);
+        // v146: «Главная» — 2–3 поста по смыслу момента: новости только что прошедшего события (итоги, MVP, интервью —
+        // их id даёт home-legacy в .pp-slot), свежая новость клуба менеджера, затем закрепы (дайджест). Пост занимает
+        // место полосы «После финала»; «Громкие новости» ниже — компактным списком без повторов этих новостей.
+        const N = W.V29News, slot = root.querySelector('.pp-slot'), out = [], used = new Set();
+        const add = p => { if (p && !out.some(x => x.id === p.id) && out.length < 3) { out.push(p); if (p.nid) used.add(String(p.nid)); } };
+        const ids = slot ? String(slot.dataset.ppids || '').split(',').filter(Boolean) : [];
+        ids.forEach(id => { try { const it = N && N.get && N.get(id); add(it && postFor(it)); } catch (e) {} });
+        try { const me = W.V31 && W.V31.managed && W.V31.managed(), now0 = now();
+          if (me && N && N.all) { const it = (N.all() || []).find(n => n && n.ts > now0 - 14 * DAY && (n.team === me || (n.tags || []).some(t => t && (t.v === me || t.t === me)) || String(n.title || '').includes(me))); add(it && postFor(it)); } } catch (e) {}
+        pinned().forEach(add);
+        posts().filter(p => !p.id.startsWith('n-') && !p.id.startsWith('dg2-')).slice(-3).reverse().forEach(add);
+        if (out.length) {
+          const html = `<section class="pp-pins home"><header><span>📌</span><b>Паблики</b><small>главное сейчас</small><button type="button" class="hs-more" data-nav="news">все новости →</button></header><div class="pp-pin-g n${out.length}">${out.map(p => bubble(p, { pin: true, open: p.art || '' })).join('')}</div></section>`;
+          if (slot) { slot.innerHTML = html; slot.classList.add('pp-filled'); }
+          else { const nb = root.querySelector('.hm-news'); if (nb) nb.insertAdjacentHTML('beforebegin', html); }
+          root.dataset.ppUsed = [...used].join(',');
+          // «Громкие новости» — без новостей, уже показанных постами
+          root.querySelectorAll('.v84-spots [data-art]').forEach(el => { if (used.has(String(el.dataset.art))) el.remove(); });
+        }
       }
       if (pg === 'news' && !root.querySelector('.pp-pins')) {
         const f = H.S.news || {}; if ((f.page || 1) > 1 || (f.cat && f.cat !== 'all') || f.q) return;

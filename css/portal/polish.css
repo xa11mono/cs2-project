@@ -489,3 +489,7 @@ body:has(#hs-root .pt-dd.open) #v29-toasts{opacity:0;pointer-events:none!importa
 /* уважение к настройке «уменьшить движение» */
 @media (prefers-reduced-motion:reduce){#hs-root *,#v29-toasts *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 #hs-root .v84-card-o{z-index:1;text-shadow:0 1px 2px rgba(0,0,0,.35)}#hs-root .v84-card-ph{margin:16px auto 6px;width:78px;height:78px}
+/* v146: «Громкие новости» — компактные строки под постами пабликов (без крупных карточек) */
+#hs-root .v84-spots .v84-spot{padding:9px 12px;gap:10px;border-radius:10px}
+#hs-root .v84-spots .v84-spot .hs-logo,#hs-root .v84-spots .v84-spot img{width:30px!important;height:30px!important}
+#hs-root .v84-spots .v84-spot p,#hs-root .v84-spots .v84-spot small{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}

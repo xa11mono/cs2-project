@@ -183,3 +183,8 @@
 #hs-root .cpx-back{display:inline-flex;align-items:center;margin:0 0 10px;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.06)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);color:#e9edf3!important;font:700 12px/1 var(--f-ui)!important;cursor:pointer}
 #hs-root .cpx-back:hover{background:rgba(242,193,78,.16)!important;box-shadow:inset 0 0 0 1px rgba(242,193,78,.5)}
 #hs-root .cpx-head .cpx-back+small{display:block}
+/* v146: осмотр выпавшей наклейки — крутится за мышью, текст SVG не выделяется */
+#hs-root .cpx-in-card{perspective:900px;user-select:none;-webkit-user-select:none;cursor:grab}
+#hs-root .cpx-in-art{transition:transform .12s linear;transform-style:preserve-3d;will-change:transform}
+#hs-root .cpx-in-art svg,#hs-root .cpx-reel svg{user-select:none;-webkit-user-select:none;pointer-events:none}
+#hs-root .cpx-ov{user-select:none;-webkit-user-select:none}

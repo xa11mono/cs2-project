@@ -10,6 +10,8 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   p.on('pageerror', e => errs.push(e.message)); p.on('dialog', d => d.accept());
   await p.goto('file://' + dir + '/index.html'); await p.waitForTimeout(3000);
   await require('./lib/project').chooseStart(p, 'history');
+  // v146: защита стартовых составов (roster.freshDays) выключена — тест проверяет сам механизм сделок в первые дни
+  await p.evaluate(() => { try { window.CS2Config.set('roster.freshDays', 0); } catch (e) {} });
   await p.waitForFunction(() => window.CS2ClubStrategy && window.CS2Expect && window.CS2Board && window.CS2Control && window.V34Roster, null, { timeout: 30000 });
   const pass = m => console.log('PASS ' + m);
 

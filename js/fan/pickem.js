@@ -351,7 +351,7 @@ function mrow(m) {
 }
 function layout(roster, cats, picks, lock, scope, res, st) {
   const placed = new Set(cats.flatMap(([k]) => picks[k] || []));
-  const list = roster.map(n => `<button type="button" class="pk-team${placed.has(n) ? ' used' : ''}" data-pkteam="${esc(n)}" ${lock ? 'disabled' : ''} title="${esc(n)}">${logo(n, 'sm')}</button>`).join('');
+  const list = roster.map(n => `<button type="button" class="pk-team${placed.has(n) && !lock ? ' used' : ''}" data-pkteam="${esc(n)}" ${lock ? 'disabled' : ''} title="${esc(n)}">${logo(n, 'sm')}</button>`).join('');
   const pickBox = k => { const c = cats.find(x => x[0] === k); if (!c) return ''; const [, label, max, cls] = c, arr = picks[k] || [], ok = res ? res[k] : null;
     // v84: без «?» — пустой слот открытого этапа «+», закрытого — пунктир; у сыгранного этапа
     // в пустые места бледно подставляются фактические итоги.

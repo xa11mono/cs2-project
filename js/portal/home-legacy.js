@@ -491,8 +491,11 @@ function eventBundle() {
 function premiumTop() {
   const stories = topStories(), editorial = eventBundle();
   const rail = stories.map((n,i) => articleCard(n, `v37-rail-${i+1}`)).join('') || `<div class="v37-empty-rail"><span>✦</span><b>Истории появляются по ходу сезона</b><small>Итоги турниров, награды, трансферы и новые таланты.</small></div>`;
+  // v146: вместо полосы «После финала» — место под посты пабликов (их рисует media/pub-posts.js): 2–3 поста в стиле
+  // Telegram по новостям события, клуба менеджера и закрепам. Обычные карточки остаются, если пабликов нет.
+  const ppIds = editorial.map(n => n.id).filter(Boolean).join(',');
   const strip = editorial.map(n => articleCard(n, 'v37-editorial-card')).join('');
-  return `<div class="v37-home-top"><div class="v37-home-layout"><div class="v37-feature-col">${premiumHero()}<div class="v37-feature-foot"><span><i class="v37-foot-dot"></i> СЕЗОН ${esc(String(yearOf(ST()?.currentSeason || 1)))}</span><b>${esc(seasonProgressLine())}</b><button type="button" data-nav="events">Все турниры <span>→</span></button></div></div><aside class="v37-news-rail"><div class="v37-rail-head"><div><h2>Главные истории</h2></div><button type="button" data-nav="news">Все новости ↗</button></div>${rail}</aside></div>${strip ? `<section class="v37-editorial"><div class="v37-editorial-head"><div><h2>После финала</h2></div></div><div class="v37-editorial-grid">${strip}</div></section>` : ''}</div>`;
+  return `<div class="v37-home-top"><div class="v37-home-layout"><div class="v37-feature-col">${premiumHero()}<div class="v37-feature-foot"><span><i class="v37-foot-dot"></i> СЕЗОН ${esc(String(yearOf(ST()?.currentSeason || 1)))}</span><b>${esc(seasonProgressLine())}</b><button type="button" data-nav="events">Все турниры <span>→</span></button></div></div><aside class="v37-news-rail"><div class="v37-rail-head"><div><h2>Главные истории</h2></div><button type="button" data-nav="news">Все новости ↗</button></div>${rail}</aside></div><section class="v37-editorial pp-slot" data-ppids="${esc(ppIds)}">${strip ? `<div class="v37-editorial-head"><div><h2>После финала</h2></div></div><div class="v37-editorial-grid">${strip}</div>` : ''}</section></div>`;
 }
 const oldHome = H.PAGES.home;
 if (oldHome) H.PAGES.home = arg => {

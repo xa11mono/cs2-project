@@ -110,6 +110,14 @@
     const concept = n => { try { return !!n && (C('concept.clubs', ['WW Team', 'Without a Roof']) || []).includes(n); } catch (e) { return false; } };
     if (actor === 'ai' && !forced && concept(team.name) && team.name !== managed()) hard('CONCEPT', `${team.name} — клуб со своим составом-концепцией: ИИ не меняет его ради усиления`);
     if (actor === 'ai' && !forced && from && concept(from.name) && from.name !== managed()) hard('CONCEPT_SELL', `${from.name} не продают игроков — состав-концепция`);
+    // v146: стартовые составы 2026 (реальные) не перекраиваются ИИ в первые roster.freshDays (120) дней новой игры —
+    // раньше Falcons уже в январе меняли karrigan на Twistzz. Вынужденные операции (пенсия, временные замены) разрешены.
+    try {
+      const SS = (typeof seasonState !== 'undefined' ? seasonState : W.seasonState), now = Number(SS && SS.calendar && SS.calendar.currentMs) || 0;
+      if (SS && SS.v146WorldStart == null && now) SS.v146WorldStart = (Number(SS.currentSeason) || 1) === 1 && new Date(now).getUTCMonth() <= 1 ? now : 0;
+      const fresh = SS && SS.v146WorldStart && now - SS.v146WorldStart < C('roster.freshDays', 120) * 864e5;
+      if (fresh && actor === 'ai' && !forced && !W.__v34Force && !team.isAcademy && (out || incoming)) hard('FRESH', `${team.name}: стартовый состав сезона — ИИ не меняет его первые ${C('roster.freshDays', 120)} дней`);
+    } catch (e) {}
     if (incoming) {
       // 1. контракт и статус
       if (incoming.onLoan && op.kind !== 'loan-return' && op.kind !== 'loan') hard('ON_LOAN', `${incoming.nick} в аренде`);

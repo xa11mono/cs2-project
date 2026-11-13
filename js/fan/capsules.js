@@ -150,9 +150,14 @@
       <p class="cpx-in-desc">${esc(desc)}</p>
       <footer class="cpx-in-bar"><span class="cpx-in-ic">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.6"/></svg>'}</span><span class="cpx-in-tag">${esc(fullName(it))}</span>${act}<button type="button" class="cpx-in-close" data-cpxclose>Закрыть</button></footer></div>`;
   }
-  function curve(s, box) { const t0 = performance.now(), cs = [...s.children];
-    const f = () => { const bx = box.getBoundingClientRect(), mid = bx.left + bx.width / 2;
-      cs.forEach(c => { const r = c.getBoundingClientRect(), d = Math.min(1, Math.abs(r.left + r.width / 2 - mid) / (bx.width / 2)); c.style.transform = `scale(${(1.12 - d * .28).toFixed(3)})`; c.style.opacity = (1 - d * .35).toFixed(2); });
+  // v146: «выпуклая» лента без замеров раскладки на каждом кадре: позиции карточек в ленте постоянны (берём один раз),
+  // за кадр читается только текущий сдвиг ленты; карточки далеко от центра не трогаем. Раньше 46 замеров
+  // getBoundingClientRect за кадр 6,8 с подряд — открытие капсулы заметно подтормаживало.
+  function curve(s, box) { const t0 = performance.now(), cs = [...s.children], half = box.clientWidth / 2;
+    const mids = cs.map(c => c.offsetLeft + c.offsetWidth / 2), last = new Array(cs.length).fill(-1);
+    const f = () => { let tx = 0; try { tx = new DOMMatrixReadOnly(getComputedStyle(s).transform).m41; } catch (e) {}
+      cs.forEach((c, i) => { const d = Math.min(1, Math.abs(mids[i] + tx - half) / half), q = Math.round(d * 50) / 50; if (q === last[i]) return; last[i] = q;
+        c.style.transform = `scale(${(1.12 - q * .28).toFixed(3)})`; c.style.opacity = (1 - q * .35).toFixed(2); });
       if (performance.now() - t0 < 6800 && D.body.contains(s)) requestAnimationFrame(f); }; f(); }
   function preview(mName, capId) { H.S.cpx.open = { stage: 'preview', mName, capId }; rerender(); }
   function open(mName, capId) {
@@ -172,6 +177,14 @@
       H.S.cpx.open = { stage: 'inspect', drop: true, list, i: Math.max(0, idx), title: `Капсула ${cap.n} | ${cityOf(m.name)} ${m.year}`, mName, capId }; rerender(); }, 6900);
   }
   const rerender = () => { const y = W.scrollY; H.render(); W.scrollTo(0, y); D.getElementById('hs-page')?.classList.remove('hs-anim'); };
+  // v146: выпавшую наклейку можно покрутить мышью (как в осмотре коллекции): наклон за курсором, голограмма и блик
+  // следуют углу. Раньше перетаскивание только выделяло текст SVG оранжевыми прямоугольниками.
+  if (!W.__cpxTilt) { W.__cpxTilt = 1;
+    document.addEventListener('pointermove', e => { const card = e.target.closest && e.target.closest('#hs-root .cpx-in-card'); if (!card) return; const t = card.querySelector('.cpx-in-art'); if (!t) return;
+      const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      t.style.transform = `rotateY(${(x * 28).toFixed(1)}deg) rotateX(${(-y * 28).toFixed(1)}deg)`; t.style.setProperty('--hx', (x * 70).toFixed(1) + 'px'); t.style.setProperty('--hy', (y * 70).toFixed(1) + 'px'); t.style.setProperty('--ga', (.35 + Math.abs(x + y) * .9).toFixed(2)); }, { passive: true });
+    document.addEventListener('pointerout', e => { const card = e.target.closest && e.target.closest('#hs-root .cpx-in-card'); if (card && !card.contains(e.relatedTarget)) { const t = card.querySelector('.cpx-in-art'); if (t) t.style.transform = ''; } }, { passive: true });
+  }
   H.PAGES.capsules = page;
   H.CLICKS.push(['[data-cpxtab]', el => { H.S.cpx.tab = el.dataset.cpxtab; rerender(); }]);
   H.CLICKS.push(['[data-cpxf]', el => { H.S.cpx.f = el.dataset.cpxf; rerender(); }]);
