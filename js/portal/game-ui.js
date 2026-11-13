@@ -101,7 +101,7 @@ HS.PAGES.settings = () => {
       ${box('Очистка', `<div class="pt-actions col"><button type="button" class="hs-btn ghost" data-set="clean">Очистить пустые записи истории</button>
         <button type="button" class="hs-btn ghost warn" data-set="clear">Очистить историю турниров</button>
         <button type="button" class="hs-btn ghost danger" data-set="reset">Сбросить всё к исходному</button></div>
-        <p class="hs-note">Очистка истории удаляет архив сеток, титулы и награды игроков. Сброс возвращает исходные команды и начинает с первого сезона. Оба действия спрашивают подтверждение.</p>`) }
+        <p class="hs-note">Очистка истории удаляет архив сеток, титулы и награды игроков. Сброс возвращает исходные команды и начинает с первого сезона. Оба действия спрашивают подтверждение.</p>`)}
       ${window.CS2JerseySwap?.settingsHtml?.() || ''}
     </div></div>`;
 };
