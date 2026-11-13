@@ -144,7 +144,7 @@
 .pp-ser-s small{grid-column:1/-1;padding-bottom:.9cqw;font:600 1.6cqw/1 'Golos Text',sans-serif;letter-spacing:.12em;color:#d8dbe8}
 .pp-ser-n{position:absolute;bottom:5cqw;display:grid;gap:.6cqw}
 .pp-ser-n.a{left:5cqw}.pp-ser-n.b{right:5cqw;justify-items:end;text-align:right}
-.pp-ser-n .pp-tl{width:8cqw;height:8cqw;filter:brightness(0) invert(1) drop-shadow(0 .3cqw .6cqw rgba(0,0,0,.4))}
+.pp-ser-n .pp-tl{width:8cqw;height:8cqw;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45)) drop-shadow(0 .3cqw .6cqw rgba(0,0,0,.4))}
 .pp-ser-n b{font:900 4.6cqw/1 'Golos Text',sans-serif}
 .pp-ser-n small{font:500 2.4cqw/1 'Golos Text',sans-serif;color:#e0e3ec}
 .pp-series .pp-q-brand,.pp-series>.pp-brand{position:absolute}
@@ -202,7 +202,7 @@
 .pp-sns{display:grid;grid-template-columns:repeat(3,1fr);gap:3.6cqw;margin-top:4.6cqw}
 .pp-sn{height:29cqw;border-radius:2.2cqw;background:linear-gradient(160deg,#272c45,#151826);display:grid;grid-template-rows:auto 1fr auto auto auto;justify-items:center;padding:2.6cqw 1cqw 2cqw;box-shadow:0 1cqw 2.6cqw rgba(20,24,40,.25)}
 .pp-sn small{font:700 2.2cqw/1 'Golos Text',sans-serif;letter-spacing:.04em}
-.pp-sn .pp-sn-l{width:14cqw;height:12cqw;align-self:center;filter:brightness(0) invert(1)}
+.pp-sn .pp-sn-l{width:14cqw;height:12cqw;align-self:center;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45))}
 .pp-sn b{font:900 8.4cqw/1 'Golos Text',sans-serif;color:#ffd21f}
 .pp-sn span{font:900 2.5cqw/1 'Golos Text',sans-serif;color:#ffd21f;margin-top:.6cqw}
 .pp-sn em{font-style:normal;font:500 1.55cqw/1.1 'Golos Text',sans-serif;color:#b8a35a;letter-spacing:.02em;margin-top:.6cqw;text-align:center;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -261,7 +261,7 @@
 .pp-stage{position:absolute;left:50%;top:51cqw;transform:translateX(-50%);z-index:5;padding:1.2cqw 3cqw;background:#25272b;color:#9fd3ff;font:800 2.4cqw/1 'Golos Text',sans-serif;letter-spacing:.06em;white-space:nowrap}
 .pp-rs{position:absolute;left:8cqw;right:8cqw;top:56cqw;display:grid;grid-template-columns:auto 1fr auto;align-items:center}
 .pp-rs-t{position:relative;width:13cqw;height:13cqw;display:grid;place-items:center;border:.2cqw solid rgba(159,211,255,.55);background:#0c0d0f}
-.pp-rs-t .pp-tl.big{width:9cqw;height:9cqw;filter:brightness(0) invert(1)}
+.pp-rs-t .pp-tl.big{width:9cqw;height:9cqw;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45))}
 .pp-rs-t .pp-cn{width:1cqw;height:1cqw;border-width:.25cqw;border-color:#bfe2ff}
 .pp-rs-t .pp-cn.tl{left:-.6cqw;top:-.6cqw}.pp-rs-t .pp-cn.tr{right:-.6cqw;top:-.6cqw}.pp-rs-t .pp-cn.bl{left:-.6cqw;bottom:-.6cqw}.pp-rs-t .pp-cn.br{right:-.6cqw;bottom:-.6cqw}
 .pp-rs-sc{text-align:center;font:600 12cqw/1 'Golos Text',sans-serif;background:linear-gradient(180deg,#fff,#a9adb5);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.04em}
@@ -277,7 +277,7 @@
 .pp-rm-a svg{position:absolute;inset:0;width:100%;height:100%}
 .pp-rm b{grid-column:1/-1;display:flex;align-items:center;padding-left:1.6cqw;border-top:.2cqw solid rgba(255,255,255,.45);font:700 2.2cqw/1 'Golos Text',sans-serif;letter-spacing:.04em}
 .pp-rm-p{position:absolute;right:0;bottom:0;width:4.4cqw;height:4.4cqw;display:grid;place-items:center;border-left:.2cqw solid rgba(255,255,255,.45);background:#0c0d0f}
-.pp-rm-p .pp-tl{width:3cqw;height:3cqw;filter:brightness(0) invert(1)}
+.pp-rm-p .pp-tl{width:3cqw;height:3cqw;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45))}
 
 /* CS3: статистика игрока */
 .pp-pstat{background:radial-gradient(60% 50% at 30% 30%,#3a3d44,transparent 70%),linear-gradient(180deg,#25272c,#141518)}
@@ -287,7 +287,7 @@
 .pp-ps-top{position:absolute;left:44%;top:3.6cqw;transform:translateX(-50%);padding:1.3cqw 2.4cqw;border-radius:1.4cqw;background:#f2f4f6}
 .pp-ps-top .pp-brand{color:#111}
 .pp-ps-logo{position:absolute;left:29cqw;top:57cqw;width:12cqw;height:12cqw;display:grid;place-items:center;border:.2cqw solid rgba(255,255,255,.7)}
-.pp-ps-logo .pp-tl{width:8cqw;height:8cqw;filter:brightness(0) invert(1)}
+.pp-ps-logo .pp-tl{width:8cqw;height:8cqw;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45))}
 .pp-ps-logo .pp-cn{width:.9cqw;height:.9cqw;border-width:.25cqw;border-color:#fff}
 .pp-ps-logo .pp-cn.tl{left:-.6cqw;top:-.6cqw}.pp-ps-logo .pp-cn.tr{right:-.6cqw;top:-.6cqw}.pp-ps-logo .pp-cn.bl{left:-.6cqw;bottom:-.6cqw}.pp-ps-logo .pp-cn.br{right:-.6cqw;bottom:-.6cqw}
 .pp-ps-n{position:absolute;left:8cqw;width:54cqw;top:77cqw;text-align:center;display:grid;gap:.6cqw;text-shadow:0 .4cqw 1.6cqw rgba(0,0,0,.8)}
@@ -305,7 +305,7 @@
 .pp-f-bg{position:absolute;inset:0;background:center/cover no-repeat;filter:brightness(.7) saturate(.9)}
 .pp-f-ph{position:absolute;left:18cqw;right:18cqw;bottom:-6cqw;height:72cqw;background:top center/cover no-repeat}
 .pp-f-logo{position:absolute;left:30cqw;top:16cqw;width:40cqw;height:40cqw}
-.pp-f-logo .pp-tl{width:100%;height:100%;filter:brightness(0) invert(1) drop-shadow(0 1cqw 3cqw rgba(0,0,0,.6))}
+.pp-f-logo .pp-tl{width:100%;height:100%;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45)) drop-shadow(0 1cqw 3cqw rgba(0,0,0,.6))}
 .pp-f-fade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 70%,rgba(100,170,230,.45))}
 .pp-f-band{position:absolute;left:0;right:0;top:70.6cqw;bottom:0;display:flex;flex-direction:column;align-items:center;padding:3cqw 5cqw 9cqw;background:linear-gradient(180deg,#7fc4f2,#b9e0fb 55%,#d6edfd);color:#121315;text-align:center}
 .pp-f-band h3{margin:2cqw 0 auto;font:900 4.6cqw/1.06 'Golos Text',sans-serif;letter-spacing:.01em}
@@ -338,7 +338,7 @@
 .pp-bk-m{display:grid;border:.2cqw solid rgba(255,255,255,.5)}
 .pp-bk-t{display:grid;grid-template-columns:5cqw 1fr auto;align-items:center;gap:1cqw;height:5.6cqw;padding:0 1.6cqw;background:#1b1c1f;font:600 2.3cqw/1 'Golos Text',sans-serif}
 .pp-bk-t+.pp-bk-t{border-top:.2cqw solid rgba(255,255,255,.5)}
-.pp-bk-t .pp-tl{width:3.6cqw;height:3.6cqw;filter:brightness(0) invert(1)}
+.pp-bk-t .pp-tl{width:3.6cqw;height:3.6cqw;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45))}
 .pp-bk-t b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
 .pp-bk-t em{font-style:normal;color:#9fd3ff}
 .pp-bk-t.w b{color:#fff}.pp-bk-t.l{opacity:.55}
@@ -410,7 +410,7 @@
 .pp-ft-fade{position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(18,19,21,.35),transparent 30%,transparent 75%,rgba(18,19,21,.8))}
 .pp-ft-b{position:absolute;bottom:4cqw;z-index:4;padding:1.4cqw 2.2cqw;border-radius:1.4cqw;background:rgba(18,19,21,.85);border:.2cqw solid rgba(255,255,255,.25)}
 .pp-ft-b.l{left:5cqw}.pp-ft-b.r{right:5cqw}
-.pp-ft-b .pp-tl{width:6cqw;height:6cqw;filter:brightness(0) invert(1)}
+.pp-ft-b .pp-tl{width:6cqw;height:6cqw;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45))}
 
 /* статистика за карту: три плитки */
 .pp-stat3{background:#121315}
@@ -444,14 +444,14 @@
 .pp-kd-box b{flex:1;display:grid;place-items:center;font:600 19cqw/1 'Oswald',sans-serif;color:#111;letter-spacing:-.04em}
 .pp-kd-box span{height:4.6cqw;display:grid;place-items:center;background:linear-gradient(90deg,#5ab8ff,#9fe0ff);color:#0f1a2a;font:600 2.4cqw/1 'Golos Text',sans-serif;letter-spacing:.02em}
 .pp-kd-logo{position:absolute;left:44cqw;top:58cqw;width:12cqw;height:12cqw;display:grid;place-items:center;background:rgba(255,255,255,.12);border:.15cqw solid rgba(255,255,255,.6);backdrop-filter:blur(.6cqw)}
-.pp-kd-logo .pp-tl{width:8cqw;height:8cqw;filter:brightness(0) invert(1)}
+.pp-kd-logo .pp-tl{width:8cqw;height:8cqw;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45))}
 .pp-kd-logo .h{position:absolute;width:1cqw;height:1cqw;background:#fff}
 .pp-kd-logo .h.tl{left:-.5cqw;top:-.5cqw}.pp-kd-logo .h.tr{right:-.5cqw;top:-.5cqw}.pp-kd-logo .h.bl{left:-.5cqw;bottom:-.5cqw}.pp-kd-logo .h.br{right:-.5cqw;bottom:-.5cqw}
 .pp-kd-n{position:absolute;left:0;right:0;top:72cqw;text-align:center;display:grid;gap:.8cqw}
 .pp-kd-n b{font:900 6.6cqw/1 'Golos Text',sans-serif;letter-spacing:.01em}
 .pp-kd-n small{font:600 2.7cqw/1 'Golos Text',sans-serif;color:#e1e4ea}
 .pp-kd-sc{position:absolute;left:50%;top:83cqw;transform:translateX(-50%);display:flex;align-items:center;gap:3cqw;padding:1.4cqw 3cqw;border:.25cqw solid rgba(255,255,255,.75);border-radius:1.2cqw;background:rgba(18,19,22,.6)}
-.pp-kd-sc .pp-tl{width:5.4cqw;height:5.4cqw;filter:brightness(0) invert(1)}
+.pp-kd-sc .pp-tl{width:5.4cqw;height:5.4cqw;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45))}
 .pp-kd-sc b{font:800 5.4cqw/1 'Golos Text',sans-serif}
 .pp-kd .pp-foot3{bottom:1.6cqw}
 
@@ -560,7 +560,7 @@
 .pp-dg2-mid{position:absolute;left:5cqw;right:5cqw;top:29cqw;height:41cqw;border-radius:2.4cqw;overflow:hidden;background:radial-gradient(70% 90% at 50% 100%,#3a4170,transparent 70%),linear-gradient(180deg,#2a2f50,#191c2e);box-shadow:0 1.6cqw 4cqw rgba(0,0,0,.25)}
 .pp-dg2-tl{position:absolute;left:4cqw;top:5cqw;width:36cqw;height:32cqw}
 .pp-dg2-tl.r{left:auto;right:4cqw}
-.pp-dg2-tl .pp-tl{width:100%;height:100%;filter:brightness(0) invert(1) drop-shadow(0 1cqw 2cqw rgba(0,0,0,.35))}
+.pp-dg2-tl .pp-tl{width:100%;height:100%;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45)) drop-shadow(0 1cqw 2cqw rgba(0,0,0,.35))}
 .pp-dg2-ph{position:absolute;left:25cqw;right:25cqw;top:2cqw;bottom:0;background:top center/cover no-repeat}
 .pp-bub{position:absolute;left:50%;top:6cqw;transform:translateX(-50%);z-index:2;padding:1.6cqw 3cqw;border-radius:2cqw;background:#fff;color:#111;font:900 3.1cqw/1.08 'Golos Text',sans-serif;text-align:center;max-width:30cqw;box-shadow:0 1cqw 2.6cqw rgba(0,0,0,.35)}
 .pp-bub::after{content:"";position:absolute;bottom:-1.6cqw;right:4cqw;border:1cqw solid transparent;border-top-color:#fff;border-left-color:#fff}
@@ -579,7 +579,7 @@
 .pp-sched.n3 .pp-sc-r{height:18cqw}.pp-sched.n1 .pp-sc-r{height:34cqw}
 .pp-sc-pa,.pp-sc-pb{background:top center/cover no-repeat;background-color:#22273a}
 .pp-sc-t{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4cqw;border-left:.2cqw solid rgba(150,160,210,.2);border-right:.2cqw solid rgba(150,160,210,.2);background:#15171f}
-.pp-sc-t .pp-tl{width:10cqw;height:10cqw;filter:brightness(0) invert(1)}
+.pp-sc-t .pp-tl{width:10cqw;height:10cqw;filter:drop-shadow(0 0 .12cqw rgba(255,255,255,.75)) drop-shadow(0 0 .12cqw rgba(255,255,255,.45)) drop-shadow(0 .3cqw .8cqw rgba(0,0,0,.45))}
 .pp-sc-t small{font:600 1.6cqw/1 'Golos Text',sans-serif;letter-spacing:.06em;color:#cfd3e2}
 .pp-sc-time{display:grid;place-items:center;align-content:center;margin:auto;width:22cqw;height:12cqw;background:#ffd21f;color:#111;border-radius:.6cqw;box-shadow:0 0 3cqw rgba(255,210,31,.35)}
 .pp-sc-time b{font:900 5.6cqw/1 'Golos Text',sans-serif}
