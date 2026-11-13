@@ -57,7 +57,7 @@
   const isQualEv = ev => !!(ev && (ev.qual || ev.isQualifier)) || /qualifier|квалиф|отбор/i.test(String(ev?.name || ev?.tournament || ''));
   const CFv = (k, d) => { try { return window.CS2Config ? window.CS2Config.get(k, d) : d; } catch (e) { return d; } };
   const levelW = ev => { if (!ev || isQualEv(ev)) return 0; const tier = String(ev.tier ?? ''), kind = String(ev.kind || '');
-    if (/academy/i.test(kind)) return 0; if (tier === '2' || /tier2/i.test(kind)) return CFv('vrs.tier2Weight', 0.5); if (tier === '3' || /tier3/i.test(kind)) return CFv('vrs.tier3Weight', 0.16); return 0; };
+    if (/academy/i.test(kind)) return 0; if (tier === '2' || /tier2/i.test(kind)) return CFv('vrs.tier2Weight', 0.6); if (tier === '3' || /tier3/i.test(kind)) return CFv('vrs.tier3Weight', 0.18); return 0; };
   window.CS2VRSLevelWeight = levelW;
   const tierCap = ev => {
     const lw = levelW(ev); if (lw) return lw;

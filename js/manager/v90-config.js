@@ -14,9 +14,9 @@
     'vrs.h2hK':            { v: 24,   kind: 'legacy', note: 'K в поправке личных встреч (v84)' },
     'vrs.qualScale':       { v: 0.3,  kind: 'design', note: 'вес личных встреч на квалификации (v88)' },
     'vrs.h2hTop':          { v: 12,   kind: 'design', note: 'сколько лучших побед/худших поражений учитывается в H2H (v89)' },
-    'vrs.tier2Weight':     { v: 0.5,  kind: 'design', note: 'вес турнира Tier-2 в VRS (v135; было 0.35 — победы на Tier-2 почти не двигали рейтинг)' },
-    'vrs.tier3Weight':     { v: 0.16, kind: 'design', note: 'вес турнира Tier-3 в VRS (v135; было 0.12)' },
-    'vrs.lowTierCap':      { v: 55,   kind: 'design', note: 'максимум H2H-плюса от Tier-2/3, академий, квалификаций (v89)' },
+    'vrs.tier2Weight':     { v: 0.6,  kind: 'design', note: 'вес турнира Tier-2 в VRS (v135; было 0.35 — победы на Tier-2 почти не двигали рейтинг)' },
+    'vrs.tier3Weight':     { v: 0.18, kind: 'design', note: 'вес турнира Tier-3 в VRS (v135; было 0.12)' },
+    'vrs.lowTierCap':      { v: 65,   kind: 'design', note: 'максимум H2H-плюса от Tier-2/3, академий, квалификаций (v89)' },
     'vrs.curveK':          { v: 3,    kind: 'design', note: 'крутизна кривой факторов VRS (было 1: шкала сжималась на дистанции) (v94)' },
     'vrs.h2hClamp':        { v: 200,  kind: 'legacy', note: 'общий предел поправки H2H, ± (v84)' },
     // рынок и составы
