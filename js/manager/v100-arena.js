@@ -108,7 +108,7 @@
   const WORLD_M = [['home', 'Портал HLTV', 'news'], ['matches', 'Матчи', 'matches'], ['events', 'Турниры', 'events'], ['pickem', "Pick'Em", 'predict'], ['ranking', 'Рейтинг', 'ranking'], ['players', 'Игроки', 'players'], ['teams', 'Команды', 'teams'], ['watch', 'Эфир', 'watch']];
   const SPECTATOR = [
     ['home', 'Главная', 'home'], ['watch', 'Эфир', 'watch'], ['matches', 'Матчи', 'matches'], ['events', 'Турниры', 'events'],
-    ['calendar', 'Календарь', 'calendar'], ['ranking', 'Рейтинг', 'ranking'], ['news', 'Новости', 'news'], ['pickem', "Pick'Em", 'predict'], ['predict', 'Прогнозы', 'predict'],
+    ['calendar', 'Календарь', 'calendar'], ['ranking', 'Рейтинг', 'ranking'], ['news', 'Новости', 'news'], ['pickem', "Pick'Em", 'predict'],
     ['players', 'Игроки', 'players'], ['teams', 'Команды', 'teams'], ['transfers', 'Трансферы', 'transfer']
   ];
   // вкладки внутри разделов — не показываем в меню (раздел подсвечивается сам)
@@ -151,8 +151,11 @@
   }
   function it(x, on, sub) {
     const [k, l, ic] = x, n = sub ? 0 : badgeFor(k);
-    return `<button type="button" class="gs-it ax-it${sub ? ' sub' : ''}${on ? ' on' : ''}" data-nav="${esc(k)}"${k === 'squad' || (k === 'team' && me()) ? '' : ''} title="${esc(l)}"${on ? ' aria-current="page"' : ''}>
-      ${sub ? '' : `<span class="gs-ic">${IC[ic] || IC.more}</span>`}<span class="gs-lb">${esc(l)}</span>${n ? `<span class="ax-badge">${n > 9 ? '9+' : n}</span>` : ''}</button>`;
+    // v142: Pick'Em вне окна Мейджора — серый пункт с плашкой и подсказкой, когда откроется
+    let off = null; if (k === 'pickem') { try { const w = W.V33Pickem && W.V33Pickem.window && W.V33Pickem.window(); if (w && !w.active) off = w; } catch (e) {} }
+    const tip = off ? `Pick'Em пока недоступен${off.opensAt ? ` · откроется ${new Date(off.opensAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}${off.title ? ' перед ' + off.title : ''}` : ' · Мейджор ещё не объявлен'}` : l;
+    return `<button type="button" class="gs-it ax-it${sub ? ' sub' : ''}${on ? ' on' : ''}${off ? ' ax-off' : ''}" data-nav="${esc(k)}"${k === 'squad' || (k === 'team' && me()) ? '' : ''} title="${esc(tip)}"${on ? ' aria-current="page"' : ''}>
+      ${sub ? '' : `<span class="gs-ic">${IC[ic] || IC.more}</span>`}<span class="gs-lb">${esc(l)}</span>${off ? '<span class="ax-soon">нет Мейджора</span>' : ''}${n ? `<span class="ax-badge">${n > 9 ? '9+' : n}</span>` : ''}</button>`;
   }
   function nextMatch(name) {
     if (!name) return null;

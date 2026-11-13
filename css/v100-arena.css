@@ -819,3 +819,8 @@ html.ax-on #hs-root .gs-mgrid{display:block!important;columns:2 520px;column-gap
 html.ax-on #hs-root .gs-mgrid>.hs-box{break-inside:avoid;display:inline-block;width:100%;margin:0 0 16px!important}
 html.ax-on #hs-root .v84-grid2{align-items:start!important}
 html.ax-on #hs-root .mrow-e .hs-kind,html.ax-on #hs-root .mrow-e [class*="tier"],html.ax-on #hs-root .mrow-e span:first-child{flex:none;white-space:nowrap}html.ax-on #hs-root .v84-grid2 .mrow{grid-template-columns:minmax(120px,1fr) 56px minmax(120px,1fr) minmax(0,auto) minmax(90px,130px)!important}
+/* v142: Pick'Em вне окна Мейджора — пункт меню приглушён, плашка «нет Мейджора» */
+#hs-root .ax-it.ax-off:not(.on) .gs-ic,#hs-root .ax-it.ax-off:not(.on) .gs-lb{opacity:.42}
+#hs-root .ax-it.ax-off:not(.on):hover .gs-ic,#hs-root .ax-it.ax-off:not(.on):hover .gs-lb{opacity:.7}
+#hs-root .ax-soon{margin-left:auto;padding:3px 7px;border-radius:999px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);color:#9aa3ad;font:700 10px/1 var(--f-ui);letter-spacing:.02em;white-space:nowrap}
+html.gs-railed #hs-root .gs-side:not(.gs-peek) .ax-soon{display:none}

@@ -113,7 +113,9 @@
         else if (cand) {
           // временную замену сняли раньше: игрок лежит в общем списке свободных агентов с пометкой «запас» —
           // возвращаем его в пятёрку на место пришедшего (так donk навсегда выпал из основы Spirit после травмы)
-          const fa = transferState.freeAgents || [], i = fa.findIndex(x => x && x.nick === rec.nick && (!x.status || x.status === 'BENCH' || x.status === 'FREE AGENT') && (!x.reservedFor || x.reservedFor === t.name));
+          const fa = transferState.freeAgents || [], i = fa.findIndex(x => x && x.nick === rec.nick && (!x.status || x.status === 'BENCH' || x.status === 'FREE AGENT') && x.reservedFor === t.name && !(x.v30LastProTeam && x.v30LastProTeam !== t.name && x.v84FaTeam !== t.name));
+          // v142: только игрок, отложенный за этим клубом (reservedFor). Проданного/отчисленного за время отсутствия
+          // (сделка менеджера) больше не возвращаем в пятёрку — раньше так twist вернулся в Alliance после покупки adamS.
           if (i >= 0) {
             const back = fa.splice(i, 1)[0]; back.status = 'STARTER'; delete back.benchFrom; delete back.reservedFor; delete back.v84FaSince;
             const j = t.players.indexOf(cand); t.players[j] = back;
@@ -512,7 +514,7 @@
         const tag = x && x.v141Temp; if (!tag || tag.team !== t.name || x.isStandIn && t.tempStandIn) return;
         if (outNow[tag.for]) return;                                   // тот, за кого вышел, ещё отсутствует
         if ((t.players || []).some(q => q && q.nick === tag.for && (!q.status || q.status === 'STARTER'))) { delete x.v141Temp; return; }
-        const j = fa.findIndex(q => q && q.nick === tag.for && (q.reservedFor === t.name || q.benchFrom === t.name || q.v133Sub === t.name || (q.status === 'BENCH' && !q.reservedFor)));
+        const j = fa.findIndex(q => q && q.nick === tag.for && (q.reservedFor === t.name || q.benchFrom === t.name || q.v133Sub === t.name));
         if (j < 0) { delete x.v141Temp; return; }                       // игрок ушёл совсем — замена остаётся
         const back = fa.splice(j, 1)[0]; back.status = 'STARTER'; delete back.benchFrom; delete back.reservedFor; delete back.v84FaSince;
         t.players[i] = back;

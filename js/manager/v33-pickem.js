@@ -146,7 +146,22 @@ function openUnfilled() {
   } catch (e) {}
   return null;
 }
-window.V33Pickem = { openUnfilled, rankOf, isAvailable: pickemNavAvailable, canPick: () => pickemCanEdit(), canPickStage: i => pickemCanEditStage(Number(i)), canPickPlayoffs: () => pickemCanEditPlayoffs(), upcomingMajor: () => upcomingMajor(), publicContext,
+// v142: «окно» Pick'Em для меню: активен за pickem.beforeDays (45) дней до старта Мейджора, во время Мейджора и
+// ещё pickem.afterDays после него; в остальное время пункт меню серый с плашкой «нет Мейджора».
+function pickemWindow() {
+  try {
+    const ct = CT(); if (ct?.isMajor && !ct.completed) return { active: true };
+    try { captureDone(); } catch (e) {}
+    if (doneSnap()) return { active: true };
+    const s = SS(); if (!s) return { active: false };
+    const idx = Number(s.tournamentIndex) || 1, entry = (s.seasonSchedule || []).find((e, i) => e && e.type === 'major' && i >= idx && e.name !== ct?.name);
+    const start = entry && Number(entry.calendar?.startMs);
+    if (!start) return { active: false };
+    const before = (window.CS2Config ? window.CS2Config.get('pickem.beforeDays', 45) : 45) * DAYMS, opensAt = start - before;
+    return { active: gameNow() >= opensAt, opensAt, title: entry.name };
+  } catch (e) { return { active: true }; }
+}
+window.V33Pickem = { window: pickemWindow, openUnfilled, rankOf, isAvailable: pickemNavAvailable, canPick: () => pickemCanEdit(), canPickStage: i => pickemCanEditStage(Number(i)), canPickPlayoffs: () => pickemCanEditPlayoffs(), upcomingMajor: () => upcomingMajor(), publicContext,
   sync: () => syncAfterCalendarAdvance(), refresh: () => { selectNextOpenStage(); if (/^(pickem|majorpath)$/.test(H.S.page)) rer(); window.hltvSiteRefreshPickemNav?.(); } }; // v99: не перерисовывать чужие страницы после каждого игрового дня
 
 // v84: прогнозы и очки принадлежат конкретному Major. Объект прошлого Major больше не
@@ -290,7 +305,7 @@ function pPickem(arg) {
   if (!title) return `<div class="hs-head"><h1>Pick'Em Major</h1><span class="pk-head-note">Медаль Major появится после открытия прогнозов</span></div>${box('Прогнозы на Major', empty('Ближайшего Major в этом сезоне нет.'))}`;
   if (!liveMajor && !D && UI.tab !== '1') { UI.tab = '1'; UI.cat = 'threeZero'; }
   const pickemDay = nx?.lockAt ? H.fdate(nx.lockAt) : '';
-  const preBanner = liveMajor ? '' : D ? `<div class="pk-bar"><span class="pk-st done">Мейджор завершён · Pick'Em открыт до ${H.fdate((Number(D.at) || 0) + afterDays() * DAYMS)}: смотрите свои прогнозы по стадиям и тратьте жетоны</span></div>` : (nx?.locked
+  const preBanner = liveMajor ? '' : D ? `<div class="pk-bar"><span class="pk-st done">Мейджор завершён · Pick'Em открыт до ${H.fdate((Number(D.at) || 0) + afterDays() * DAYMS)}: смотрите свои прогнозы по стадиям и тратьте жетоны</span></div>` : (() => { const w = pickemWindow(); return w.active ? null : `<div class="pk-bar"><span class="pk-st lock">Pick'Em временно недоступен · откроется ${w.opensAt ? H.fdate(w.opensAt) : 'ближе к Мейджору'} — за полтора месяца до ${esc(w.title || 'Мейджора')}</span></div>`; })() || (nx?.locked
     ? `<div class="pk-bar"><span class="pk-st open">Состав Major зафиксирован · Pick'Em открыт с ${pickemDay || "дня Pick'Em"}</span></div>`
     : `<div class="pk-bar"><span class="pk-st lock">Состав участников ещё предварительный. Pick'Em откроется после фиксации состава · ${pickemDay || 'за сутки до старта'}</span></div>`);
   const tabs = [1, 2, 3].map(i => { const st = stageOf(i); return `<button type="button" class="pk-tab${UI.tab === String(i) ? ' on' : ''}${st ? '' : ' off'}" data-pktab="${i}" ${st ? '' : 'disabled'}>${st?.completed ? '✓ ' : ''}Stage ${'I'.repeat(i)}</button>`; }).join('') +
