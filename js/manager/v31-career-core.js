@@ -92,13 +92,13 @@ const valueOf = p => {
   const con = yrs <= 0 ? .45 : .55 + .25 * Math.min(2, yrs);                          // истекающий контракт — дёшево
   let tier = 'regular'; try { if (window.CS2Stature) tier = window.CS2Stature.tier(p); } catch (e) {}
   if (isAcad) tier = 'academy';
-  const K = tier === 'franchise' ? CF('price.franchiseK', 1.3) : tier === 'star' ? CF('price.starK', 0.85) : CF('price.regularK', 0.4);
-  const cap = tier === 'academy' ? CF('price.capAcademy', 2000000) : tier === 'franchise' ? CF('price.capFranchise', 6500000) : tier === 'star' ? CF('price.capStar', 3500000) : CF('price.capRegular', 1500000);
+  const K = tier === 'franchise' ? CF('price.franchiseK', 0.55) : tier === 'star' ? CF('price.starK', 0.35) : CF('price.regularK', 0.2);
+  const cap = tier === 'academy' ? CF('price.capAcademy', 500000) : tier === 'franchise' ? CF('price.capFranchise', 2500000) : tier === 'star' ? CF('price.capStar', 1500000) : CF('price.capRegular', 600000);
   // академия: престиж клуба-хозяина (академия топ-10 — талант на виду у всего рынка), иначе скидка «не доказал на про-сцене»
   let acadK = 1;
-  if (tier === 'academy') { const par = t && (window.V21AcademyParent || {})[t.name], prk = par ? rankCached(par) : 0; acadK = prk && prk <= 10 ? CF('price.acadTop10', 1.3) : prk && prk <= 30 ? 1 : CF('price.acadOther', .7); }
+  if (tier === 'academy') { const par = t && (window.V21AcademyParent || {})[t.name], prk = par ? rankCached(par) : 0; acadK = (prk && prk <= 10 ? CF('price.acadTop10', 1.3) : prk && prk <= 30 ? 1 : CF('price.acadOther', .7)) * CF('price.acadK', .5); }
   // видимость: игрок клуба топ-10 на виду у всего рынка, вне топ-60 — дешевле
-  const rk = t && !t.isAcademy ? rankCached(t.name) : 0, vis = !rk ? 1 : rk <= 10 ? CF('price.top10Mul', 1.1) : rk > 60 ? CF('price.lowMul', .85) : 1;
+  const rk = t && !t.isAcademy ? rankCached(t.name) : 0, vis = !rk ? 1 : rk <= 10 ? CF('price.top10Mul', 1.1) : rk > 80 ? CF('price.tier3Mul', .35) : rk > 40 ? CF('price.tier2Mul', .6) : 1;   // v139: Tier-2/3 — $10–100 тыс.
   return Math.round(clamp(Math.pow(Math.max(0, eff - 68) / 22, 2.6) * 2300000 * K * ageK * con * vis * acadK, 15000, cap) / 1000) * 1000;
 };
 
@@ -172,7 +172,7 @@ function payPrizes(snap) {
     const stageShare = p => snap.prestige === 'major' ? (p <= 24 ? .005 : p <= 32 ? .0035 : 0) : 0;
     snap.results.forEach(r => { const sh = SPLIT[r.p] || (r.p <= 16 ? .0125 : stageShare(r.p)); if (!sh || !byName(r.n)) return;
       // v138: призовые делятся — игрокам основы большая часть (в их карьерных заработках), клубу — своя доля
-      const CFp = (k, d) => { try { return window.CS2Config ? window.CS2Config.get(k, d) : d; } catch (e) { return d; } }, clubShare = CFp('econ.prizeClubShare', 0.4);
+      const CFp = (k, d) => { try { return window.CS2Config ? window.CS2Config.get(k, d) : d; } catch (e) { return d; } }, clubShare = CFp('econ.prizeClubShare', 0.55);
       const amt = pool * sh * clubShare; book(r.n, amt, 'prize', `${snap.name}: ${r.p}-е место (доля клуба ${Math.round(clubShare * 100)}%)`);
       const o = org(r.n); if (r.p === 1) { o.rep = clamp(o.rep + (snap.prestige === 'major' ? 8 : snap.prestige === 'elite' ? 4 : 2), 0, 100); if (o.sponsor && ['major', 'elite', 'regular'].includes(snap.prestige)) book(r.n, o.sponsor.bonus, 'spon', `Бонус спонсора за титул (${o.sponsor.name})`); } });
     // v95: стадия Мейджора — репутация организации (титул уже +8 выше): финал +4, полуфинал +3, плей-офф +2, Stage 3 +1

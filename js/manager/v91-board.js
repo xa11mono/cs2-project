@@ -44,7 +44,7 @@
     const t = byName(name); if (!t) return null;
     const r0 = rankOf(name), b0 = budget(name);
     const hasYouth = teams.some(a => a.isAcademy && (a.academyParent || a.parentTeam) === name) || (() => { try { return W.V34Roster.dna(name).youth >= .5; } catch (e) { return false; } })();
-    const rT = rankTarget(r0);
+    const rT = rankTarget(r0, name);
     const k = {
       team: name, from: now(), s0: season(), until: season() + (renew ? 1 : (new Date(now()).getMonth() >= 6 ? 2 : 1)),
       r0, rT, b0, youth: hasYouth, goal: tourGoal(r0).k, reviews: [], bad: 0, warned: false, status: 'active',
@@ -59,6 +59,7 @@
     const r = rankOf(k.team), out = {};
     // рейтинг — прогресс от места при подписании
     if (k.r0 <= 3) out.rank = { v: r <= 3 ? 1 : clamp(1 - (r - 3) / 7, 0, 1), t: `№${r} (цель — топ-3)` };
+    else if (k.rT >= k.r0) { out.rank = { v: r <= k.rT ? clamp(0.75 + 0.25 * (k.rT - r) / Math.max(1, k.rT), 0, 1) : clamp(0.75 - (r - k.rT) / 15, 0, 1), t: `№${r} (цель — удержаться не ниже №${k.rT})` }; }   // v139: цель «удержаться»
     else { const prog = (k.r0 - r) / Math.max(1, k.r0 - k.rT); out.rank = { v: clamp(0.5 + 0.5 * prog, 0, 1), t: `№${k.r0} → №${r} (цель №${k.rT})` }; }
     // турниры
     // турниры после подписания: история клуба хранится «новые сначала», при подписании запомнена её длина
@@ -150,7 +151,11 @@
       ${k.reviews.length ? `<details><summary>История оценок (${k.reviews.length})</summary><ul>${k.reviews.slice(0, 10).map(r => `<li>${H.esc(r.why)} — ${r.conf}%</li>`).join('')}</ul></details>` : ''}
       ${off.length ? `<div class="v84-offers"><small>Предложения работы:</small>${off.map(n => `<button type="button" class="hs-btn ghost sm" data-joboffer="${H.esc(n)}">${H.logo(n, 'xs')} ${H.esc(n)} (#${rankOf(n)})</button>`).join('')}</div>` : ''}</div></section>`;
   }
-  const rankTarget = r0 => r0 <= 3 ? 3 : Math.max(1, Math.round(r0 * C('board.rankTargetMul', 0.75)));
+  // v139: цели по уровню клуба (ориентиры реальной сцены): топ-3 — остаться в топ-3; 4–10 — в топ-10; 11–30 — удержаться
+  // в топ-30; 31–60 — войти/удержаться в топ-50; ниже — удержаться в топ-80. Раньше всем — «подняться на четверть»
+  // (с №77 на №58 за сезон), и слабые клубы увольняли за невыполнимую цель.
+  const rankTarget = (r0, name) => { try { if (name && (C('concept.clubs', []) || []).includes(name)) return Math.max(r0 + 10, 80); } catch (e) {}
+    return r0 <= 3 ? 3 : r0 <= 10 ? 10 : r0 <= 30 ? 30 : r0 <= 60 ? 50 : 80; };
   // tourGoal и rankTarget нужны экрану выбора организации (v96): он показывает цели руководства по тем же правилам
   W.CS2Board = { tick, score, parts, create, review, box, state: S, contract: n => S()[n || V.managed()] || null, tourGoal, rankTarget };
   const every = (W.CS2Loop && W.CS2Loop.every) || ((fn, ms) => setInterval(fn, ms));

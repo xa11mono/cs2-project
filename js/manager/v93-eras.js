@@ -81,12 +81,12 @@
     ranked().forEach((t, i) => {
       const rk = i + 1, h = s.ranks[t.name] || [], cur = sl[t.name];
       if (cur && cur.until > now()) return;
-      if (cur && now() - cur.until < C('slump.cooldownDays', 120) * DAY) return;
+      if (cur && now() - cur.until < C('slump.cooldownDays', 150) * DAY) return;
       if (rk > C('slump.topRank', 30) || h.length < 8) return;
       const top5 = h.slice(0, 26).filter(r => r <= 5).length / 26, rose = (h[25] || h[h.length - 1] || 99) > 25 && rk <= 20;
-      let p = C('slump.baseWeekly', 0.006) * (1 + top5 * C('slump.top5Mul', 2)) * (rose ? C('slump.newcomerMul', 2.5) : 1);
+      let p = C('slump.baseWeekly', 0.006) * (1 + top5 * C('slump.top5Mul', 1.5)) * (rose ? C('slump.newcomerMul', 2) : 1);
       if (hh('slump|' + t.name + '|' + wk + '|' + (seasonState.v88Seed || '')) >= p) return;
-      const days = 21 + Math.floor(hh('sd|' + t.name + wk) * 22), depth = 5 + Math.floor(hh('sp|' + t.name + wk) * 4);
+      const days = C('slump.minDays', 28) + Math.floor(hh('sd|' + t.name + wk) * (C('slump.maxDays', 70) - C('slump.minDays', 28) + 1)), depth = C('slump.minDepth', 2) + Math.floor(hh('sp|' + t.name + wk) * (C('slump.maxDepth', 4) - C('slump.minDepth', 2) + 1));
       const why = rose ? 'после быстрого взлёта команда не выдерживает темпа' : top5 > .7 ? 'усталость после долгого пребывания на вершине' : 'полоса неудач, игра не клеится';
       sl[t.name] = { from: now(), until: now() + days * DAY, depth, why };
       (t.players || []).forEach(x => { if (x && (!x.status || x.status === 'STARTER')) x.morale = Math.max(40, (+x.morale || 85) - 6); });

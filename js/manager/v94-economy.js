@@ -118,7 +118,7 @@
      один местный (если репутация от 20). Требование — место в рейтинге; 8 недель подряд не выполняется — партнёр уходит.
      Контракт на 1–2 сезона, выплаты — каждую неделю (как у генерального). */
   function partnersWeek(t, o) {
-    const rk = rankOf(t), slots = rk <= 10 ? C('econ.partnersTop10', 2) : rk <= 40 ? C('econ.partnersTop40', 1) : ((o.rep || 0) >= 20 ? 1 : 0);
+    const rk = rankOf(t), slots = rk <= 10 ? C('econ.partnersTop10', 5) : rk <= 40 ? C('econ.partnersTop40', 3) : ((o.rep || 0) >= 20 ? 2 : 1);
     const P = o.partners = Array.isArray(o.partners) ? o.partners : [];
     // выплаты и требования
     for (let i = P.length - 1; i >= 0; i--) {
@@ -129,7 +129,7 @@
     }
     // свободные места — новые партнёры
     while (P.length < slots) {
-      const k = P.length, off = offers(t, o, 3)[(k + 1) % 3], share = rk <= 10 ? C('econ.partnerShareTop', 0.3) : rk <= 40 ? C('econ.partnerShareMid', 0.3) : C('econ.partnerShareLow', 0.2);
+      const k = P.length, off = offers(t, o, k + 2)[k + 1], share = rk <= 10 ? C('econ.partnerShareTop', 0.12) : rk <= 40 ? C('econ.partnerShareMid', 0.1) : C('econ.partnerShareLow', 0.1);
       const x = { id: off.id + 'p' + k, name: off.name + (P.some(q => q.name === off.name) ? ' ' + (k + 2) : ''), industry: off.industry, industryL: off.industryL, perSeason: Math.round(baseAmount(t, o) * share * (0.85 + u('pt', t.name, season(), k) * 0.3) / 1000) * 1000,
         until: season() + (h32(t.name + 'pt' + k + season()) % 2), target: clamp(rk + 6, 1, 80), since: now(), miss: 0 };
       if (x.name === (o.sponsor && o.sponsor.name)) x.name = x.name + ' Partner';
