@@ -155,7 +155,8 @@
   // в топ-30; 31–60 — войти/удержаться в топ-50; ниже — удержаться в топ-80. Раньше всем — «подняться на четверть»
   // (с №77 на №58 за сезон), и слабые клубы увольняли за невыполнимую цель.
   const rankTarget = (r0, name) => { try { if (name && (C('concept.clubs', []) || []).includes(name)) return Math.max(r0 + 10, 80); } catch (e) {}
-    return r0 <= 3 ? 3 : r0 <= 10 ? 10 : r0 <= 30 ? 30 : r0 <= 60 ? 50 : 80; };
+    // v141: запас по местам — клуб на границе уровня (Alliance №28 с целью «не ниже 30») увольняли за падение на 3 места
+    return r0 <= 3 ? 3 : r0 <= 10 ? Math.max(10, r0 + 3) : r0 <= 30 ? Math.max(30, r0 + 8) : r0 <= 60 ? Math.max(50, r0 + 8) : Math.max(80, r0 + 10); };
   // tourGoal и rankTarget нужны экрану выбора организации (v96): он показывает цели руководства по тем же правилам
   W.CS2Board = { tick, score, parts, create, review, box, state: S, contract: n => S()[n || V.managed()] || null, tourGoal, rankTarget };
   const every = (W.CS2Loop && W.CS2Loop.every) || ((fn, ms) => setInterval(fn, ms));
