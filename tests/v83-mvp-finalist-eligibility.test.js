@@ -54,6 +54,7 @@ function buildEnv({ lines, initialAwards = {}, archiveRosters = true, rewardRegi
     showHistory() {},
     CustomEvent: function CustomEvent(type, init) { this.type = type; this.detail = init?.detail; }
   };
+  require('./lib/project').attachKernel(sandbox);   // v144: модули расширяют функции через CS2.patch
   vm.runInNewContext(source, sandbox, { filename: 'js/awards/trophies.js' });
   if (rewardRegistry) {
     const registrySource = fs.readFileSync(path.join(__dirname, '..', 'js/awards/reward-registry.js'), 'utf8');

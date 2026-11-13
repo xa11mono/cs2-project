@@ -48,19 +48,13 @@ function finish(item) {
   live.delete(item.id);
 }
 (function wrap() {
-  const orig = window.broadcastAdvancePhase;
-  if (typeof orig !== 'function' || orig.__v32) return;
-  const w = function (item, now) {
+  if (typeof window.broadcastAdvancePhase !== 'function' || window.broadcastAdvancePhase.__v32) return;
+CS2.patch('broadcastAdvancePhase', orig => function (item, now) {
     const r = orig.apply(this, arguments);
     try { track(item); if (item?.state?.finished || item?.state?.phase === 'finished') finish(item); } catch (e) { console.warn('[v32 replay]', e); }
     return r;
-  };
-  w.__v32 = true; window.broadcastAdvancePhase = w; try { broadcastAdvancePhase = w; } catch (e) {}
-  const fin = window.finishBroadcastSeries;
-  if (typeof fin === 'function' && !fin.__v32) {
-    const f = function (item) { try { track(item); } catch (e) {} const r = fin.apply(this, arguments); try { finish(item); } catch (e) { console.warn('[v32 replay]', e); } return r; };
-    f.__v32 = true; window.finishBroadcastSeries = f; try { finishBroadcastSeries = f; } catch (e) {}
-  }
+  }, { id: '__v32' });
+  CS2.patch('finishBroadcastSeries', fin => function (item) { try { track(item); } catch (e) {} const r = fin.apply(this, arguments); try { finish(item); } catch (e) { console.warn('[v32 replay]', e); } return r; }, { id: '__v32' });
 })();
 
 // Повтор для завершённого матча из архива: тот же турнир, сезон, пара команд и набор карт.
@@ -204,7 +198,7 @@ H.NAV_GAME.unshift(['watch', 'Режим зрителя']);
 // Один вход в эфир: старое окно трансляции и страница «Симулятор» ведут сюда.
 const focus = id => { if (id) { DIR.focus = id; DIR.since = Date.now(); DIR.auto = false; LSset('v32_director', '0'); } H.nav('watch'); };
 H.PAGES.sim = () => { setTimeout(() => H.nav('watch', null, true), 0); return ''; };
-window.openBroadcastMatchDetail = focus; try { openBroadcastMatchDetail = focus; } catch (e) {}
+CS2.patch('openBroadcastMatchDetail', () => focus, { optional: true });   // старое окно трансляции → страница эфира
 const rerender = () => { const y = window.scrollY; H.render(); window.scrollTo(0, y); $('hs-page')?.classList.remove('hs-anim'); };
 H.CLICKS.push(['[data-spfocus]', el => { DIR.focus = el.dataset.spfocus; DIR.since = Date.now(); DIR.auto = false; LSset('v32_director', '0'); rerender(); }]);
 H.CLICKS.push(['[data-spmap]', el => { RP.map = +el.dataset.spmap; RP.rnd = 0; rerender(); }]);

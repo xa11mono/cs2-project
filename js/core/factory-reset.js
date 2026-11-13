@@ -119,8 +119,6 @@
     return true;
   }
 
-  window.resetToDefault = resetToDefaultV58;
-  // Top-level function declarations from the original script are global bindings
-  // in classic scripts; assigning the property also updates onclick resolution.
-  try { resetToDefault = resetToDefaultV58; } catch (e) {}
+  // полный сброс заменяет исходный (глобальная привязка обновляется — onclick="resetToDefault()" вызывает новый)
+  CS2.patch('resetToDefault', () => resetToDefaultV58, { optional: true });
 })();

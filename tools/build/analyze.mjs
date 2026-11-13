@@ -39,13 +39,13 @@ const layered = [...touch].map(([n, a]) => [n, [...new Map(a.filter(x => x.f !==
   .filter(([n, a]) => owners.has(n) && a.length).sort((x, y) => y[1].length - x[1].length || x[0].localeCompare(y[0]));
 console.log(`модулей ${order.length}, ошибок разбора ${errors}, глобальных объявлений ${decl.size}`);
 console.log(`конфликтов let/const/class между модулями: ${lex.length}`); lex.forEach(([n, a]) => console.log('  ', n, a.map(x => x.k + '@' + x.f).join(', ')));
-console.log(`функций, расширяемых другими модулями: ${layered.length}; расширений через CS2.patch: ${patches}, ручных window.X = function: ${adhoc}`);
+console.log(`функций, расширяемых другими модулями: ${layered.length}; вызовов CS2.patch: ${patches}`);
 layered.slice(0, 15).forEach(([n, a]) => console.log(`  ${String(a.length).padStart(2)} ${n}`));
 if (process.argv.includes('--md')) {
   const md = [`# Карта слоёв`, '', `Создано \`node tools/build/analyze.mjs --md\` — не редактировать вручную. Порядок загрузки — \`js/boot/manifest.js\`.`, '',
     `Каждая строка — глобальная функция, которую расширяют модули кроме объявившего. Перед правкой функции посмотрите, кто стоит над ней:`,
     `верхний слой срабатывает первым. В игре: \`CS2.chain('имя')\` в консоли браузера.`, '',
-    `Модулей: ${order.length}. Расширений через \`CS2.patch\`: ${patches}; ручных \`window.X = function\`: ${adhoc} (переводить на CS2.patch при правке модуля).`, '',
+    `Модулей: ${order.length}. Вызовов \`CS2.patch\`: ${patches}. Все слои подключаются через ядро — ручные обёртки ловит тест \`tests/v144-layers.test.js\`.`, '',
     '| Функция | Объявлена | Расширяют (в порядке загрузки) |', '| --- | --- | --- |',
     ...layered.map(([n, a]) => `| \`${n}\` | ${owners.get(n)} | ${a.sort((x, y) => order.indexOf(x.f) - order.indexOf(y.f)).map(x => x.f.replace(/^js\//, '') + (x.how === 'CS2.patch' ? ' ✓' : '')).join(' → ')} |`), ''];
   fs.writeFileSync(path.join(root, 'docs/LAYERS.md'), md.join('\n'));

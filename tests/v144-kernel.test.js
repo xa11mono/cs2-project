@@ -31,6 +31,14 @@ same(CS2.layers().calc, ['js/base/game.js', 'js/a.js', 'js/b.js'], 'automatic la
 assert.equal(CS2.patch('nope', b => function () { return b(); }), undefined, 'missing base: skipped');
 assert.equal(win.nope, undefined);
 
+// --- ifExists: тихий пропуск; swap: временная подмена с восстановлением даже при исключении
+assert.equal(CS2.patch('absent', b => function () { return b(); }, { ifExists: true }), undefined);
+win.tmp = () => 'orig';
+assert.equal(CS2.swap('tmp', () => 'temp', () => win.tmp()), 'temp');
+assert.equal(win.tmp(), 'orig', 'restored after swap');
+assert.throws(() => CS2.swap('tmp', () => 'x', () => { throw new Error('boom'); }));
+assert.equal(win.tmp(), 'orig', 'restored after a throw');
+
 // --- шина событий: порядок, отписка, once, ошибка подписчика не ломает остальных
 const got = [];
 const off = CS2.on('e', p => got.push('a' + p));

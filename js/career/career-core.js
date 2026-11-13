@@ -535,23 +535,13 @@ function teamMod(name, opp, map) { // вклад команды в вероят�
 function careerMod(t1, t2, map) { return clamp(teamMod(t1, t2, map) - teamMod(t2, t1, map), -.03, .03); }
 window.v31CareerMod = careerMod;
 (() => {
-  const f = window.calcMapWinProbability; if (typeof f !== 'function' || f.__v31) return;
-  const w = function (t1, t2, map) { const p = f.apply(this, arguments); let d = 0; try { d = careerMod(t1, t2, map); } catch (e) {} return clamp(p + d, .25, .75); };
-  w.__v31 = true; window.calcMapWinProbability = w; try { calcMapWinProbability = w; } catch (e) {}
-  const o = window.calcMatchOdds; if (typeof o === 'function' && !o.__v31) {
-    const wo = function (t1, t2, bo1) { const r = o.apply(this, arguments); if (!r) return r; let d = 0; try { d = careerMod(t1, t2, null) * 3.2; } catch (e) {} const p1 = clamp(r.p1_win + d, .08, .92);
-      return { pct1: Math.round(p1 * 100), pct2: 100 - Math.round(p1 * 100), c1: Math.max(1.05, Math.min(7.5, .94 / p1)).toFixed(2), c2: Math.max(1.05, Math.min(7.5, .94 / (1 - p1))).toFixed(2), p1_win: p1 }; };
-    wo.__v31 = true; window.calcMatchOdds = wo; try { calcMatchOdds = wo; } catch (e) {}
-  }
+  if (typeof window.calcMapWinProbability !== 'function' || window.calcMapWinProbability.__v31) return;
+  CS2.patch('calcMapWinProbability', f => function (t1, t2, map) { const p = f.apply(this, arguments); let d = 0; try { d = careerMod(t1, t2, map); } catch (e) {} return clamp(p + d, .25, .75); }, { id: '__v31' });
+  CS2.patch('calcMatchOdds', o => function (t1, t2, bo1) { const r = o.apply(this, arguments); if (!r) return r; let d = 0; try { d = careerMod(t1, t2, null) * 3.2; } catch (e) {} const p1 = clamp(r.p1_win + d, .08, .92);
+      return { pct1: Math.round(p1 * 100), pct2: 100 - Math.round(p1 * 100), c1: Math.max(1.05, Math.min(7.5, .94 / p1)).toFixed(2), c2: Math.max(1.05, Math.min(7.5, .94 / (1 - p1))).toFixed(2), p1_win: p1 }; }, { id: '__v31' });
   // контекст матча: мгновенный, пошаговый и эфир
-  const im = window.instantMatch; if (typeof im === 'function' && !im.__v31) {
-    const wi = function (match, cb) { if (match?.t1 && match?.t2) beforeMatch(match); const wrapped = function (wn, ln) { try { afterMatch(wn, ln, stakesOf(match) > 0); markUsed(match); } catch (e) {} return cb.apply(this, arguments); }; return withCtx(match, () => im.call(this, match, wrapped)); };
-    wi.__v31 = true; Object.keys(im).forEach(k => { wi[k] = im[k]; }); window.instantMatch = wi; try { instantMatch = wi; } catch (e) {}
-  }
-  const fb = window.finishBroadcastMatch; if (typeof fb === 'function' && !fb.__v31) {
-    const wf = function (item, winner, loser) { try { afterMatch(winner, loser, stakesOf(item?.match) > 0); markUsed(item?.match); } catch (e) {} return fb.apply(this, arguments); };
-    wf.__v31 = true; window.finishBroadcastMatch = wf; try { finishBroadcastMatch = wf; } catch (e) {}
-  }
+  CS2.patch('instantMatch', im => function (match, cb) { if (match?.t1 && match?.t2) beforeMatch(match); const wrapped = function (wn, ln) { try { afterMatch(wn, ln, stakesOf(match) > 0); markUsed(match); } catch (e) {} return cb.apply(this, arguments); }; return withCtx(match, () => im.call(this, match, wrapped)); }, { id: '__v31' });
+  CS2.patch('finishBroadcastMatch', fb => function (item, winner, loser) { try { afterMatch(winner, loser, stakesOf(item?.match) > 0); markUsed(item?.match); } catch (e) {} return fb.apply(this, arguments); }, { id: '__v31' });
 })();
 function beforeMatch(m) { // AI готовится к важным матчам и к соперникам
   const st = stakesOf(m); if (!st && !rivalOf(m.t1, m.t2)) return;
@@ -559,9 +549,7 @@ function beforeMatch(m) { // AI готовится к важным матчам 
 }
 function markUsed(m) { if (!m) return; const maps = (m.broadcastResult?.maps || []).map(x => x.map); maps.forEach(map => { markPrepUsed(m.t1, m.t2, map); markPrepUsed(m.t2, m.t1, map); }); }
 // эфир: контекст ставок для раундов текущего матча
-(() => { const ba = window.broadcastAdvancePhase; if (typeof ba !== 'function' || ba.__v31) return;
-  const w = function (item) { if (item?.match) { if (!item.__v31b) { item.__v31b = 1; try { beforeMatch(item.match); } catch (e) {} } return withCtx(item.match, () => ba.apply(this, arguments)); } return ba.apply(this, arguments); };
-  w.__v31 = true; window.broadcastAdvancePhase = w; try { broadcastAdvancePhase = w; } catch (e) {} })();
+CS2.patch('broadcastAdvancePhase', ba => function (item) { if (item?.match) { if (!item.__v31b) { item.__v31b = 1; try { beforeMatch(item.match); } catch (e) {} } return withCtx(item.match, () => ba.apply(this, arguments)); } return ba.apply(this, arguments); }, { id: '__v31' });
 
 /* ------------------------------------------------------------ тайм-ауты и перерыв */
 const CALLS = {
@@ -584,8 +572,7 @@ function callValue(st, side, key, teamName) { // насколько вызов �
     default: return .02;
   }
 }
-(() => { const pp = window.publishPostPauseTactic; if (typeof pp !== 'function' || pp.__v31) return;
-  const w = function (st, teamName, mapName) {
+CS2.patch('publishPostPauseTactic', pp => function (st, teamName, mapName) {
     const r = pp.apply(this, arguments);
     try {
       const side = teamName === st.__match?.t1 ? 1 : 2, call = st.v31Call?.[side];
@@ -600,8 +587,7 @@ function callValue(st, side, key, teamName) { // насколько вызов �
       }
     } catch (e) { console.warn('[v31 call]', e); }
     return r;
-  };
-  w.__v31 = true; window.publishPostPauseTactic = w; try { publishPostPauseTactic = w; } catch (e) {} })();
+  }, { id: '__v31' });
 function userTimeout(itemId, call) { // тайм-аут управляемой команды в эфире — по правилам эфира (лимит пауз, не в 10–12 раунде)
   const b = (typeof currentTournament !== 'undefined' ? currentTournament : null)?.broadcast; const item = (b?.active || []).find(x => x.id === itemId);
   const st = item?.state, m = item?.match, me = managed(); if (!st || !m || !me) return { ok: false, why: 'матч не в эфире' };
@@ -877,13 +863,11 @@ CS2.patch('applyPlayerTransfer', f => function (fromTeam, toTeam, player, reason
     return ok;
   }, { id: '__v31' });
 // амбиции и лояльность решают, согласится ли игрок
-(() => { const f = window.playerWillAccept; if (typeof f !== 'function' || f.__v31) return;
-  const w = function (p, fromTeam, toTeam) { ensurePerson(p); const base = f.apply(this, arguments);
+CS2.patch('playerWillAccept', f => function (p, fromTeam, toTeam) { ensurePerson(p); const base = f.apply(this, arguments);
     const up = rankOf(fromTeam?.name) - rankOf(toTeam?.name);                          // > 0 — переход в более сильную команду
     if (p.pers.loy >= 16 && up < 6 && !p.v31listed) return false;                      // лояльный не уходит ради шага в сторону
     if (!base && p.pers.amb >= 15 && up >= 8) return true;                             // амбициозный идёт в топ даже против правил
-    return base; };
-  w.__v31 = true; window.playerWillAccept = w; try { playerWillAccept = w; } catch (e) {} })();
+    return base; }, { id: '__v31' });
 
 /* ------------------------------------------------------------ цели карьеры и наследие */
 function careerLog(text) { const c = S(); c.career.log.unshift({ ts: calNow(), s: season(), text }); if (c.career.log.length > 200) c.career.log.length = 200; }
@@ -956,11 +940,9 @@ async function syncCareerClockCooperative(){
 }
 (globalThis.CS2Loop?.every || ((f, ms) => (typeof setInterval === "function" ? setInterval : window.setInterval)(f, ms)))(() => { if(window.v57BatchCalendarSkip) return; syncCareerClock(); }, 1500);
 // после турнира: призовые, соперничества, цели
-(() => { const f = window.finalizeTournamentRating; if (typeof f !== 'function' || f.__v31) return;
-  const w = function () { const ct = typeof currentTournament !== 'undefined' ? currentTournament : null, done = ct?.completed; const r = f.apply(this, arguments);
+CS2.patch('finalizeTournamentRating', f => function () { const ct = typeof currentTournament !== 'undefined' ? currentTournament : null, done = ct?.completed; const r = f.apply(this, arguments);
     try { if (ct && !done && ct.completed && ct.hubArchiveId) { const snap = (window.hubArchiveExport() || {})[ct.hubArchiveId]; payPrizes(snap); computeRivals(); checkGoals(); if (isManaged(snap?.champion)) careerLog(`Титул: ${snap.name}`); } } catch (e) { console.warn('[v31 finalize]', e); }
-    return r; };
-  w.__v31 = true; Object.keys(f).forEach(k => { w[k] = f[k]; }); window.finalizeTournamentRating = w; try { finalizeTournamentRating = w; } catch (e) {} })();
+    return r; }, { id: '__v31' });
 // Параллельные турниры тоже платят призовые. Во время пакетной перемотки
 // архив сканируется один раз в финале, а не каждые четыре реальные секунды.
 let v31ParallelPrizeArchiveRevision = -1;

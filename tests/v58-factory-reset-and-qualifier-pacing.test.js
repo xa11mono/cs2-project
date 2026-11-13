@@ -20,7 +20,7 @@ assert(/await window\.v56ClearAutosaveDatabase\(\)/.test(reset) && /window\.v56C
 assert(/await window\.hubArchiveClear\(\)/.test(reset), 'factory reset must await the IndexedDB bracket archive clear');
 assert(/clearIndexedDBStore\('cs2_hltv_brackets_v1', 'events'\)/.test(reset), 'factory reset must retry archive-store cleanup if the archive module cannot clear it');
 assert(/RESET_KEY_RE/.test(reset) && /cs2\(\_|\-|\$\)/.test(reset), 'factory reset must clear the whole CS2 storage namespace, not only a short key list');
-assert(/window\.resetToDefault = resetToDefaultV58/.test(reset), 'reset buttons must use the v58 async reset handler');
+assert(/CS2\.patch\('resetToDefault', \(\) => resetToDefaultV58/.test(reset), 'reset buttons must use the v58 async reset handler');
 assert(/hubArchiveClear = \(\) =>[\s\S]*?tx\.oncomplete = \(\) => resolve\(true\)/.test(hub), 'archive clear must resolve after the IndexedDB transaction commits');
 assert(/v56PrepareFactoryReset/.test(autosave) && /handle\.removeEntry\(name\)/.test(autosave), 'autosave helper must delete the current and backup JSON files before reset');
 assert(html.indexOf('js/core/factory-reset.js') > html.indexOf('js/core/autosave.js'), 'reset override must load after autosave and legacy reset definitions');
@@ -83,7 +83,7 @@ function memoryStorage(initial) {
     hltvSiteReset() { calls.push('site-reset'); }
   };
   const context = { window: win, localStorage, sessionStorage, seasonState, currentTournament, console, Promise, Date };
-  vm.runInNewContext(reset, context, { filename: 'js/core/factory-reset.js' });
+  vm.runInNewContext(reset, require('./lib/project').attachKernel(context), { filename: 'js/core/factory-reset.js' });
   const ok = await win.resetToDefault();
   assert(ok === true, 'confirmed factory reset must complete');
   assert(seasonState.calendar.paused === true, 'reset must pause the clock before clearing');
@@ -99,7 +99,7 @@ function memoryStorage(initial) {
   const storage2 = memoryStorage({ cs2_season_state_v61: 'do-not-delete' });
   let reload2 = 0;
   const win2 = { confirm() { return false; }, location: { reload() { reload2++; } } };
-  vm.runInNewContext(reset, { window: win2, localStorage: storage2, sessionStorage: memoryStorage(), console, Promise, Date }, { filename: 'v58-reset-cancel.js' });
+  vm.runInNewContext(reset, require('./lib/project').attachKernel({ window: win2, localStorage: storage2, sessionStorage: memoryStorage(), console, Promise, Date }), { filename: 'v58-reset-cancel.js' });
   const cancelled = await win2.resetToDefault();
   assert(cancelled === false && reload2 === 0 && storage2.getItem('cs2_season_state_v61') === 'do-not-delete', 'cancelled reset must not mutate data');
 

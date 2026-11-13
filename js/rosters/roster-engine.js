@@ -280,9 +280,7 @@
   /* ------------------------------------------------------------ applyPlayerTransfer — внешний слой
      Покупки ИИ, сделки менеджера, «звезда уходит из гранда», амбиции — всё идёт через applyPlayerTransfer (v28 и
      обёртки v30/v31/v84/v88). Engine — самый внешний слой: проверка до сделки, журнал и целостность после. */
-  (function () {
-    const f = W.applyPlayerTransfer; if (typeof f !== 'function' || f.__v90) return;
-    const w = function (fromTeam, toTeam, player, reason) {
+  CS2.patch('applyPlayerTransfer', f => function (fromTeam, toTeam, player, reason) {
       if (!fromTeam || !toTeam || !player || W.CS2Roster.busy) return f.apply(this, arguments);
       const out = typeof W.CS2OutFor === 'function' ? W.CS2OutFor(toTeam, player) : null;
       let fee = 0; try { fee = W.__v31UserDeal && W.__v31UserDeal.fee != null ? +W.__v31UserDeal.fee : Math.round((W.V31.valueOf(player) || 0) / 1000) * 1000; } catch (e) {}
@@ -290,16 +288,13 @@
       const op = { kind: W.__v31UserDeal ? 'user' : 'buy', team: toTeam, from: fromTeam, incoming: player, out, fee, reason, actor: W.__v31UserDeal ? 'user' : (forced ? 'ai-nego' : 'ai') };
       const args = arguments, self = this;
       return W.CS2Roster.run(op, () => f.apply(self, args));
-    };
-    w.__v90 = true; Object.keys(f).forEach(k => { if (!(k in w)) w[k] = f[k]; });
-    W.applyPlayerTransfer = w; try { applyPlayerTransfer = w; } catch (e) {} // eslint-disable-line no-global-assign
-  })();
+    }, { id: '__v90' });
 
   /* ------------------------------------------------------------ замена ушедшего (завершение карьеры и т. п.) — v84-replace
      Вынужденная операция: правил усиления нет, но журнал и целостность — те же. */
   function wrapReplace() {
-    const f = W.CS2SmartReplace; if (typeof f !== 'function' || f.__v90) return !!(f && f.__v90);
-    const w = function (t, out) {
+    const f0 = W.CS2SmartReplace; if (typeof f0 !== 'function' || f0.__v90) return !!(f0 && f0.__v90);
+    CS2.patch('CS2SmartReplace', f => { const w = function (t, out) {
       // v94: снимок всех профессиональных клубов — замена может прийти выкупом из другого клуба (сторож нашёл: alex666
       // ушёл из B8 в Falcons на место karrigan, а в журнале был только клуб-покупатель)
       const snap = t ? snapTeams(teams.filter(x => x && !x.isAcademy)) : null;
@@ -314,9 +309,9 @@
       } catch (e) {}
       return res;
     };
-    Object.keys(f).forEach(k => { w[k] = f[k]; }); w.__v90 = true;
-    Object.defineProperty(w, 'last', { get() { return f.last; }, set(v) { f.last = v; } });
-    W.CS2SmartReplace = w; return true;
+    Object.defineProperty(w, 'last', { get() { return f.last; }, set(v) { f.last = v; } });   // last читается у исходной функции
+    return w; }, { id: '__v90' });
+    return true;
   }
   if (!wrapReplace()) setTimeout(wrapReplace, 1500);
 
@@ -330,7 +325,7 @@
     const ap = W.applyTemporaryStandIn, rs = W.restoreTemporaryStandIn;
     if (typeof ap !== 'function' || typeof rs !== 'function') return false;
     if (ap.__v90 && rs.__v90) return true;
-    const apW = function (t, reason) {
+    CS2.patch('applyTemporaryStandIn', ap => function (t, reason) {
       const before = t ? (t.players || []).map(p => p && p.nick).filter(Boolean) : [];
       const snap = t ? snapTeams([t]) : null;
       const ok = ap.apply(this, arguments);
@@ -339,8 +334,8 @@
         try { W.CS2Roster.commit({ kind: 'standin', actor: 'system', team: t, out: t.tempStandIn.original, incoming: (t.players || []).find(p => p && p.isStandIn) || null, reason: `временная замена: ${reason || ''}` }, null, snap); } catch (e) {}
       }
       return ok;
-    };
-    const rsW = function (t) {
+    }, { id: '__v90' });
+    CS2.patch('restoreTemporaryStandIn', rs => function (t) {
       const ts = t && t.tempStandIn, orig = ts && ts.original, before = (ts && ts.v90before) || [];
       const snap = t ? snapTeams([t]) : null;
       const r = rs.apply(this, arguments);
@@ -367,10 +362,7 @@
         W.CS2Roster.commit({ kind: 'standin-return', actor: 'system', team: t, incoming: orig, reason: note }, null, snap);
       } catch (e) { console.warn('[v90 standin]', e); }
       return r;
-    };
-    apW.__v90 = rsW.__v90 = true;
-    W.applyTemporaryStandIn = apW; W.restoreTemporaryStandIn = rsW;
-    try { (0, eval)('applyTemporaryStandIn = window.applyTemporaryStandIn; restoreTemporaryStandIn = window.restoreTemporaryStandIn'); } catch (e) {}
+    }, { id: '__v90' });
     return true;
   }
   if (!wrapStandIn()) setTimeout(wrapStandIn, 1500);
@@ -399,10 +391,7 @@
   }
   W.CS2Roster.watch = watch;
   (function hookWatch() {
-    const f = W.V30RankSnapshotTick; if (typeof f !== 'function') { setTimeout(hookWatch, 1000); return; }
-    if (f.__v94w) return;
-    const w = function () { const r = f.apply(this, arguments); try { watch(); } catch (e) {} return r; };
-    Object.keys(f).forEach(k => { w[k] = f[k]; }); w.__v94w = true; W.V30RankSnapshotTick = w;
+    if (typeof window.V30RankSnapshotTick !== 'function') { setTimeout(hookWatch, 1000); return; } CS2.patch('V30RankSnapshotTick', f => function () { const r = f.apply(this, arguments); try { watch(); } catch (e) {} return r; }, { id: '__v94w' });
   })();
 
   /* ------------------------------------------------------------ периодически: результаты решений, проверка целостности */
@@ -413,10 +402,7 @@
   try { resolveWorld(); } catch (e) {}
   // v91: и каждый игровой день, в том числе при перемотке (снимок рейтинга вызывается ежедневно)
   (function hookDaily() {
-    const f = W.V30RankSnapshotTick; if (typeof f !== 'function') { setTimeout(hookDaily, 1000); return; }
-    if (f.__v91world) return;
-    const w = function () { const r = f.apply(this, arguments); try { resolveWorld(); } catch (e) {} return r; };
-    Object.keys(f).forEach(k => { w[k] = f[k]; }); w.__v91world = true; W.V30RankSnapshotTick = w;
+    if (typeof window.V30RankSnapshotTick !== 'function') { setTimeout(hookDaily, 1000); return; } CS2.patch('V30RankSnapshotTick', f => function () { const r = f.apply(this, arguments); try { resolveWorld(); } catch (e) {} return r; }, { id: '__v91world' });
   })();
   console.info('[v90] Roster Engine: единые проверки и журнал для всех изменений состава');
 })();

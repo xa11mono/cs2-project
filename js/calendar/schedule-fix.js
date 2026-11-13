@@ -183,7 +183,7 @@
   }
 
   // Замена глобального v18 fit: существующие слоты не сдвигаются без причины.
-  window.v18FitDays = function (b) {
+  CS2.patch('v18FitDays', () => function (b) {
     if (!b || !Array.isArray(b.queue)) return;
     repairSavedQueue(b);
     const pending = b.queue.filter(x => x && x.status !== 'live' && x.status !== 'done');
@@ -219,12 +219,10 @@
     }
     const unplanned = pending.filter(x => Number(x.v42ScheduleVersion) !== 1);
     if (unplanned.length) replanNewQueueItems(b, unplanned);
-  };
+  }, { optional: true });
 
   // При каждом построении очереди назначаем даты только новым матчам.
-  const priorBuildQueue = window.buildBroadcastQueue;
-  if (typeof priorBuildQueue === 'function' && !priorBuildQueue.__v42) {
-    const wrapped = function (...args) {
+  CS2.patch('buildBroadcastQueue', priorBuildQueue => function (...args) {
       const b = currentTournament?.broadcast;
       const before = new Set([...(b?.queue || []), ...(b?.active || []), ...(b?.finished || [])]);
       const result = priorBuildQueue.apply(this, args);
@@ -237,11 +235,7 @@
       } catch (e) { console.warn('[v42] schedule queue', e); }
       try { if (typeof renderBroadcastPanel === 'function') renderBroadcastPanel(); } catch (e) {}
       return result;
-    };
-    wrapped.__v42 = true;
-    window.buildBroadcastQueue = wrapped;
-    try { buildBroadcastQueue = wrapped; } catch (e) {}
-  }
+    }, { id: '__v42' });
 
   // ---- Оценка оставшейся длительности всего турнира, включая ещё не созданный плей-офф ----
   const pendingRound = round => Array.isArray(round) ? round.filter(m => m && !m.winner).length : 0;
@@ -464,19 +458,12 @@
   window.v42CalendarMatches = calendarMatches;
 
   // Hook into the game clock, tournament creation, and match completion to refresh the estimate.
-  const priorRender = window.v15RenderCalendar;
-  if (typeof priorRender === 'function' && !priorRender.__v42) {
-    const wrapped = function (...args) {
+  CS2.patch('v15RenderCalendar', priorRender => function (...args) {
       const result = priorRender.apply(this, args);
       try { updateTournamentWindow(); } catch (e) { console.warn('[v42] calendar forecast', e); }
       return result;
-    };
-    wrapped.__v42 = true;
-    window.v15RenderCalendar = wrapped;
-  }
-  const priorCreate = window.createTournament;
-  if (typeof priorCreate === 'function' && !priorCreate.__v42) {
-    const wrapped = function (...args) {
+    }, { id: '__v42' });
+  CS2.patch('createTournament', priorCreate => function (...args) {
       const result = priorCreate.apply(this, args);
       try {
         if (currentTournament && !currentTournament.completed) {
@@ -487,24 +474,14 @@
         }
       } catch (e) { console.warn('[v42] create refresh', e); }
       return result;
-    };
-    wrapped.__v42 = true;
-    window.createTournament = wrapped;
-    try { createTournament = wrapped; } catch (e) {}
-  }
+    }, { id: '__v42' });
 
-  const priorStartBroadcast = window.startTVBroadcastMode;
-  if (typeof priorStartBroadcast === 'function' && !priorStartBroadcast.__v42) {
-    const wrapped = function (...args) {
+  CS2.patch('startTVBroadcastMode', priorStartBroadcast => function (...args) {
       const result = priorStartBroadcast.apply(this, args);
       try { repairSavedQueue(currentTournament?.broadcast); updateTournamentWindow(); } catch (e) {}
       try { if (typeof v15RenderCalendar === 'function') v15RenderCalendar(); } catch (e) {}
       return result;
-    };
-    wrapped.__v42 = true;
-    window.startTVBroadcastMode = wrapped;
-    try { startTVBroadcastMode = wrapped; } catch (e) {}
-  }
+    }, { id: '__v42' });
 
   // Older saves get their pending queue repaired once at boot.
   try { repairSavedQueue(currentTournament?.broadcast); updateTournamentWindow(); } catch (e) {}
@@ -517,8 +494,8 @@
   };
   console.info('[v42] calendar prediction + stage-aware match schedule enabled');
   // Пакетный пропуск дней использует ту же дневную вместимость.
-  window.v18DayCap = list => {
+  CS2.patch('v18DayCap', () => list => {
     const playoff = Array.isArray(list) && list.length && list.every(q => isPlayoffStage(q.stage || ''));
     return playoff ? capOf('playoff') : capOf('group');
-  };
+  }, { optional: true });
 })();

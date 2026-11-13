@@ -83,16 +83,10 @@
   }
 
   // Replace the v19 launch-time schedule updater with a robust continuous resync.
-  const priorSchedule=window.scheduleNextBroadcastBatch;
-  if(typeof priorSchedule==='function' && !priorSchedule.__v20Wrapped){
-    const wrapped=function(...args){
+  CS2.patch('scheduleNextBroadcastBatch', priorSchedule => function(...args){
       try{ v20NormalizeAllQueueTimes(); v20ResyncFutureSchedule('before launch'); }catch(e){}
       return priorSchedule.apply(this,args);
-    };
-    wrapped.__v20Wrapped=true;
-    window.scheduleNextBroadcastBatch=wrapped;
-    try{ scheduleNextBroadcastBatch=wrapped; }catch(e){}
-  }
+    }, { id: '__v20Wrapped' });
 
   // Important: queue resync is a task of the shared scheduler, not a second interval owner.
   window.CS2SimulationTasks = window.CS2SimulationTasks || {};
@@ -118,9 +112,7 @@
   };
 
   // When a series ends, explicitly rebase the future queue from the actual game time.
-  const priorFinish=window.finishBroadcastMatch;
-  if(typeof priorFinish==='function' && !priorFinish.__v20Wrapped){
-    const wrapped=function(item,winner,loser){
+  CS2.patch('finishBroadcastMatch', priorFinish => function(item,winner,loser){
       try{
         const b=currentTournament?.broadcast;
         if(b?.queue?.length){
@@ -146,16 +138,10 @@
       try{ if(typeof window.v18FitDays==='function') window.v18FitDays(currentTournament?.broadcast); }catch(e){}
       try{ renderBroadcastPanel(); }catch(e){}
       return result;
-    };
-    wrapped.__v20Wrapped=true;
-    window.finishBroadcastMatch=wrapped;
-    try{ finishBroadcastMatch=wrapped; }catch(e){}
-  }
+    }, { id: '__v20Wrapped' });
 
   // Store original planned time once so delay labels remain meaningful after repeated shifts.
-  const priorBuild=window.buildBroadcastQueue;
-  if(typeof priorBuild==='function' && !priorBuild.__v20Wrapped){
-    const wrapped=function(...args){
+  CS2.patch('buildBroadcastQueue', priorBuild => function(...args){
       const result=priorBuild.apply(this,args);
       try{
         const b=currentTournament?.broadcast;
@@ -165,11 +151,7 @@
         v20NormalizeAllQueueTimes();
       }catch(e){}
       return result;
-    };
-    wrapped.__v20Wrapped=true;
-    window.buildBroadcastQueue=wrapped;
-    try{ buildBroadcastQueue=wrapped; }catch(e){}
-  }
+    }, { id: '__v20Wrapped' });
 
   // Playback-speed sync is owned by v19; this layer owns only live-queue resync.
 

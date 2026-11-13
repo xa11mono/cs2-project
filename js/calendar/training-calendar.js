@@ -133,16 +133,13 @@
   }
 
   // Wrap schedule generation so every new season receives explicit calendar slots.
-  const v15OriginalGenerateDynamicSeasonSchedule = window.generateDynamicSeasonSchedule;
-  if(typeof v15OriginalGenerateDynamicSeasonSchedule === 'function'){
-    window.generateDynamicSeasonSchedule = function(...args){
+  CS2.patch('generateDynamicSeasonSchedule', v15OriginalGenerateDynamicSeasonSchedule => function(...args){
       const beforeSeason=Number(seasonState.currentSeason||1);
       const result=v15OriginalGenerateDynamicSeasonSchedule.apply(this,args);
       v15DecorateSeasonSchedule(beforeSeason !== Number(seasonState.currentSeason||1));
       v15RenderCalendar();
       return result;
-    };
-  }
+    });
 
   function v15NextStep(){
     v15DecorateSeasonSchedule(false);
@@ -379,9 +376,7 @@
   }
 
   // Intercept match completion so game-calendar time follows series rather than only the real-time ticker.
-  const v15OriginalUpdateFatigueAndForm=window.updateFatigueAndForm;
-  if(typeof v15OriginalUpdateFatigueAndForm==='function'){
-    window.updateFatigueAndForm=function(winner,loser){
+  CS2.patch('updateFatigueAndForm', v15OriginalUpdateFatigueAndForm => function(winner,loser){
       const before=currentTournament;
       const result=v15OriginalUpdateFatigueAndForm.apply(this,arguments);
       if(before && !before.completed){
@@ -395,44 +390,32 @@
       }
       v15RenderCalendar();
       return result;
-    };
-  }
+    });
 
   // Add a calendar rest day between Swiss/GSL stages and the later bracket where those functions are used.
   function v15WrapRestFunction(name, days){
-    const original=window[name];
-    if(typeof original!=='function' || original.__v15Wrapped) return;
-    const wrapped=function(...args){
+    CS2.patch(name, original => function(...args){
       const result=original.apply(this,args);
       if(currentTournament){
         v15AdvanceMinutes(days*1440,'турнирный день отдыха');
       }
       v15RenderCalendar();
       return result;
-    };
-    wrapped.__v15Wrapped=true;
-    window[name]=wrapped;
+    }, { id: '__v15Wrapped', ifExists: true });
   }
   v15WrapRestFunction('finalizeSwissStage',1);
   v15WrapRestFunction('finalizeGSLStage',1);
 
   // Major stages have an explicit break before the next stage; Stage 3 gets the longest playoffs break.
-  const v15OriginalFinalizeMajorStage=window.finalizeMajorStage;
-  if(typeof v15OriginalFinalizeMajorStage==='function' && !v15OriginalFinalizeMajorStage.__v15Wrapped){
-    const wrapped=function(stageNo){
+  CS2.patch('finalizeMajorStage', v15OriginalFinalizeMajorStage => function(stageNo){
       const result=v15OriginalFinalizeMajorStage.apply(this,arguments);
       v15AdvanceMinutes(stageNo===3?2:1,'отдых между Major-этапами');
       v15RenderCalendar();
       return result;
-    };
-    wrapped.__v15Wrapped=true;
-    window.finalizeMajorStage=wrapped;
-  }
+    }, { id: '__v15Wrapped' });
 
   // Decorate tournament creation with a planned 15:30 start and persistent calendar metadata.
-  const v15OriginalCreateTournament=window.createTournament;
-  if(typeof v15OriginalCreateTournament==='function' && !v15OriginalCreateTournament.__v15Wrapped){
-    const wrapped=function(...args){
+  CS2.patch('createTournament', v15OriginalCreateTournament => function(...args){
       const step=seasonState.seasonSchedule?.[seasonState.tournamentIndex];
       v15DecorateSeasonSchedule(false);
       const planned=step?.calendar?.startMs||v15EnsureCalendar().currentMs;
@@ -453,14 +436,11 @@
       v15RenderCalendar();
       try{ saveSeasonState(); }catch(e){}
       return result;
-    };
-    wrapped.__v15Wrapped=true;
-    window.createTournament=wrapped;
-  }
+    }, { id: '__v15Wrapped' });
 
   // Keep the no-auto-bootcamp contract even if older compatibility code is reloaded.
-  window.maybeAutoBootcamp=function(){ return false; };
-  window.runAutomaticBootcamps=function(){ return []; };
+  CS2.patch('maybeAutoBootcamp', () => function(){ return false; }, { optional: true });
+  CS2.patch('runAutomaticBootcamps', () => function(){ return []; }, { optional: true });
 
   function v15Init(){
     try{

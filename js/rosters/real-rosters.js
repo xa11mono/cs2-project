@@ -96,17 +96,15 @@ function realPick(team, opts = {}) {
 }
 window.V33Reserve.pick = realPick;
 (function wrapGen() {
-  const orig = window.generateFreeAgent; if (typeof orig !== 'function' || orig.__v33) return;
   let warned = false;
-  const w = function (teamHint, roleHint, seedOffset) {
+  CS2.patch('generateFreeAgent', orig => function (teamHint, roleHint, seedOffset) {
     try {
       const x = realPick(teamHint);
       if (x) { const p = fromReserve(x, roleHint); if (roleHint === 'IGL') p.tacticalIQ = Math.min(97, Math.max(+p.tacticalIQ || 70, attrOf(x.skill, 5))); if (teamHint?.isAcademy) p.age = Math.min(+p.age || 20, 17 + (h32s(x.nick) % 4)); return p; }
       if (!warned) { warned = true; console.info('[v86] резерв реальных игроков исчерпан — создаётся новый игрок'); }
     } catch (e) { console.warn('[v33 reserve]', e); }
     return orig.apply(this, arguments);
-  };
-  w.__v33 = true; Object.keys(orig).forEach(k => { w[k] = orig[k]; }); window.generateFreeAgent = w; try { generateFreeAgent = w; } catch (e) {}
+  }, { id: '__v33' });
 })();
 
 function rosterFor(name, need = 5) {

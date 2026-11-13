@@ -88,9 +88,7 @@
   }
 
   // 1) После генерации турнира НЕ стартуем эфир мгновенно.
-  const priorCreate = window.createTournament;
-  if (typeof priorCreate === 'function' && !priorCreate.__v18Wrapped) {
-    const wrappedCreate = function(...args) {
+  CS2.patch('createTournament', priorCreate => function(...args) {
       const result = priorCreate.apply(this, args);
       if (currentTournament && !currentTournament.completed) {
         ensureTournamentWarmup(currentTournament);
@@ -105,11 +103,7 @@
         try { saveSeasonState(); } catch (e) {}
       }
       return result;
-    };
-    wrappedCreate.__v18Wrapped = true;
-    window.createTournament = wrappedCreate;
-    try { createTournament = wrappedCreate; } catch (e) {}
-  }
+    }, { id: '__v18Wrapped' });
 
   // Раскладка матчей по игровым дням (одно место; вызывается при сборке очереди и после любых сдвигов).
   // Как на IEM Kraków 2026: групповой этап — до 6 серий в день (3 окна по 2 параллельных матча) с 13:00;
@@ -179,9 +173,7 @@
   window.v18DayCap = list => (list.length && list.every(q => V18_PLAYOFF_STAGE.test(q.stage || '')) ? V18_DAY.playoffCap : V18_DAY.groupCap);
 
   // 2) Очередь эфира переводим на ИГРОВОЕ время, а не Date.now().
-  const priorBuildQueue = window.buildBroadcastQueue;
-  if (typeof priorBuildQueue === 'function' && !priorBuildQueue.__v18Wrapped) {
-    const wrappedBuildQueue = function(...args) {
+  CS2.patch('buildBroadcastQueue', priorBuildQueue => function(...args) {
       const b = currentTournament?.broadcast;
       const result = priorBuildQueue.apply(this, args);
       if (!b || !currentTournament) return result;
@@ -196,17 +188,11 @@
       queue.filter(item => !Number(item.v18PlannedTime)).forEach(item => { item.time = 0; item.v18ScheduleVersion = 18; });
       v18FitDays(b, start);
       return result;
-    };
-    wrappedBuildQueue.__v18Wrapped = true;
-    window.buildBroadcastQueue = wrappedBuildQueue;
-    try { buildBroadcastQueue = wrappedBuildQueue; } catch (e) {}
-  }
+    }, { id: '__v18Wrapped' });
 
   // 3) Следующий слот не стартует раньше назначенного игрового времени.
   // Если слот уже прошёл из-за затянувшейся серии, ВСЕ будущие матчи сдвигаются вперёд на задержку.
-  const priorScheduleBatch = window.scheduleNextBroadcastBatch;
-  if (typeof priorScheduleBatch === 'function' && !priorScheduleBatch.__v18Wrapped) {
-    const wrappedScheduleBatch = function(...args) {
+  CS2.patch('scheduleNextBroadcastBatch', priorScheduleBatch => function(...args) {
       const b = currentTournament?.broadcast;
       if (!b || !b.running) return priorScheduleBatch.apply(this, args);
       if (b.paused || isCalendarPaused()) {
@@ -240,16 +226,10 @@
       const result = priorScheduleBatch.apply(this, args);
       renderWarmupStatus();
       return result;
-    };
-    wrappedScheduleBatch.__v18Wrapped = true;
-    window.scheduleNextBroadcastBatch = wrappedScheduleBatch;
-    try { scheduleNextBroadcastBatch = wrappedScheduleBatch; } catch (e) {}
-  }
+    }, { id: '__v18Wrapped' });
 
   // 4) При запуске матча показываем реальное игровое время старта и фиксируем задержку.
-  const priorLaunch = window.launchBroadcastMatch;
-  if (typeof priorLaunch === 'function' && !priorLaunch.__v18Wrapped) {
-    const wrappedLaunch = function(item, ...args) {
+  CS2.patch('launchBroadcastMatch', priorLaunch => function(item, ...args) {
       const gameNow = nowGame();
       if (item) {
         item.plannedTime = Number(item.v18PlannedTime || item.time || gameNow);
@@ -262,16 +242,10 @@
       const result = priorLaunch.apply(this, [item, ...args]);
       try { renderBroadcastPanel(); } catch (e) {}
       return result;
-    };
-    wrappedLaunch.__v18Wrapped = true;
-    window.launchBroadcastMatch = wrappedLaunch;
-    try { launchBroadcastMatch = wrappedLaunch; } catch (e) {}
-  }
+    }, { id: '__v18Wrapped' });
 
   // 5) Календарная пауза = полная пауза матчей. Таймеры эфира больше не живут отдельно от календаря.
-  const priorToggleCalendarPause = window.toggleGameCalendarPause;
-  if (typeof priorToggleCalendarPause === 'function' && !priorToggleCalendarPause.__v18Wrapped) {
-    const wrappedToggle = function(...args) {
+  CS2.patch('toggleGameCalendarPause', priorToggleCalendarPause => function(...args) {
       priorToggleCalendarPause.apply(this, args);
       const paused = isCalendarPaused();
       const b = currentTournament?.broadcast;
@@ -284,11 +258,7 @@
       }
       try { v15RenderCalendar(); } catch (e) {}
       renderWarmupStatus();
-    };
-    wrappedToggle.__v18Wrapped = true;
-    window.toggleGameCalendarPause = wrappedToggle;
-    try { toggleGameCalendarPause = wrappedToggle; } catch (e) {}
-  }
+    }, { id: '__v18Wrapped' });
 
   // 6) Автоматический старт эфира через 15 игровых минут после генерации сетки.
   function v18AutoStartBroadcastIfDue() {
@@ -324,9 +294,7 @@
   }
 
   // Ручной запуск эфира отменяет отложенный автозапуск.
-  const priorStart = window.startTVBroadcastMode;
-  if (typeof priorStart === 'function' && !priorStart.__v18Wrapped) {
-    const wrappedStart = function(...args) {
+  CS2.patch('startTVBroadcastMode', priorStart => function(...args) {
       if (currentTournament?.calendar) {
         currentTournament.calendar.broadcastAutoStartPending = false;
         // Ручная кнопка «Запустить эфир» должна запускать сразу, не ждать 15-минутную разминку.
@@ -337,50 +305,17 @@
         try { toggleTournamentBroadcastPause(); } catch (e) {}
       }
       return result;
-    };
-    wrappedStart.__v18Wrapped = true;
-    window.startTVBroadcastMode = wrappedStart;
-    try { startTVBroadcastMode = wrappedStart; } catch (e) {}
-  }
+    }, { id: '__v18Wrapped' });
 
   // Остановка эфира должна реально выключать автозапуск, чтобы Stop не запускал эфир обратно.
-  const priorStop = window.stopTournamentBroadcast;
-  if (typeof priorStop === 'function' && !priorStop.__v18Wrapped) {
-    const wrappedStop = function(...args) {
+  CS2.patch('stopTournamentBroadcast', priorStop => function(...args) {
       if (currentTournament?.calendar) currentTournament.calendar.broadcastAutoStartPending = false;
       return priorStop.apply(this, args);
-    };
-    wrappedStop.__v18Wrapped = true;
-    window.stopTournamentBroadcast = wrappedStop;
-    try { stopTournamentBroadcast = wrappedStop; } catch (e) {}
-  }
+    }, { id: '__v18Wrapped' });
 
-  // 7) При каждом реальном тике календаря проверяем старт и следующий матч.
-  const priorAdvance = window.v15AdvanceMinutes;
-  if (typeof priorAdvance === 'function' && !priorAdvance.__v18Wrapped) {
-    const wrappedAdvance = function(...args) {
-      const result = priorAdvance.apply(this, args);
-      // Multi-day fast-forward owns Tier-1 progression and resumes the live
-      // broadcast once, after the batch. Rebuilding the broadcast queue after
-      // every virtual-day increment duplicates that work and can block Chromium.
-      if (window.v57BatchCalendarSkip) return result;
-      try { v18AutoStartBroadcastIfDue(); } catch (e) {}
-      try {
-        const b = currentTournament?.broadcast;
-        if (b?.running && !b.paused && !isCalendarPaused() && (!b.active || b.active.length === 0)) {
-          scheduleNextBroadcastBatch();
-        }
-      } catch (e) {}
-      return result;
-    };
-    wrappedAdvance.__v18Wrapped = true;
-    window.v15AdvanceMinutes = wrappedAdvance;
-  }
 
   // 8) Render календаря: для активного турнира показываем разминку/следующий слот в игровом времени.
-  const priorRenderCalendar = window.v15RenderCalendar;
-  if (typeof priorRenderCalendar === 'function' && !priorRenderCalendar.__v18Wrapped) {
-    const wrappedRender = function(...args) {
+  CS2.patch('v15RenderCalendar', priorRenderCalendar => function(...args) {
       const result = priorRenderCalendar.apply(this, args);
       try {
         const t = currentTournament;
@@ -403,15 +338,10 @@
         }
       } catch (e) {}
       return result;
-    };
-    wrappedRender.__v18Wrapped = true;
-    window.v15RenderCalendar = wrappedRender;
-  }
+    }, { id: '__v18Wrapped' });
 
   // 9) Рендер расписания: game-time + индикатор задержки.
-  const priorRenderBroadcast = window.renderBroadcastPanel;
-  if (typeof priorRenderBroadcast === 'function' && !priorRenderBroadcast.__v18Wrapped) {
-    const wrappedBroadcastRender = function(...args) {
+  CS2.patch('renderBroadcastPanel', priorRenderBroadcast => function(...args) {
       const result = priorRenderBroadcast.apply(this, args);
       try {
         const b = currentTournament?.broadcast;
@@ -441,11 +371,7 @@
         });
       } catch (e) {}
       return result;
-    };
-    wrappedBroadcastRender.__v18Wrapped = true;
-    window.renderBroadcastPanel = wrappedBroadcastRender;
-    try { renderBroadcastPanel = wrappedBroadcastRender; } catch (e) {}
-  }
+    }, { id: '__v18Wrapped' });
 
   // 10) The shared v63 dispatcher owns recurring Tier-1 broadcast maintenance.
   window.CS2SimulationTasks = window.CS2SimulationTasks || {};

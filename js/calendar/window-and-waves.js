@@ -30,23 +30,17 @@
       items.forEach(x=>{ x.time=at; x.v18PlannedTime=at; x.gameScheduledAt=at; });
     });
   }
-  const priorSched=window.scheduleNextBroadcastBatch;
-  if(typeof priorSched==='function'&&!priorSched.__v22){
-    const w=function(...a){
+  CS2.patch('scheduleNextBroadcastBatch', priorSched => function(...a){
       const b=currentTournament&&currentTournament.broadcast;
       if(b&&b.running){
         if(b.active&&b.active.length) return;            // волна ещё играется — ждём второй матч пары
         try{ if(typeof buildBroadcastQueue==='function') buildBroadcastQueue(); regroup(b); }catch(e){ console.warn('[v22] regroup',e); }
       }
       return priorSched.apply(this,a);
-    };
-    w.__v22=true; window.scheduleNextBroadcastBatch=w; try{scheduleNextBroadcastBatch=w;}catch(e){}
-  }
+    }, { id: '__v22' });
 
   // Ручная генерация Tier-1 раньше даты больше не «съедает» расписание: часы переходят к дате старта.
-  const priorInit=window.initTournamentCycle;
-  if(typeof priorInit==='function'&&!priorInit.__v23){
-    const w=function(...a){
+  CS2.patch('initTournamentCycle', priorInit => function(...a){
       try{
         if(!(currentTournament&&!currentTournament.completed)){
           const st=(seasonState.seasonSchedule||[])[Number(seasonState.tournamentIndex)||1], t=st&&st.calendar&&Number(st.calendar.startMs), c=seasonState.calendar;
@@ -54,9 +48,7 @@
         }
       }catch(e){}
       return priorInit.apply(this,a);
-    };
-    w.__v23=true; window.initTournamentCycle=w; try{initTournamentCycle=w;}catch(e){}
-  }
+    }, { id: '__v23' });
 
   // ---------- 2) Кнопка «Создать турнир» вместо постоянного меню ----------
   window.v22ToggleCreate=function(){

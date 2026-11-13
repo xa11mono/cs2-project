@@ -35,6 +35,7 @@ const window = {
   addBroadcastEvent(st, html, kind) { emitted.push({ html, kind }); }
 };
 const context = { window, teams, console: { log(){}, warn(){}, info(){} }, Math, Number, String, Object, Array, Set, Date };
+require('./lib/project').attachKernel(context);   // v144: модули расширяют функции через CS2.patch
 vm.createContext(context);
 vm.runInContext(source, context);
 const API = window.CS2MatchDynamics;
@@ -118,6 +119,7 @@ const actualTeams = [
 ];
 const actualWindow = {};
 const actualContext = { window: actualWindow, teams: actualTeams, console: { log(){}, warn(){}, info(){} }, Math, Map, Number, String, Object, Array, Set, Date };
+require('./lib/project').attachKernel(actualContext);   // v144: модули расширяют функции через CS2.patch
 vm.createContext(actualContext);
 vm.runInContext(roundSource, actualContext);
 const actualItem = { id: 'real-style-switch', match: { t1: 'Alpha', t2: 'Bravo' }, state: {

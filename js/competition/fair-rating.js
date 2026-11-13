@@ -57,10 +57,7 @@
 
   /* ---------- статус Tier: замер и при перемотке (каждый игровой день) ---------- */
   function hookSnapshot() {
-    const f = W.V30RankSnapshotTick; if (typeof f !== 'function') return false;
-    if (f.__v89) return true;
-    const w = function () { const r = f.apply(this, arguments); try { W.CS2Tiers && W.CS2Tiers.weekly && W.CS2Tiers.weekly(); } catch (e) {} return r; };
-    w.__v89 = true; W.V30RankSnapshotTick = w;
+    if (typeof window.V30RankSnapshotTick !== 'function') return false; if (window.V30RankSnapshotTick.__v89) return true; CS2.patch('V30RankSnapshotTick', f => function () { const r = f.apply(this, arguments); try { W.CS2Tiers && W.CS2Tiers.weekly && W.CS2Tiers.weekly(); } catch (e) {} return r; }, { id: '__v89' });
     return true;
   }
 

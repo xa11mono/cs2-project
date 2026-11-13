@@ -1,6 +1,5 @@
 
-(() => {
-  window.initTournamentCycle = function(){
+CS2.patch('initTournamentCycle', () => function(){
     stopAllSimulations();
     createTournament();
     renderTournament();
@@ -11,6 +10,4 @@
     isFastSimRunning = false;
     isStepSimRunning = false;
     updateSimControlButtons(false);
-  };
-  initTournamentCycle = window.initTournamentCycle;
-})();
+  }, { optional: true });

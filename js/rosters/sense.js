@@ -89,9 +89,7 @@
 
   /* ------------------------------------------------------------ сторож сделок ИИ */
   const EXODUS = 'ради роли лидера и крупного контракта';
-  (function () {
-    const f = W.applyPlayerTransfer; if (typeof f !== 'function' || f.__v88) return;
-    const w = function (fromTeam, toTeam, player, reason) {
+  CS2.patch('applyPlayerTransfer', f => function (fromTeam, toTeam, player, reason) {
       if (!fromTeam || !toTeam || !player) return f.apply(this, arguments);
       const user = !!W.__v31UserDeal || fromTeam.name === managed() || toTeam.name === managed();
       const out = outFor(toTeam, player);
@@ -118,17 +116,12 @@
       const nr = user ? reason : inWhy(toTeam, player, out, reason);
       try { return f.apply(this, [fromTeam, toTeam, player, nr]); }
       finally { W.__v88OutWhy = prevWhy; }
-    };
-    w.__v88 = true; Object.keys(f).forEach(k => { if (!(k in w)) w[k] = f[k]; });
-    W.applyPlayerTransfer = w; try { applyPlayerTransfer = w; } catch (e) {} // eslint-disable-line no-global-assign
-  })();
+    }, { id: '__v88' });
 
   /* ------------------------------------------------------------ замена у продавшей команды — лучший доступный */
   (function () {
-    const f = W.findCompatibleFreeAgent || (typeof findCompatibleFreeAgent === 'function' ? findCompatibleFreeAgent : null);
-    if (typeof f !== 'function' || f.__v88) return;
     const onRoster = nick => teams.some(t => (t.players || []).some(p => lc(p.nick) === lc(nick)));
-    const w = function (team, outPlayer) {
+    CS2.patch('findCompatibleFreeAgent', f => function (team, outPlayer) {
       try {
         if (!team || team.isAcademy || !outPlayer || typeof teamIdentityFit !== 'function') return f.apply(this, arguments);
         if (typeof ensureFreeAgentPool === 'function') ensureFreeAgentPool();
@@ -149,9 +142,7 @@
         if (best && val(best.p, outPlayer.role) >= val(outPlayer) - 14) return best;
       } catch (e) { console.warn('[v88 FA]', e); }
       return f.apply(this, arguments);
-    };
-    w.__v88 = true;
-    W.findCompatibleFreeAgent = w; try { findCompatibleFreeAgent = w; } catch (e) {} // eslint-disable-line no-global-assign
+    }, { id: '__v88', ifExists: true });
   })();
 
   /* ------------------------------------------------------------ динамика рейтинга за сезон */

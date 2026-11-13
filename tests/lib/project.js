@@ -26,4 +26,26 @@ async function chooseStart(page, mode = 'history', timeout = 25000) {
   if (st === 'modal') { await page.click(sel); await page.waitForTimeout(400); }
   return st;
 }
-module.exports = { root, read, manifest, pageSources, chooseStart };
+// Ядро CS2 (js/core/kernel.js) для тестов, которые запускают отдельные модули в vm-песочнице.
+// В браузере window и глобальный объект — одно и то же; в песочнице это обычно разные объекты ({ window: {...}, глобалы }).
+// Помощник повторяет браузерную семантику CS2.patch: база — window[имя] или глобал песочницы, после расширения
+// глобальная привязка песочницы указывает на новый слой (как привязка function-объявления в браузере).
+function attachKernel(sandbox) {
+  const win = sandbox.window || sandbox;
+  const kctx = vm.createContext({ window: win, document: { currentScript: null }, console: { warn() {}, error() {}, info() {} }, performance: { now: () => Date.now() } });
+  vm.runInContext(read('js/core/kernel.js'), kctx, { filename: 'js/core/kernel.js' });
+  const K = win.CS2;
+  const sync = name => { if (win !== sandbox && Object.prototype.hasOwnProperty.call(sandbox, name)) sandbox[name] = win[name]; };
+  sandbox.CS2 = Object.assign(Object.create(K), {
+    patch(name, factory, opts) {
+      if (win !== sandbox && typeof win[name] !== 'function' && typeof sandbox[name] === 'function') win[name] = sandbox[name];
+      const r = K.patch(name, factory, opts); sync(name); return r;
+    },
+    swap(name, temp, fn) {
+      const prevW = win[name], prevG = sandbox[name]; win[name] = temp; if (win !== sandbox && name in sandbox) sandbox[name] = temp;
+      try { return fn(); } finally { win[name] = prevW; if (win !== sandbox && name in sandbox) sandbox[name] = prevG; }
+    }
+  });
+  return sandbox;
+}
+module.exports = { root, read, manifest, pageSources, chooseStart, attachKernel };

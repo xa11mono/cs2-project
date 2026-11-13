@@ -237,10 +237,7 @@
   const every = (W.CS2Loop && W.CS2Loop.every) || ((fn, ms) => setInterval(fn, ms));
   every(() => { try { if (!W.v57BatchCalendarSkip) weekly(); } catch (e) { console.warn('[v94 economy]', e); } }, 5000, 'v94-economy');
   (function hookDaily() {
-    const f = W.V30RankSnapshotTick; if (typeof f !== 'function') { setTimeout(hookDaily, 1000); return; }
-    if (f.__v94) return;
-    const w = function () { const r = f.apply(this, arguments); try { weekly(); } catch (e) {} return r; };
-    Object.keys(f).forEach(k => { w[k] = f[k]; }); w.__v94 = true; W.V30RankSnapshotTick = w;
+    if (typeof window.V30RankSnapshotTick !== 'function') { setTimeout(hookDaily, 1000); return; } CS2.patch('V30RankSnapshotTick', f => function () { const r = f.apply(this, arguments); try { weekly(); } catch (e) {} return r; }, { id: '__v94' });
   })();
 
   /* ---------- страница «Финансы»: прогноз, статьи, партнёр, предложения ---------- */

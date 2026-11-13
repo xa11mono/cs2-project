@@ -52,18 +52,15 @@ function freshNick(seed) {
   }
   return 'player' + (seed % 9000 + 1000);
 }
-const origGen = typeof generateFreeAgent === 'function' ? generateFreeAgent : null;
-if (origGen) {
-  generateFreeAgent = function (teamHint, roleHint, seedOffset = 0) { // eslint-disable-line no-global-assign
+CS2.patch('generateFreeAgent', origGen => function (teamHint, roleHint, seedOffset = 0) {
     let p = origGen(teamHint, roleHint, seedOffset);
     for (let i = 1; i < 40 && takenAnywhere(p.nick); i++) p = origGen(teamHint, roleHint, seedOffset + i * 7);
     if (takenAnywhere(p.nick)) p.nick = freshNick(hash32((teamHint?.name || '') + '|' + seedOffset + '|' + (transferState.marketRuns || 0)));
     return p;
-  };
-}
+  }, { ifExists: true });
 
 /* ---- подбор свободного агента: роль, уникальность, не трогать «зарезервированных» ---- */
-findCompatibleFreeAgent = function (team, outPlayer) { // eslint-disable-line no-global-assign
+CS2.patch('findCompatibleFreeAgent', () => function (team, outPlayer) { // eslint-disable-line no-global-assign
   ensureFreeAgentPool();
   const need = missingRole(team, outPlayer);
   let best = null, bestScore = -999;
@@ -86,7 +83,7 @@ findCompatibleFreeAgent = function (team, outPlayer) { // eslint-disable-line no
     best = { p, idx: transferState.freeAgents.length - 1 };
   }
   return best;
-};
+}, { optional: true });
 
 /* ---- переход игрока: кто уходит из покупающей команды — по роли ---- */
 function outFor(toTeam, incoming) {
@@ -97,7 +94,7 @@ function outFor(toTeam, incoming) {
   // не отдаём единственных AWPer / IGL ради игрока другой роли
   return st.filter(p => !UNIQUE_ROLES.includes(p.role)).sort((a, b) => playerPower(a) - playerPower(b))[0] || null;
 }
-applyPlayerTransfer = function (fromTeam, toTeam, player, reason) { // eslint-disable-line no-global-assign
+CS2.patch('applyPlayerTransfer', () => function (fromTeam, toTeam, player, reason) { // eslint-disable-line no-global-assign
   if (!fromTeam || !toTeam || !player || fromTeam === toTeam) return false;
   // Professional players cannot be moved directly into an unrelated academy.
   if (toTeam.isAcademy && !fromTeam.isAcademy) return false;
@@ -135,10 +132,10 @@ applyPlayerTransfer = function (fromTeam, toTeam, player, reason) { // eslint-di
   toTeam.rosterLastChange = { type: 'IN', player: transferred.nick, from: fromTeam.name, reason };
   log(`🔁 ${transferred.nick} (${transferred.role}) перешёл из ${fromTeam.name} в ${toTeam.name}; ${targetOut.nick} (${targetOut.role}) ушёл на рынок. ${fromTeam.name} подписали ${replacement.nick} (${replacement.role}). Причина: ${reason}.`, 'transfer');
   return true;
-};
+}, { optional: true });
 
 /* ---- временная замена: основной игрок зарезервирован за своей командой ---- */
-applyTemporaryStandIn = function (t, reason) { // eslint-disable-line no-global-assign
+CS2.patch('applyTemporaryStandIn', () => function (t, reason) { // eslint-disable-line no-global-assign
   if (!t || t.tempStandIn) return false;
   ensurePlayerLayer(t);
   const candidate = [...t.players].sort((a, b) => Number(b.fatigue || 0) - Number(a.fatigue || 0))[0];
@@ -160,8 +157,8 @@ applyTemporaryStandIn = function (t, reason) { // eslint-disable-line no-global-
   t.rosterLastChange = { type: 'STAND-IN', player: replacement.nick, from: candidate.nick, reason };
   log(`🛡️ ${t.name}: ${candidate.nick} временно заменён на ${replacement.nick} (${reason}).`, 'standin');
   return true;
-};
-restoreTemporaryStandIn = function (t) { // eslint-disable-line no-global-assign
+}, { optional: true });
+CS2.patch('restoreTemporaryStandIn', () => function (t) { // eslint-disable-line no-global-assign
   if (!t?.tempStandIn?.original) return;
   const original = JSON.parse(JSON.stringify(t.tempStandIn.original));
   const stand = t.players.find(p => p.isStandIn);
@@ -187,7 +184,7 @@ restoreTemporaryStandIn = function (t) { // eslint-disable-line no-global-assign
   }
   t.tempStandIn = null;
   ensurePlayerLayer(t);
-};
+}, { optional: true });
 
 /* ---- починка составов: дубли ников, лишние AWPer / IGL, рынок ---- */
 function repairRosters(silent) {
@@ -238,12 +235,11 @@ function repairRosters(silent) {
 }
 window.repairRosters = repairRosters;
 if (typeof processTransferMarket === 'function') {
-  const origMarket = processTransferMarket;
-  processTransferMarket = function () { // eslint-disable-line no-global-assign
+  CS2.patch('processTransferMarket', origMarket => function () { // eslint-disable-line no-global-assign
     const r = origMarket.apply(this, arguments);
     try { if (repairRosters(false) && typeof renderRating === 'function') renderRating(); } catch (e) { console.warn('[rosters]', e); }
     return r;
-  };
+  });
 }
 try {
   const n = repairRosters(true);

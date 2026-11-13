@@ -70,8 +70,8 @@
   function chemOf(t) { try { return V?.chemistry ? V.chemistry(t) : .5; } catch (e) { return .5; } }
   function bootBonus(t) { const o = S(), b = o?.boot?.[t.name]; return b && nowMs() < b.until ? 8 : 0; }
   (function wrapMods() {
-    const base = W.CS2StrengthMods; if (base && base.__v84m) return;
-    const w = function (t) {
+    if (window.CS2StrengthMods && window.CS2StrengthMods.__v84m) return;
+CS2.patch('CS2StrengthMods', base => function (t) {
       let v = 0; try { v = base ? Number(base(t)) || 0 : 0; } catch (e) {}
       if (!t || t.isAcademy) return v;
       const cp = coachProfile(t.coach), ch = chemOf(t);
@@ -79,8 +79,7 @@
       v += (ch - .5) * 30 * (cp.style === 'Мотиватор' ? 1.2 : 1);        // сыгранность: −15…+15
       v += bootBonus(t);
       return v;
-    };
-    w.__v84m = true; W.CS2StrengthMods = w;
+    }, { id: '__v84m' });
   })();
   // наставник молодёжи у тренера — молодые растут быстрее; наставничество ветерана — тоже
   function growthWeek() {

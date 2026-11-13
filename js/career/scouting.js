@@ -120,15 +120,11 @@
   }
   // влияние на матч: утечка схем и разведка — поправка к раунду на карте против партнёра
   (function wrap() {
-    const f = W.calcMapWinProbability; if (typeof f !== 'function') { setTimeout(wrap, 1000); return; }
-    if (f.__v99) return;
-    const w = function (t1, t2, map) {
+    if (typeof window.calcMapWinProbability !== 'function') { setTimeout(wrap, 1000); return; } CS2.patch('calcMapWinProbability', f => function (t1, t2, map) {
       let p = f.apply(this, arguments);
       try { const m = me(); if (m && (t1 === m || t2 === m)) { const opp = t1 === m ? t2 : t1, s = S(); let d = 0; const lk = s.leak[opp], it = s.intel[opp]; if (lk && lk.until > now()) d -= lk.k; if (it && it.until > now()) d += it.k; if (d) p = clamp(p + (t1 === m ? d : -d), .25, .75); } } catch (e) {}
       return p;
-    };
-    Object.keys(f).forEach(k => { try { w[k] = f[k]; } catch (e) {} }); w.__v99 = true;
-    W.calcMapWinProbability = w; try { (0, eval)('calcMapWinProbability = window.calcMapWinProbability'); } catch (e) {}
+    }, { id: '__v99' });
   })();
   H.S.v99scr = H.S.v99scr || { partner: '', mode: 'hide', msg: '' };
   function scrimPanel() {

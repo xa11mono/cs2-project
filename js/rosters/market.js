@@ -68,7 +68,7 @@ function scanBus() {
     else if (['signing', 'bench', 'release', 'promotion', 'loan', 'loan-return', 'extension'].includes(ev.type)) logMove({ type: ev.type, player: d.player, role: d.role, from: d.from, to: d.to, reason: d.reason });
   });
 }
-(() => { const prev = window.v29OnEvent; window.v29OnEvent = function () { try { scanBus(); } catch (e) {} if (typeof prev === 'function') return prev.apply(this, arguments); }; })();
+CS2.patch('v29OnEvent', prev => function () { try { scanBus(); } catch (e) {} if (typeof prev === 'function') return prev.apply(this, arguments); }, { optional: true });
 
 /* ------------------------------------------------------------ контракты */
 function ensureContracts() {
@@ -543,10 +543,9 @@ function progressNego() {
     if (!from || !to || !p) { emit('rumor-denied', { ...x, why: 'игрок сменил команду иначе' }); return false; }
     if (busy.has(from.name) || busy.has(to.name)) return true;
     if (rnd() < x.odds) {
-      const old = window.playerWillAccept; window.playerWillAccept = () => true;
       // v86: договорённость уже достигнута — ворота «поиска игроков» v34 её не блокируют (иначе слух висел и тихо умирал)
       const prevForce = window.__v34Force; window.__v34Force = true; window.__v86Nego = x.id;
-      let ok = false; try { ok = applyPlayerTransfer(from, to, p, x.why || 'усиление состава'); } finally { window.playerWillAccept = old; window.__v34Force = prevForce; window.__v86Nego = null; }
+      let ok = false; try { ok = CS2.swap('playerWillAccept', () => true, () => applyPlayerTransfer(from, to, p, x.why || 'усиление состава')); } finally { window.__v34Force = prevForce; window.__v86Nego = null; }
       if (ok) { const np = to.players.find(q => q.nick === x.player); if (np) newContract(np, 3); to.v30LastMoveRun = run(); n++; return false; }
       emit('rumor-denied', { ...x, why: fitOf(to, p) < 0.6 ? 'игрок не подходит по языку общения в команде' : 'клубы не нашли место в составе под эту роль' }); return false;
     }
@@ -705,17 +704,13 @@ window.v30MarketTick = tick;
 
 /* ------------------------------------------------------------ подключение */
 const nextStep = () => seasonState.seasonSchedule?.[seasonState.tournamentIndex] || null;
-const prevGate = window.processTransferMarket;
-if (typeof prevGate === 'function' && !prevGate.__v30) {
-  const g = function (reason) {
+CS2.patch('processTransferMarket', prevGate => function (reason) {
     if (reason !== 'tournament_end') return prevGate.apply(this, arguments);
     const ct = typeof currentTournament !== 'undefined' ? currentTournament : null;
     if (ct?.isMajor) { const r = prevGate.apply(this, arguments); try { tick('big'); } catch (e) { console.warn('[v30 market]', e); } return r; }
     if (nextStep()?.type === 'major') return prevGate.apply(this, arguments);          // ростер-лок v29 + новость
     try { tick('mid'); } catch (e) { console.warn('[v30 market]', e); }                // вместо «18% случайности»
-  };
-  g.__v30 = g.__v29 = true; window.processTransferMarket = g; try { processTransferMarket = g; } catch (e) {}
-}
+  }, { id: '__v30' }); window.processTransferMarket.__v29 = true;
 // запрет перепродажи игрока в аренде
 CS2.patch('applyPlayerTransfer', f => function (fromTeam, toTeam, player) {
     if (player?.onLoan) return false;

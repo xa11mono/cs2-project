@@ -476,7 +476,7 @@
   }
   window.v17AdvanceSingleCalendarDayForBatch=v17AdvanceSingleCalendarDayForBatch;
 
-  window.skipGameCalendarDay=v17SmartSkip;
+  CS2.patch('skipGameCalendarDay', () => function () { return v17SmartSkip.apply(this, arguments); }, { optional: true });
 
   function v17RefreshSkipLabel(){
     const btn=document.getElementById('calendar-skip-btn');
@@ -522,40 +522,13 @@
     return v17StartScheduledTournament();
   }
 
-  const priorAdvance = window.v15AdvanceMinutes;
-  if(typeof priorAdvance==='function' && !priorAdvance.__v17Wrapped){
-    const wrapped=function(mins,reason=''){
-      const before = Number(v17Calendar().currentMs) || 0;
-      const r=priorAdvance.apply(this,arguments);
-      const after = Number(v17Calendar().currentMs) || 0;
-      try{ v17AutoStartDueTournament(); }catch(e){ console.warn('[v17] auto-start after advance failed',e); }
-      // Manual day skips and other calendar advances must refresh previews and
-      // saved predictions too, not only the dedicated Skip button handler.
-      if (!window.v57BatchCalendarSkip && before && after && Math.floor(before / 86400000) !== Math.floor(after / 86400000)) {
-        try {
-          const b = currentTournament?.broadcast;
-          if (b && typeof window.v18FitDays === 'function') window.v18FitDays(b);
-          v17RefreshPickem();
-        } catch(e) { console.warn('[v17] day-change refresh failed', e); }
-      }
-      if(!window.v57BatchCalendarSkip) try{ v17RefreshSkipLabel(); }catch(e){}
-      return r;
-    };
-    wrapped.__v17Wrapped=true;
-    window.v15AdvanceMinutes=wrapped;
-  }
 
   // Hook the calendar render so the button always reflects the current state.
-  const priorRender=window.v15RenderCalendar;
-  if(typeof priorRender==='function' && !priorRender.__v17Wrapped){
-    const wrapped=function(){
+  CS2.patch('v15RenderCalendar', priorRender => function(){
       const r=priorRender.apply(this,arguments);
       try{ v17RefreshSkipLabel(); }catch(e){}
       return r;
-    };
-    wrapped.__v17Wrapped=true;
-    window.v15RenderCalendar=wrapped;
-  }
+    }, { id: '__v17Wrapped' });
 
   // Auto-start and skip-label maintenance run from the shared v63 dispatcher.
   window.CS2SimulationTasks = window.CS2SimulationTasks || {};

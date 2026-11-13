@@ -15,9 +15,8 @@
     (plan.prio || []).forEach((m, i) => { if (m && m !== plan.ban) mod[m] = (mod[m] || 0) + [14, 9, 5][i]; });
     return mod;
   }
-  const base = W.conductMapVeto;
-  if (typeof base === 'function' && !base.__v84veto) {
-    const wrapped = function (t1Name, t2Name, mode) {
+  {
+    CS2.patch('conductMapVeto', base => function (t1Name, t2Name, mode) {
       const me = myTeam(), plan = plans()[me];
       if (!me || !plan || (t1Name !== me && t2Name !== me)) return base.apply(this, arguments);
       const t = teamBy(me); if (!t) return base.apply(this, arguments);
@@ -25,9 +24,7 @@
       const apply = o => { if (!o) return o; const c = { ...o }; Object.entries(mod).forEach(([m, d]) => { if (m in c || pool().includes(m)) c[m] = Math.max(1, Math.min(99, (Number(c[m]) || 55) + d)); }); return c; };
       t.maps = apply(keep.maps); if (keep.ms) t.mapStrength = apply(keep.ms);
       try { return base.apply(this, arguments); } finally { t.maps = keep.maps; t.mapStrength = keep.ms; }
-    };
-    wrapped.__v84veto = true; wrapped.__v84 = base.__v84;
-    W.conductMapVeto = wrapped; try { conductMapVeto = wrapped; } catch (e) {} // eslint-disable-line no-global-assign
+    }, { id: '__v84veto' });   // метка __v84 нижнего слоя переносится сама
   }
   if (!H) return;
   const { esc, box, empty } = H;

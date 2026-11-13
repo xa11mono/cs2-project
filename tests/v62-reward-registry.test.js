@@ -50,6 +50,7 @@ const seasonState = {
   hallOfFame: [{ champion: 'Beta', season: 2, year: 2027, scorePts: 44 }]
 };
 const sandbox = { window: win, seasonState, teams: [{ name: 'Alpha' }, { name: 'Beta' }], saveSeasonState: () => saves++, CustomEvent: function CustomEvent() {}, console, Date };
+require('./lib/project').attachKernel(sandbox);   // v144: модули расширяют функции через CS2.patch
 vm.runInNewContext(source, sandbox, { filename: 'js/awards/reward-registry.js' });
 
 assert(win.RewardSystem && win.RewardSystem.version === 1, 'unified RewardSystem API should initialize');

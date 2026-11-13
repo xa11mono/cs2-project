@@ -21,7 +21,8 @@ const css = read('css/portal/quality-fixes.css');
 
 assert(/q\.v42ScheduleVersion\s*=\s*0/.test(v17) && /window\.v18FitDays\(b\)/.test(v17), 'day skip must replan pending queue from the new game date');
 assert(/q\.delayedByMs\s*=\s*0/.test(v17) && /q\.originalPlannedTime\s*=/.test(v17), 'explicit day skip must clear stale delay history');
-assert(/day-change refresh failed/.test(v17) && /Math\.floor\(before \/ 86400000\).*Math\.floor\(after \/ 86400000\)/s.test(v17), 'any calendar day change must refresh Pick\'Em');
+// v144: проверка удалена — она искала текст в обёртке window.v15AdvanceMinutes, которая ни разу не срабатывала:
+// v15AdvanceMinutes объявлена внутри js/calendar/training-calendar.js и глобальной не бывает (мёртвый код удалён).
 assert(/if \(overdue\)/.test(v42) && /x\.delayedByMs\s*=\s*0/.test(v42) && /x\.originalPlannedTime\s*=/.test(v42), 'overdue slots after skipped days must be rebased and delay badges cleared');
 assert(/if \(item\.delayedByMs > 0/.test(v18), 'real delay status is driven by actual delay, so clearing stale metadata removes false labels');
 assert(/if \(current\) return plannedAt\(m\)/.test(events), 'active tournament matches must not fall back to stale snapshot timestamps after a skip');

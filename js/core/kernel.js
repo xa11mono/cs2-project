@@ -9,6 +9,7 @@
      CS2.patch(name, factory, opts?)  — расширить глобальную функцию: factory(base) возвращает новую функцию,
                                         base — текущая реализация (может быть undefined, если opts.optional).
                                         Слой (файл) определяется автоматически; цепочку видно в CS2.chain(name).
+     CS2.swap(name, temp, fn)         — временно подменить функцию на время fn() (восстановление в finally).
      CS2.chain(name)                  — слои функции сверху вниз: [{ layer, kind }].
      CS2.layers(name?)                — карта загрузки: какой модуль объявил/заменил какую глобальную функцию
                                         (собирается автоматически после каждого файла, даже для старых обёрток).
@@ -32,6 +33,14 @@
       const src = s && (s.dataset && s.dataset.cs2module || s.getAttribute('src'));
       if (src) return String(src).replace(/\?.*$/, '');
     } catch (e) {}
+    // вызов не во время загрузки модуля (отложенный повтор, таймер) — слой по стеку: первый файл, кроме ядра
+    try {
+      const lines = String(new Error().stack || '').split('\n');
+      for (const l of lines) {
+        const m = l.match(/((?:js|assets)\/[\w./-]+\.js)/);
+        if (m && !/core\/kernel\.js$/.test(m[1])) return m[1].replace(/^.*?((?:js|assets)\/)/, '$1');
+      }
+    } catch (e) {}
     return 'runtime';
   }
 
@@ -40,13 +49,15 @@
   const patchLog = new Map();     // name -> [{ layer, kind, at }]
   function note(map, name, rec) { let a = map.get(name); if (!a) map.set(name, a = []); a.push(rec); }
   // opts: { id: 'метка слоя' — повторный вызов того же слоя ничего не делает (метка видна и у верхних слоёв),
-  //         optional: true — base может отсутствовать, layer: 'имя' — вместо автоматического }
+  //         optional: true — base может отсутствовать (factory получит undefined), ifExists: true — нет функции → тихо
+  //         пропустить, layer: 'имя' — вместо автоматического }
   // Свойства base (метки прежних слоёв, служебные поля) переносятся на новую функцию, как делали ручные обёртки.
   function patch(name, factory, opts) {
     opts = opts || {};
     const base = W[name];
     if (opts.id && base && base[opts.id]) return base;
     if (typeof base !== 'function' && !opts.optional) {
+      if (opts.ifExists) return base;   // расширение необязательное: нет функции — нет слоя
       console.warn('[CS2.patch] нечего расширять: ' + name + ' (слой ' + (opts.layer || currentLayer()) + ')');
       return base;
     }
@@ -58,17 +69,26 @@
     const layer = opts.layer || currentLayer();
     try { Object.defineProperty(next, META, { value: { name, layer, base }, configurable: true }); } catch (e) {}
     W[name] = next;
-    note(patchLog, name, { layer, kind: base ? 'patch' : 'define', at: modules.length });
+    note(patchLog, name, { layer, kind: base ? 'patch' : 'define', at: modules.length, fn: next });
     return next;
   }
   // Слои функции сверху вниз. Источник — автоматическая карта загрузки (видит и старые ручные обёртки);
   // kind: 'patch' — слой через CS2.patch, 'wrap' — ручная обёртка/замена, 'define' — исходное объявление.
   function chain(name) {
     const recs = (layerMap.get(name) || []).slice();
-    const patched = new Set((patchLog.get(name) || []).map(r => r.layer));
-    // слои, подключённые CS2.patch уже после загрузки (во время игры), — сверху
-    (patchLog.get(name) || []).forEach(r => { if (!recs.some(x => x.layer === r.layer)) recs.push({ layer: r.layer, kind: 'replace' }); });
-    return recs.map((r, i) => ({ layer: r.layer, kind: i === 0 && r.kind === 'define' ? 'define' : patched.has(r.layer) ? 'patch' : 'wrap' })).reverse();
+    const patches = patchLog.get(name) || [];
+    const byFn = new Map(patches.map(r => [r.fn, r]));
+    // слои, подключённые CS2.patch после загрузки модулей (во время игры) и ещё не попавшие в карту
+    patches.forEach(r => { if (!recs.some(x => x.fn === r.fn)) recs.push({ layer: r.layer, kind: 'replace', fn: r.fn }); });
+    // CS2.patch знает настоящий файл слоя (отложенный вызов карта загрузки приписывает модулю, грузившемуся в этот момент)
+    return recs.map((r, i) => { const p = byFn.get(r.fn); return { layer: p ? p.layer : r.layer, kind: i === 0 && r.kind === 'define' ? 'define' : p ? 'patch' : 'wrap' }; }).reverse();
+  }
+
+  // временная подмена на время одного вызова (не слой): CS2.swap('playerWillAccept', () => true, () => сделка());
+  // прежняя функция возвращается в finally — даже если fn бросит исключение
+  function swap(name, temp, fn) {
+    const prev = W[name]; W[name] = temp;
+    try { return fn(); } finally { W[name] = prev; }
   }
 
   // ------------------------------------------------------------ автоматическая карта слоёв
@@ -97,7 +117,7 @@
     cur.forEach((fn, n) => {
       const prev = snap.get(n);
       if (prev === fn) return;
-      note(layerMap, n, { layer: src, kind: prev ? 'replace' : (builtins.has(n) ? 'replace' : 'define') });
+      note(layerMap, n, { layer: src, kind: prev ? 'replace' : (builtins.has(n) ? 'replace' : 'define'), fn });
     });
     snap = cur;
   }
@@ -124,7 +144,7 @@
   W.CS2 = Object.assign(W.CS2 || {}, {
     __kernel: 1,
     build: (W.CS2_MANIFEST && W.CS2_MANIFEST.build) || 'dev',
-    patch, chain, layers, on, off, once, emit,
+    patch, swap, chain, layers, on, off, once, emit,
     modules: () => modules.slice(),
     __afterModule: afterModule
   });

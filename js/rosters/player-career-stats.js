@@ -95,22 +95,12 @@
   // не теряло уже видимую статистику после первого последующего трансфера.
   syncBaseline();
 
-  const wrap = (name, before, after, forceAfter = false) => {
-    const original = window[name];
-    if (typeof original !== 'function' || original.__v57CareerWrapped) return;
-    const wrapped = function (...args) {
-      try { if (before) syncBaseline(); } catch (e) {}
-      const result = original.apply(this, args);
-      try { if (after) syncBaseline(!!forceAfter); } catch (e) {}
-      return result;
-    };
-    wrapped.__v57CareerWrapped = true;
-    Object.keys(original).forEach(k => { try { wrapped[k] = original[k]; } catch (e) {} });
-    window[name] = wrapped;
-    try { if (name === 'saveTeams') saveTeams = wrapped; } catch (e) {}
-    try { if (name === 'processTransferMarket') processTransferMarket = wrapped; } catch (e) {}
-    try { if (name === 'applyPlayerTransfer') applyPlayerTransfer = wrapped; } catch (e) {}
-  };
+  const wrap = (name, before, after, forceAfter = false) => CS2.patch(name, original => function (...args) {
+    try { if (before) syncBaseline(); } catch (e) {}
+    const result = original.apply(this, args);
+    try { if (after) syncBaseline(!!forceAfter); } catch (e) {}
+    return result;
+  }, { id: '__v57CareerWrapped', ifExists: true });
 
   // События рынка + обычные сохранения — основные точки, где ростер меняется атомарно.
   wrap('applyPlayerTransfer', true, true);

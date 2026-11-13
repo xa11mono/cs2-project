@@ -1183,21 +1183,14 @@
     if(!noParallel) v21BuildParallelSchedule();
     return arr;
   }
-  const oldGenerate=window.generateDynamicSeasonSchedule;
-  window.generateDynamicSeasonSchedule=v21GenerateTier1Schedule;
+  CS2.patch('generateDynamicSeasonSchedule', () => function(){ return v21GenerateTier1Schedule.apply(this, arguments); }, { optional: true });   // полная замена: сезонное расписание Tier-1
 
   // Make academy players promotable even when the parent language differs from the buyer.
-  const oldAccept=window.playerWillAccept;
-  if(typeof oldAccept==='function' && !oldAccept.__v21Wrapped){
-    const wrapped=function(p,fromTeam,toTeam){
+  CS2.patch('playerWillAccept', oldAccept => function(p,fromTeam,toTeam){
       if(fromTeam?.isAcademy && !toTeam?.isAcademy && teamRankValue(toTeam)>=teamRankValue(fromTeam)+80){ return true; }
       return oldAccept.apply(this,arguments);
-    };
-    wrapped.__v21Wrapped=true; window.playerWillAccept=wrapped; try{playerWillAccept=wrapped;}catch(e){}
-  }
-  const oldProcess=window.processTransferMarket;
-  if(typeof oldProcess==='function' && !oldProcess.__v21Wrapped){
-    const wrapped=function(reason){
+    }, { id: '__v21Wrapped' });
+  CS2.patch('processTransferMarket', oldProcess => function(reason){
       const result=oldProcess.apply(this,arguments);
       // Academy promotion window: one high-potential academy player may be promoted or sold after market runs.
       try{
@@ -1218,48 +1211,25 @@
         }
       }catch(e){console.warn('[v21] academy market',e);}
       return result;
-    };
-    wrapped.__v21Wrapped=true; window.processTransferMarket=wrapped; try{processTransferMarket=wrapped;}catch(e){}
-  }
+    }, { id: '__v21Wrapped' });
 
   // End the season by the last scheduled Tier-1 tournament, not an arbitrary cap of 10.
   window.v21ShouldEndSeason=function(){
     const len=Math.max(0,(seasonState.seasonSchedule||[]).length-1);
     return len>0 && Number(seasonState.tournamentIndex||1)>=len;
   };
-  const oldFinalize=window.finalizeTournamentRating;
-  if(typeof oldFinalize==='function' && !oldFinalize.__v21Wrapped){
-    const wrapped=function(...args){
+  CS2.patch('finalizeTournamentRating', oldFinalize => function(...args){
       const len=Math.max(1,(seasonState.seasonSchedule||[]).length-1);
       seasonState.maxTournaments=(Number(seasonState.tournamentIndex||1)>=len)?len:9999;
       const r=oldFinalize.apply(this,args);
       seasonState.maxTournaments=9999;
       try{saveSeasonState();}catch(e){}
       return r;
-    };
-    wrapped.__v21Wrapped=true; window.finalizeTournamentRating=wrapped; try{finalizeTournamentRating=wrapped;}catch(e){}
-  }
+    }, { id: '__v21Wrapped' });
 
   // Keep the season progress compact and explicit.
-  const oldRenderBanner=window.renderSeasonBanner;
-  if(typeof oldRenderBanner==='function' && !oldRenderBanner.__v21Wrapped){
-    const wrapped=function(...args){ const r=oldRenderBanner.apply(this,args); const el=document.getElementById('season-progress'); if(el) el.textContent=`Tier-1: ${seasonState.tournamentIndex}/${Math.max(0,(seasonState.seasonSchedule||[]).length-1)} • T2/3: ${(seasonState.parallelSchedule||[]).filter(e=>e.season===seasonState.currentSeason).length}`; return r; };
-    wrapped.__v21Wrapped=true; window.renderSeasonBanner=wrapped; try{renderSeasonBanner=wrapped;}catch(e){}
-  }
+  CS2.patch('renderSeasonBanner', oldRenderBanner => function(...args){ const r=oldRenderBanner.apply(this,args); const el=document.getElementById('season-progress'); if(el) el.textContent=`Tier-1: ${seasonState.tournamentIndex}/${Math.max(0,(seasonState.seasonSchedule||[]).length-1)} • T2/3: ${(seasonState.parallelSchedule||[]).filter(e=>e.season===seasonState.currentSeason).length}`; return r; }, { id: '__v21Wrapped' });
 
-  // Parallel layer piggybacks on the same calendar clock. When time is skipped, all background events catch up.
-  const oldAdvance=window.v15AdvanceMinutes;
-  if(typeof oldAdvance==='function' && !oldAdvance.__v21Wrapped){
-    const wrapped=function(...args){
-      const r=oldAdvance.apply(this,args);
-      if(!window.v57BatchCalendarSkip){
-        const reason=String(args[1]||'');
-        try{ if(window.CS2SimulationKernel) window.CS2SimulationKernel.pulse('clock-advance',{force:false,reason}); else v21ProcessParallel(v21Now(),false); }catch(e){console.warn('[v21] parallel tick',e);}
-      }
-      return r;
-    };
-    wrapped.__v21Wrapped=true; window.v15AdvanceMinutes=wrapped;
-  }
   // The multi-day skip runs this once for every virtual day with storage/rendering
   // deferred, then performs one final commit. `allowPaused` is only for explicit
   // Calendar pause is unconditional. Explicit skips advance the clock first,

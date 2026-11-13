@@ -34,6 +34,7 @@ function createSandbox() {
   ctx.HS = { invalidate() {}, render() {} };
   ctx.CS2ParallelTournamentPools = { extend(groups) { ctx.lastParallel = groups; }, list() { return {}; } };
   ctx.window.CS2ParallelTournamentPools = ctx.CS2ParallelTournamentPools;
+  require('./lib/project').attachKernel(ctx);   // v144: модули расширяют функции через CS2.patch
   vm.createContext(ctx);
   const modulePath = path.join(__dirname, '..', 'js/core/database-import.js');
   vm.runInContext(fs.readFileSync(modulePath, 'utf8'), ctx, { filename: modulePath });

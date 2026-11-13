@@ -78,9 +78,7 @@
     }
   }
   // турнир стартует с замороженным посевом
-  (function patchSetup() {
-    const base = W.setupBracketTournament; if (typeof base !== 'function' || base.__v84draw) return;
-    const wrapped = function (roster, formatChoice) {
+  CS2.patch('setupBracketTournament', base => function (roster, formatChoice) {
       try {
         const ct = typeof currentTournament !== 'undefined' ? currentTournament : null, st = ST();
         const step = ct && !ct.isMajor && st ? ((st.seasonSchedule || []).find(x => x && x.name === ct.name && x.v84Seeds) || (st.seasonSchedule || [])[ct.tourIndex]) : null, seeds = step?.v84Seeds;
@@ -90,22 +88,14 @@
         }
       } catch (e) {}
       return base.apply(this, arguments);
-    };
-    wrapped.__v84draw = true; W.setupBracketTournament = wrapped; try { setupBracketTournament = wrapped; } catch (e) {} // eslint-disable-line no-global-assign
-  })();
+    }, { id: '__v84draw' });
   const drawForCurrent = () => { const ct = typeof currentTournament !== 'undefined' ? currentTournament : null, st = ST(); if (!ct || ct.isMajor || !st) return null; const d = ((st.seasonSchedule || []).find(x => x && x.name === ct.name && x.v84Draw) || (st.seasonSchedule || [])[ct.tourIndex])?.v84Draw; return d && !d.none ? d : null; };
-  (function patchSwiss() {
-    const base = W.setupSwissTournament; if (typeof base !== 'function' || base.__v84draw) return;
-    const wrapped = function (roster) {
+  CS2.patch('setupSwissTournament', base => function (roster) {
       try { const d = drawForCurrent(); if (d && d.type === 'swiss' && Array.isArray(roster) && roster.length === d.seeds.length && roster.every(t => d.seeds.includes(t.name))) {
         const by = n => roster.find(t => t.name === n); return base.call(this, d.pairs.flat().map(by)); } } catch (e) {}
       return base.apply(this, arguments);
-    };
-    wrapped.__v84draw = true; W.setupSwissTournament = wrapped; try { setupSwissTournament = wrapped; } catch (e) {} // eslint-disable-line no-global-assign
-  })();
-  (function patchGSL() {
-    const base = W.setupGSLTournament; if (typeof base !== 'function' || base.__v84draw) return;
-    const wrapped = function (roster) {
+    }, { id: '__v84draw' });
+  CS2.patch('setupGSLTournament', base => function (roster) {
       try { const d = drawForCurrent(); if (d && d.type === 'gsl' && Array.isArray(roster) && roster.length === 16 && roster.every(t => d.seeds.includes(t.name))) {
         const by = n => roster.find(t => t.name === n);
         currentTournament.gsl = { groups: d.groups.map((g, i) => { const tm = g.map(by); return { id: i + 1, teams: tm, qualified: [], eliminated: [], matches: {
@@ -113,11 +103,9 @@
           winners: { t1: null, t2: null, winner: null, score: '', isBO1: false }, losers: { t1: null, t2: null, winner: null, score: '', isBO1: false }, decider: { t1: null, t2: null, winner: null, score: '', isBO1: false } } }; }) };
         return; } } catch (e) {}
       return base.apply(this, arguments);
-    };
-    wrapped.__v84draw = true; W.setupGSLTournament = wrapped; try { setupGSLTournament = wrapped; } catch (e) {} // eslint-disable-line no-global-assign
-  })();
+    }, { id: '__v84draw' });
   (globalThis.CS2Loop?.every || ((f, ms) => (typeof setInterval === 'function' ? setInterval : window.setInterval)(f, ms)))(() => { try { tick(); } catch (e) {} }, 4000);
-  try { const b = W.v29CheckTournamentStart; if (typeof b === 'function' && !b.__v84draw) { const w = function () { try { tick(); } catch (e) {} return b.apply(this, arguments); }; w.__v84draw = true; W.v29CheckTournamentStart = w; } } catch (e) {}
+  try { CS2.patch('v29CheckTournamentStart', b => function () { try { tick(); } catch (e) {} return b.apply(this, arguments); }, { id: '__v84draw', ifExists: true }); } catch (e) {}
 
   // блок на странице ещё не начавшегося турнира
   if (H) (H.AFTER || []).push(page => {

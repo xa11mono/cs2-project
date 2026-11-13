@@ -210,15 +210,11 @@
       if (lr <= 3 && ct && !ct.completed && ct.placements?.[l] && capOk(`favout|${ev}`, 2)) add('favOut', {}, 7);
     } catch (e) {}
   }
-  const baseAcc = W.accumulateMatchRating;
-  if (typeof baseAcc === 'function' && !baseAcc.__v84) {
-    const wrapped = function (w, l, isBO1, m) {
+  CS2.patch('accumulateMatchRating', baseAcc => function (w, l, isBO1, m) {
       const r = baseAcc.apply(this, arguments);
       try { matchStory(w, l, m, isBO1); } catch (e) { console.warn('[v84 newsroom] match', e); }
       return r;
-    };
-    wrapped.__v84 = true; W.accumulateMatchRating = wrapped;
-  }
+    }, { id: '__v84' });
 
   // ------------------------------------------------------------ реакции на рынок
   const wrapH = (type, fn) => { const base = N.H[type]; N.H[type] = d => { if (typeof base === 'function') base(d); try { fn(d || {}); } catch (e) { console.warn('[v84 newsroom]', type, e); } }; };

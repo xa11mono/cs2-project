@@ -98,9 +98,7 @@
   }catch(e){}
 
   // 2) New tournament grids: first match is after warmup, then all slots are on :00/:10/:20/... .
-  const priorCreate=window.createTournament;
-  if(typeof priorCreate==='function' && !priorCreate.__v19Wrapped){
-    const wrapped=function(...args){
+  CS2.patch('createTournament', priorCreate => function(...args){
       const result=priorCreate.apply(this,args);
       try{
         const t=currentTournament;
@@ -123,16 +121,10 @@
         }
       }catch(e){ console.warn('[v19] create normalization failed',e); }
       return result;
-    };
-    wrapped.__v19Wrapped=true;
-    window.createTournament=wrapped;
-    try{ createTournament=wrapped; }catch(e){}
-  }
+    }, { id: '__v19Wrapped' });
 
   // 3) Queue generation: normalize every planned match time to a clean 10-minute value.
-  const priorBuild=window.buildBroadcastQueue;
-  if(typeof priorBuild==='function' && !priorBuild.__v19Wrapped){
-    const wrapped=function(...args){
+  CS2.patch('buildBroadcastQueue', priorBuild => function(...args){
       const result=priorBuild.apply(this,args);
       try{
         const t=currentTournament;
@@ -145,17 +137,11 @@
         }
       }catch(e){ console.warn('[v19] queue normalize failed',e); }
       return result;
-    };
-    wrapped.__v19Wrapped=true;
-    window.buildBroadcastQueue=wrapped;
-    try{ buildBroadcastQueue=wrapped; }catch(e){}
-  }
+    }, { id: '__v19Wrapped' });
 
   // 4) When the last match of the current batch finishes late, move all future matches
   // to the next clean 10-minute slot after the actual completion time.
-  const priorFinish=window.finishBroadcastMatch;
-  if(typeof priorFinish==='function' && !priorFinish.__v19Wrapped){
-    const wrapped=function(item,winner,loser){
+  CS2.patch('finishBroadcastMatch', priorFinish => function(item,winner,loser){
       try{
         const b=currentTournament?.broadcast;
         const lastActive=!!(b && Array.isArray(b.active) && b.active.length===1);
@@ -187,16 +173,10 @@
         }
       }catch(e){ console.warn('[v19] late-match reschedule failed',e); }
       return priorFinish.apply(this,arguments);
-    };
-    wrapped.__v19Wrapped=true;
-    window.finishBroadcastMatch=wrapped;
-    try{ finishBroadcastMatch=wrapped; }catch(e){}
-  }
+    }, { id: '__v19Wrapped' });
 
   // 5) Never replace future times with ugly minute values on launch.
-  const priorSchedule=window.scheduleNextBroadcastBatch;
-  if(typeof priorSchedule==='function' && !priorSchedule.__v19Wrapped){
-    const wrapped=function(...args){
+  CS2.patch('scheduleNextBroadcastBatch', priorSchedule => function(...args){
       try{
         const b=currentTournament?.broadcast;
         if(b?.queue?.length){
@@ -207,24 +187,14 @@
         }
       }catch(e){}
       return priorSchedule.apply(this,args);
-    };
-    wrapped.__v19Wrapped=true;
-    window.scheduleNextBroadcastBatch=wrapped;
-    try{ scheduleNextBroadcastBatch=wrapped; }catch(e){}
-  }
+    }, { id: '__v19Wrapped' });
 
   // 6) Calendar speed is also match speed. Pause remains a true global pause.
-  const priorSetSpeed=window.setGameCalendarSpeed;
-  if(typeof priorSetSpeed==='function' && !priorSetSpeed.__v19Wrapped){
-    const wrapped=function(speed){
+  CS2.patch('setGameCalendarSpeed', priorSetSpeed => function(speed){
       const r=priorSetSpeed.apply(this,arguments);
       v19SyncMatchPlaybackSpeed();
       return r;
-    };
-    wrapped.__v19Wrapped=true;
-    window.setGameCalendarSpeed=wrapped;
-    try{ setGameCalendarSpeed=wrapped; }catch(e){}
-  }
+    }, { id: '__v19Wrapped' });
 
   // 7) Registered with the common dispatcher: keep speed and the active Tier-1 queue aligned.
   window.CS2SimulationTasks = window.CS2SimulationTasks || {};

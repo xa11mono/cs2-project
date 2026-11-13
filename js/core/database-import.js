@@ -555,26 +555,21 @@
   window.v59CoachAudit = () => { const m = new Map(); (typeof teams !== 'undefined' ? teams : []).forEach(t => { const n = norm(t.coach?.name); if (n) m.set(n, (m.get(n) || 0) + 1); }); return [...m.entries()].filter(x => x[1] > 1); };
 
   // Fix legacy fallback that referenced an undeclared REGEN_COACH_POOL.
-  if (typeof window.generateCoach === 'function' && !window.generateCoach.__v59Safe) {
-    const safeGenerateCoach = function (teamName) {
-      const official = typeof COACHES_2026 !== 'undefined' ? COACHES_2026[teamName] : null;
-      const used = new Set((typeof teams !== 'undefined' ? teams : []).filter(t => t.name !== teamName).map(t => norm(t.coach?.name || '')).filter(Boolean));
-      return official && !used.has(norm(official.name)) ? { ...official } : generatedCoach({ name: teamName }, used);
-    };
-    safeGenerateCoach.__v59Safe = true; window.generateCoach = safeGenerateCoach; try { generateCoach = safeGenerateCoach; } catch (e) {}
-  }
+  CS2.patch('generateCoach', () => function (teamName) {
+    const official = typeof COACHES_2026 !== 'undefined' ? COACHES_2026[teamName] : null;
+    const used = new Set((typeof teams !== 'undefined' ? teams : []).filter(t => t.name !== teamName).map(t => norm(t.coach?.name || '')).filter(Boolean));
+    return official && !used.has(norm(official.name)) ? { ...official } : generatedCoach({ name: teamName }, used);
+  }, { id: '__v59Safe', ifExists: true });
 
   // Apply organizer/format/size metadata to events generated from the imported catalog.
   if (typeof window.generateDynamicSeasonSchedule === 'function' && !window.generateDynamicSeasonSchedule.__v59Meta) {
-    const originalSchedule = window.generateDynamicSeasonSchedule;
-    const wrappedSchedule = function (...args) {
+    CS2.patch('generateDynamicSeasonSchedule', originalSchedule => function (...args) {
       const result = originalSchedule.apply(this, args);
       try { applyImportedTier1Schedule(); } catch (e) { console.warn('[v59] custom Tier-1 schedule', e); }
       try { (seasonState.seasonSchedule || []).forEach(step => { if (step) applyMetaFields(step, metaForEvent(step.name)); }); }
       catch (e) { console.warn('[v59] tournament metadata attach', e); }
       return result;
-    };
-    wrappedSchedule.__v59Meta = true; window.generateDynamicSeasonSchedule = wrappedSchedule; try { generateDynamicSeasonSchedule = wrappedSchedule; } catch (e) {}
+    }, { id: '__v59Meta' });
   }
 
   // Restore custom tournament pools and roster baselines before future seasons are generated.
@@ -584,22 +579,16 @@
 
   // Fill a missing/duplicate generated coach on coach changes and newly created teams.
   if (typeof window.maybeTransferCoach === 'function' && !window.maybeTransferCoach.__v59Unique) {
-    const old = window.maybeTransferCoach;
-    const wrapped = function (...args) { const result = old.apply(this, args); ensureUniqueCoaches(); return result; };
-    wrapped.__v59Unique = true; window.maybeTransferCoach = wrapped; try { maybeTransferCoach = wrapped; } catch (e) {}
+    CS2.patch('maybeTransferCoach', old => function (...args) { const result = old.apply(this, args); ensureUniqueCoaches(); return result; }, { id: '__v59Unique' });
   }
   if (typeof window.addTeam === 'function' && !window.addTeam.__v59Unique) {
-    const old = window.addTeam;
-    const wrapped = function (...args) { const result = old.apply(this, args); ensureUniqueCoaches(); return result; };
-    wrapped.__v59Unique = true; window.addTeam = wrapped; try { addTeam = wrapped; } catch (e) {}
+    CS2.patch('addTeam', old => function (...args) { const result = old.apply(this, args); ensureUniqueCoaches(); return result; }, { id: '__v59Unique' });
   }
 
   // Match portrait files that contain a numeric prefix and a player's real name/nickname.
   // The v31 matcher is patched in-place in that module; this section only exposes an audit hook.
   if (typeof window.saveTeams === 'function' && !window.saveTeams.__v59CoachSafe) {
-    const originalSaveTeams = window.saveTeams;
-    const wrappedSaveTeams = function (...args) { ensureUniqueCoaches(); return originalSaveTeams.apply(this, args); };
-    wrappedSaveTeams.__v59CoachSafe = true; window.saveTeams = wrappedSaveTeams; try { saveTeams = wrappedSaveTeams; } catch (e) {}
+    CS2.patch('saveTeams', originalSaveTeams => function (...args) { ensureUniqueCoaches(); return originalSaveTeams.apply(this, args); }, { id: '__v59CoachSafe' });
   }
   window.v59DataImportInfo = () => ({ rosterDB: !!localStorage.getItem(LS_ROSTERS), tournamentDB: !!localStorage.getItem(LS_TOURNAMENTS), coachDuplicates: window.v59CoachAudit(), tournamentPools: window.CS2ParallelTournamentPools?.list?.() || null });
 })();

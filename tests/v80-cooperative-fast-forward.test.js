@@ -15,7 +15,8 @@ assert(/async function v17PlayDueMatchesCooperative/.test(v17) && /await v17Yiel
 assert(/async function v17RunBatchStage/.test(v17) && /result = await fn\(\)/.test(v17), 'batch-stage timings must include awaited stage work');
 assert(/await window\.v21ProcessOverdueCooperative/.test(v33), 'the day-skip driver must await cooperative background catch-up');
 assert(/flushMaintenanceCooperative/.test(v63) && /await finalStage\('schedulerMaintenance'/.test(v33), 'final scheduler maintenance must yield between each maintenance task');
-assert(/if \(window\.v57BatchCalendarSkip\) return result;/.test(read('js/calendar/match-sync.js')), 'Tier-1 broadcast scheduler wrapper must not rebuild queues on every skipped day');
+// v144: проверка удалена — она искала текст в обёртке window.v15AdvanceMinutes, которая ни разу не срабатывала:
+// v15AdvanceMinutes объявлена внутри js/calendar/training-calendar.js и глобальной не бывает (мёртвый код удалён).
 assert(/skipBacklogRecompute:true/.test(v21) && /opts\.skipBacklogRecompute \? true/.test(v21), 'single-match catch-up slices must not rescan the full 70-event archive after every match');
 assert(/matchBudget: 1/.test(v33), 'the normal per-day scheduler tick must be capped at one background match');
 assert(/requestAnimationFrame/.test(v21) && /await v21YieldBatchFrame\(\)/.test(v21), 'background catch-up must yield between matches');

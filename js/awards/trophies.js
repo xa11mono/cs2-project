@@ -1318,8 +1318,7 @@ function statOf(nick, season, evId) {
 // награды формирует только V36Fixes, а запись выполняет RewardSystem.
 
 /* ---- хуки движка ---- */
-const origT1 = window.hubArchiveTier1;
-window.hubArchiveTier1 = function (ct) {
+CS2.patch('hubArchiveTier1', origT1 => function (ct) {
   const r = origT1 ? origT1.apply(this, arguments) : undefined;
   try {
     captureEventRosters(ct?.hubArchiveId, ct?.participants);
@@ -1327,9 +1326,8 @@ window.hubArchiveTier1 = function (ct) {
     awardTournament({ name: ct.name, season: ct.season, kind: ct.isMajor ? 'major' : ct.isElite ? 'elite' : 'regular', champion: champ, archiveId: ct.hubArchiveId });
   } catch (e) { console.warn('[trophies] tier1', e); }
   return r;
-};
-const origPar = window.hubArchiveParallel;
-window.hubArchiveParallel = function (ev) {
+});
+CS2.patch('hubArchiveParallel', origPar => function (ev) {
   const r = origPar ? origPar.apply(this, arguments) : undefined;
   try {
     const archiveId = 'P-' + ev.id;
@@ -1346,12 +1344,11 @@ window.hubArchiveParallel = function (ev) {
     }
   } catch (e) { console.warn('[trophies] parallel', e); }
   return r;
-};
+});
 if (typeof finalizeTournamentRating === 'function') {
-  const origFin = finalizeTournamentRating;
   // Индивидуальные награды теперь считаются отдельным годовым календарным циклом (см. js/awards/calendar-year-fixes.js),
   // поэтому окончание сезона летом не запускает Top-20 и номинации.
-  finalizeTournamentRating = function () { return origFin.apply(this, arguments); }; // eslint-disable-line no-global-assign
+  CS2.patch('finalizeTournamentRating', origFin => function () { return origFin.apply(this, arguments); }); // eslint-disable-line no-global-assign
 }
 
 // База архива загружается из IndexedDB асинхронно. Ждём её готовности и только
@@ -1629,8 +1626,7 @@ document.addEventListener('click', e => {
 });
 
 /* ---- профиль команды ---- */
-const origShow = window.showHistory;
-window.showHistory = function (teamName) {
+CS2.patch('showHistory', origShow => function (teamName) {
   const res = origShow.apply(this, arguments);
   try {
     const box = document.getElementById('trophy-cabinet'), t = teamName ? teams.find(x => x.name === teamName) : null;
@@ -1646,7 +1642,7 @@ window.showHistory = function (teamName) {
     }
   } catch (e) { console.warn('[trophies] team', e); }
   return res;
-};
+});
 
 /* ---- окно игрока ---- */
 function decoratePlayer(teamName, nick) {
@@ -1674,8 +1670,7 @@ document.addEventListener('click', e => { // срабатывает после �
   try { decoratePlayer(team, nick); } catch (err) { console.warn('[trophies] player', err); }
 });
 if (typeof window.hubOpenPlayer === 'function') {
-  const origOP = window.hubOpenPlayer;
-  window.hubOpenPlayer = function (team, nick) { const r = origOP.apply(this, arguments); try { decoratePlayer(team, nick); } catch (e) {} return r; };
+  CS2.patch('hubOpenPlayer', origOP => function (team, nick) { const r = origOP.apply(this, arguments); try { decoratePlayer(team, nick); } catch (e) {} return r; });
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
 window.twDebug = { awardTournament, finalInfoForEvent, eventPlayerRows, mvpPerformanceScore, reconcileExistingMvpAwards }; // диагностика MVP; годовые награды формируются единым V36/RewardSystem

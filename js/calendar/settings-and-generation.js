@@ -16,9 +16,7 @@
   (globalThis.CS2Loop?.every || ((f, ms) => (typeof setInterval === "function" ? setInterval : window.setInterval)(f, ms)))(removeLegacyFavorite, 1000);
 
   // Harden tournament generation against a bad saved roster / event side-effect.
-  const originalCreateTournamentV16 = window.createTournament;
-  if(typeof originalCreateTournamentV16==='function' && !originalCreateTournamentV16.__v16Safe){
-    const safeCreate=function(customRoster=null){
+  CS2.patch('createTournament', originalCreateTournamentV16 => function(customRoster=null){
       try {
         if(typeof teams!=='undefined' && Array.isArray(teams)) teams.forEach(t=>{ try{ ensurePlayerLayer(t); }catch(e){} });
         const result=originalCreateTournamentV16.apply(this,arguments);
@@ -28,26 +26,18 @@
       } catch(err){
         console.error('v16 createTournament repair:',err);
         // Second pass: suppress only the non-critical random event layer for this creation attempt.
-        try {
-          const oldEvents=window.triggerRandomEvents;
-          if(typeof oldEvents==='function') window.triggerRandomEvents=()=>{};
-          const retry=originalCreateTournamentV16.apply(this,arguments);
-          window.triggerRandomEvents=oldEvents;
-          if(!currentTournament) throw err;
-          return retry;
-        } catch(retryErr){
-          try{ if(typeof window.triggerRandomEvents==='function') window.triggerRandomEvents=window.triggerRandomEvents; }catch(e){}
-          throw retryErr;
-        }
+        // v144: CS2.swap возвращает случайные события и при ошибке повтора (раньше они оставались выключенными навсегда)
+        const self=this, args=arguments;
+        const retry=typeof window.triggerRandomEvents==='function'
+          ? CS2.swap('triggerRandomEvents', ()=>{}, ()=>originalCreateTournamentV16.apply(self,args))
+          : originalCreateTournamentV16.apply(self,args);
+        if(!currentTournament) throw err;
+        return retry;
       }
-    };
-    safeCreate.__v16Safe=true;
-    window.createTournament=safeCreate;
-    try { createTournament=safeCreate; } catch(e) {}
-  }
+    }, { id: '__v16Safe' });
 
   // Make the actual button path resilient and always expose a useful status.
-  window.initTournamentCycle = function(){
+  CS2.patch('initTournamentCycle', () => function(){
     try {
       stopAllSimulations();
       createTournament();
@@ -67,6 +57,5 @@
       const status=document.getElementById('tour-status');
       if(status) status.innerText=`⚠️ Не удалось создать турнир: ${err?.message || 'ошибка'}`;
     }
-  };
-  try { initTournamentCycle=window.initTournamentCycle; } catch(e) {}
+  }, { optional: true });
 })();

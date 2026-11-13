@@ -50,8 +50,7 @@ function rankMove(name) {
 }
 function seasonMove(name) { const t = H.teamBy(name), cur = H.ranked().indexOf(t) + 1; return t && Number(t.seasonStartRank) ? t.seasonStartRank - cur : 0; }
 H.rankMove = rankMove; H.seasonMove = seasonMove; H.rankStore = rankStore;
-(() => { const f = window.finalizeTournamentRating; if (typeof f !== 'function' || f.__v30) return;
-  const w = function () { const r = f.apply(this, arguments); try { takeRankSnap('event'); } catch (e) {} return r; }; w.__v30 = true; window.finalizeTournamentRating = w; try { finalizeTournamentRating = w; } catch (e) {} })();
+CS2.patch('finalizeTournamentRating', f => function () { const r = f.apply(this, arguments); try { takeRankSnap('event'); } catch (e) {} return r; }, { id: '__v30' });
 function syncRankSnapshot(){ try { const S=rankStore().snaps, last=S[S.length-1]; if(!last || H.nowMs()-last.ts>=7*DAY || H.nowMs()<last.ts) takeRankSnap('week'); } catch(e){} }
 window.V30RankSnapshotTick=syncRankSnapshot;
 (globalThis.CS2Loop?.every || ((f, ms) => (typeof setInterval === "function" ? setInterval : window.setInterval)(f, ms)))(() => { if(window.v57BatchCalendarSkip || document.hidden) return; syncRankSnapshot(); }, 15000);

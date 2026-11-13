@@ -461,11 +461,11 @@
   };
   W.RewardSystem = Object.freeze(api);
   // Every legacy write/import enters the same validation and deduplication path.
-  if (typeof rawAddTeamAward === 'function') W.twAddTeamAward = addTeamAward;
-  if (typeof rawAwardsImport === 'function') W.twAwardsImport = importAwards;
+  if (typeof rawAddTeamAward === 'function') CS2.patch('twAddTeamAward', () => function () { return addTeamAward.apply(this, arguments); }, { optional: true });
+  if (typeof rawAwardsImport === 'function') CS2.patch('twAwardsImport', () => function () { return importAwards.apply(this, arguments); }, { optional: true });
   // Legacy read API names remain as thin adapters for old modules and older saves.
-  W.twTeamAchievements = getTeamEventAchievements;
-  W.twPlayerAchievements = getPlayerEventAchievements;
+  CS2.patch('twTeamAchievements', () => function () { return getTeamEventAchievements.apply(this, arguments); }, { optional: true });
+  CS2.patch('twPlayerAchievements', () => function () { return getPlayerEventAchievements.apply(this, arguments); }, { optional: true });
   normalizeStoredTeamAwards();
   normalizeStoredAchievementLedgers();
   migrateLegacyAwards();

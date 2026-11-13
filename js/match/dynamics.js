@@ -375,17 +375,11 @@
   }
 
   // Обновляем динамику после штатной отрисовки live-матча.
-  const oldRender = window.broadcastRenderDetail;
-  if (typeof oldRender === 'function' && !oldRender.__v44) {
-    const wrapped = function (item) {
+  CS2.patch('broadcastRenderDetail', oldRender => function (item) {
       const result = oldRender.apply(this, arguments);
       try { render(item); } catch (e) { console.warn('[v44 render]', e); }
       return result;
-    };
-    wrapped.__v44 = true;
-    window.broadcastRenderDetail = wrapped;
-    try { broadcastRenderDetail = wrapped; } catch (e) {}
-  }
+    }, { id: '__v44' });
 
   if (H?.PAGES?.match && !H.PAGES.match.__v44) {
     const old = H.PAGES.match;

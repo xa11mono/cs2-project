@@ -74,11 +74,7 @@
   }
   // в матч: та же точка, что и все модификаторы v31 (calcMapWinProbability), в общих пределах 0.25–0.75
   (function wrap() {
-    const f = W.calcMapWinProbability; if (typeof f !== 'function') { setTimeout(wrap, 1000); return; }
-    if (f.__v92) return;
-    const w = function (t1, t2, map) { const p = f.apply(this, arguments); let d = 0; try { d = roundDelta(t1, t2, map); } catch (e) {} return clamp(p + d, 0.25, 0.75); };
-    Object.keys(f).forEach(k => { w[k] = f[k]; }); w.__v92 = true;
-    W.calcMapWinProbability = w; try { (0, eval)('calcMapWinProbability = window.calcMapWinProbability'); } catch (e) {}
+    if (typeof window.calcMapWinProbability !== 'function') { setTimeout(wrap, 1000); return; } CS2.patch('calcMapWinProbability', f => function (t1, t2, map) { const p = f.apply(this, arguments); let d = 0; try { d = roundDelta(t1, t2, map); } catch (e) {} return clamp(p + d, 0.25, 0.75); }, { id: '__v92' });
   })();
   const every = (W.CS2Loop && W.CS2Loop.every) || ((fn, ms) => setInterval(fn, ms));
   every(() => { try { weekly(); } catch (e) {} }, 5000, 'v92-tactics');

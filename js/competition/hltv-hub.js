@@ -631,7 +631,7 @@ function historyHtml(t) {
   }).join('');
 }
 
-window.showHistory = function showHistory(teamName) {
+CS2.patch('showHistory', () => function showHistory(teamName) {
   selectedTeamForDetails = teamName;
   const backdrop = $('hltv-hub-backdrop'), box = $('hltv-profile-box');
   const t = teamName ? teams.find(x => x.name === teamName) : null;
@@ -668,7 +668,7 @@ window.showHistory = function showHistory(teamName) {
     fanBtn.classList.toggle('on', !!t.isFan);
     fanBtn.textContent = t.isFan ? '✓ Вы фанат' : '+ Стать фанатом';
   }
-};
+}, { optional: true });
 window.hubToggleFan = function () {
   const t = teams.find(x => x.name === selectedTeamForDetails); if (!t) return;
   t.isFan = !t.isFan;
@@ -679,18 +679,18 @@ window.hubToggleFan = function () {
     fanBtn.textContent = t.isFan ? '✓ Вы фанат' : '+ Стать фанатом';
   }
 };
-window.closeHltvHub = function () {
+CS2.patch('closeHltvHub', () => function () {
   selectedTeamForDetails = null; lastHubTeam = null; hideTip();
   $('hltv-hub-backdrop').style.display = 'none';
-};
-window.toggleHltvDetails = function () {
+}, { optional: true });
+CS2.patch('toggleHltvDetails', () => function () {
   const block = $('hltv-details-block'), btn = $('hltv-details-toggle');
   const show = block.style.display === 'none';
   block.style.display = show ? 'block' : 'none';
   btn.classList.toggle('open', show);
   btn.firstChild.textContent = show ? 'Свернуть ' : 'Подробнее ';
   if (show) block.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-};
+}, { optional: true });
 
 /* делегирование событий хаба */
 document.addEventListener('click', e => {

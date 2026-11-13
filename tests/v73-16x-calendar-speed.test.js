@@ -33,6 +33,7 @@ const context = {
   saveSeasonState() { context.saved = (context.saved || 0) + 1; },
   saveTeams() {}, ensurePlayerLayer() {},
 };
+require('./lib/project').attachKernel(context);   // v144: модули расширяют функции через CS2.patch
 vm.runInNewContext(source, context, { filename: 'js/calendar/training-calendar.js' });
 assert(timers.some(t => t.ms === 1000 && t.active), 'normal mode should retain the 1-second ticker');
 window.setGameCalendarSpeed(16);

@@ -643,7 +643,7 @@
   const every = (W.CS2Loop && W.CS2Loop.every) || ((f, ms) => setInterval(f, ms));
   every(() => { try { if (me()) daily(); } catch (e) { console.warn('[v99 talks]', e); } }, 700, 'v99-talks');
   // и сразу после «Продолжить» по дням
-  ['skipGameCalendarDay'].forEach(n => { const f = W[n]; if (typeof f !== 'function' || f.__v99t) return; const w = function () { const r = f.apply(this, arguments); try { if (me()) daily(); } catch (e) {} return r; }; Object.keys(f).forEach(k => { try { w[k] = f[k]; } catch (e) {} }); w.__v99t = true; W[n] = w; try { (0, eval)(`${n} = window.${n}`); } catch (e) {} });
+  CS2.patch('skipGameCalendarDay', f => function () { const r = f.apply(this, arguments); try { if (me()) daily(); } catch (e) {} return r; }, { id: '__v99t', ifExists: true });
 
   W.V99Talks = { S, SC, start: (nick, key, data, incoming) => { const p = P(nick); return p ? startConv(p, key, data, !incoming) : null; }, answer, card, open: openConvs, pending, trust: trustOf, isOut, out: (nick, days, reason) => out(P(nick), days, reason), daily, weekly, expire, MANAGER_TOPICS };
 })();

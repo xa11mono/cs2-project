@@ -170,25 +170,19 @@
   window.CS2SimulationKernel = api;
 
   function wrapClockMutation(name, reason) {
-    const original = window[name];
-    if (typeof original !== 'function' || original.__v63KernelWrapped) return;
-    const wrapped = function (...args) {
-      const before = now();
-      const result = original.apply(this, args);
-      const after = now();
-      if (after !== before && after > before && !paused() && !window.v57BatchCalendarSkip) {
-        afterClockJump(reason, { persistClock: name === 'v15SetClock' });
-      }
-      return result;
-    };
-    wrapped.__v63KernelWrapped = true;
-    wrapped.__v63Original = original;
-    window[name] = wrapped;
-    try { if (name === 'skipGameCalendarDay') skipGameCalendarDay = wrapped; } catch (e) {}
-    try { if (name === 'initTournamentCycle') initTournamentCycle = wrapped; } catch (e) {}
-    try { if (name === 'createTournament') createTournament = wrapped; } catch (e) {}
-    try { if (name === 'runManualBootcamp') runManualBootcamp = wrapped; } catch (e) {}
-    try { if (name === 'v15SetClock') v15SetClock = wrapped; } catch (e) {}
+    CS2.patch(name, original => {
+      const wrapped = function (...args) {
+        const before = now();
+        const result = original.apply(this, args);
+        const after = now();
+        if (after !== before && after > before && !paused() && !window.v57BatchCalendarSkip) {
+          afterClockJump(reason, { persistClock: name === 'v15SetClock' });
+        }
+        return result;
+      };
+      wrapped.__v63Original = original;
+      return wrapped;
+    }, { id: '__v63KernelWrapped', ifExists: true });
   }
 
   // Every public direct-jump entry point is observed. The v33 multi-day batch

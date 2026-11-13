@@ -82,9 +82,7 @@
   W.CS2Expect = { evaluate, last: null };
 
   // решение игрока — с причинами; базовые правила (форма, звёздность, v31: амбиции/лояльность) сохраняются
-  (function () {
-    const f = W.playerWillAccept; if (typeof f !== 'function' || f.__v91) return;
-    const w = function (p, fromTeam, toTeam) {
+  CS2.patch('playerWillAccept', f => function (p, fromTeam, toTeam) {
       if (W.__v86Nego || W.__v31UserDeal) return f.apply(this, arguments);         // договорённость уже достигнута
       const base = f.apply(this, arguments);
       const r = evaluate(p, fromTeam, toTeam);
@@ -93,8 +91,5 @@
       W.CS2Expect.last = { player: p && p.nick, from: fromTeam && fromTeam.name, to: toTeam && toTeam.name, accept: ok, reasons: r.reasons };
       if (!ok) { try { W.CS2Journal && W.CS2Journal.log('ROSTER_BLOCK', { team: toTeam && toTeam.name, from: fromTeam && fromTeam.name, kind: 'refusal', actor: 'player', player: p && p.nick, blocks: r.reasons }); } catch (e) {} }
       return ok;
-    };
-    w.__v91 = true; Object.keys(f).forEach(k => { if (!(k in w)) w[k] = f[k]; });
-    W.playerWillAccept = w; try { (0, eval)('playerWillAccept = window.playerWillAccept'); } catch (e) {}
-  })();
+    }, { id: '__v91' });
 })();

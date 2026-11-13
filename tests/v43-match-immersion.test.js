@@ -9,6 +9,7 @@ const assert = (condition, message) => { if (!condition) throw new Error(message
 
 // Реальная симуляция раунда v34: исход, события и план команды.
 const simContext = { window: {}, console: { log(){}, warn(){}, info(){} }, Math, Map, Number, String, Object, Array, Set, Date };
+require('./lib/project').attachKernel(simContext);   // v144: модули расширяют функции через CS2.patch
 vm.createContext(simContext);
 vm.runInContext(read('js/match/round-sim.js'), simContext);
 const V34 = simContext.window.V34Round;
@@ -34,6 +35,7 @@ const context = {
     V31: { managed(){ return ''; } }
   }
 };
+require('./lib/project').attachKernel(context);   // v144: модули расширяют функции через CS2.patch
 vm.createContext(context);
 vm.runInContext(read('js/match/immersion.js'), context);
 const API = context.window.CS2MatchImmersion;

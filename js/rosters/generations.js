@@ -97,9 +97,6 @@
   const every = (W.CS2Loop && W.CS2Loop.every) || ((fn, ms) => setInterval(fn, ms));
   every(() => { if (!W.v57BatchCalendarSkip) tick(); }, 6000, 'v95-gen');
   (function hookDaily() {
-    const f = W.V30RankSnapshotTick; if (typeof f !== 'function') { setTimeout(hookDaily, 1000); return; }
-    if (f.__v95g) return;
-    const w = function () { const r = f.apply(this, arguments); tick(); return r; };
-    Object.keys(f).forEach(k => { w[k] = f[k]; }); w.__v95g = true; W.V30RankSnapshotTick = w;
+    if (typeof window.V30RankSnapshotTick !== 'function') { setTimeout(hookDaily, 1000); return; } CS2.patch('V30RankSnapshotTick', f => function () { const r = f.apply(this, arguments); tick(); return r; }, { id: '__v95g' });
   })();
 })();

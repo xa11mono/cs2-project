@@ -314,11 +314,7 @@
       const v = V(), t = byName(v && v.S().career && v.S().career.team), p = t && t.players.find(x => x.nick === el.dataset.v41p); if (!p) return;
       p.v41plan = { focus: el.value }; save(); if (H && H.render) H.render();
     });
-    const f = window.finalizeTournamentRating;
-    if (typeof f === 'function' && !f.__v41) {
-      const w = function () { const ct = typeof currentTournament !== 'undefined' ? currentTournament : null; const r = f.apply(this, arguments); try { afterTournament(ct); } catch (e) { console.warn('[v41] after', e); } return r; };
-      w.__v41 = true; window.finalizeTournamentRating = w; try { finalizeTournamentRating = w; } catch (e) {}
-    }
+    CS2.patch('finalizeTournamentRating', f => function () { const ct = typeof currentTournament !== 'undefined' ? currentTournament : null; const r = f.apply(this, arguments); try { afterTournament(ct); } catch (e) { console.warn('[v41] after', e); } return r; }, { id: '__v41' });
   }
   window.V41 = { hltvRanking, hltvPoints, individualTraining, eventFinance, afterTournament, recordParallel, migrateBase, defaultPlan, state: S, PLAN_L };
   setTimeout(() => { try { migrateBase(); } catch (e) {} }, 3000);

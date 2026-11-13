@@ -44,17 +44,16 @@
     NAMES.forEach(name => {
       const f = W[name]; if (typeof f !== 'function' || f.__v90coalesce) { if (f && f.__v90coalesce) n++; return; }
       orig[name] = f;
-      const w = function () {
-        if (flushing || W.__cs2SaveNow) return f.apply(this, arguments);   // запись внутри записи — сразу (saveTeams → saveTransferState)
-        if (disabled) return;
-        stats.requested++;
-        pending.add(name);
-        schedule();
-      };
-      Object.keys(f).forEach(k => { try { w[k] = f[k]; } catch (e) {} });
-      w.__v90coalesce = true; w.__orig = f;
-      W[name] = w;
-      try { (0, eval)(`${name} = window.${name}`); } catch (e) {}   // глобальная привязка функции (вызовы без window.)
+      CS2.patch(name, f => {
+        const w = function () {
+          if (flushing || W.__cs2SaveNow) return f.apply(this, arguments);   // запись внутри записи — сразу (saveTeams → saveTransferState)
+          if (disabled) return;
+          stats.requested++;
+          pending.add(name);
+          schedule();
+        };
+        w.__orig = f; return w;
+      }, { id: '__v90coalesce' });
       n++;
     });
     return n === NAMES.length;

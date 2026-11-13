@@ -121,7 +121,7 @@ document.addEventListener('change', e => { if (e.target.matches?.('[data-set="im
 HS.CLICKS.push(['#pt-addteam-row button', () => { try { addTeam(); saveTeams(); } catch (e) { console.warn(e); } HS.render(); }]);
 
 /* ---------- 4. Старые окна → страницы портала ---------- */
-function redirect(name, fn) { window[name] = fn; }
+function redirect(name, fn) { CS2.patch(name, () => fn, { optional: true }); }   // v144: замена старого окна страницей портала — слой виден в CS2.chain
 function legacy() {
   redirect('showHistory', team => { if (team) HS.nav('team', team); });
   redirect('hubOpenTournament', id => { if (id) HS.nav('event', id); });
@@ -129,8 +129,8 @@ function legacy() {
   redirect('v22OpenCalendar', () => HS.nav('calendar'));
   redirect('toggleSettingsMenu', () => HS.nav('settings'));
   const v21 = window.v21OpenTournament;
-  window.v21OpenTournament = (id, silent) => { if (silent) return; if (id === 'main') return HS.nav('event', 'cur'); HS.nav('event', 'P-' + id); };
-  window.ui27Go = where => HS.nav(({ bracket: 'watch', calendar: 'calendar', hltv: 'home', settings: 'settings' })[where] || 'home');
+  CS2.patch('v21OpenTournament', () => (id, silent) => { if (silent) return; if (id === 'main') return HS.nav('event', 'cur'); HS.nav('event', 'P-' + id); }, { optional: true });
+  CS2.patch('ui27Go', () => where => HS.nav(({ bracket: 'watch', calendar: 'calendar', hltv: 'home', settings: 'settings' })[where] || 'home'), { optional: true });
   window.__v21OpenLegacy = v21;
 }
 

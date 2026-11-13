@@ -169,13 +169,10 @@
   const every = (W.CS2Loop && W.CS2Loop.every) || ((fn, ms) => setInterval(fn, ms));
   every(() => { try { if (!W.v57BatchCalendarSkip) ensure(); } catch (e) { console.warn('[v95 major path]', e); } }, 5000, 'v95-major');
   (function hookDaily() {
-    const f = W.V30RankSnapshotTick; if (typeof f !== 'function') { setTimeout(hookDaily, 1000); return; }
-    if (f.__v95m) return;
-    const w = function () { const r = f.apply(this, arguments); try { ensure(); } catch (e) {} return r; };
-    Object.keys(f).forEach(k => { w[k] = f[k]; }); w.__v95m = true; W.V30RankSnapshotTick = w;
+    if (typeof window.V30RankSnapshotTick !== 'function') { setTimeout(hookDaily, 1000); return; } CS2.patch('V30RankSnapshotTick', f => function () { const r = f.apply(this, arguments); try { ensure(); } catch (e) {} return r; }, { id: '__v95m' });
   })();
   // отборы создаются и в момент проверки квалификаций (перед созданием турниров)
-  if (typeof W.v45EnsureQuals === 'function' && !W.v45EnsureQuals.__v95) { const f = W.v45EnsureQuals; const w = function () { try { ensure(); } catch (e) {} return f.apply(this, arguments); }; w.__v95 = true; W.v45EnsureQuals = w; }
+  if (typeof W.v45EnsureQuals === 'function' && !W.v45EnsureQuals.__v95) { CS2.patch('v45EnsureQuals', f => function () { try { ensure(); } catch (e) {} return f.apply(this, arguments); }, { id: '__v95' });}
 
   /* ---------- страница «Путь на Мейджор»: приглашения и отборы ---------- */
   const H = W.HS; if (!H) return;

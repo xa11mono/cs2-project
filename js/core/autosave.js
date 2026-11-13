@@ -458,15 +458,11 @@
   } catch (e) {}
   ['saveTeams', 'saveSeasonState'].forEach(name => {
     try {
-      const original = window[name];
-      if (typeof original !== 'function' || original.__v56Wrapped) return;
-      const wrapped = function (...args) {
+      CS2.patch(name, original => function (...args) {
         const result = original.apply(this, args);
         scheduleSave(5000);
         return result;
-      };
-      wrapped.__v56Wrapped = true;
-      window[name] = wrapped;
+      }, { id: '__v56Wrapped', ifExists: true });
     } catch (e) {}
   });
   (globalThis.CS2Loop?.every || ((f, ms) => (typeof setInterval === "function" ? setInterval : window.setInterval)(f, ms)))(() => { if (factoryResetting || document.hidden) return; if(bulkSimulationOwnsThread()){ batchSaveDeferred=true; return; } saveNow('periodic'); }, 45000);

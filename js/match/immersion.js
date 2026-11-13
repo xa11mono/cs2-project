@@ -94,18 +94,10 @@
     return true;
   }
 
-  const oldPauseTrigger = window.maybeTriggerBroadcastTacticalPause;
-  if (typeof oldPauseTrigger === 'function' && !oldPauseTrigger.__v43) {
-    const wrapped = function (item, now) { return triggerSmartPause(item, Number(now) || Date.now()); };
-    wrapped.__v43 = true;
-    window.maybeTriggerBroadcastTacticalPause = wrapped;
-    try { maybeTriggerBroadcastTacticalPause = wrapped; } catch (e) {}
-  }
+  CS2.patch('maybeTriggerBroadcastTacticalPause', oldPauseTrigger => function (item, now) { return triggerSmartPause(item, Number(now) || Date.now()); }, { id: '__v43' });
 
   // Переопределяем только тайминг остановки. Логика выбора пост-паузной тактики v31/v34 остаётся прежней.
-  const oldAdvance = window.broadcastAdvancePhase;
-  if (typeof oldAdvance === 'function' && !oldAdvance.__v43) {
-    const wrapped = function (item, now) {
+  CS2.patch('broadcastAdvancePhase', oldAdvance => function (item, now) {
       const st = item?.state, current = Number(now) || Date.now();
       if (st?.phase === 'technical-pause') {
         if (st.phaseUntil && current < st.phaseUntil) return false;
@@ -117,11 +109,7 @@
       }
       if (st?.phase === 'tactical-pause' && st.phaseUntil && current < st.phaseUntil) return false;
       return oldAdvance.apply(this, arguments);
-    };
-    wrapped.__v43 = true;
-    window.broadcastAdvancePhase = wrapped;
-    try { broadcastAdvancePhase = wrapped; } catch (e) {}
-  }
+    }, { id: '__v43' });
 
   /* ---------------- Разбор раунда ---------------- */
   const WHY = { elimination: 'все соперники выбиты', bomb: 'бомба взорвалась', defuse: 'бомба обезврежена', time: 'время вышло' };
@@ -260,9 +248,7 @@
     panel.innerHTML = storyMarkup(item);
     renderPauseMeta(item);
   }
-  const oldRender = window.broadcastRenderDetail;
-  if (typeof oldRender === 'function' && !oldRender.__v43) {
-    const wrapped = function (item) {
+  CS2.patch('broadcastRenderDetail', oldRender => function (item) {
       const result = oldRender.apply(this, arguments);
       try {
         renderMatchStory(item);
@@ -273,11 +259,7 @@
         }
       } catch (e) { console.warn('[v43 render]', e); }
       return result;
-    };
-    wrapped.__v43 = true;
-    window.broadcastRenderDetail = wrapped;
-    try { broadcastRenderDetail = wrapped; } catch (e) {}
-  }
+    }, { id: '__v43' });
 
   /* ---------------- Match Center и режим зрителя ---------------- */
   if (H?.PAGES?.match && !H.PAGES.match.__v43) {
@@ -309,19 +291,14 @@
   }
 
   // Синхронно обновляем плашки после ручного тайм-аута тренера.
-  const oldPauseButtons = window.updatePauseButtonsUI;
-  if (typeof oldPauseButtons === 'function' && !oldPauseButtons.__v43) {
-    const wrapped = function () {
+  CS2.patch('updatePauseButtonsUI', oldPauseButtons => function () {
       const result = oldPauseButtons.apply(this, arguments);
       try {
         const item = H?.spectator?.direct?.();
         if (item) renderPauseMeta(item);
       } catch (e) {}
       return result;
-    };
-    wrapped.__v43 = true; window.updatePauseButtonsUI = wrapped;
-    try { updatePauseButtonsUI = wrapped; } catch (e) {}
-  }
+    }, { id: '__v43' });
 
   window.CS2MatchImmersion = {
     version: 43,

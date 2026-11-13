@@ -96,9 +96,7 @@ function rotate() {
   try { saveSeasonState(); } catch (e) {}
   try { if (typeof updateTournamentSuggestion === 'function') updateTournamentSuggestion(); } catch (e) {}
 }
-(() => { const g = window.generateDynamicSeasonSchedule; if (typeof g !== 'function' || g.__v30) return;
-  const w = function () { const r = g.apply(this, arguments); try { seasonState.v30RotSeason = 0; rotate(); } catch (e) { console.warn('[v30 cal]', e); } return r; };
-  w.__v30 = true; Object.keys(g).forEach(k => { w[k] = g[k]; }); window.generateDynamicSeasonSchedule = w; try { generateDynamicSeasonSchedule = w; } catch (e) {} })();
+CS2.patch('generateDynamicSeasonSchedule', g => function () { const r = g.apply(this, arguments); try { seasonState.v30RotSeason = 0; rotate(); } catch (e) { console.warn('[v30 cal]', e); } return r; }, { id: '__v30' });
 
 /* ------------------------------------------------------------ Tier-2/3 и академии */
 const T2 = ['Exort Series', 'BetBoom Dacha', 'Winline Insight', 'CIS LAN', 'CCT Europe Series', 'ESL Challenger League Europe', 'Elisa Invitational',

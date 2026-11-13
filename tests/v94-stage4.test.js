@@ -29,7 +29,8 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   // 2. ИИ по средствам: режим экономии — выкуп запрещён, дорогой игрок на продажу, долг гасят владельцы
   const ai = await p.evaluate(() => {
     const F = window.CS2Finance, V = window.V31, pro = teams.filter(t => !t.isAcademy).sort((a, b) => b.pts - a.pts), t = pro[70];
-    V.org(t.name).budget = -600000;
+    // долг больше прогнозируемого дохода до конца сезона (с v138 доход от партнёров у клубов разный)
+    V.org(t.name).budget = 0; V.org(t.name).budget = -Math.max(600000, F.forecast(t).end + 600000);
     const pol = F.policy(t);
     const from = pro[60], inc = from.players.find(x => x.role === 'Rifler') || from.players[1], out = t.players.find(x => x.role === inc.role) || t.players[1];
     const ev = window.CS2Roster.evaluate({ kind: 'buy', actor: 'ai', team: t, from, incoming: inc, out, fee: 300000 });

@@ -24,11 +24,8 @@ const h32 = s => { let h = 2166136261 >>> 0; s = String(s); for (let i = 0; i < 
 const emit = (type, data) => { try { (window.__v29Bus = window.__v29Bus || []).push({ type, data, at: calNow() }); if (typeof window.v29OnEvent === 'function') window.v29OnEvent(); } catch (e) {} try { window.CS2 && window.CS2.emit(type, data); } catch (e) {} };
 window.v29Emit = emit;
 const setStatus = txt => { const el = document.getElementById('tour-status'); if (el) el.innerText = txt; };
-function wrapGlobal(name, make) {
-  const orig = window[name];
-  if (typeof orig !== 'function' || orig.__v29) return;
-  const w = make(orig); w.__v29 = true; window[name] = w;
-}
+// v144: расширение через ядро (слой виден в CS2.chain); __v29 — защита от повторного подключения
+function wrapGlobal(name, make) { CS2.patch(name, make, { id: '__v29', ifExists: true }); }
 
 /* ===================================================================
    1. СТАБИЛЬНОСТЬ
@@ -243,14 +240,14 @@ function strength(name) {
 }
 // v84: разброс откалиброван под ~65–68% побед фаворита и ≈11% овертаймов (было 520).
 function seriesP(a, b) { return clamp(1 / (1 + Math.pow(10, -(strength(a) - strength(b)) / (window.CS2_STRENGTH_SCALE || 420))), 0.07, 0.93); }
-window.calcMatchOdds = function (t1Name, t2Name, isBO1 = false) {
+CS2.patch('calcMatchOdds', () => function (t1Name, t2Name, isBO1 = false) {
   if (!t1Name || !t2Name) return null;
   let p1 = seriesP(t1Name, t2Name);
   if (isBO1) p1 = clamp(mapFromSeries(p1), 0.12, 0.88);
   const pct1 = Math.round(p1 * 100), pct2 = 100 - pct1;
   const c1 = Math.max(1.05, Math.min(7.5, 0.94 / p1)).toFixed(2), c2 = Math.max(1.05, Math.min(7.5, 0.94 / (1 - p1))).toFixed(2);
   return { pct1, pct2, c1, c2, p1_win: p1 };
-};
+}, { optional: true });
 function mapStr(name, map) { const v = Number(byName(name)?.mapStrength?.[map]); return Number.isFinite(v) ? v : 55; }
 function liveItem(t1, t2) {
   const b = currentTournament?.broadcast; if (!b) return null;
@@ -262,7 +259,7 @@ function mapLevel(t1, t2, map) {
   return clamp(M, 0.05, 0.95);
 }
 window.v29MapLevelProb = mapLevel;
-window.calcMapWinProbability = function (t1Name, t2Name, mapName) {
+CS2.patch('calcMapWinProbability', () => function (t1Name, t2Name, mapName) {
   if (!byName(t1Name) || !byName(t2Name)) return 0.5;
   let M = mapLevel(t1Name, t2Name, mapName);
   const item = liveItem(t1Name, t2Name), st = item?.state;
@@ -276,9 +273,7 @@ window.calcMapWinProbability = function (t1Name, t2Name, mapName) {
     const imp = st.v7SpecialImpact; if (imp) { const me = sign === 1 ? 1 : 2, op = me === 1 ? 2 : 1; q += clamp((imp[me]?.value || 0) - (imp[op]?.value || 0), -0.025, 0.025) * 0.6; }
   }
   return clamp(q, 0.3, 0.7);
-};
-try { calcMapWinProbability = window.calcMapWinProbability; } catch (e) {}
-try { calcMatchOdds = window.calcMatchOdds; } catch (e) {}
+}, { optional: true });
 
 // усталость: отдых между турнирами восстанавливает силы
 function restTeams() {
@@ -503,10 +498,7 @@ function starExodus() {
   const cands = from.players.filter(p => p.status === 'STARTER' && p.role !== 'IGL').sort((a, b) => playerPower(b) - playerPower(a)).slice(0, 3);
   const p = cands[Math.floor(Math.random() * cands.length)]; if (!p) return 0;
   const buyers = mid.filter(t => { try { return teamIdentityFit(t, p) >= 0.5; } catch (e) { return true; } }).sort(() => Math.random() - .5);
-  const old = window.playerWillAccept; window.playerWillAccept = () => true;
-  try { for (const to of buyers.slice(0, 4)) { if (applyPlayerTransfer(from, to, p, 'ради роли лидера и крупного контракта')) return 1; } }
-  finally { window.playerWillAccept = old; }
-  return 0;
+  return CS2.swap('playerWillAccept', () => true, () => { for (const to of buyers.slice(0, 4)) { if (applyPlayerTransfer(from, to, p, 'ради роли лидера и крупного контракта')) return 1; } return 0; });
 }
 // топ-4 без провала на Major не скупают игроков у середняков — иначе таланты стекаются в 2–3 клуба
 wrapGlobal('teamNeedsTransfer', orig => function (t) {
@@ -518,9 +510,7 @@ wrapGlobal('teamNeedsTransfer', orig => function (t) {
   return info;
 });
 // окно открывается после Major; по ходу сезона сделки редки; перед Major — ростер-лок
-const baseMarket = window.processTransferMarket;
-if (typeof baseMarket === 'function' && !baseMarket.__v29) {
-  const gated = function (reason) {
+CS2.patch('processTransferMarket', baseMarket => function (reason) {
     if (reason !== 'tournament_end') return baseMarket.apply(this, arguments);
     const ct = currentTournament, nx = nextStep();
     const postMajor = !!ct?.isMajor;
@@ -544,17 +534,12 @@ if (typeof baseMarket === 'function' && !baseMarket.__v29) {
       window.__v29Window = 'mid';
       if (Math.random() < 0.18) { transferState.cooldown = 0; baseMarket.call(this, reason); }   // по ходу сезона сделки редки
     } finally { window.__v29Window = null; }
-  };
-  gated.__v29 = true; window.processTransferMarket = gated;
-  try { processTransferMarket = gated; } catch (e) {}
-}
+  }, { id: '__v29' });
 
 /* ===================================================================
    5. ИТОГИ ТУРНИРА: «разбор» чемпиона, развитие игроков, события для новостей
    =================================================================== */
-const baseFinalize = window.finalizeTournamentRating;
-if (typeof baseFinalize === 'function' && !baseFinalize.__v29) {
-  const w = function () {
+CS2.patch('finalizeTournamentRating', baseFinalize => function () {
     const ct = currentTournament;
     if (!ct || ct.completed) return baseFinalize.apply(this, arguments);
     const seasonBefore = seasonState.currentSeason;
@@ -600,10 +585,7 @@ if (typeof baseFinalize === 'function' && !baseFinalize.__v29) {
       saveTeams(); saveSeasonState();
     } catch (e) { console.warn('[v29] after-finalize', e); }
     return r;
-  };
-  w.__v29 = true; window.finalizeTournamentRating = w;
-  try { finalizeTournamentRating = w; } catch (e) {}
-}
+  }, { id: '__v29' });
 
 // параллельные турниры → события для новостей (Tier-2 и академии)
 const seenParallel = new Set();

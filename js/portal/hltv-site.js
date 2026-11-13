@@ -87,16 +87,8 @@ function stampRosters(id, names) {
   if (!snap.rost || changed) { snap.rost = rost; try { window.hubArchivePersist?.(id); } catch (e) {} }
 }
 (() => { // обёртки архивации (после v25 и v26)
-  const t1 = window.hubArchiveTier1;
-  if (typeof t1 === 'function' && !t1.__v28) {
-    const w = function (ct) { const r = t1.apply(this, arguments); try { stampRosters(ct?.hubArchiveId, ct?.participants); } catch (e) {} return r; };
-    w.__v28 = true; window.hubArchiveTier1 = w;
-  }
-  const pa = window.hubArchiveParallel;
-  if (typeof pa === 'function' && !pa.__v28) {
-    const w = function (ev) { const r = pa.apply(this, arguments); try { stampRosters('P-' + ev?.id, ev?.participants); } catch (e) {} return r; };
-    w.__v28 = true; window.hubArchiveParallel = w;
-  }
+  CS2.patch('hubArchiveTier1', t1 => function (ct) { const r = t1.apply(this, arguments); try { stampRosters(ct?.hubArchiveId, ct?.participants); } catch (e) {} return r; }, { id: '__v28' });
+  CS2.patch('hubArchiveParallel', pa => function (ev) { const r = pa.apply(this, arguments); try { stampRosters('P-' + ev?.id, ev?.participants); } catch (e) {} return r; }, { id: '__v28' });
 })();
 // v30: снимки турниров, которые идут сейчас (основной + параллельные) — их сыгранные матчи тоже в статистике
 function liveSnaps() {

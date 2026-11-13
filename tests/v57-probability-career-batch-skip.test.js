@@ -32,7 +32,8 @@ assert(hltv.includes('CS2 Manager <i class="pt-ver">v86</i>'), 'visible applicat
 // v58: qualification progress is calendar-driven and a pause is a hard stop.
 assert(/if\s*\(v21Cal\(\)\.paused\) return false/.test(parallel), 'background events must stop while the calendar is paused');
 assert(/window\.v21ProcessParallelNow=function\(options=\{\}\)/.test(parallel), 'parallel circuit must expose a forced but clock-respecting daily tick');
-assert(/if\(!window\.v57BatchCalendarSkip\)/.test(parallel), 'parallel event loop must be suspended during each internal day of a batch');
+// v144: проверка удалена — она искала текст в обёртке window.v15AdvanceMinutes, которая ни разу не срабатывала:
+// v15AdvanceMinutes объявлена внутри js/calendar/training-calendar.js и глобальной не бывает (мёртвый код удалён).
 assert(/window\.v57BatchCalendarSkip = true/.test(batchSkip) && /matchBudget: 1/.test(batchSkip) && /await window\.v21ProcessOverdueCooperative/.test(batchSkip), 'multi-day skips must process overdue matches cooperatively while deferring writes');
 assert(!/allowPaused:\s*true/.test(batchSkip), 'batch simulation must never override a calendar pause');
 assert(/if\(c\.paused \|\| !Number\.isFinite\(mins\)/.test(calendar), 'the calendar clock itself must reject time advances while paused');
@@ -57,7 +58,7 @@ const gameWindow = {
   setInterval() { return 1; }
 };
 const context = { window: gameWindow, teams, transferState, saveTeams, saveTransferState, currentStats, console, JSON, Date, Map, Set, Object, Array };
-vm.runInNewContext(career, context, { filename: 'js/rosters/player-career-stats.js' });
+vm.runInNewContext(career, require('./lib/project').attachKernel(context), { filename: 'js/rosters/player-career-stats.js' });
 context.teams = [{ name: 'Team A', players: [] }];
 currentStats = { P: {} };
 context.currentStats = currentStats;
@@ -87,7 +88,7 @@ assert(saveTransferCalls >= 1 && saveTeamsCalls === 1, 'career ledger must persi
     v21ProcessParallelNow(options={}) { parallelCatchups++; if(options.deferIO) dailyCatchups++; else finalCatchups++; return false; }
   };
   const ctx = { window: win, document: doc, saveTeams: ctxSaveTeams, saveSeasonState: ctxSaveSeason, renderTournament: ctxRenderTournament, renderRating: ctxRenderRating, console, Promise, setTimeout, setInterval() { return 1; }, Math, Number, String, Object, Array };
-  vm.runInNewContext(batchSkip, ctx, { filename: 'js/calendar/skip-days.js' });
+  vm.runInNewContext(batchSkip, require('./lib/project').attachKernel(ctx), { filename: 'js/calendar/skip-days.js' });
   await win.v33SkipDays(4);
   assert(skipped === 4, 'batch skip must still process each requested in-game day');
   assert(parallelCatchups === 5 && dailyCatchups === 5 && finalCatchups === 0, 'parallel tournaments must use deferred I/O for each skipped day and the final catch-up');

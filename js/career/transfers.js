@@ -156,19 +156,13 @@
   }
 
   /* ------------------------------------------------------------ ИИ: тот же коэффициент выкупа по ходу сезона */
-  (function aiFee() {
-    const f = W.applyPlayerTransfer; if (typeof f !== 'function' || f.__v99fee) return;
-    // сумму сделки ИИ считает v31 по valueOf; по ходу сезона умножаем через __v31UserDeal не трогая сделки менеджера
-    const w = function (fromTeam, toTeam, player) {
+  CS2.patch('applyPlayerTransfer', f => function (fromTeam, toTeam, player) {
       if (W.__v31UserDeal || !fromTeam || !toTeam || !player || inWindow()) return f.apply(this, arguments);
       let fee = 0; try { fee = Math.round(V.valueOf(player) * (player.v31listed ? .8 : 1) * MID_MUL / 1000) * 1000; } catch (e) {}
       if (fee) { try { if ((V.org(toTeam.name).budget || 0) - fee < -300000) return false; } catch (e) {} }
       const prev = W.__v99FeeMul; W.__v99FeeMul = MID_MUL;
       try { return f.apply(this, arguments); } finally { W.__v99FeeMul = prev; }
-    };
-    Object.keys(f).forEach(k => { try { w[k] = f[k]; } catch (e) {} }); w.__v99fee = true;
-    W.applyPlayerTransfer = w; try { (0, eval)('applyPlayerTransfer = window.applyPlayerTransfer'); } catch (e) {}
-  })();
+    }, { id: '__v99fee' });
 
   /* ------------------------------------------------------------ интерфейс */
   (H.AFTER || []).push((pg, arg, root) => {
@@ -203,17 +197,12 @@
 
   // «Продолжить» при паузе ничего не делал (skipGameCalendarDay выходил сразу) — после паузы от уведомления кнопка
   // казалась сломанной. Теперь день сдвигается, а часы остаются на паузе.
-  (function skipWhilePaused() {
-    const f = W.skipGameCalendarDay; if (typeof f !== 'function' || f.__v99pause) return;
-    const w = function () {
+  CS2.patch('skipGameCalendarDay', f => function () {
       let paused = false; try { paused = !!(W.v15IsCalendarPaused && W.v15IsCalendarPaused()); } catch (e) {}
       if (!paused || typeof W.toggleGameCalendarPause !== 'function') return f.apply(this, arguments);
       W.toggleGameCalendarPause();
       try { return f.apply(this, arguments); } finally { try { if (!W.v15IsCalendarPaused()) W.toggleGameCalendarPause(); } catch (e) {} }
-    };
-    Object.keys(f).forEach(k => { try { w[k] = f[k]; } catch (e) {} }); w.__v99pause = true;
-    W.skipGameCalendarDay = w; try { (0, eval)('skipGameCalendarDay = window.skipGameCalendarDay'); } catch (e) {}
-  })();
+    }, { id: '__v99pause' });
 
   W.V99Mail = { add: mailAdd, list: () => MS().list, unread, open: openMail };
   W.V99Transfers = { rules, start, offerRange, lockUntil, inWindow, settled, mail, MID_MUL };

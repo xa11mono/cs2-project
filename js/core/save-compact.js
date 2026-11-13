@@ -39,14 +39,13 @@
     const base = W.saveSeasonState; if (typeof base !== 'function' || base.__v84coalesce) return;
     let timer = null;
     const flush = () => { if (!timer) return; clearTimeout(timer); timer = null; try { base(); } catch (e) { console.warn('[v84 compact] save', e); } };
-    const wrapped = function () {
+    CS2.patch('saveSeasonState', () => { const wrapped = function () {
       // v131: при закрытии/скрытии страницы — сразу (иначе запись из обработчика закрытия v90 снова откладывалась и терялась)
       if (W.v57BatchCalendarSkip || W.__cs2Unloading || document.visibilityState === 'hidden') { if (timer) { clearTimeout(timer); timer = null; } return base.apply(this, arguments); }
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => { timer = null; try { base(); } catch (e) { console.warn('[v84 compact] save', e); } }, 1500);
     };
-    wrapped.__v84coalesce = true; wrapped.flushNow = flush;
-    W.saveSeasonState = wrapped; try { saveSeasonState = wrapped; } catch (e) {} // eslint-disable-line no-global-assign
+    wrapped.flushNow = flush; return wrapped; }, { id: '__v84coalesce' });   // base (выше) — та же текущая функция
     W.addEventListener('beforeunload', flush); W.addEventListener('pagehide', flush);
     document.addEventListener('visibilitychange', () => { if (document.hidden) flush(); });
   })();

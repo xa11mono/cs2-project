@@ -246,11 +246,7 @@
   };
   window.CS2Realism = api;
   try {
-    const f = window.finalizeTournamentRating;
-    if (typeof f === 'function' && !f.__v40) {
-      const w = function () { const r = f.apply(this, arguments); updateStrength(0.06); migrateMaps(); return r; };
-      w.__v40 = true; window.finalizeTournamentRating = w; try { finalizeTournamentRating = w; } catch (e) {}
-    }
+    CS2.patch('finalizeTournamentRating', f => function () { const r = f.apply(this, arguments); updateStrength(0.06); migrateMaps(); return r; }, { id: '__v40' });
   } catch (e) { console.warn('[v40] hook', e); }
   if (typeof document !== 'undefined') setTimeout(migrateMaps, 2000);
   // v84: сила в матчах следует за уровнем состава каждую игровую неделю, а не только после турниров Tier-1

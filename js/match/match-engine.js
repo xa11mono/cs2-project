@@ -101,11 +101,7 @@
       return true;
     } catch (e) { return false; }
   }
-  const baseVeto = W.conductMapVeto;
-  if (typeof baseVeto === 'function' && !baseVeto.__v84) {
-    const wrapped = function () { syncMapPool(); return baseVeto.apply(this, arguments); };
-    wrapped.__v84 = true; W.conductMapVeto = wrapped;
-  }
+  CS2.patch('conductMapVeto', baseVeto => function () { syncMapPool(); return baseVeto.apply(this, arguments); }, { id: '__v84' });
   setTimeout(syncMapPool, 1500);
   W.CS2MatchEngine = Object.freeze({ seriesProb, roundProb, veto, playMap, playSeries, syncMapPool, poolFor });
 })();

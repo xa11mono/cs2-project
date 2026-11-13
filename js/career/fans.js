@@ -104,10 +104,7 @@
   const every = (W.CS2Loop && W.CS2Loop.every) || ((fn, ms) => setInterval(fn, ms));
   every(() => { try { react(); weekly(); } catch (e) { console.warn('[v93 fans]', e); } }, 5000, 'v93-fans');
   (function hookDaily() {
-    const f = W.V30RankSnapshotTick; if (typeof f !== 'function') { setTimeout(hookDaily, 1000); return; }
-    if (f.__v93f) return;
-    const w = function () { const r = f.apply(this, arguments); try { react(); weekly(); } catch (e) {} return r; };
-    Object.keys(f).forEach(k => { w[k] = f[k]; }); w.__v93f = true; W.V30RankSnapshotTick = w;
+    if (typeof window.V30RankSnapshotTick !== 'function') { setTimeout(hookDaily, 1000); return; } CS2.patch('V30RankSnapshotTick', f => function () { const r = f.apply(this, arguments); try { react(); weekly(); } catch (e) {} return r; }, { id: '__v93f' });
   })();
 
   // на странице команды

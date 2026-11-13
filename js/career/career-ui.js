@@ -211,8 +211,7 @@ function sign(id) {
   const x = findP(n.nick), t = T(); if (!x || !t) return;
   if (x.t) {
     window.__v31UserDeal = { fee: n.fee, salary: n.salary, years: n.years };
-    const prevAcc = window.playerWillAccept; window.playerWillAccept = () => true;
-    let ok = false; try { ok = applyPlayerTransfer(x.t, t, x.p, 'переговоры менеджера'); } finally { window.playerWillAccept = prevAcc; window.__v31UserDeal = null; }
+    let ok = false; try { ok = CS2.swap('playerWillAccept', () => true, () => applyPlayerTransfer(x.t, t, x.p, 'переговоры менеджера')); } finally { window.__v31UserDeal = null; }
     if (ok) { n.st = 'signed'; n.log.push(`Подписан! ${n.nick} — игрок ${t.name}.`); }
     else n.log.push('Сделку не удалось закрыть: роли в составе (AWPer/IGL), недавняя покупка (не чаще раза в два окна), только что купленный игрок или ростер-лок/турнир.');
   } else { // свободный агент: заменить самого слабого игрока близкой роли

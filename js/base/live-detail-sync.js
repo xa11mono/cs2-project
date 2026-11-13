@@ -186,8 +186,7 @@
     try { renderEventFeed(item); } catch (err) { console.error('[V6 feed sync]', err); }
     syncDetailControls();
   }
-  const originalBroadcastRenderDetailV6 = broadcastRenderDetail;
-  broadcastRenderDetail = function(item) {
+  CS2.patch('broadcastRenderDetail', originalBroadcastRenderDetailV6 => function(item) {
     try {
       originalBroadcastRenderDetailV6(item);
     } finally {
@@ -202,22 +201,19 @@
         console.error('[V6 detail instant sync]', err);
       }
     }
-  };
-  const originalAddBroadcastEventV6 = addBroadcastEvent;
-  addBroadcastEvent = function(st, html, kind = 'normal') {
+  });
+  CS2.patch('addBroadcastEvent', originalAddBroadcastEventV6 => function(st, html, kind = 'normal') {
     originalAddBroadcastEventV6(st, html, kind);
     if (st && !Array.isArray(st.events)) st.events = [];
     if (st?.events) st.events = st.events.filter(e => e && typeof e === 'object');
-  };
-  const originalTogglePauseV6 = toggleTournamentBroadcastPause;
-  toggleTournamentBroadcastPause = function() {
+  });
+  CS2.patch('toggleTournamentBroadcastPause', originalTogglePauseV6 => function() {
     const before = currentTournament?.broadcast?.paused;
     originalTogglePauseV6();
     const after = currentTournament?.broadcast?.paused;
     if (broadcastDetailViewing && before !== after) syncSelectedDetail();
-  };
-  const originalOpenDetailV6 = openBroadcastMatchDetail;
-  openBroadcastMatchDetail = function(id) {
+  });
+  CS2.patch('openBroadcastMatchDetail', originalOpenDetailV6 => function(id) {
     const b = currentTournament?.broadcast;
     if (!b) return originalOpenDetailV6(id);
     let item = (b.active || []).find(x => x && (x.id === id || broadcastMatchKey(x.match) === id));
@@ -233,7 +229,7 @@
     const modal = document.getElementById('dice-modal');
     if (modal) modal.style.display = 'flex';
     syncSelectedDetail();
-  };
+  });
   const style = document.createElement('style');
   style.textContent = `
     #dice-modal .ticker-box{

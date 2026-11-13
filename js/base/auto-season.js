@@ -101,12 +101,10 @@
     seasonState.mapStatsSeason = seasonState.currentSeason;
     v7Save();
   }
-  const originalGetMapWinrate = getMapWinrate;
-  getMapWinrate = function(teamName, mapName) {
+  CS2.patch('getMapWinrate', () => function(teamName, mapName) {
     return v7SeasonWinrate(teamName, mapName);
-  };
-  const originalConductMapVeto = conductMapVeto;
-  conductMapVeto = function(t1Name, t2Name, mode='BO3') {
+  }, { optional: true });
+  CS2.patch('conductMapVeto', originalConductMapVeto => function(t1Name, t2Name, mode='BO3') {
     const t1 = teamByName(t1Name), t2 = teamByName(t2Name);
     if (!t1 || !t2) return originalConductMapVeto(t1Name, t2Name, mode);
     const old1 = t1.maps, old2 = t2.maps;
@@ -118,9 +116,8 @@
       t1.maps = old1;
       t2.maps = old2;
     }
-  };
-  const originalMaybeAutoBootcamp = maybeAutoBootcamp;
-  maybeAutoBootcamp = function(t) {
+  });
+  CS2.patch('maybeAutoBootcamp', originalMaybeAutoBootcamp => function(t) {
     if (!t) return false;
     const oldMaps = t.maps;
     t.maps = {...(t.mapStrength || oldMaps || {})};
@@ -132,7 +129,7 @@
         t.maps[map] = v7SeasonWinrate(t.name, map);
       });
     }
-  };
+  });
   function v7FindBroadcastItem(t1Name, t2Name) {
     const b = currentTournament?.broadcast;
     if (!b) return null;
@@ -171,8 +168,7 @@
       if (!hit && old) old.remove();
     });
   }
-  const originalRenderRating = renderRating;
-  renderRating = function() {
+  CS2.patch('renderRating', originalRenderRating => function() {
     originalRenderRating();
     v7RenderFavoritePanel();
     const fav = v7FavoriteName();
@@ -188,22 +184,20 @@
         old?.remove();
       }
     });
-  };
-  const originalCreateMatchElement = createMatchElement;
-  createMatchElement = function(m, onAction, isFinal=false) {
+  });
+  CS2.patch('createMatchElement', originalCreateMatchElement => function(m, onAction, isFinal=false) {
     const el = originalCreateMatchElement(m,onAction,isFinal);
     if (m) {
       el.dataset.v7T1 = m.t1 || '';
       el.dataset.v7T2 = m.t2 || '';
     }
     return el;
-  };
-  const originalRenderTournament = renderTournament;
-  renderTournament = function() {
+  });
+  CS2.patch('renderTournament', originalRenderTournament => function() {
     if (!currentTournament) return;
     originalRenderTournament();
     v7HighlightFavorite(document);
-  };
+  });
   window.v7FollowNextFavoriteMatch = function() {
     const fav = v7FavoriteName();
     if (!fav) return alert('Сначала выберите любимую команду.');
@@ -216,8 +210,7 @@
     alert('Матч любимой команды пока не найден в текущем этапе.');
   };
   /* ---------- better economy ---------- */
-  const originalPrepareBroadcastRoundBuy = prepareBroadcastRoundBuy;
-  prepareBroadcastRoundBuy = function(item, roundNo) {
+  CS2.patch('prepareBroadcastRoundBuy', originalPrepareBroadcastRoundBuy => function(item, roundNo) {
     const plan = originalPrepareBroadcastRoundBuy(item, roundNo);
     if (!plan) return plan;
     ['t1','t2'].forEach(key => {
@@ -238,7 +231,7 @@
     item.state.economy.t1.lastBuy = plan.t1.type;
     item.state.economy.t2.lastBuy = plan.t2.type;
     return plan;
-  };
+  });
   /* ---------- speed presets ---------- */
   function v7ApplyPreset(key, rerender=true) {
     const p = V7.speedPresets[key];
@@ -251,9 +244,9 @@
     document.querySelectorAll('.tv-speed-btn').forEach(btn => btn.classList.toggle('active', Number(btn.dataset.speed) === p.speed));
     if (rerender) renderBroadcastPanel();
   }
-  getMaxParallelMatches = function() {
+  CS2.patch('getMaxParallelMatches', () => function() {
     return V7.speedPresets[V7.speedPreset]?.parallel || 2;
-  };
+  }, { optional: true });
   function v7InjectSpeedPresets() {
     const ctrl = document.getElementById('tv-playback-controls');
     if (!ctrl || document.getElementById('v7-speed-presets')) return;
@@ -272,28 +265,24 @@
     v7Save();
     document.querySelectorAll('.v7-speed-preset').forEach(b=>b.classList.remove('active'));
   }));
-  const originalGetBroadcastStatusText = getBroadcastStatusText;
-  getBroadcastStatusText = function(item) {
+  CS2.patch('getBroadcastStatusText', originalGetBroadcastStatusText => function(item) {
     const st=item?.state;
     if (st?.phase === 'technical-pause') return `🛠 Техническая пауза${st.technicalReason ? ` • ${st.technicalReason}` : ''}`;
     return originalGetBroadcastStatusText(item);
-  };
-  const originalGetBroadcastStateClass = getBroadcastStateClass;
-  getBroadcastStateClass = function(item) {
+  });
+  CS2.patch('getBroadcastStateClass', originalGetBroadcastStateClass => function(item) {
     const st=item?.state;
     if (st?.phase === 'technical-pause') return 'technical';
     return originalGetBroadcastStateClass(item);
-  };
-  const originalFormatBroadcastScore = formatBroadcastScore;
-  formatBroadcastScore = function(item) {
+  });
+  CS2.patch('formatBroadcastScore', originalFormatBroadcastScore => function(item) {
     const st=item?.state;
     if (st?.phase === 'technical-pause') {
       return `${st.map1}:${st.map2} • ${st.series1}:${st.series2} • 🛠 ТЕХ ПАУЗА`;
     }
     return originalFormatBroadcastScore(item);
-  };
-  const originalBroadcastAdvancePhase = broadcastAdvancePhase;
-  broadcastAdvancePhase = function(item, now) {
+  });
+  CS2.patch('broadcastAdvancePhase', originalBroadcastAdvancePhase => function(item, now) {
     const st=item?.state;
     if (st?.phase === 'technical-pause') {
       if (now < st.phaseUntil) return false;
@@ -308,7 +297,7 @@
       return true;
     }
     return originalBroadcastAdvancePhase(item,now);
-  };
+  });
   const TECHNICAL_EVENTS = [
     {reason:'сломался игровой ПК', icon:'🖥️'},
     {reason:'замена мыши / периферии', icon:'🖱️'},
@@ -379,19 +368,16 @@
     }
     if (st) st.v7BigCooldown=Math.max(0,(Number(st.v7BigCooldown)||0)-1);
   }
-  const originalMaybeTriggerBroadcastTacticalPause = maybeTriggerBroadcastTacticalPause;
-  maybeTriggerBroadcastTacticalPause = function(item, now) {
+  CS2.patch('maybeTriggerBroadcastTacticalPause', originalMaybeTriggerBroadcastTacticalPause => function(item, now) {
     if (v7MaybeTechnicalPause(item, now)) return true;
     v7MaybeBigEvent(item);
     return originalMaybeTriggerBroadcastTacticalPause(item, now);
-  };
-  const originalConsumeBroadcastTacticalImpact = consumeBroadcastTacticalImpact;
-  consumeBroadcastTacticalImpact = function(st) {
+  });
+  CS2.patch('consumeBroadcastTacticalImpact', originalConsumeBroadcastTacticalImpact => function(st) {
     originalConsumeBroadcastTacticalImpact(st);
     v7TickImpacts(st);
-  };
-  const originalBroadcastRenderDetail = broadcastRenderDetail;
-  broadcastRenderDetail = function(item) {
+  });
+  CS2.patch('broadcastRenderDetail', originalBroadcastRenderDetail => function(item) {
     originalBroadcastRenderDetail(item);
     const title = document.querySelector('#dice-modal .momentum-wrap .match-section-title');
     if (title) title.textContent = '🎯 Вероятность победы на карте';
@@ -411,7 +397,7 @@
     const t2Card=document.getElementById('team2-live-name')?.parentElement;
     if(t1Card) t1Card.querySelector('.map-live-winrates')?.querySelector('.map-live-winrate')?.replaceChildren(document.createTextNode(`${p1}% шанс`));
     if(t2Card) t2Card.querySelector('.map-live-winrates')?.querySelector('.map-live-winrate')?.replaceChildren(document.createTextNode(`${p2}% шанс`));
-  };
+  });
   function v7RefreshMatchProbBars() {
     document.querySelectorAll('.match[data-v7-t1][data-v7-t2]').forEach(el => {
       const t1=el.dataset.v7T1,t2=el.dataset.v7T2;
@@ -433,29 +419,26 @@
       if(row.children[1]) row.children[1].textContent=`${p2}%`;
     });
   }
-  const oldRT2=renderTournament;
-  renderTournament=function(){ oldRT2(); v7HighlightFavorite(document); v7RefreshMatchProbBars(); v7RenderFavoritePanel(); v7InjectSpeedPresets(); };
-  const originalComputePickemStageHints = computePickemStageHints;
+  CS2.patch('renderTournament', oldRT2 => function(){ oldRT2(); v7HighlightFavorite(document); v7RefreshMatchProbBars(); v7RenderFavoritePanel(); v7InjectSpeedPresets(); });
   function v7PickemHintKey(stTeams) {
     const names=uniq((stTeams||[]).map(x=>x.name)).sort();
     return `${seasonState.currentSeason}|${currentTournament?.name || 'major'}|${names.join(',')}`;
   }
-  computePickemStageHints = function(stTeams) {
+  CS2.patch('computePickemStageHints', originalComputePickemStageHints => function(stTeams) {
     const key=v7PickemHintKey(stTeams);
     if (Object.prototype.hasOwnProperty.call(V7.hintCache,key)) return [...(V7.hintCache[key]||[])];
     const result=originalComputePickemStageHints(stTeams) || [];
     V7.hintCache[key]=[...result];
     v7Save();
     return result;
-  };
+  });
   function v7IsFinalMatch(m) {
     if (!currentTournament || !m) return false;
     if (currentTournament.grandFinal === m) return true;
     const u=currentTournament.upperRounds;
     return Array.isArray(u) && u.length>0 && u[u.length-1]?.includes(m);
   }
-  const originalRecordH2HWin = recordH2HWin;
-  recordH2HWin = function(winner, loser) {
+  CS2.patch('recordH2HWin', originalRecordH2HWin => function(winner, loser) {
     originalRecordH2HWin(winner, loser);
     const m = collectTournamentMatches(currentTournament || {}).find(x => x.t1 && x.t2 && x.winner === winner && ((x.t1===winner&&x.t2===loser)||(x.t2===winner&&x.t1===loser)) && v7IsFinalMatch(x) && !x.__v7RivalryCounted);
     if(!m) return;
@@ -467,13 +450,12 @@
     r.finals=(r.finals||0)+1;
     seasonState.rivalries[key]=r;
     v7Save();
-  };
+  });
   function v7RivalryFor(t1,t2) {
     const r=seasonState.rivalries?.[getH2HKey(t1,t2)];
     return (r && r.finals>=2) ? r : null;
   }
-  const originalGetMatchHype = getMatchHype;
-  getMatchHype = function(t1,t2) {
+  CS2.patch('getMatchHype', originalGetMatchHype => function(t1,t2) {
     const base=originalGetMatchHype(t1,t2);
     const rival=v7RivalryFor(t1,t2);
     if(!rival) return base;
@@ -483,7 +465,7 @@
     const oldM=parseFloat(String(out.viewers||'0').replace('M',''))||0;
     out.viewers=`${Math.max(1.15, oldM * 1.18).toFixed(2)}M`;
     return out;
-  };
+  });
   function v7SeasonPerformance(team, seasonNo) {
     const hs=(team.history||[]).filter(h=>h.season===seasonNo && !h.isBootcamp);
     const sumDelta=hs.reduce((s,h)=>s+(Number(h.delta)||0),0);
@@ -549,8 +531,7 @@
     modal.style.display='flex';
   }
   window.v7ShowRecap=v7ShowRecap;
-  const originalRenderSeasonBanner=renderSeasonBanner;
-  renderSeasonBanner=function(){
+  CS2.patch('renderSeasonBanner', originalRenderSeasonBanner => function(){
     originalRenderSeasonBanner();
     const hof=document.getElementById('hall-of-fame');
     if(!hof) return;
@@ -563,9 +544,8 @@
       return main;
     }).join('');
     v7RenderFavoritePanel();
-  };
-  const originalFinalizeTournamentRating=finalizeTournamentRating;
-  finalizeTournamentRating=function(){
+  });
+  CS2.patch('finalizeTournamentRating', originalFinalizeTournamentRating => function(){
     if(!currentTournament || currentTournament.completed) return;
     const endedSeason=seasonState.currentSeason;
     const beforeRanks={}; [...teams].sort((a,b)=>b.pts-a.pts).forEach((t,i)=>beforeRanks[t.name]=i+1);
@@ -582,7 +562,7 @@
       v7Save();
       renderSeasonBanner();
     }
-  };
+  });
   const originalInitTournamentCycle=initTournamentCycle;
   window.v7StartCurrentSeason=function(){
     originalInitTournamentCycle();
@@ -591,7 +571,7 @@
     updateTournamentSuggestion();
     saveSeasonState();
   };
-  initTournamentCycle=function(){ window.v7StartCurrentSeason(); };
+  CS2.patch('initTournamentCycle', () => function(){ window.v7StartCurrentSeason(); });   // исходный цикл вызывается внутри v7StartCurrentSeason
   const css=document.createElement('style');
   css.textContent=`
     .v7-favorite-panel{border-color:rgba(251,197,49,.42);background:linear-gradient(135deg,rgba(251,197,49,.075),rgba(15,18,24,.96));padding:8px 9px}
@@ -612,8 +592,7 @@
       el.classList.toggle('broadcast-technical', item?.state?.phase==='technical-pause');
     });
   }
-  const oldRenderBroadcastPanel=renderBroadcastPanel;
-  renderBroadcastPanel=function(){ oldRenderBroadcastPanel(); v7HighlightFavorite(document); v7RefreshMatchProbBars(); v7RefreshBroadcastTechnicalClasses(); v7RenderFavoritePanel(); v7InjectSpeedPresets(); };
+  CS2.patch('renderBroadcastPanel', oldRenderBroadcastPanel => function(){ oldRenderBroadcastPanel(); v7HighlightFavorite(document); v7RefreshMatchProbBars(); v7RefreshBroadcastTechnicalClasses(); v7RenderFavoritePanel(); v7InjectSpeedPresets(); });
   function v7PatchSeasonResetAfterAnySeasonChange(){
     if (seasonState.mapEngineV7 && seasonState.mapStatsSeason === seasonState.currentSeason) return;
     v7EnsureMapModel();

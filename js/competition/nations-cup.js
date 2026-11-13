@@ -43,7 +43,7 @@
     }
   }
   // место проведения для страницы турнира
-  try { const L = W.CS2EventLocation; if (typeof L === 'function' && !L.__v84n) { const w = function (name, ev) { const m = /Nations Cup\D*(\d{4})/i.exec(String(name || '')); if (m) { const h = hostFor(+m[1]); return { city: h.city, cc: h.cc, lan: true }; } return L.apply(this, arguments); }; w.__v84n = true; W.CS2EventLocation = w; } } catch (e) {}
+  try { CS2.patch('CS2EventLocation', L => function (name, ev) { const m = /Nations Cup\D*(\d{4})/i.exec(String(name || '')); if (m) { const h = hostFor(+m[1]); return { city: h.city, cc: h.cc, lan: true }; } return L.apply(this, arguments); }, { id: '__v84n' }); } catch (e) {}
   // поддержка: боты — по силе «фанбазы» страны (число про-игроков и их уровень), плюс ваш выбор
   function fanBase(cc) { let n = 0; (typeof teams !== 'undefined' ? teams : []).forEach(t => (t.players || []).forEach(p => { if (p && p.country === cc) n += t.isAcademy ? 1 : 3; })); return n; }
   function reactions(cc, y) {

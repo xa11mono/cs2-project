@@ -34,6 +34,7 @@ const sandbox = {
   Date,
   setInterval(fn, ms) { timers.push({ fn, ms }); return timers.length; }
 };
+require('./lib/project').attachKernel(sandbox);   // v144: модули расширяют функции через CS2.patch
 vm.runInNewContext(source, sandbox, { filename: 'js/core/sim-kernel.js' });
 
 assert(win.CS2SimulationKernel?.version === 1, 'kernel API should initialize');

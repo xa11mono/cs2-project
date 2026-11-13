@@ -145,10 +145,7 @@
   }, 5000, 'v93-careers');
   // при перемотке — каждый игровой день (снимок рейтинга)
   (function hookDaily() {
-    const f = W.V30RankSnapshotTick; if (typeof f !== 'function') { setTimeout(hookDaily, 1000); return; }
-    if (f.__v93c) return;
-    const w = function () { const r = f.apply(this, arguments); try { scanRetirements(); veteransToTier2(); hireAnalysts(); } catch (e) {} return r; };
-    Object.keys(f).forEach(k => { w[k] = f[k]; }); w.__v93c = true; W.V30RankSnapshotTick = w;
+    if (typeof window.V30RankSnapshotTick !== 'function') { setTimeout(hookDaily, 1000); return; } CS2.patch('V30RankSnapshotTick', f => function () { const r = f.apply(this, arguments); try { scanRetirements(); veteransToTier2(); hireAnalysts(); } catch (e) {} return r; }, { id: '__v93c' });
   })();
 
   /* ---------- блок «Карьера» в профиле игрока ---------- */

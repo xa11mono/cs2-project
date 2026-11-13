@@ -67,6 +67,7 @@ console.log('PASS v75: archive persistence is linear and prize/news scans are re
     document: { hidden: false }, console,
     Map, Array, Object, String, Number, JSON, Date
   };
+  require('./lib/project').attachKernel(sandbox);   // v144: модули расширяют функции через CS2.patch
   vm.runInNewContext(career, sandbox, { filename: 'js/rosters/player-career-stats.js' });
   assert(statsCalls === 1, 'initial career baseline should be captured once');
   timerFn();

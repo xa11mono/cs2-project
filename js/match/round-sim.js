@@ -198,14 +198,10 @@ function play(item, prob) {
   return res.winner;
 }
 // случайные хайлайты движка заменяем фактическими
-(function wrapHL() {
-  const f = window.maybeAddBroadcastRoundHighlight; if (typeof f !== 'function' || f.__v34) return;
-  const w = function (item) { const st = item?.state; if (!st) return false; const h = st.v34hl; st.v34hl = null; if (!h) return false;
+CS2.patch('maybeAddBroadcastRoundHighlight', f => function (item) { const st = item?.state; if (!st) return false; const h = st.v34hl; st.v34hl = null; if (!h) return false;
     st.roundHighlights = st.roundHighlights || {}; st.roundHighlights[st.round] = { icon: h.icon, label: h.label, team: h.team, round: st.round };
     try { if (typeof addBroadcastEvent === 'function') addBroadcastEvent(st, `${h.icon} <strong>${h.label}</strong>`, 'highlight'); } catch (e) {}
-    return true; };
-  w.__v34 = true; window.maybeAddBroadcastRoundHighlight = w; try { maybeAddBroadcastRoundHighlight = w; } catch (e) {}
-})();
+    return true; }, { id: '__v34' });
 window.V34Round = { play, simulate, qFor, table, sideOf, LIVE, CALL, live: id => LIVE.get(id) || null };
 console.info('[v34] микросимуляция раундов в эфире');
 })();

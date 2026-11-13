@@ -308,10 +308,7 @@
   const every = (W.CS2Loop && W.CS2Loop.every) || ((fn, ms) => setInterval(fn, ms));
   every(() => { try { if (!W.v57BatchCalendarSkip) { tick(); weekly(); } } catch (e) { console.warn('[v95 press]', e); } }, 4000, 'v95-press');
   (function hookDaily() {
-    const f = W.V30RankSnapshotTick; if (typeof f !== 'function') { setTimeout(hookDaily, 1000); return; }
-    if (f.__v95p) return;
-    const w = function () { const r = f.apply(this, arguments); try { tick(); weekly(); } catch (e) {} return r; };
-    Object.keys(f).forEach(k => { w[k] = f[k]; }); w.__v95p = true; W.V30RankSnapshotTick = w;
+    if (typeof window.V30RankSnapshotTick !== 'function') { setTimeout(hookDaily, 1000); return; } CS2.patch('V30RankSnapshotTick', f => function () { const r = f.apply(this, arguments); try { tick(); weekly(); } catch (e) {} return r; }, { id: '__v95p' });
   })();
 
   /* ============================================================ достоверность на странице статьи */
