@@ -30,7 +30,7 @@
     const host = HOSTS.find(x => x.re.test(name)) || { org: 'Major', pal: [['#1a1a2e', '#e2b13c', '#ffffff'], ['#0f3057', '#00a8cc', '#ffffff']] };
     const pal = host.pal[h % host.pal.length];
     const city = name.replace(/\b(PGL|IEM|BLAST(\.tv)?|Perfect World|StarLadder|FiRe|ESL One|CS2?|Major|20\d\d)\b/gi, '').replace(/\s+/g, ' ').trim() || 'Major';
-    return { org: host.org, bg: pal[0], acc: pal[1], ink: pal[2], shape: ['circle', 'shield', 'hex', 'badge'][(h >>> 4) % 4], city, year: major.year || '', tag: (city.length <= 13 ? city : city.split(' ')[0]).slice(0, 13).toUpperCase() };
+    return { org: host.org, bg: pal[0], acc: pal[1], ink: pal[2], shape: ['circle', 'shield', 'hex', 'badge'][(h >>> 4) % 4], city, year: major.year || '', tag: (c2 => c2.length <= 13 ? c2 : c2.split(' ').sort((x, y) => y.length - x.length)[0])(city.replace(/^(Saint|St\.?|San|Sankt)\s+/i, '')).slice(0, 13).toUpperCase() };
   }
 
   // ---------------------------------------------------------------- исполнения

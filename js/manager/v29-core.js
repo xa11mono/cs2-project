@@ -367,7 +367,10 @@ function developPlayers(season) {
 /* ===================================================================
    3. РАСПИСАНИЕ СЕЗОНА: Major в финале сезона, второй — редко
    =================================================================== */
-const MAJOR_NAMES = ['FiRe Major Buenos Aires', 'PGL Major Singapore', 'IEM Cologne Major', 'StarLadder Major Budapest', 'Perfect World Shanghai Major', 'BLAST.tv Austin Major', 'PGL Major Copenhagen', 'IEM Rio Major', 'PGL Major Stockholm', 'Perfect World Major Chengdu', 'BLAST.tv Major Madrid', 'ESL One Rio Major'];
+const MAJOR_NAMES = ['FiRe Major Buenos Aires', 'PGL Major Singapore', 'IEM Cologne Major', 'StarLadder Major Budapest', 'Perfect World Shanghai Major', 'BLAST.tv Austin Major', 'PGL Major Copenhagen', 'IEM Rio Major', 'PGL Major Stockholm', 'Perfect World Major Chengdu', 'BLAST.tv Major Madrid', 'ESL One Rio Major',
+  // v128: Мейджоры по всему миру — Россия и СНГ, Восточная Европа, Китай, Япония, Корея, Азия, Америка
+  'PGL Major Moscow', 'StarLadder Major Saint Petersburg', 'StarLadder Major Kyiv', 'PGL Major Almaty', 'PGL Major Tashkent', 'PGL Major Baku', 'IEM Warsaw Major', 'PGL Major Prague', 'StarLadder Major Belgrade', 'PGL Major Sofia',
+  'Perfect World Major Beijing', 'Perfect World Major Hangzhou', 'IEM Tokyo Major', 'PGL Major Osaka', 'IEM Seoul Major', 'BLAST.tv Major Toronto', 'PGL Major Istanbul', 'ESL One Mumbai Major', 'PGL Major Minsk', 'StarLadder Major Tbilisi', 'PGL Major Yerevan', 'PGL Major Bishkek', 'IEM Kazan Major'];
 const SLOTS = [ // [тип, название, день от 2 января, длительность (дн.), формат, профиль]
   // v101: организаторы и месяцы — как в реальном календаре HLTV (2026–2027): на 12 турниров Tier-1 — ESL/IEM 4
   // (IEM зимой и весной, ESL Pro League весной и осенью), PGL 3, BLAST 3, Esports World Cup и один слот «прочих»

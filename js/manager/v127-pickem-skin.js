@@ -79,6 +79,11 @@
   function themeOf(title) {
     let lm = 'generic'; try { lm = W.CS2StickerArt.landmarkOf(title); } catch (e) {}
     if (W.CS2PickemSkin && W.CS2PickemSkin.force) lm = W.CS2PickemSkin.force;   // для проверки тем
+    // v128.2: новые города — тема из цветов флага, узор фона — животное-символ города
+    const A = W.CS2StickerArt, fp = !THEMES[lm] && A && A.flagPal ? A.flagPal(lm) : null;
+    if (fp) { const dark = fp.find(c => c !== '#f4f4f4') || '#22398a', acc = fp.find(c => c !== dark && c !== '#f4f4f4') || '#f2c14e', mx = (a, b, t) => '#' + [1, 3, 5].map(i => Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - t) + parseInt(b.slice(i, i + 2), 16) * t).toString(16).padStart(2, '0')).join('');
+      const T0 = { n: 'Город', bg: mx(dark, '#000000', .72), bg2: mx(dark, '#000000', .5), pat: 'animal', patSvg: A.animalSvg(lm, mx(acc, '#ffffff', .2)), pc: acc, po: .14, acc: mx(acc, '#ffffff', .25), glow: dark };
+      if (T0.patSvg) { const yr = parseInt((String(title).match(/20\d\d/) || ['2026'])[0], 10), k = ((yr - 2026) % 8 + 8) % 8; return Object.assign({ key: lm, rot: (k * 23) % 90 }, T0); } }
     const t = THEMES[lm] || (ORG_THEME.find(x => x[0].test(title)) || [0, { n: 'Major', bg: '#141820', bg2: '#22283a', pat: 'rings', pc: '#e2b13c', po: .14, acc: '#f2c14e', glow: '#c08a2a' }])[1];
     // v128: один город в разные годы — разная палитра и наклон узора
     const yr = parseInt((String(title).match(/20\d\d/) || ['2026'])[0], 10), k = ((yr - 2026) % 8 + 8) % 8, hr = W.CS2StickerArt && W.CS2StickerArt.hueRot;
@@ -187,7 +192,7 @@
     const saved = need ? (filled >= need ? `<span class="pkx-saved ok">${ic('saved')}Прогнозы сохранены</span>` : `<span class="pkx-saved">Сделано ${filled}/${need}</span>`) : '';
     const wrap = D.createElement('section');
     wrap.className = `pkx pkx-t-${th.key}${th.light ? ' light' : ''}`;
-    wrap.style.cssText = `--pk-bg:${th.bg};--pk-bg2:${th.bg2};--pk-acc:${th.acc};--pk-glow:${th.glow};--pk-pat:${svgUrl(P[th.pat](th.pc))};--pk-rot:${th.rot || 0}deg;--pk-po:${th.po}`;
+    wrap.style.cssText = `--pk-bg:${th.bg};--pk-bg2:${th.bg2};--pk-acc:${th.acc};--pk-glow:${th.glow};--pk-pat:${svgUrl(th.patSvg || P[th.pat](th.pc))};--pk-rot:${th.rot || 0}deg;--pk-po:${th.po}`;
     let ev = ''; try { ev = W.CS2Stickers.eventSticker({ name: title, year }, 'holo'); } catch (e) {}
     wrap.innerHTML = `<i class="pkx-tex"></i>
       <header class="pkx-top">${ev ? `<span class="pkx-logo">${ev}</span>` : ''}<h1>${esc(title)}</h1><button type="button" class="pkx-tokens" data-nav="capsules"><span class="cpx-coin"></span><b>${tokens}</b> жетонов · капсулы</button></header>
