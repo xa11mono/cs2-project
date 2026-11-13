@@ -297,7 +297,7 @@
       '<p class="hs-note">При обнаружении перехода игрока программа берёт его исходное фото, меняет только форму через AI и сохраняет результат в <code>assets/media/generated-jerseys/</code>. Оригиналы не изменяются. Одновременно выполняется один запрос, готовые изображения кешируются.</p>' +
       '<div class="pt-actions"><button type="button" class="hs-btn' + (d.enabled ? '' : ' ghost') + '" data-jtoggle>' + (d.enabled ? 'Автогенерация включена' : 'Автогенерация выключена') + '</button>' +
       '<button type="button" class="hs-btn ghost" data-jprobe>Проверить помощник</button>' +
-      '<button type="button" class="hs-btn ghost" data-jretry' + (queue.length ? '' : ' disabled') + '>Продолжить очередь (' + queue.length + ')</button></div>' +
+      '<button type="button" class="hs-btn ghost" data-jretry' + (Object.keys(d.pending).length ? '' : ' disabled') + '>Продолжить очередь (' + Object.keys(d.pending).length + ')</button></div>' +
       '<p class="hs-note" role="status">' + esc(status) + ' · сохранённых портретов: ' + count + '</p>' +
       '<label class="hs-field"><span>Команда</span><select class="hs-inp" data-jteam>' + options + '</select></label>' +
       '<label class="hs-field"><span>Описание формы (цвета, узор, воротник, рукава; до 600 символов)</span><textarea class="hs-inp" rows="3" maxlength="600" data-jdescription placeholder="Например: чёрная соревновательная футболка, ярко-зелёные панели на плечах, тонкие геометрические линии, матовая ткань…">' + esc(kit.description) + '</textarea></label>' +
@@ -367,5 +367,5 @@
       H.render();
     }]);
   }
-  setTimeout(() => { checkService(false).then(() => { if (queue.length) pump(); }); reconcile(); }, 1800);
+  setTimeout(() => { checkService(false).then(() => pump()); reconcile(); }, 1800);
 })();
