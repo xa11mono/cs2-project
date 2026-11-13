@@ -165,7 +165,9 @@ H.CLICKS.push(['[data-crsell]', el => { if (!confirm(`Продать ${el.datase
 function negs() { const c = V.S(); c.nego = Array.isArray(c.nego) ? c.nego : []; return c.nego; }
 const findP = nick => { for (const t of H.TEAMS()) { const p = (t.players || []).find(x => x.nick === nick); if (p) return { p, t }; } const fa = (transferState.freeAgents || []).find(x => x.nick === nick); return fa ? { p: fa, t: null } : null; };
 function agentOf(p) { V.ensurePerson(p); if (!p.v31agent) { const names = ['North Star Mgmt', 'Baltic Talent', 'Volt Agency', 'Prime Esports Group', 'Lighthouse Sports', 'Red Line Agency']; p.v31agent = { name: names[(p.nick.length * 7 + p.nick.charCodeAt(0)) % names.length], greed: Math.round((0.95 + (p.nick.charCodeAt(0) % 9) * 0.04) * 100) / 100 }; } return p.v31agent; }
-function askPrice(p, from) { const rk = V.rankOf(from.name); return Math.round(V.valueOf(p) * (1 + Math.max(0, 12 - rk) * .035) * (p.v31listed ? .8 : 1) / 1000) * 1000; }
+// v135.1: клуб в долгах или с пустым бюджетом соглашается на меньшую сумму (нужны деньги)
+function sellNeed(from) { const CF = (k, d) => { try { return window.CS2Config ? window.CS2Config.get(k, d) : d; } catch (e) { return d; } }; let b = 1e9; try { b = Number(V.org(from.name).budget); } catch (e) {} return !Number.isFinite(b) ? 1 : b < 0 ? CF('price.debtSell', .65) : b < 200000 ? CF('price.poorSell', .85) : 1; }
+function askPrice(p, from) { const rk = from.isAcademy ? 30 : V.rankOf(from.name); return Math.round(V.valueOf(p) * (1 + Math.max(0, 12 - rk) * .035) * (p.v31listed ? .8 : 1) * sellNeed(from) / 1000) * 1000; }
 function startNeg(nick) {
   const x = findP(nick); if (!x) return alert('Игрок не найден');
   if (x.t && x.t.name === me()) return alert('Это ваш игрок');
@@ -175,7 +177,7 @@ function startNeg(nick) {
     const rk = V.rankOf(x.t.name), best = (x.t.players || []).slice().sort((a, b) => V.pow(b) - V.pow(a))[0];
     if (!x.t.isAcademy && rk <= 5 && best === p && !p.v31listed) {   // v133: к академиям правило «лидер топ-5» не относится
      n.st = 'failed'; n.log.push(`${x.t.name}: игрок не продаётся — ключевой игрок команды из топ-5.`); }
-    else { n.ask = askPrice(p, x.t); n.log.push(`${x.t.name} готовы обсуждать. Ориентир по выкупу — около ${money(n.ask)}.`); }
+    else { n.ask = askPrice(p, x.t); n.log.push(`${x.t.name} готовы обсуждать. Ориентир по выкупу — около ${money(n.ask)}.${sellNeed(x.t) < 1 ? ' Клубу срочно нужны деньги — цена ниже рыночной.' : ''}`); }
   } else n.log.push('Свободный агент: выкуп не нужен, обсуждаем условия с агентом.');
   negs().unshift(n); if (negs().length > 30) negs().length = 30;
   H.S.ng = n.id; H.render();
