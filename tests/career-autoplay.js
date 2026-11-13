@@ -56,12 +56,15 @@ const path = require('path'), fs = require('fs'), os = require('os');
         && (p.role === weakest.role || !['AWPer', 'IGL'].includes(p.role) && !['AWPer', 'IGL'].includes(weakest.role)))
         .map(({ p, t: o }) => ({ nick: p.nick, from: o.name, academy: !!o.isAcademy, pow: Math.round(A.pow(p)), age: +p.age || null, rank: o.isAcademy ? 'acad' : A.rank(o.name),
           tier: window.CS2Stature ? window.CS2Stature.tier(p) : '', price: (() => { try { return Math.round(window.V31.valueOf(p)); } catch (e) { return 0; } })() }))
-        .filter(x => opts.star || x.price <= budget * .8).sort((a, b) => b.pow - a.pow).slice(0, opts.n || 6);
+        .filter(x => opts.star || x.price <= budget * .8)
+        // как живой менеджер: только те, с кем агент готов говорить (V99Transfers.rules), и без повторов неудачных
+        .filter(x => opts.star || (!(A.failedNicks || {})[x.nick] && (() => { try { return window.V99Transfers.rules(x.nick).ok; } catch (e) { return true; } })()))
+        .sort((a, b) => b.pow - a.pow).slice(0, opts.n || 6);
     };
     A.startDeal = (c, why) => {
       const n = window.V99Transfers.start(c.nick);
       const d = { date: new Date(seasonState.calendar.currentMs).toISOString().slice(0, 10), nick: c.nick, from: c.from, pow: c.pow, age: c.age, tier: c.tier, why, id: n && n.id, st: n ? n.st : 'none', log: n ? n.log.slice(-4) : ['переговоры не начались'] };
-      A.deals.push(d);
+      A.deals.push(d); if (!n || n.st === 'failed') { A.failedNicks = A.failedNicks || {}; A.failedNicks[c.nick] = 1; }
       if (n && n.st === 'offer') window.V98Squad.queue(n.id, 'offer', [n.ask]);
       return d;
     };

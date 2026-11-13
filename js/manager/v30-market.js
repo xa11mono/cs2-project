@@ -423,6 +423,7 @@ function returnLoans() {
   });
   return n;
 }
+const C133 = (k, d) => (window.CS2Config ? window.CS2Config.get(k, d) : d);
 function releaseBench() { // скамейка → свободные агенты через 2 тика
   const s = M(); let n = 0;
   // v133: каждый клуб ИИ держит одного запасного — лучшего со своей скамейки. Раньше скамейка через два тика рынка
@@ -459,12 +460,33 @@ function releaseBench() { // скамейка → свободные агент�
     transferState.freeAgents.splice(transferState.freeAgents.indexOf(p), 1);
     emit('retire', { player: p.nick, team: p.v84FaTeam || p.v30LastProTeam || '—', age, role: p.role, rep: null, fa: true, cc: p.country || '', iq: +p.tacticalIQ || 0 });
   });
+  // v133: клуб топ-40 без запасного подписывает шестого игрока — свободного агента своего языка и близкого уровня.
+  // Скамейка почти не появлялась сама: при сделках ИИ вытесненный игрок уходит сразу в свободные агенты.
+  try {
+    const hasSub = new Set((transferState.freeAgents || []).filter(p => p && p.status === 'BENCH' && p.reservedFor).map(p => p.reservedFor));
+    let signed = 0;
+    pro().filter(t => rankOf(t) <= C133('market.subTopRank', 40)).forEach(t => {
+      if (signed >= 4 || hasSub.has(t.name)) return;
+      try { if (window.V31 && V31.isManaged && V31.isManaged(t.name)) return; if ((Number(V31.org(t.name).budget) || 0) < 0) return; } catch (e) {}
+      const st = (t.players || []).filter(x => x && (!x.status || x.status === 'STARTER')); if (st.length < 5) return;
+      const avg = st.reduce((a, x) => a + pow(x), 0) / st.length;
+      const pick = (transferState.freeAgents || []).filter(p => p && p.nick && !p.reservedFor && !p.onLoan && p.status !== 'BENCH' && !onRoster(p.nick)
+        && fitOf(t, p) >= 0.55 && pow(p) >= avg - C133('market.subGap', 9) && (!window.CS2Stature || window.CS2Stature.canJoin(p, t, null)))
+        .sort((a, b) => (pow(b) - Math.max(0, (+b.age || 25) - 27)) - (pow(a) - Math.max(0, (+a.age || 25) - 27)))[0];
+      if (!pick) return;
+      pick.status = 'BENCH'; pick.benchFrom = t.name; pick.reservedFor = t.name; pick.v133Sub = t.name; delete pick.v84FaSince;
+      M().v30Bench.push({ nick: pick.nick, team: t.name, since: run() });
+      try { window.CS2Journal && window.CS2Journal.log('ROSTER_CHANGE', { team: t.name, kind: 'sub', actor: 'ai', player: pick.nick, reason: 'запасной игрок (шестой)' }); } catch (e) {}
+      hasSub.add(t.name); signed++;
+    });
+  } catch (e) { console.warn('[v133 subs]', e); }
   // пул свободных агентов не разрастается бесконечно
   const fa = transferState.freeAgents || [];
   // v95: лишние уходят со сцены по интересу рынка, а не по одному уровню (раньше молодые таланты отсеивались первыми)
   const cap = window.CS2Config ? window.CS2Config.get('gen.faCap', 70) : 70;
   const interest = p => pow(p) + ((+p.age || 25) <= 21 ? Math.max(0, (+p.pot || pow(p)) - pow(p)) * 0.6 + 2 : 0) - Math.max(0, (+p.age || 25) - 29);
-  if (fa.length > cap) { fa.sort((a, b) => interest(b) - interest(a)); fa.length = cap; }
+  // v133: запасные клубов (зарезервированы за клубом) из пула не вычёркиваются
+  if (fa.length > cap) { fa.sort((a, b) => (b && b.reservedFor ? 1e6 : 0) + interest(b) - (a && a.reservedFor ? 1e6 : 0) - interest(a)); fa.length = Math.max(cap, fa.filter(p => p && p.reservedFor).length); }
   return n;
 }
 function findBuy(team, w) {
