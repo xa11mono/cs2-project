@@ -2,9 +2,9 @@ const fs=require('fs');
 const path=require('path');
 const assert=(v,m)=>{if(!v)throw new Error(m)};
 const root=path.resolve(__dirname,'..');
-const v21=fs.readFileSync(path.join(root,'js/manager/v21-parallel-tournaments-academies-layer.js'),'utf8');
-const v63=fs.readFileSync(path.join(root,'js/manager/v63-simulation-kernel.js'),'utf8');
-const core=fs.readFileSync(path.join(root,'js/manager/auto_script_1.js'),'utf8');
+const v21=fs.readFileSync(path.join(root,'js/competition/parallel-tournaments.js'),'utf8');
+const v63=fs.readFileSync(path.join(root,'js/core/sim-kernel.js'),'utf8');
+const core=fs.readFileSync(path.join(root,'js/base/game.js'),'utf8');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 assert(v21.includes('window.v21InvalidateParallelWake = v21InvalidateParallelWake'),'parallel wake index must be explicitly invalidatable');
 assert(v21.includes('window.CS2ParallelSchedulerDiagnostics=') && v21.includes('overdueMatches:v21CountOverdueMatches(now)'),'scheduler should expose an actionable backlog diagnostic for legacy-save debugging');
@@ -14,11 +14,11 @@ assert(v21.includes('window.__CS2_IMPORT_RECONCILING && !opts.importBatch'),'reg
 assert(v21.includes('if(eventIds && !eventIds.has(String(ev?.id))) continue'),'catch-up must process only the current batch of event ids');
 assert(v21.includes('for(const match of matches)') && v21.includes('eventWake=Math.min(eventWake,window.CS2ParallelMatchTiming.nextWake(match,now))'),'legacy unsorted brackets must wake on their earliest unresolved match, not the first array item');
 assert(v63.includes('v20Resync: 1000') && v63.includes('v18Broadcast: 1000') && v63.includes('}, 500);'),'maintenance polling must be less aggressive');
-const autosave=fs.readFileSync(path.join(root,'js/manager/v56-autosave.js'),'utf8');
+const autosave=fs.readFileSync(path.join(root,'js/core/autosave.js'),'utf8');
 assert(autosave.includes('window.__CS2_PARALLEL_CATCHUP') && autosave.includes('bulkSimulationOwnsThread()'), 'full autosave snapshots must pause while overdue matches are batch-resolving');
 assert(v63.includes('api.reconcileImportedSave=reconcileImportedSave'),'kernel must expose import reconciliation');
 assert(core.includes('reconcile(\'save import\')'),'save importer must trigger reconciliation after state replacement');
-assert(html.includes('auto_script_1.js?v=114') && html.includes('v21-parallel-tournaments-academies-layer.js?v=114') && html.includes('v63-simulation-kernel.js?v=114') && html.includes('v56-autosave.js?v=131.1') && html.includes('v38-vrs-emdb-awards.js?v=131'),'updated scripts must bypass stale browser cache');
+assert(html.includes('js/base/game.js') && html.includes('js/competition/parallel-tournaments.js') && html.includes('js/core/sim-kernel.js') && html.includes('js/core/autosave.js') && html.includes('js/competition/vrs.js'),'updated scripts must bypass stale browser cache');
 console.log('PASS v78: importing save invalidates stale parallel wake index');
 console.log('PASS v78: overdue parallel matches catch up in small yielding batches');
 console.log('PASS v78: ordinary scheduler timers cannot overlap save-import reconciliation');
@@ -27,7 +27,7 @@ console.log('PASS v78: maintenance polling frequency reduced and cache bust upda
 // Exercise the timestamp-repair and stale completed-bracket wake guards directly.
 {
   const vm = require('vm');
-  const v21 = fs.readFileSync(path.join(root,'js/manager/v21-parallel-tournaments-academies-layer.js'),'utf8');
+  const v21 = fs.readFileSync(path.join(root,'js/competition/parallel-tournaments.js'),'utf8');
   const repairStart=v21.indexOf('  function v22RepairMatchTimes(ev){');
   const repairEnd=v21.indexOf('\n  function v22Migrate(ev){',repairStart);
   assert(repairStart>=0 && repairEnd>repairStart,'timestamp repair function must remain isolated');

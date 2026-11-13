@@ -7,16 +7,16 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const events = read('js/manager/v30-portal-events.js');
-const skip = read('js/manager/v17-smart-calendar-skip.js');
-const pickem = read('js/manager/v33-pickem.js');
-const legacy = read('js/manager/auto_script_1.js');
-const pathMajor = read('js/manager/v35-major-path.js');
-const logos = read('js/manager/v27-hltv-site.js');
-const academy = read('js/manager/v30-market.js');
-const career = read('js/manager/v31-career-ui.js');
-const hltv = read('js/manager/v41-career-depth.js');
-const mvpCss = read('css/v47-quality-fixes.css');
+const events = read('js/portal/events.js');
+const skip = read('js/calendar/smart-skip.js');
+const pickem = read('js/fan/pickem.js');
+const legacy = read('js/base/game.js');
+const pathMajor = read('js/competition/major-path-odds.js');
+const logos = read('js/portal/hltv-site.js');
+const academy = read('js/rosters/market.js');
+const career = read('js/career/career-ui.js');
+const hltv = read('js/competition/world-ranking.js');
+const mvpCss = read('css/portal/quality-fixes.css');
 
 assert(/delayedByMs >= 5 \* 60000/.test(events) && !/hasDelayFlag/.test(events), 'calendar should require a measured delay, not a stale legacy flag');
 assert(/if \(t && t < now - 5 \* 60000\) return null/.test(events), 'stale past queue slots after a day-skip should be hidden, not labeled delayed');
@@ -56,7 +56,7 @@ const context = {
   currentTournament:ct, currentPickem:{major:majorData}, teams:[],
   saveSeasonState:()=>{saved++;}, scoreMajorStagePickem:(i)=>{scored++;majorData.stages[i].scored=true;return 2;},
 };
-vm.runInNewContext(pickem, context, {filename:'v33-pickem.js'});
+vm.runInNewContext(pickem, context, {filename:'js/fan/pickem.js'});
 context.window.V33Pickem.sync();
 assert(scored === 1, 'day-skip sync should score a completed Pick\'Em stage once');
 let html = H.PAGES.pickem();

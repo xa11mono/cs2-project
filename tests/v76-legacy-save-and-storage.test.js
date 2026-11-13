@@ -5,7 +5,7 @@ const root = path.resolve(__dirname, '..');
 const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const core = read('js/manager/auto_script_1.js');
+const core = read('js/base/game.js');
 const normalizeStart = core.indexOf('function normalizeTeamCollection(input) {');
 const normalizeEnd = core.indexOf('\nfunction loadTeams()', normalizeStart);
 assert(normalizeStart >= 0 && normalizeEnd > normalizeStart, 'legacy team normalizer must be a standalone function');
@@ -44,7 +44,7 @@ const sandbox = {
   Date, Math, Number, String, Object, Array, Map, Set, JSON, Promise,
   typeof: undefined
 };
-vm.runInNewContext(read('js/manager/v38-vrs-emdb-awards.js'), sandbox, { filename: 'v38-vrs-emdb-awards.js' });
+vm.runInNewContext(read('js/competition/vrs.js'), sandbox, { filename: 'js/competition/vrs.js' });
 assert(window.CS2VRSModel && window.CS2VRSModel.version >= 2, 'VRS model should load with mixed legacy team data');
 const audit = window.CS2VRSModel.audit();
 assert(audit.validTeams === 2 && audit.invalidCount === 3, 'VRS audit should isolate non-object entries');
@@ -53,8 +53,8 @@ assert(result && result.winner === 'Alpha', 'VRS should process matches despite 
 assert(mixedTeams[1] === 'Phantom' && mixedTeams[4] === 'Change The Game', 'VRS must never mutate primitive string entries');
 assert(Array.isArray(teamA.vrsLedger.matches) && teamA.vrsLedger.matches.length > 0, 'valid team should receive the VRS match entry');
 
-const hub = read('js/manager/v25-hltv-hub.js');
-const guard = read('js/manager/v29-storage-guard.js');
+const hub = read('js/competition/hltv-hub.js');
+const guard = read('js/core/storage-guard.js');
 assert(/if \(archiveDbOk\)/.test(hub), 'IndexedDB must prevent synchronous localStorage archive serialization during migration');
 assert(/localStorage\.removeItem\(ARCHIVE_KEY\)/.test(hub), 'redundant localStorage archive must be removed after IndexedDB migration');
 assert(/archiveLocalCacheDisabled = true/.test(hub), 'QuotaExceededError must disable repeated localStorage archive writes');
@@ -62,7 +62,7 @@ assert(/tx\.oncomplete = \(\) => resolve\(true\)/.test(hub) && /const BATCH = 20
 assert(/hubArchiveUsesIndexedDB/.test(guard), 'storage compaction must understand when archive data is safely in IndexedDB');
 assert(/основной автосейв продолжает использовать IndexedDB/.test(guard), 'quota warning must not falsely imply data loss when browser autosave is active');
 const html = read('index.html');
-assert(html.includes('auto_script_1.js?v=114') && html.includes('v25-hltv-hub.js?v=114') && html.includes('v38-vrs-emdb-awards.js?v=131') && html.includes('v29-storage-guard.js?v=114'), 'all patched scripts must use the matching cache busting versions');
+assert(html.includes('js/base/game.js') && html.includes('js/competition/hltv-hub.js') && html.includes('js/competition/vrs.js') && html.includes('js/core/storage-guard.js'), 'all patched scripts must use the matching cache busting versions');
 
 console.log('PASS v76: old JSON team-name strings are converted into team records and duplicates are removed');
 console.log('PASS v76: VRS safely ignores malformed global entries and still applies valid background matches');

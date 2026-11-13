@@ -5,11 +5,11 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const trophySource = read('js/manager/v26-trophies.js');
-const autoSource = read('js/manager/v56-autosave.js');
-const coreSource = read('js/manager/auto_script_1.js');
+const trophySource = read('js/awards/trophies.js');
+const autoSource = read('js/core/autosave.js');
+const coreSource = read('js/base/game.js');
 const html = read('index.html');
-const css = read('css/v56-autosave.css');
+const css = read('css/core/autosave.css');
 
 // Dynamic trophy generation: each organizer has its own disjoint silhouette family and palette.
 const gameWindow = {};

@@ -1,0 +1,185 @@
+/* v127 — капсулы, жетоны и коллекция наклеек (js/fan/capsules.js) */
+#hs-root .cpx{--cpx-card:#14171d;--cpx-line:rgba(255,255,255,.08);position:relative}
+#hs-root .cpx h1,#hs-root .cpx h2,#hs-root .cpx h3,#hs-root .cpx-tab,#hs-root .cpx-btn,#hs-root .cpx-cap b,#hs-root .cpx-bal b,#hs-root .cpx-res b,#hs-root .cpx-rules b,#hs-root .cpx-log b,#hs-root .cpx-empty b,#hs-root .pkx-tokens,#hs-root .pkx-rw{font-family:'Oswald','Golos Text',sans-serif!important;font-weight:600;letter-spacing:.02em}
+#hs-root .cpx-coin{display:inline-block;width:30px;height:30px;flex:none;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3c4,#f2c14e 40%,#a36d0d 75%,#5a3a05);box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 2px 6px rgba(0,0,0,.5);position:relative}
+#hs-root .cpx-coin::after{content:"P";position:absolute;inset:0;display:grid;place-items:center;font:600 15px/1 'Oswald',sans-serif;color:#5a3a05}
+#hs-root .cpx-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:22px 24px;border-radius:16px;background:radial-gradient(60% 120% at 100% 0,rgba(242,193,78,.18),transparent 60%),linear-gradient(160deg,#181b23,#0e1015);box-shadow:inset 0 0 0 1px var(--cpx-line)}
+#hs-root .cpx-head small{font:700 11px/1 var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:#f2c14e}
+#hs-root .cpx-head h1{margin:8px 0 6px;font-size:34px;line-height:1.05;color:#fff;text-transform:uppercase}
+#hs-root .cpx-head p{margin:0;max-width:640px;font:500 13.5px/1.5 var(--f-ui);color:var(--c-text-2,#b4bfcc)}
+#hs-root .cpx-bal{display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:12px;background:rgba(0,0,0,.35);box-shadow:inset 0 0 0 1px rgba(242,193,78,.35)}
+#hs-root .cpx-bal .cpx-coin{width:40px;height:40px}#hs-root .cpx-bal .cpx-coin::after{font-size:20px}
+#hs-root .cpx-bal b{display:block;font:600 30px/1 'Oswald',sans-serif;color:#fff}
+#hs-root .cpx-bal small{font:600 12px/1 var(--f-ui);letter-spacing:.04em;text-transform:none;color:var(--c-text-3,#8f9cad)}
+#hs-root .cpx-tabs{display:flex;gap:6px;margin:16px 0 14px}
+#hs-root .cpx-tab{padding:9px 16px;border:0;border-radius:8px;background:rgba(255,255,255,.05);color:var(--c-text-2,#b4bfcc);font:600 15px/1 'Oswald','Golos Text',sans-serif;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+#hs-root .cpx-tab.on{background:linear-gradient(180deg,#ff9a3c,#ff6a10);color:#1a0e02}
+#hs-root .cpx-major{margin-bottom:18px;padding:16px;border-radius:14px;background:var(--cpx-card);box-shadow:inset 0 0 0 1px var(--cpx-line)}
+#hs-root .cpx-major header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+#hs-root .cpx-major h2{margin:0;font-size:20px;color:#fff;text-transform:uppercase}
+#hs-root .cpx-major header span{font:600 12px/1 var(--f-ui);color:var(--c-text-3,#8f9cad)}
+#hs-root .cpx-major header span.live{color:#3ecf8e}
+#hs-root .cpx-caps{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+#hs-root .cpx-cap{display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:10px;background:linear-gradient(180deg,#1c2029,#15181f);box-shadow:inset 0 0 0 1px var(--cpx-line);transition:transform .18s,box-shadow .18s}
+#hs-root .cpx-cap:hover{transform:translateY(-3px);box-shadow:inset 0 0 0 1px rgba(255,154,60,.45),0 10px 24px -12px rgba(0,0,0,.8)}
+#hs-root .cpx-cap-art{position:relative;aspect-ratio:1.15;border-radius:8px;overflow:hidden;background:radial-gradient(60% 55% at 50% 45%,rgba(255,255,255,.28),rgba(255,255,255,.04) 70%),linear-gradient(180deg,#5b5566,#2e2a35)}
+#hs-root .cpx-cap b{font:600 15px/1.2 'Oswald','Golos Text',sans-serif;letter-spacing:.02em;color:#fff}
+#hs-root .cpx-cap small{font:500 12px/1.3 var(--f-ui);color:var(--c-text-3,#8f9cad)}
+#hs-root .cpx-tin{position:absolute;left:50%;top:50%;width:50%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 38% 30%,#fff,#c9d1da 30%,#7d8894 65%,#3c444e);box-shadow:inset 0 -6px 10px rgba(0,0,0,.35),0 10px 18px rgba(0,0,0,.5)}
+#hs-root .cpx-tin>i{position:absolute;left:8%;right:8%;bottom:-4%;height:36%;border-radius:0 0 50% 50%/0 0 60% 60%;background:linear-gradient(180deg,#3a6fd6,#16285a)}
+#hs-root .cpx-tin.legends>i{background:linear-gradient(180deg,#b04ae0,#3d145a)}#hs-root .cpx-tin.challengers>i{background:linear-gradient(180deg,#e0484a,#5a1416)}
+#hs-root .cpx-tin.autographs{background:radial-gradient(circle at 38% 30%,#fff7d6,#f2d27a 30%,#b98a2c 65%,#5a3a05)}#hs-root .cpx-tin.autographs>i{background:linear-gradient(180deg,#d9a521,#5a3a05)}
+#hs-root .cpx-ev{position:absolute;left:50%;top:42%;width:70%;transform:translate(-50%,-50%)}
+#hs-root .cpx-ev svg,#hs-root .cpx-rs svg,#hs-root .cpx-card-art svg,#hs-root .cpx-rc svg,#hs-root .cpx-res-art svg{width:100%!important;height:auto!important;display:block}
+#hs-root .cpx-rs{position:absolute;width:26%;transform:translate(-50%,-50%);filter:drop-shadow(0 3px 5px rgba(0,0,0,.5));z-index:2}
+#hs-root .cpx-sig{position:absolute;left:0;right:0;bottom:8%;text-align:center;font:italic 600 18px/1 'Oswald',sans-serif;color:#ffe08a;text-shadow:0 2px 6px rgba(0,0,0,.7)}
+#hs-root .cpx-btn{margin-top:auto;padding:10px 14px;border:0;border-radius:8px;background:linear-gradient(180deg,#ff9a3c,#ff6a10);color:#1a0e02;font:600 14px/1 'Oswald','Golos Text',sans-serif;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+#hs-root .cpx-btn:hover{filter:brightness(1.08)}
+#hs-root .cpx-btn.off{background:rgba(255,255,255,.06);color:var(--c-text-3,#8f9cad);cursor:not-allowed}
+#hs-root .cpx-btn.ghost{background:rgba(255,255,255,.08);color:#fff}
+#hs-root .cpx-note{margin:6px 2px 0;font:500 12px/1.4 var(--f-ui);color:var(--c-text-3,#8f9cad)}
+#hs-root .cpx-empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px;border-radius:14px;background:var(--cpx-card);box-shadow:inset 0 0 0 1px var(--cpx-line);text-align:center}
+#hs-root .cpx-empty b{font:600 18px/1 'Oswald',sans-serif;color:#fff}#hs-root .cpx-empty span{font:500 13px/1.4 var(--f-ui);color:var(--c-text-3,#8f9cad)}#hs-root .cpx-empty .cpx-btn{margin-top:8px}
+/* коллекция */
+#hs-root .cpx-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+#hs-root .cpx-chip{padding:7px 12px;border:0;border-radius:20px;background:rgba(255,255,255,.05);color:var(--c-text-2,#b4bfcc);font:600 12.5px/1 var(--f-ui);cursor:pointer;box-shadow:inset 3px 0 0 var(--rc)}
+#hs-root .cpx-chip i{font-style:normal;margin-left:4px;color:var(--c-text-3,#8f9cad)}
+#hs-root .cpx-chip.on{background:color-mix(in srgb,var(--rc) 25%,rgba(255,255,255,.04));color:#fff}
+#hs-root .cpx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+#hs-root .cpx-card{display:flex;flex-direction:column;gap:4px;padding:8px 8px 10px;border-radius:8px;background:linear-gradient(180deg,#1b1f27,#14171d);box-shadow:inset 0 -3px 0 var(--rc),inset 0 0 0 1px var(--cpx-line)}
+#hs-root .cpx-card-art{aspect-ratio:1;border-radius:6px;padding:10%;background:radial-gradient(60% 60% at 50% 45%,color-mix(in srgb,var(--rc) 35%,transparent),transparent 70%),#0f1116}
+#hs-root .cpx-card b{font:600 13px/1.2 var(--f-ui);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hs-root .cpx-card small{font:500 11px/1.3 var(--f-ui);color:var(--c-text-3,#8f9cad);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* жетоны */
+#hs-root .cpx-earn{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}
+#hs-root .cpx-box{padding:16px;border-radius:14px;background:var(--cpx-card);box-shadow:inset 0 0 0 1px var(--cpx-line)}
+#hs-root .cpx-box h3{margin:0 0 12px;font-size:17px;color:#fff;text-transform:uppercase}
+#hs-root .cpx-rules,#hs-root .cpx-log{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-direction:column;gap:4px}
+#hs-root .cpx-rules li,#hs-root .cpx-log li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;border-radius:6px;background:rgba(255,255,255,.04);font:500 13px/1.3 var(--f-ui);color:var(--c-text,#e8edf3)}
+#hs-root .cpx-rules li.done{background:rgba(62,207,142,.14)}#hs-root .cpx-rules li.done span::before{content:"✓ ";color:#3ecf8e;font-weight:800}
+#hs-root .cpx-rules li.fail,#hs-root .cpx-rules li.lock{opacity:.55}
+#hs-root .cpx-rules li.bonus{background:rgba(242,193,78,.12)}
+#hs-root .cpx-rules b,#hs-root .cpx-log b{flex:none;font:600 15px/1 'Oswald',sans-serif;color:#f2c14e}
+#hs-root .cpx-log small{display:block;font-size:11px;color:var(--c-text-3,#8f9cad)}
+/* открытие */
+#hs-root .cpx-ov{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(5,6,9,.82);backdrop-filter:blur(4px)}
+#hs-root .cpx-ov-in{width:min(980px,92vw);padding:22px;border-radius:16px;background:linear-gradient(170deg,#1a1d26,#0f1116);box-shadow:inset 0 0 0 1px var(--cpx-line),0 40px 80px rgba(0,0,0,.7)}
+#hs-root .cpx-ov h3{margin:0 0 14px;font-size:20px;color:#fff;text-transform:uppercase;text-align:center}
+#hs-root .cpx-reel{position:relative;height:190px;overflow:hidden;border-radius:10px;background:#0b0c10;box-shadow:inset 0 0 0 1px var(--cpx-line)}
+#hs-root .cpx-reel::before,#hs-root .cpx-reel::after{content:"";position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
+#hs-root .cpx-reel::before{left:0;background:linear-gradient(90deg,#0b0c10,transparent)}#hs-root .cpx-reel::after{right:0;background:linear-gradient(270deg,#0b0c10,transparent)}
+#hs-root .cpx-mark{position:absolute;left:50%;top:0;bottom:0;width:3px;margin-left:-1.5px;background:#f2c14e;box-shadow:0 0 12px #f2c14e;z-index:3}
+#hs-root .cpx-strip{position:absolute;left:0;top:15px;display:flex;gap:8px;padding:0 0 0 0;will-change:transform}
+#hs-root .cpx-strip.go{transition:transform 6s cubic-bezier(.08,.75,.12,1)}
+#hs-root .cpx-rc{flex:none;width:140px;height:160px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 8px;border-radius:8px;background:linear-gradient(180deg,#1f232c,#15181f);box-shadow:inset 0 -4px 0 var(--rc)}
+#hs-root .cpx-rc>div{width:100px;height:100px}
+#hs-root .cpx-rc small{font:600 11px/1.2 var(--f-ui);color:#d7dde6;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:124px}
+#hs-root .cpx-res{display:none;align-items:center;gap:18px;margin-top:16px;padding:14px;border-radius:12px;background:radial-gradient(60% 120% at 0 50%,color-mix(in srgb,var(--rc) 35%,transparent),transparent 70%),rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--rc) 50%,transparent)}
+#hs-root .cpx-ov.done .cpx-res{display:flex;animation:cpxIn .4s ease-out}
+@keyframes cpxIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#hs-root .cpx-res-art{width:110px;height:110px;flex:none;filter:drop-shadow(0 6px 14px rgba(0,0,0,.6))}
+#hs-root .cpx-res small{font:700 11px/1 var(--f-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--rc)}
+#hs-root .cpx-res b{display:block;margin:6px 0;font:600 24px/1.1 'Oswald','Golos Text',sans-serif;color:#fff}
+#hs-root .cpx-res span{font:500 12.5px/1 var(--f-ui);color:#3ecf8e}
+#hs-root .cpx-res-act{margin-left:auto;display:flex;flex-direction:column;gap:8px}
+/* Pick'Em: награда за испытание и кнопка жетонов */
+#hs-root .pkx-rw{flex:none;margin-left:6px;text-decoration:none;font:600 12px/1 'Oswald',sans-serif;color:#f2c14e;opacity:.85}
+#hs-root .pkx-ch li.done .pkx-rw{color:#fff6c9}
+#hs-root .pkx-tokens{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border:0;border-radius:20px;background:rgba(0,0,0,.35);color:var(--pk-ink);font:500 13px/1 'Oswald','Golos Text',sans-serif;letter-spacing:.03em;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(242,193,78,.4)}
+#hs-root .pkx-tokens .cpx-coin{width:24px;height:24px}#hs-root .pkx-tokens .cpx-coin::after{font-size:12px}
+#hs-root .pkx-tokens b{font:600 16px/1 'Oswald',sans-serif;color:#f2c14e}
+@media (max-width:900px){#hs-root .cpx-earn{grid-template-columns:1fr}#hs-root .cpx-head{flex-direction:column;align-items:flex-start}}
+/* v127.2 — «Открыть капсулу» как Unlock Container в CS2 */
+#hs-root .cpx-u{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px 40px 0;overflow:auto;background:#0b0c10}
+#hs-root .cpx-u-bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(8,9,12,.25),rgba(8,9,12,.55) 55%,rgba(8,9,12,.92)),var(--scn) center/cover no-repeat;filter:saturate(.8)}
+#hs-root .cpx-u.spin .cpx-u-bg{filter:blur(10px) saturate(.7) brightness(.8);transform:scale(1.05)}
+#hs-root .cpx-u-h{text-align:center;position:relative;z-index:2}
+#hs-root .cpx-u-h h2{margin:0;font:600 40px/1.1 'Oswald','Golos Text',sans-serif!important;letter-spacing:.02em;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+#hs-root .cpx-u-h p{margin:4px 0 0;font:500 19px/1.3 'Oswald','Golos Text',sans-serif;color:rgba(255,255,255,.8)}
+#hs-root .cpx-u-h p b{color:#fff;font-weight:600}
+#hs-root .cpx-u-case{position:relative;width:min(340px,40vh);aspect-ratio:1.1;margin:10px 0 6px;filter:drop-shadow(0 30px 40px rgba(0,0,0,.65))}
+#hs-root .cpx-u.spin .cpx-u-case{position:absolute;top:140px;left:50%;transform:translateX(-50%);opacity:.35;filter:blur(3px)}
+#hs-root .cpx-u-case .cpx-tin{width:62%}
+#hs-root .cpx-u-case .cpx-rs{width:24%}
+#hs-root .cpx-u-list{width:min(1500px,100%);margin-top:6px;padding:12px 18px 14px;background:rgba(40,40,46,.72);backdrop-filter:blur(6px);border-radius:4px 4px 0 0}
+#hs-root .cpx-u-lh{display:flex;justify-content:space-between;align-items:center;padding:0 4px 10px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.12)}
+#hs-root .cpx-u-lh span{flex:1;text-align:center;font:500 17px/1 'Oswald','Golos Text',sans-serif;letter-spacing:.02em;color:#fff}
+#hs-root .cpx-u-lh small{font:600 11.5px/1 var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+#hs-root .cpx-u-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:14px 12px}
+#hs-root .cpx-it{display:flex;flex-direction:column;gap:2px}
+#hs-root .cpx-it-art{aspect-ratio:1.3;padding:8% 18%;background:linear-gradient(180deg,#8a8a90,#5d5d64 80%);box-shadow:inset 0 -4px 0 var(--rc);display:grid;place-items:center}
+#hs-root .cpx-it-art svg{width:100%!important;height:auto!important;max-height:100%;filter:drop-shadow(0 3px 5px rgba(0,0,0,.4))}
+#hs-root .cpx-it-art.gold{background:radial-gradient(circle,#ffe58a,#d9a521 55%,#8a5e0c);box-shadow:inset 0 -4px 0 #e4ae39}
+#hs-root .cpx-it-art.gold span{font:600 52px/1 'Oswald',sans-serif;color:#fff6d2;text-shadow:0 0 14px rgba(255,220,120,.9),0 2px 3px rgba(90,60,0,.6)}
+#hs-root .cpx-it b{margin-top:4px;font:700 12px/1.2 var(--f-ui);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hs-root .cpx-it small{font:500 11px/1.2 var(--f-ui);color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hs-root .cpx-u-bar{position:sticky;bottom:0;display:flex;align-items:center;gap:16px;width:min(1000px,100%);padding:12px 20px;background:rgba(30,30,34,.9);backdrop-filter:blur(6px);border-top:1px solid rgba(255,255,255,.1)}
+#hs-root .cpx-u-bar .cpx-coin{width:38px;height:38px}#hs-root .cpx-u-bar .cpx-coin::after{font-size:18px}
+#hs-root .cpx-u-bar p{flex:1;margin:0;font:500 16px/1.3 'Golos Text',sans-serif;color:rgba(255,255,255,.8)}
+#hs-root .cpx-u-bar p b{color:#fff}
+#hs-root .cpx-u-buy{padding:12px 22px;border:0;border-radius:3px;background:linear-gradient(180deg,#5ac85a,#2f9e3a);color:#fff;font:600 18px/1 'Oswald','Golos Text',sans-serif!important;letter-spacing:.03em;cursor:pointer}
+#hs-root .cpx-u-buy:hover{filter:brightness(1.1)}
+#hs-root .cpx-u-buy.off{background:#3a3d44;color:#9aa0aa;cursor:not-allowed}
+#hs-root .cpx-u-close{padding:12px 18px;border:0;border-left:1px solid rgba(255,255,255,.15);background:none;color:#fff;font:600 18px/1 'Oswald','Golos Text',sans-serif!important;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+#hs-root .cpx-u-close:hover{color:#f2c14e}
+/* рулетка */
+#hs-root .cpx-u .cpx-reel{position:relative;z-index:2;width:min(1200px,100%);height:220px;margin-top:90px;border-radius:0;background:none;box-shadow:none;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+#hs-root .cpx-u .cpx-reel::before,#hs-root .cpx-u .cpx-reel::after{display:none}
+#hs-root .cpx-u .cpx-mark{width:2px;margin-left:-1px;background:#e8ff3a;box-shadow:0 0 8px rgba(232,255,58,.8)}
+#hs-root .cpx-u .cpx-strip{top:16px;gap:6px}
+#hs-root .cpx-u .cpx-rc{width:170px;height:188px;padding:18px 26px 0;border-radius:0;background:linear-gradient(180deg,#c8c8cc 0,#9a9aa0 55%,color-mix(in srgb,var(--rc) 75%,#9a9aa0) 88%);box-shadow:inset 0 -6px 0 var(--rc);justify-content:flex-start}
+#hs-root .cpx-u .cpx-rc>div{width:118px;height:118px}
+#hs-root .cpx-u .cpx-rc.won{outline:2px solid #e8ff3a;outline-offset:-2px}
+#hs-root .cpx-u .cpx-res{position:relative;z-index:2;width:min(900px,100%)}
+#hs-root .cpx-btn.dim{background:linear-gradient(180deg,#6a5a48,#4a3e30);color:#e8dccb}
+#hs-root .cpx-cap{cursor:pointer}
+/* v128 — открытие и осмотр как в CS2 */
+#hs-root .cpx-u-h small{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font:500 12.5px/1 var(--f-ui);color:rgba(255,255,255,.8)}
+#hs-root .cpx-u-h small i{display:grid;place-items:center;width:15px;height:15px;border-radius:50%;background:#fff;color:#111;font:700 11px/1 Georgia,serif;font-style:normal}
+#hs-root .cpx-u-lh small{display:flex;gap:10px}#hs-root .cpx-u-lh small em{font-style:normal;color:var(--rc)}
+#hs-root .cpx-u-grid{max-height:44vh;overflow:auto;padding-right:4px}
+#hs-root .cpx-it{border:0;padding:0;background:none;text-align:left;cursor:pointer}
+#hs-root .cpx-it:hover .cpx-it-art{filter:brightness(1.12)}
+#hs-root .cpx-u.spin .cpx-u-case{top:150px;width:min(420px,46vh);opacity:.55;filter:blur(6px)}
+#hs-root .cpx-u.spin .cpx-u-bg{filter:blur(14px) saturate(.6) brightness(.75)}
+#hs-root .cpx-u .cpx-reel{height:260px;margin-top:110px;width:min(1300px,100%);-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)}
+#hs-root .cpx-u .cpx-strip{top:20px;gap:6px;align-items:center}
+#hs-root .cpx-u .cpx-rc{width:220px;height:200px;padding:16px 40px 0;border-radius:0;transform-origin:50% 50%;
+  background:linear-gradient(180deg,#b7b8bd 0%,#a3a4aa 48%,color-mix(in srgb,var(--rc) 55%,#a3a4aa) 78%,var(--rc) 100%);box-shadow:inset 0 -5px 0 var(--rc),0 4px 14px rgba(0,0,0,.4)}
+#hs-root .cpx-u .cpx-rc>div{width:140px;height:140px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+#hs-root .cpx-u .cpx-mark{position:absolute;left:50%;top:6px;bottom:6px;width:2px;margin-left:-1px;background:#d6f03a;box-shadow:0 0 6px rgba(214,240,58,.9);z-index:3}
+/* осмотр */
+#hs-root .cpx-in{display:flex;flex-direction:column;align-items:center;padding:18px 40px 0;background:#0b0d12;overflow:hidden}
+#hs-root .cpx-in .cpx-u-bg{background:linear-gradient(180deg,rgba(20,32,52,.35),rgba(10,16,28,.75)),var(--scn) center/cover no-repeat;filter:blur(2px) saturate(.5) brightness(.8)}
+#hs-root .cpx-in-h{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+#hs-root .cpx-in-h small{font:500 13px/1 'Golos Text',sans-serif;color:rgba(255,255,255,.85)}
+#hs-root .cpx-in-h small b{margin-left:6px;color:#fff}
+#hs-root .cpx-in-h h2{margin:2px 0 0;font:500 32px/1.15 'Oswald','Golos Text',sans-serif!important;letter-spacing:.02em;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+#hs-root .cpx-in-line{display:block;width:min(500px,60vw);height:4px;background:var(--rc);box-shadow:0 0 12px color-mix(in srgb,var(--rc) 70%,transparent)}
+#hs-root .cpx-in-h em{font:600 12px/1 var(--f-ui);font-style:normal;letter-spacing:.06em;text-transform:uppercase;color:var(--rc);filter:brightness(1.35)}
+#hs-root .cpx-in-nav{position:absolute;top:30px;z-index:3;display:flex;flex-direction:column;gap:12px;border:0;background:none;color:#fff;cursor:pointer;max-width:240px}
+#hs-root .cpx-in-nav.l{left:16%;align-items:flex-start}#hs-root .cpx-in-nav.r{right:16%;align-items:flex-end}
+#hs-root .cpx-in-ar{width:26px;height:26px;border-left:5px solid rgba(255,255,255,.85);border-bottom:5px solid rgba(255,255,255,.85);transform:rotate(45deg);margin:6px}
+#hs-root .cpx-in-nav.r .cpx-in-ar{transform:rotate(-135deg)}
+#hs-root .cpx-in-nav:hover .cpx-in-ar{border-color:#fff}
+#hs-root .cpx-in-nav small{display:flex;align-items:center;gap:6px;font:500 12px/1.2 'Golos Text',sans-serif;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
+#hs-root .cpx-in-nav.r small{flex-direction:row-reverse}
+#hs-root .cpx-in-nav small i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--rc)}
+#hs-root .cpx-in-card{position:relative;z-index:2;width:min(400px,44vh);aspect-ratio:1;margin-top:5vh;border-radius:4px;overflow:hidden;
+  background:linear-gradient(135deg,#e2e3e6,#b9bbc0 60%,#d6d7da);box-shadow:0 18px 40px rgba(0,0,0,.55);animation:cpxInsp .5s ease-out}
+@keyframes cpxInsp{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+#hs-root .cpx-in-tex{position:absolute;inset:0;background:radial-gradient(circle,rgba(0,0,0,.08) 1.1px,transparent 1.3px) 0 0/7px 7px,radial-gradient(circle,rgba(255,255,255,.35) 1px,transparent 1.2px) 3.5px 3.5px/7px 7px}
+#hs-root .cpx-in-art{position:absolute;inset:6%;filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+#hs-root .cpx-in-art svg{width:100%!important;height:100%!important;display:block}
+#hs-root .cpx-in-desc{position:relative;z-index:2;max-width:640px;margin:4vh 0 0;font:400 13.5px/1.45 'Golos Text',sans-serif;color:rgba(255,255,255,.85)}
+#hs-root .cpx-in-bar{position:relative;z-index:2;display:flex;align-items:center;gap:18px;width:min(740px,90vw);margin-top:3vh;padding:14px 12px;border-top:1px solid rgba(255,255,255,.25)}
+#hs-root .cpx-in-ic{width:24px;height:24px;color:rgba(255,255,255,.85)}
+#hs-root .cpx-in-tag{flex:1;font:500 12px/1.2 'Golos Text',sans-serif;color:rgba(255,255,255,.55)}
+#hs-root .cpx-in-close{border:0;background:none;color:#fff;font:600 17px/1 'Oswald','Golos Text',sans-serif!important;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+#hs-root .cpx-in-close:hover{color:#f2c14e}
+#hs-root .cpx-in .cpx-u-buy{padding:9px 16px;font-size:15px!important}
+#hs-root .cpx-card{border:0;cursor:pointer;text-align:left}
+/* v133: возврат в Pick'Em — капсулы открываются только из Pick'Em */
+#hs-root .cpx-back{display:inline-flex;align-items:center;margin:0 0 10px;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.06)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);color:#e9edf3!important;font:700 12px/1 var(--f-ui)!important;cursor:pointer}
+#hs-root .cpx-back:hover{background:rgba(242,193,78,.16)!important;box-shadow:inset 0 0 0 1px rgba(242,193,78,.5)}
+#hs-root .cpx-head .cpx-back+small{display:block}

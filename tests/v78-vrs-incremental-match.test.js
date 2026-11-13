@@ -2,7 +2,7 @@ const fs=require('fs');
 const path=require('path');
 const vm=require('vm');
 const root=path.resolve(__dirname,'..');
-const src=fs.readFileSync(path.join(root,'js/manager/v38-vrs-emdb-awards.js'),'utf8');
+const src=fs.readFileSync(path.join(root,'js/competition/vrs.js'),'utf8');
 const assert=(v,m)=>{if(!v)throw new Error(m)};
 const team=(name,pts)=>({name,pts,players:[],vrsLedger:{version:1,rosterKey:'',basePts:pts,matches:[],earnings:[]}});
 const a=team('Alpha',920), b=team('Beta',870), c=team('Gamma',810), d=team('Delta',780), e=team('Epsilon',740), f=team('Zeta',700);
@@ -14,7 +14,7 @@ for(const [i,t] of [a,b,c,d,e,f].entries()){
 c.vrsLedger.matches=[{date:now-100*86400000,opponent:'Old rival',won:true,h2hDelta:22,oppBounty:.8,network:.7,eventWeight:1,isLAN:true}];
 const window={};
 const sandbox={window,teams:[a,b,c,d,e,f],seasonState:{calendar:{currentMs:now}},console:{info(){},warn(){}},Date,Math,Number,String,Object,Array,Map,Set,JSON,Promise};
-vm.runInNewContext(src,sandbox,{filename:'v38-vrs-emdb-awards.js'});
+vm.runInNewContext(src,sandbox,{filename:'js/competition/vrs.js'});
 const model=window.CS2VRSModel;
 const ev={name:'Test Cup',prizePool:120000,isLAN:true};
 const da=model.delta(a,b,ev), db=model.delta(b,a,ev);

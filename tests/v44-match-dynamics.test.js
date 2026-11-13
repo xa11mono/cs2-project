@@ -3,7 +3,7 @@ const fs = require('fs');
 const vm = require('vm');
 const path = require('path');
 const root = path.resolve(__dirname, '..');
-const source = fs.readFileSync(path.join(root, 'js/manager/v44-match-dynamics.js'), 'utf8');
+const source = fs.readFileSync(path.join(root, 'js/match/dynamics.js'), 'utf8');
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 
 const teams = [
@@ -111,7 +111,7 @@ assert(mistakeItem.state.v44Dynamics.comments.some(x => x.type === 'mistake'), '
 
 
 // Планы тренера меняют стиль внутри настоящей микросимуляции, а не только в интерфейсе.
-const roundSource = fs.readFileSync(path.join(root, 'js/manager/v34-round.js'), 'utf8');
+const roundSource = fs.readFileSync(path.join(root, 'js/match/round-sim.js'), 'utf8');
 const actualTeams = [
   { name: 'Alpha', style: 'Aggressive', players: Array.from({ length: 5 }, (_, i) => ({ nick: `A${i}`, role: ['IGL','AWPer','Rifler','Support','Lurker'][i], firepower: 75 })) },
   { name: 'Bravo', style: 'Tactical', players: Array.from({ length: 5 }, (_, i) => ({ nick: `B${i}`, role: ['IGL','AWPer','Rifler','Support','Lurker'][i], firepower: 75 })) }

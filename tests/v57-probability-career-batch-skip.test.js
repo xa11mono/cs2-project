@@ -5,15 +5,15 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const majorPath = read('js/manager/v35-major-path.js');
-const hltv = read('js/manager/v27-hltv-site.js');
-const parallel = read('js/manager/v21-parallel-tournaments-academies-layer.js');
-const batchSkip = read('js/manager/v33-time.js');
-const v17 = read('js/manager/v17-smart-calendar-skip.js');
-const career = read('js/manager/v57-player-career.js');
-const css = read('css/v57-profile-performance.css');
+const majorPath = read('js/competition/major-path-odds.js');
+const hltv = read('js/portal/hltv-site.js');
+const parallel = read('js/competition/parallel-tournaments.js');
+const batchSkip = read('js/calendar/skip-days.js');
+const v17 = read('js/calendar/smart-skip.js');
+const career = read('js/rosters/player-career-stats.js');
+const css = read('css/portal/profile-performance.css');
 const html = read('index.html');
-const calendar = read('js/manager/v15-training-calendar-layer.js');
+const calendar = read('js/calendar/training-calendar.js');
 
 // Major Path groups teams by their most likely stage (3 → 2 → 1), then sorts each group by overall invite probability descending.
 assert(/const visibleRows = d\.rows\.filter\(x => inviteProbability\(x\) > 0\)/.test(majorPath) && /const rows = sortProbabilityRows\(visibleRows\)/.test(majorPath), 'Major Path must use the canonical normalized probability sorter');
@@ -57,7 +57,7 @@ const gameWindow = {
   setInterval() { return 1; }
 };
 const context = { window: gameWindow, teams, transferState, saveTeams, saveTransferState, currentStats, console, JSON, Date, Map, Set, Object, Array };
-vm.runInNewContext(career, context, { filename: 'v57-player-career.js' });
+vm.runInNewContext(career, context, { filename: 'js/rosters/player-career-stats.js' });
 context.teams = [{ name: 'Team A', players: [] }];
 currentStats = { P: {} };
 context.currentStats = currentStats;
@@ -87,7 +87,7 @@ assert(saveTransferCalls >= 1 && saveTeamsCalls === 1, 'career ledger must persi
     v21ProcessParallelNow(options={}) { parallelCatchups++; if(options.deferIO) dailyCatchups++; else finalCatchups++; return false; }
   };
   const ctx = { window: win, document: doc, saveTeams: ctxSaveTeams, saveSeasonState: ctxSaveSeason, renderTournament: ctxRenderTournament, renderRating: ctxRenderRating, console, Promise, setTimeout, setInterval() { return 1; }, Math, Number, String, Object, Array };
-  vm.runInNewContext(batchSkip, ctx, { filename: 'v33-time.js' });
+  vm.runInNewContext(batchSkip, ctx, { filename: 'js/calendar/skip-days.js' });
   await win.v33SkipDays(4);
   assert(skipped === 4, 'batch skip must still process each requested in-game day');
   assert(parallelCatchups === 5 && dailyCatchups === 5 && finalCatchups === 0, 'parallel tournaments must use deferred I/O for each skipped day and the final catch-up');

@@ -19,7 +19,7 @@ const context = {
   Math, Number, String, Object, Array, Set, Date, Map
 };
 vm.createContext(context);
-vm.runInContext(fs.readFileSync(path.join(root, 'js/manager/v38-vrs-emdb-awards.js'), 'utf8'), context);
+vm.runInContext(fs.readFileSync(path.join(root, 'js/competition/vrs.js'), 'utf8'), context);
 const VRS = context.window.CS2VRSModel;
 assert(VRS && VRS.version === 2, 'VRS model should load');
 
@@ -48,17 +48,17 @@ VRS.recalcAll(teams);
 assert(teams[0].pts === before, 'adding another team must not renormalize established team points');
 
 // Future Major invite list is frozen by the preparation helper once inside its advance window.
-const v21 = fs.readFileSync(path.join(root, 'js/manager/v21-parallel-tournaments-academies-layer.js'), 'utf8');
+const v21 = fs.readFileSync(path.join(root, 'js/competition/parallel-tournaments.js'), 'utf8');
 assert(/st\.v45Participants=saved\?/.test(v21) && /st\.v45StagePools=saved/.test(v21), 'future Major participants and stage pools should be stored as a persistent frozen roster');
 assert(/lockAt=start-\(window\.CS2_PICKEM_LEAD_DAYS\|\|4\)\*V21_DAY/.test(v21) && /if\(clock<lockAt\) return false/.test(v21), "v84: Major roster freezes on Pick'Em Day (4 days before start), not 42 days early");
 
 // Major Path main list must not force in top-32 teams when probability is exactly zero.
-const pathSource = fs.readFileSync(path.join(root, 'js/manager/v35-major-path.js'), 'utf8');
+const pathSource = fs.readFileSync(path.join(root, 'js/competition/major-path-odds.js'), 'utf8');
 assert(/inviteProbability\(x\)\s*>\s*0/.test(pathSource), 'Major Path should only include teams with positive normalized invitation chance');
 assert(!/x\.in\s*>\s*0\.005\s*\|\|\s*x\.rank\s*<=\s*32/.test(pathSource), 'old forced top-32 fallback must be removed');
 
 // Upper/lower bracket finals must be previewed as qualification matches, never as title deciders.
-const newsSource = fs.readFileSync(path.join(root, 'js/manager/v30-news.js'), 'utf8');
+const newsSource = fs.readFileSync(path.join(root, 'js/media/news-stories.js'), 'utf8');
 assert(/Финал верхней сетки/.test(newsSource) && /Финал нижней сетки/.test(newsSource), 'upper and lower finals should have separate news headlines');
 assert(/разыгрывают последнее место в гранд-финале/.test(newsSource), 'lower final should announce the Grand Final slot, not the trophy');
 assert(/решающий матч турнира за чемпионский титул и трофей/.test(newsSource), 'only the true final should be described as the title match');
@@ -71,26 +71,26 @@ console.log('PASS v45: Major Path excludes zero-chance teams');
 
 
 // Trophy and MVP awards are independent: an existing champion cup must not skip MVP assignment.
-const trophySource = fs.readFileSync(path.join(root, 'js/manager/v26-trophies.js'), 'utf8');
+const trophySource = fs.readFileSync(path.join(root, 'js/awards/trophies.js'), 'utf8');
 const awardBody = trophySource.slice(trophySource.indexOf('function awardTournament(ev)'), trophySource.indexOf('// v33: Rating 2.0'));
 assert(awardBody.indexOf('rememberTeamTitle(ev)') < awardBody.indexOf("if (!['major', 'elite', 'regular'].includes") && awardBody.indexOf("if (!['major', 'elite', 'regular'].includes") < awardBody.indexOf('const eligible'), 'MVP eligibility is checked after team trophy writes and independently (v83 finalist model)');
 assert(/window\.RewardSystem\?\.addPlayerMvp/.test(awardBody), 'MVP is deduplicated by the common registry (RewardSystem.addPlayerMvp: one MVP per event)');
 
 // Player profiles must render achievements even without match-stat rows, and all trophies is default.
-const playerSource = fs.readFileSync(path.join(root, 'js/manager/v27-hltv-site.js'), 'utf8');
+const playerSource = fs.readFileSync(path.join(root, 'js/portal/hltv-site.js'), 'utf8');
 assert(/const T = H_SHELF\(\), tab = S\.shelfT \|\| 'all'/.test(playerSource), 'player trophy shelf should default to all');
 assert(/if \(!o\) return head \+ \(tab === 'awards'[\s\S]*?box\('Достижения'/.test(playerSource), 'player achievements should render when player has no match stats');
 assert(/S\.shelfT = 'all'/.test(playerSource), 'opening a different player/team profile should reset trophy shelf to all');
 
 // Team pages also reset the trophy shelf and retain qualification history/placements.
-const prestigeSource = fs.readFileSync(path.join(root, 'js/manager/v33-prestige.js'), 'utf8');
+const prestigeSource = fs.readFileSync(path.join(root, 'js/competition/prestige.js'), 'utf8');
 assert(/lastShelfTeam !== name\) \{ H\.S\.shelfT = 'all'/.test(prestigeSource), 'team profile navigation should reset trophy shelf to all');
-const peopleSource = fs.readFileSync(path.join(root, 'js/manager/v30-portal-people.js'), 'utf8');
+const peopleSource = fs.readFileSync(path.join(root, 'js/portal/people.js'), 'utf8');
 assert(/Результаты квалификаций/.test(peopleSource), 'team index should show qualification results');
 assert(/fieldProfile === 'medium'/.test(peopleSource), 'legacy tournament tier classification should use fieldProfile');
 
 // Major Swiss qualification buckets must display team logos, not text-only labels.
-const matchSource = fs.readFileSync(path.join(root, 'js/manager/auto_script_1.js'), 'utf8');
+const matchSource = fs.readFileSync(path.join(root, 'js/base/game.js'), 'utf8');
 assert(/const teamChip = name => \{ const h = window\.HS\?\.logo \? window\.HS\.logo\(name,'sm'\)/.test(matchSource), '3:0/0:3 qualification chips should include team logos');
 
 // The tournament is complete when the championship final ends; bronze match is independent.
@@ -100,9 +100,9 @@ assert(/if \(finalRound && finalRound\.winner\) finalizeTournamentRating\(\)/.te
 assert(!/bronzeMatch/.test(completion), 'bronze match must not gate champion assignment');
 
 // Calendar stages and Pick’Em day are separate entries; preview picks are persistent before start.
-const portalEvents = fs.readFileSync(path.join(root, 'js/manager/v30-portal-events.js'), 'utf8');
+const portalEvents = fs.readFileSync(path.join(root, 'js/portal/events.js'), 'utf8');
 ['Pick\'Em Day', 'Stage I', 'Stage II', 'Stage III', 'Champions Stage'].forEach(label => assert(portalEvents.includes(label), `Major calendar should contain ${label}`));
-const pickemSource = fs.readFileSync(path.join(root, 'js/manager/v33-pickem.js'), 'utf8');
+const pickemSource = fs.readFileSync(path.join(root, 'js/fan/pickem.js'), 'utf8');
 assert(/function upcomingMajor\(\)/.test(pickemSource) && /s\.v33Pickem = \{ t: nx\.entry\.name, major: m \}/.test(pickemSource), 'Pick’Em preview should be available and saved before Major begins');
 assert(/Состав участников ещё предварительный/.test(pickemSource) && /return i===1 && !!nx\?\.locked/.test(pickemSource), 'Pick’Em editing should stay locked until Major roster lock');
 

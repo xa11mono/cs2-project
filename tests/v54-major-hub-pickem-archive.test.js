@@ -5,16 +5,16 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const hub = read('js/manager/v25-hltv-hub.js');
-const portal = read('js/manager/v27-hltv-site.js');
-const events = read('js/manager/v30-portal-events.js');
-const people = read('js/manager/v30-portal-people.js');
-const pickem = read('js/manager/v33-pickem.js');
-const badges = read('js/manager/v35-badges.js');
-const guard = read('js/manager/v29-storage-guard.js');
-const sim = read('js/manager/auto_script_1.js');
+const hub = read('js/competition/hltv-hub.js');
+const portal = read('js/portal/hltv-site.js');
+const events = read('js/portal/events.js');
+const people = read('js/portal/people.js');
+const pickem = read('js/fan/pickem.js');
+const badges = read('js/fan/medals.js');
+const guard = read('js/core/storage-guard.js');
+const sim = read('js/base/game.js');
 const html = read('index.html');
-const css = read('css/v30-portal.css');
+const css = read('css/portal/tokens.css');
 
 // One Major group contains the three related destinations; Pick'em remains date-gated.
 assert(/const NAV_MAJOR = \[\['pickem'[^;]*'majorpath'[^;]*'majors'/.test(portal), 'Major dropdown must group Pick’em, Major Path and Major winners');

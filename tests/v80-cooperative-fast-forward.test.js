@@ -5,17 +5,17 @@ const vm = require('vm');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
-const v17 = read('js/manager/v17-smart-calendar-skip.js');
-const v21 = read('js/manager/v21-parallel-tournaments-academies-layer.js');
-const v33 = read('js/manager/v33-time.js');
-const v63 = read('js/manager/v63-simulation-kernel.js');
+const v17 = read('js/calendar/smart-skip.js');
+const v21 = read('js/competition/parallel-tournaments.js');
+const v33 = read('js/calendar/skip-days.js');
+const v63 = read('js/core/sim-kernel.js');
 const html = read('index.html');
 
 assert(/async function v17PlayDueMatchesCooperative/.test(v17) && /await v17YieldToBrowser\(\)/.test(v17), 'Tier-1 day skip must yield between match resolutions');
 assert(/async function v17RunBatchStage/.test(v17) && /result = await fn\(\)/.test(v17), 'batch-stage timings must include awaited stage work');
 assert(/await window\.v21ProcessOverdueCooperative/.test(v33), 'the day-skip driver must await cooperative background catch-up');
 assert(/flushMaintenanceCooperative/.test(v63) && /await finalStage\('schedulerMaintenance'/.test(v33), 'final scheduler maintenance must yield between each maintenance task');
-assert(/if \(window\.v57BatchCalendarSkip\) return result;/.test(read('js/manager/v18-calendar-match-sync.js')), 'Tier-1 broadcast scheduler wrapper must not rebuild queues on every skipped day');
+assert(/if \(window\.v57BatchCalendarSkip\) return result;/.test(read('js/calendar/match-sync.js')), 'Tier-1 broadcast scheduler wrapper must not rebuild queues on every skipped day');
 assert(/skipBacklogRecompute:true/.test(v21) && /opts\.skipBacklogRecompute \? true/.test(v21), 'single-match catch-up slices must not rescan the full 70-event archive after every match');
 assert(/matchBudget: 1/.test(v33), 'the normal per-day scheduler tick must be capped at one background match');
 assert(/requestAnimationFrame/.test(v21) && /await v21YieldBatchFrame\(\)/.test(v21), 'background catch-up must yield between matches');
@@ -23,12 +23,12 @@ assert(/skipGlobalMaintenance:true/.test(v21) && /eventIds:\[eventId\]/.test(v21
 assert(/lastCooperativeCatchup/.test(v21) && /maxSliceMs/.test(v21), 'scheduler diagnostics must expose cooperative slice timings');
 assert(/processOptions = Object\.assign/.test(v63) && /processParallel\(options\.forceParallel !== false, processOptions\)/.test(v63), 'kernel must pass match budget through to parallel scheduler');
 for (const [file, version] of [
-  ['v17-smart-calendar-skip.js', 114],
-  ['v18-calendar-match-sync.js', 114],
-  ['v21-parallel-tournaments-academies-layer.js', 114],
-  ['v27-hltv-site.js', '131.5'],
-  ['v33-time.js', 114],
-  ['v63-simulation-kernel.js', 114]
+  ['js/calendar/smart-skip.js', 114],
+  ['js/calendar/match-sync.js', 114],
+  ['js/competition/parallel-tournaments.js', 114],
+  ['js/portal/hltv-site.js', '131.5'],
+  ['js/calendar/skip-days.js', 114],
+  ['js/core/sim-kernel.js', 114]
 ]) assert(html.includes(`${file}?v=${version}`), `${file} must bypass browser cache`);
 
 // Exercise the real cooperative helper against a minimal deterministic overdue queue.

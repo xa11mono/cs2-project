@@ -39,32 +39,32 @@
 
 1. **Атрибуты игрока** (0–99): `firepower` (стрельба), `tacticalIQ` (тактика), `clutch` (клатчи), `utility`
    (гранаты), плюс `pot` (потенциал), `age`, `role` (`AWP`, `Rifler`, `Entry`, `IGL`, `Support`, `Lurker`…), `form`
-   (форма, ~90–110), `fatigue`, мораль. Игроки создаются из встроенной базы (EMDB) в `js/manager/auto_script_1.js`
+   (форма, ~90–110), `fatigue`, мораль. Игроки создаются из встроенной базы (EMDB) в `js/base/game.js`
    (`createPlayerFromNick`, `TEAM_ROSTER_2026`).
 
 2. **«Сила» (то самое 93.3 в составе):** взвешенная сумма
    `pow = firepower·0.40 + tacticalIQ·0.25 + clutch·0.20 + utility·0.15`. Эта же формула скопирована минимум в пяти
-   местах: `auto_script_1.js` (`playerPower`), `v25-hltv-hub.js`, `v26-trophies.js` (`ovr`), `v98-squad.js`,
-   `v101-economy.js` (`CS2Power.pow`).
+   местах: `js/base/game.js` (`playerPower`), `js/competition/hltv-hub.js`, `js/awards/trophies.js` (`ovr`), `js/career/squad.js`,
+   `js/rosters/power-and-value.js` (`CS2Power.pow`).
 
 3. **Несостыковки, которые уже видны:**
-   - В `v96-team-select.js` у капитана (IGL) своя формула:
+   - В `js/career/team-select.js` у капитана (IGL) своя формула:
      `tacticalIQ·0.55 + utility·0.2 + clutch·0.15 + firepower·0.1`. В других местах капитан считается как стрелок.
-   - `v84-watch.js` добавляет к силе форму: `pow + (form − 100)·0.15`. В остальных местах форма не учитывается.
-   - `v101-economy.js` → `CS2Power.recalibrate()`: один раз на сохранение подгоняет атрибуты под ручные ориентиры
+   - `js/portal/watch.js` добавляет к силе форму: `pow + (form − 100)·0.15`. В остальных местах форма не учитывается.
+   - `js/rosters/power-and-value.js` → `CS2Power.recalibrate()`: один раз на сохранение подгоняет атрибуты под ручные ориентиры
      `ANCHOR` (ZywOo и donk — 95.5, m0NESY — 94.5, sh1ro — 93.5, ropz — 93, капитаны 84–88). Всем остальным ставит
      потолок 91.5 (`NON_ANCHOR_CAP`), а капитанам без ориентира снимает «перекос тактики». Сдвиг равномерно делится на
      все четыре атрибута. Это ручная заплатка, а не модель.
-   - Тренировки (`v31-career-core.js`, 6 направлений), возраст и развитие (рост и спад) меняют атрибуты отдельно, и
+   - Тренировки (`js/career/career-core.js`, 6 направлений), возраст и развитие (рост и спад) меняют атрибуты отдельно, и
      сила «уплывает» относительно ориентиров.
 
 4. **Где сила влияет на игру:**
-   - Шанс победы в матче: `calcMatchOdds` в `auto_script_1.js`. Основа — очки рейтинга команды (`pts`), к ним
+   - Шанс победы в матче: `calcMatchOdds` в `js/base/game.js`. Основа — очки рейтинга команды (`pts`), к ним
      добавляются форма, усталость и небольшая поправка от «слоя игроков» `t.playerLayer.power / chemistry / morale`
      (`ensurePlayerLayer`).
-   - Сила команды из рейтинга: `v29-core.js`, `R = 300·tanh((pts − 1000)/500)`.
-   - Ядро симуляции: `v63-simulation-kernel.js`. Раунды и статистика матча: `v34-match.js`, `v34-round.js`.
-   - Стоимость игрока: `v31-career-core.js` `valueOf` (пересчитана в v101).
+   - Сила команды из рейтинга: `js/core/sim-balance.js`, `R = 300·tanh((pts − 1000)/500)`.
+   - Ядро симуляции: `js/core/sim-kernel.js`. Раунды и статистика матча: `js/portal/match-page.js`, `js/match/round-sim.js`.
+   - Стоимость игрока: `js/career/career-core.js` `valueOf` (пересчитана в v101).
    - «Сила состава» в выборе клуба и на страницах команд — среднее по основе.
 
 5. **Отдельная вещь — Rating 3.0** (HLTV-подобный рейтинг по статистике матчей: убийства, ADR, KAST, импакт). Его
@@ -81,11 +81,11 @@
 
 ## Что прочитать в репозитории
 
-`index.html` (порядок слоёв); `js/manager/auto_script_1.js` (поиск по `playerPower`, `ensurePlayerLayer`,
-`calcMatchOdds`, `createPlayerFromNick`); `js/manager/v101-economy.js` (`CS2Power`); `js/manager/v96-team-select.js`;
-`js/manager/v98-squad.js`; `js/manager/v84-watch.js`; `js/manager/v31-career-core.js` (тренировки, `valueOf`);
-`js/manager/v29-core.js`; `js/manager/v63-simulation-kernel.js`; `js/manager/v34-match.js`;
-`js/manager/v38-vrs-emdb-awards.js` (VRS); `DESIGN.md`, `CHANGELOG_v101.txt`, `CHANGELOG_v112.txt`.
+`index.html` (порядок слоёв); `js/base/game.js` (поиск по `playerPower`, `ensurePlayerLayer`,
+`calcMatchOdds`, `createPlayerFromNick`); `js/rosters/power-and-value.js` (`CS2Power`); `js/career/team-select.js`;
+`js/career/squad.js`; `js/portal/watch.js`; `js/career/career-core.js` (тренировки, `valueOf`);
+`js/core/sim-balance.js`; `js/core/sim-kernel.js`; `js/portal/match-page.js`;
+`js/competition/vrs.js` (VRS); `DESIGN.md`, `CHANGELOG_v101.txt`, `CHANGELOG_v112.txt`.
 
 ## Что нужно от тебя
 

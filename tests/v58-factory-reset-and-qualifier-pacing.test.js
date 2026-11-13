@@ -5,15 +5,15 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const reset = read('js/manager/v58-factory-reset.js');
+const reset = read('js/core/factory-reset.js');
 const html = read('index.html');
-const hub = read('js/manager/v25-hltv-hub.js');
-const autosave = read('js/manager/v56-autosave.js');
-const calendar = read('js/manager/v15-training-calendar-layer.js');
-const smartSkip = read('js/manager/v17-smart-calendar-skip.js');
-const parallel = read('js/manager/v21-parallel-tournaments-academies-layer.js');
-const batch = read('js/manager/v33-time.js');
-const site = read('js/manager/v27-hltv-site.js');
+const hub = read('js/competition/hltv-hub.js');
+const autosave = read('js/core/autosave.js');
+const calendar = read('js/calendar/training-calendar.js');
+const smartSkip = read('js/calendar/smart-skip.js');
+const parallel = read('js/competition/parallel-tournaments.js');
+const batch = read('js/calendar/skip-days.js');
+const site = read('js/portal/hltv-site.js');
 
 assert(/await window\.v56PrepareFactoryReset\(\)/.test(reset), 'factory reset must await autosave file cleanup');
 assert(/await window\.v56ClearAutosaveDatabase\(\)/.test(reset) && /window\.v56ClearAutosaveDatabase = clearAutosaveDatabase/.test(autosave), 'factory reset must clear the persistent autosave directory handle and settings');
@@ -23,7 +23,7 @@ assert(/RESET_KEY_RE/.test(reset) && /cs2\(\_|\-|\$\)/.test(reset), 'factory res
 assert(/window\.resetToDefault = resetToDefaultV58/.test(reset), 'reset buttons must use the v58 async reset handler');
 assert(/hubArchiveClear = \(\) =>[\s\S]*?tx\.oncomplete = \(\) => resolve\(true\)/.test(hub), 'archive clear must resolve after the IndexedDB transaction commits');
 assert(/v56PrepareFactoryReset/.test(autosave) && /handle\.removeEntry\(name\)/.test(autosave), 'autosave helper must delete the current and backup JSON files before reset');
-assert(/v58-factory-reset\.js/.test(html) && html.indexOf('v58-factory-reset.js') > html.indexOf('v56-autosave.js'), 'reset override must load after autosave and legacy reset definitions');
+assert(/v58-factory-reset\.js/.test(html) && html.indexOf('js/core/factory-reset.js') > html.indexOf('js/core/autosave.js'), 'reset override must load after autosave and legacy reset definitions');
 assert(/CS2 Manager <i class="pt-ver">v86<\/i>/.test(site), 'visible header version must be v81');
 
 // Pause must freeze the calendar itself and all background competition ticks.
@@ -83,7 +83,7 @@ function memoryStorage(initial) {
     hltvSiteReset() { calls.push('site-reset'); }
   };
   const context = { window: win, localStorage, sessionStorage, seasonState, currentTournament, console, Promise, Date };
-  vm.runInNewContext(reset, context, { filename: 'v58-factory-reset.js' });
+  vm.runInNewContext(reset, context, { filename: 'js/core/factory-reset.js' });
   const ok = await win.resetToDefault();
   assert(ok === true, 'confirmed factory reset must complete');
   assert(seasonState.calendar.paused === true, 'reset must pause the clock before clearing');

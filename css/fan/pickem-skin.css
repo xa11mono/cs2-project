@@ -1,0 +1,169 @@
+/* v127 — Pick'Em в духе CS2 (js/fan/pickem-skin.js). Тема Мейджора — переменные --pk-* на .pkx */
+#hs-root .pkx-hide{display:none!important}
+#hs-root .pkx{--pk-ink:#eef2f6;--pk-ink2:rgba(238,242,246,.66);--pk-line:rgba(255,255,255,.09);--pk-cell:rgba(0,0,0,.3);--pk-card:rgba(255,255,255,.07);--pk-adv:#2f8f5b;--pk-out:#8f2f3b;
+  position:relative;isolation:isolate;margin:0 0 18px;padding:18px 18px 20px;border-radius:16px;overflow:hidden;color:var(--pk-ink);
+  background:radial-gradient(70% 60% at 50% 0,color-mix(in srgb,var(--pk-glow) 28%,transparent),transparent 70%),linear-gradient(170deg,var(--pk-bg2),var(--pk-bg) 70%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 30px 60px -30px #000}
+#hs-root .pkx>.pkx-tex{position:absolute;inset:-40%;transform:rotate(var(--pk-rot,0deg));z-index:-1;background:var(--pk-pat);opacity:var(--pk-po);-webkit-mask-image:radial-gradient(120% 90% at 50% 40%,#000 40%,transparent 100%);mask-image:radial-gradient(120% 90% at 50% 40%,#000 40%,transparent 100%)}
+#hs-root .pkx::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(130% 100% at 50% 50%,transparent 55%,rgba(0,0,0,.45))}
+/* шапка */
+#hs-root .pkx-top{display:flex;align-items:center;justify-content:center;gap:16px;margin:2px 0 16px;position:relative}
+#hs-root .pkx-logo{width:58px;height:58px;flex:none;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5))}
+#hs-root .pkx-logo svg{width:100%!important;height:100%!important;display:block}
+#hs-root .pkx-top h1{margin:0;font:600 40px/1.05 'Oswald','Golos Text',sans-serif!important;letter-spacing:.07em;text-transform:uppercase;color:var(--pk-ink);text-shadow:0 2px 14px rgba(0,0,0,.45)}
+#hs-root .pkx-theme{position:absolute;right:0;top:50%;transform:translateY(-50%);padding:4px 10px;border-radius:20px;font:700 11px/1 var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--pk-acc);background:rgba(0,0,0,.25);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pk-acc) 40%,transparent)}
+/* панели */
+#hs-root .pkx-panel{position:relative;border-radius:12px;padding:40px 16px 16px;margin-top:14px;background:rgba(0,0,0,.26);box-shadow:inset 0 0 0 1px var(--pk-line),inset 0 40px 60px -40px rgba(255,255,255,.05);backdrop-filter:blur(2px)}
+#hs-root .pkx-panel>h2,#hs-root .pkx-left>h2{position:absolute;left:0;top:0;margin:0;padding:8px 18px 8px 16px;border-radius:12px 0 12px 0;background:color-mix(in srgb,var(--pk-acc) 22%,rgba(0,0,0,.45));font:600 16px/1 'Oswald','Golos Text',sans-serif!important;letter-spacing:.06em;text-transform:uppercase;color:var(--pk-ink)}
+/* предметы турнира */
+#hs-root .pkx-items{display:grid;grid-template-columns:minmax(260px,1.7fr) repeat(4,minmax(120px,1fr)) minmax(170px,1.05fr);gap:12px;align-items:stretch}
+#hs-root .pkx-souv{display:flex;flex-direction:column;gap:6px;text-align:center}
+#hs-root .pkx-souv-art{position:relative;flex:1;min-height:150px;border-radius:8px;overflow:hidden;background:radial-gradient(60% 70% at 50% 60%,color-mix(in srgb,var(--pk-glow) 40%,transparent),transparent 70%),linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.35));box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--pk-acc) 55%,#c9a95a),inset 0 0 0 5px rgba(0,0,0,.4)}
+#hs-root .pkx-crate{position:absolute;left:8%;right:8%;bottom:10%;height:34%;border-radius:4px;background:linear-gradient(180deg,color-mix(in srgb,var(--pk-bg2) 70%,#555),color-mix(in srgb,var(--pk-bg) 85%,#000));box-shadow:inset 0 2px 0 rgba(255,255,255,.18),inset 0 -6px 12px rgba(0,0,0,.45),0 8px 16px rgba(0,0,0,.5)}
+#hs-root .pkx-crate::before{content:"";position:absolute;left:50%;top:22%;width:22%;height:56%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff3c4,#d9a521 55%,#6e4a05);box-shadow:0 0 0 2px rgba(0,0,0,.35)}
+#hs-root .pkx-souv-cup{position:absolute;left:50%;bottom:30%;height:62%;aspect-ratio:64/72;transform:translateX(-50%);filter:drop-shadow(0 8px 12px rgba(0,0,0,.6))}
+#hs-root .pkx-souv-cup svg{width:100%!important;height:100%!important;display:block}
+#hs-root .pkx-souv b,#hs-root .pkx-item b{font:750 13px/1.25 var(--f-ui)!important;color:var(--pk-ink)}
+#hs-root .pkx-souv small,#hs-root .pkx-item small{font:500 11px/1.3 var(--f-ui);color:var(--pk-ink2)}
+#hs-root .pkx-item{display:flex;flex-direction:column;gap:4px;padding:6px 6px 10px;border-radius:6px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 6px 14px -6px rgba(0,0,0,.6)}
+#hs-root .pkx-item-art{position:relative;aspect-ratio:1/1.05;border-radius:4px;overflow:hidden;background:radial-gradient(70% 60% at 50% 45%,rgba(255,255,255,.35),rgba(255,255,255,.06) 70%),linear-gradient(180deg,#8d8698,#4a4452)}
+#hs-root .pkx-tin{position:absolute;left:50%;top:52%;width:58%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 38% 30%,#ffffff,#c9d1da 30%,#7d8894 65%,#3c444e);box-shadow:inset 0 -6px 10px rgba(0,0,0,.35),0 8px 14px rgba(0,0,0,.45)}
+#hs-root .pkx-tin>i{position:absolute;left:10%;right:10%;bottom:-6%;height:34%;border-radius:0 0 50% 50%/0 0 60% 60%;background:linear-gradient(180deg,color-mix(in srgb,var(--pk-acc) 70%,#1d4fb0),color-mix(in srgb,var(--pk-bg) 70%,#000))}
+#hs-root .pkx-ev{position:absolute;left:50%;top:44%;width:66%;transform:translate(-50%,-50%);filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+#hs-root .pkx-ev svg,#hs-root .pkx-cs svg{width:100%!important;height:auto!important;display:block}
+#hs-root .pkx-cs{position:absolute;width:30%;transform:translate(-50%,-50%) rotate(var(--r));filter:drop-shadow(0 3px 5px rgba(0,0,0,.5));z-index:2}
+#hs-root .pkx-item.autographs .pkx-item-art{background:radial-gradient(70% 60% at 50% 45%,rgba(255,230,150,.45),rgba(255,255,255,.05) 70%),linear-gradient(180deg,#8d8270,#4a4234)}
+#hs-root .pkx-q{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);font:600 54px/1 'Oswald','Golos Text',sans-serif!important;color:#ffe08a;text-shadow:0 0 12px rgba(255,200,80,.7),0 2px 4px rgba(0,0,0,.6);z-index:3}
+#hs-root .pkx-soon{position:absolute;left:0;bottom:0;padding:3px 8px;background:#2d8fd6;color:#fff;font:800 10px/1.2 var(--f-ui);letter-spacing:.06em;text-transform:uppercase;z-index:3}
+#hs-root .pkx-graffiti{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+#hs-root .pkx-graffiti small{align-self:flex-start;font:700 11px/1 var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--pk-ink2)}
+#hs-root .pkx-graf-art{position:relative;width:96px;height:96px;display:grid;place-items:center}
+#hs-root .pkx-graf-art img,#hs-root .pkx-graf-art .hs-logo{width:88px!important;height:88px!important;object-fit:contain;filter:drop-shadow(0 0 1px rgba(255,255,255,.8)) drop-shadow(0 4px 8px rgba(0,0,0,.6)) contrast(1.1)}
+#hs-root .pkx-graf-art .pkx-q{font-size:60px}
+#hs-root .pkx-graffiti p{margin:0;font:500 11.5px/1.35 var(--f-ui);color:var(--pk-ink2)}
+#hs-root .pkx-graffiti p b{color:var(--pk-ink)}
+#hs-root .pkx-btn{margin-top:auto;padding:8px 16px;border:0;border-radius:4px;background:rgba(0,0,0,.55);color:var(--pk-ink);font:700 12px/1 var(--f-ui);cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+#hs-root .pkx-btn:hover{background:color-mix(in srgb,var(--pk-acc) 35%,rgba(0,0,0,.55))}
+/* испытание */
+#hs-root .pkx-chal{display:grid;grid-template-columns:330px minmax(0,1fr);gap:18px;padding:16px}
+#hs-root .pkx-left{position:relative;padding-top:30px}
+#hs-root .pkx-left>h2{left:-16px;top:-16px}
+#hs-root .pkx-coin{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:12px}
+#hs-root .pkx-coin>svg{width:200px!important;height:200px!important;filter:drop-shadow(0 12px 22px rgba(0,0,0,.6))}
+#hs-root .pkx-lv{position:absolute;left:18px;top:150px;width:38px;height:48px;display:grid;place-items:center;clip-path:polygon(0 0,100% 0,100% 78%,50% 100%,0 78%);background:linear-gradient(180deg,#b07a46,#6d4522);box-shadow:inset 0 0 0 2px rgba(255,255,255,.2)}
+#hs-root .pkx-lv b{font:600 30px/1 'Oswald','Golos Text',sans-serif!important;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);margin-top:-6px}
+#hs-root .pkx-coin p{margin:0 0 0 58px;font:600 13px/1.35 var(--f-ui);color:var(--pk-ink)}
+#hs-root .pkx-coin p b{color:var(--pk-acc)}#hs-root .pkx-coin p span{color:var(--pk-ink2)}
+#hs-root .pkx-ch{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+#hs-root .pkx-ch li{display:flex;align-items:center;gap:12px;min-height:40px;padding:6px 12px;background:rgba(255,255,255,.07);font:500 12.5px/1.3 var(--f-ui);color:var(--pk-ink)}
+#hs-root .pkx-ch li .pkx-i{width:20px;height:20px;flex:none;color:var(--pk-ink2)}
+#hs-root .pkx-ch li span{flex:1}
+#hs-root .pkx-ch li em{font:700 11px/1 var(--f-num);font-style:normal;color:var(--pk-ink2)}
+#hs-root .pkx-ch li.done{background:linear-gradient(90deg,#2e8b3e,#3a9c4a);color:#fff}
+#hs-root .pkx-ch li.done .pkx-i{color:#fff;stroke-width:3}
+#hs-root .pkx-ch li.fail{background:rgba(160,40,52,.4)}
+#hs-root .pkx-ch li.fail .pkx-i{color:#ff8f9a}
+#hs-root .pkx-ch li.lock{opacity:.55}
+#hs-root .pkx-ch-n{display:block;margin-top:8px;font:600 11.5px/1 var(--f-ui);color:var(--pk-ink2)}
+/* центр */
+#hs-root .pkx-center{position:relative;min-width:0}
+#hs-root .pkx-timer{display:flex;align-items:center;gap:8px;margin:2px 250px 10px 0;font:500 16px/1.3 var(--f-ui);color:var(--pk-ink)}
+#hs-root .pkx-timer .pkx-i{width:20px;height:20px;flex:none}
+#hs-root .pkx-board{position:absolute;right:0;top:0;width:230px;z-index:3;font:500 12px/1 var(--f-ui)}
+#hs-root .pkx-board header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font:800 11px/1 var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--pk-ink)}
+#hs-root .pkx-board header .pkx-i{width:16px;height:16px;color:var(--pk-ink2)}
+#hs-root .pkx-board>div{display:flex;align-items:center;gap:8px;height:22px;padding:0 8px;margin-bottom:2px;background:rgba(0,0,0,.28);color:var(--pk-ink2)}
+#hs-root .pkx-board>div i{font-style:normal;width:12px;color:var(--pk-ink2)}
+#hs-root .pkx-board>div span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hs-root .pkx-board>div b{color:var(--pk-ink)}
+#hs-root .pkx-board>div.me{background:color-mix(in srgb,var(--pk-acc) 30%,rgba(0,0,0,.3));color:var(--pk-ink)}
+#hs-root .pkx-foot{display:flex;justify-content:flex-end;margin-top:12px}
+#hs-root .pkx-saved{display:inline-flex;align-items:center;gap:8px;padding:10px 26px;border:2px dashed color-mix(in srgb,var(--pk-ink) 45%,transparent);font:700 15px/1 var(--f-ui);color:var(--pk-ink2);background:rgba(0,0,0,.25)}
+#hs-root .pkx-saved.ok{border-color:#4cd07a;color:#5ee08a}
+#hs-root .pkx-saved .pkx-i{width:18px;height:18px;stroke-width:3}
+/* игровая часть v33 внутри темы */
+#hs-root .pkx .pk-play-area{background:none!important;border:0!important;padding:0!important;box-shadow:none!important}
+#hs-root .pkx .pk-tabs{display:flex;gap:6px;margin:0 250px 10px 0;flex-wrap:wrap}
+#hs-root .pkx .pk-tab{border:0!important;border-radius:4px!important;background:transparent!important;color:var(--pk-ink)!important;font:600 17px/1 'Oswald','Golos Text',sans-serif!important;letter-spacing:.06em;text-transform:uppercase;padding:8px 12px!important;box-shadow:none!important}
+#hs-root .pkx .pk-tab::before{content:"•";margin-right:5px;color:var(--pk-acc)}
+#hs-root .pkx .pk-tab.on{background:color-mix(in srgb,var(--pk-acc) 30%,rgba(0,0,0,.35))!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pk-acc) 55%,transparent)!important}
+#hs-root .pkx .pk-tab.off{opacity:.4}
+#hs-root .pkx .pk-bar{background:none!important;border:0!important;padding:0!important;margin:0 250px 8px 0!important}
+#hs-root .pkx .pk-st{color:var(--pk-ink2)!important;background:none!important;padding:0!important;font:500 12.5px/1.35 var(--f-ui)!important}
+#hs-root .pkx .pk-st.open{color:var(--pk-acc)!important}
+#hs-root .pkx .pk-rules-note{margin:0 250px 8px 0;color:var(--pk-ink2);font-size:11.5px}
+#hs-root .pkx .pk-cat-btn{background:rgba(0,0,0,.3)!important;color:var(--pk-ink)!important;border-color:var(--pk-line)!important}
+#hs-root .pkx .pk-cat-btn.on{background:color-mix(in srgb,var(--pk-acc) 30%,rgba(0,0,0,.3))!important;border-color:var(--pk-acc)!important}
+#hs-root .pkx .pk{background:none!important;border:0!important;padding:6px 0 0!important;box-shadow:none!important;overflow-x:auto}
+#hs-root .pkx .pk-list small{color:var(--pk-ink);font:600 11.5px/1.25 var(--f-ui)}
+#hs-root .pkx .pk-team{border:0!important;background:transparent!important}
+#hs-root .pkx .pk-team:hover:not([disabled]){background:rgba(255,255,255,.1)!important}
+#hs-root .pkx .pk-team img,#hs-root .pkx .pk-lg img,#hs-root .pkx .pk-slot img{filter:drop-shadow(0 0 .6px rgba(255,255,255,.75)) drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+#hs-root .pkx .pk-pool{background:var(--pk-cell)!important;border:0!important;border-radius:4px!important;box-shadow:inset 0 0 0 1px var(--pk-line)}
+#hs-root .pkx .pk-pool h6{font:italic 600 17px/1 'Oswald','Golos Text',sans-serif!important;color:var(--pk-ink)!important;letter-spacing:.04em}
+#hs-root .pkx .pk-m i{color:var(--pk-ink2)!important;font:600 12px/1 var(--f-ui)!important}
+#hs-root .pkx .pk-m+.pk-m{border-top:0!important}
+#hs-root .pkx .pk-q,#hs-root .pkx .pk-lg{background:rgba(0,0,0,.22)!important;box-shadow:inset 0 0 0 1px var(--pk-line);color:var(--pk-ink2)!important}
+#hs-root .pkx .pk-m.pending .pk-q,#hs-root .pkx .pk-q{font-size:0!important;width:30px!important;padding:0!important;opacity:1!important}
+#hs-root .pkx .pk-q::after{content:"?";font:600 17px/1 'Oswald','Golos Text',sans-serif}
+#hs-root .pkx .pk-box{border:0!important;border-radius:4px!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+#hs-root .pkx .pk-box.adv{background:linear-gradient(180deg,color-mix(in srgb,var(--pk-adv) 90%,#fff 6%),var(--pk-adv))!important}
+#hs-root .pkx .pk-box.out{background:linear-gradient(180deg,color-mix(in srgb,var(--pk-out) 90%,#fff 6%),var(--pk-out))!important}
+#hs-root .pkx .pk-box h6{justify-content:center!important;font:600 15px/1 'Oswald','Golos Text',sans-serif!important;letter-spacing:.08em;color:#fff!important}
+#hs-root .pkx .pk-box h6 i{margin-left:8px;color:rgba(255,255,255,.7)!important}
+#hs-root .pkx .pk-box.on{outline:2px solid var(--pk-acc)!important}
+#hs-root .pkx .pk-slot{border-radius:50%!important;background:rgba(0,0,0,.28)!important;border:1.5px solid rgba(255,255,255,.18)!important}
+#hs-root .pkx .pk-slot.empty{border-style:dashed!important;color:rgba(255,255,255,.75)!important}
+#hs-root .pkx .pk-ar{width:20px;height:9px;clip-path:polygon(0 0,70% 0,100% 50%,70% 100%,0 100%,22% 50%)}
+#hs-root .pkx .hs-btn.ghost{color:var(--pk-ink)!important;border-color:var(--pk-line)!important}
+/* пергамент (светлая тема) */
+#hs-root .pkx.light{--pk-ink:#3a2814;--pk-ink2:rgba(58,40,20,.7);--pk-line:rgba(90,60,30,.32);--pk-cell:rgba(120,88,48,.1);--pk-adv:#6e8a46;--pk-out:#9c4e36;
+  background:radial-gradient(40% 30% at 15% 20%,rgba(120,80,30,.18),transparent 70%),radial-gradient(35% 25% at 85% 75%,rgba(120,80,30,.16),transparent 70%),radial-gradient(60% 50% at 60% 30%,rgba(255,250,235,.5),transparent 70%),linear-gradient(170deg,var(--pk-bg2),var(--pk-bg))}
+#hs-root .pkx.light::after{background:radial-gradient(130% 100% at 50% 50%,transparent 60%,rgba(90,60,20,.35))}
+#hs-root .pkx.light .pkx-panel{background:rgba(255,248,228,.28);box-shadow:inset 0 0 0 1px var(--pk-line)}
+#hs-root .pkx.light .pkx-panel>h2,#hs-root .pkx.light .pkx-left>h2{background:rgba(90,60,30,.16);color:var(--pk-ink)}
+#hs-root .pkx.light .pkx-top h1{text-shadow:none}
+#hs-root .pkx.light .pkx-ch li{background:rgba(90,60,30,.1)}
+#hs-root .pkx.light .pkx-ch li.done{background:linear-gradient(90deg,#6e8a46,#7f9b55);color:#fff}
+#hs-root .pkx.light .pkx-ch li.fail{background:rgba(156,78,54,.28)}
+#hs-root .pkx.light .pkx-board>div,#hs-root .pkx.light .pkx-saved,#hs-root .pkx.light .pkx-btn,#hs-root .pkx.light .pkx-theme{background:rgba(90,60,30,.14)}
+#hs-root .pkx.light .pkx-board>div.me{background:rgba(110,138,70,.35)}
+#hs-root .pkx.light .pk-q,#hs-root .pkx.light .pk-lg{background:rgba(255,250,235,.4)!important}
+#hs-root .pkx.light .pk-slot{background:rgba(255,250,235,.35)!important;border-color:rgba(255,255,255,.55)!important}
+#hs-root .pkx.light .pk-team img,#hs-root .pkx.light .pk-lg img,#hs-root .pkx.light .pk-slot img{filter:drop-shadow(0 0 1px rgba(0,0,0,.55)) drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+#hs-root .pkx.light .pkx-item{background:linear-gradient(180deg,rgba(255,250,235,.55),rgba(255,250,235,.25));box-shadow:inset 0 0 0 1px var(--pk-line)}
+#hs-root .pkx.light .pkx-saved.ok{border-color:#4f6e2c;color:#4f6e2c}
+@media (max-width:1300px){#hs-root .pkx-items{grid-template-columns:repeat(3,minmax(0,1fr))}#hs-root .pkx-souv{grid-column:span 3}#hs-root .pkx-chal{grid-template-columns:1fr}#hs-root .pkx-board{position:static;width:auto;margin-bottom:10px}#hs-root .pkx-timer,#hs-root .pkx .pk-tabs,#hs-root .pkx .pk-bar,#hs-root .pkx .pk-rules-note{margin-right:0!important}}
+/* сетка помещается целиком: колонки уже, «?» в кружках */
+#hs-root .pkx .pk-board{gap:16px!important}
+#hs-root .pkx .pk-col{width:132px!important}
+#hs-root .pkx .pk-m{height:34px!important;padding:0 2px!important}
+#hs-root .pkx .pk-ar{right:-15px!important}
+#hs-root .pkx .pk-q::after{content:"?";display:block;font:700 15px/30px 'Golos Text',sans-serif!important;color:var(--pk-ink2);text-align:center}
+#hs-root .pkx .pk-box .pk-cells{justify-content:center}
+#hs-root .pkx .pk-list{width:88px!important}
+#hs-root .pkx .pk-q{position:relative}
+#hs-root .pkx .pk-q::after{position:absolute;inset:0}
+/* пергамент: светлые логотипы на тёмной подложке, чтобы не пропадали */
+#hs-root .pkx.light .pk-team,#hs-root .pkx.light .pk-lg,#hs-root .pkx.light .pk-slot:not(.empty){background:radial-gradient(circle,rgba(45,30,12,.82) 0 62%,rgba(45,30,12,0) 64%)!important;border-radius:50%!important}
+#hs-root .pkx.light .pk-team.used{opacity:.35}
+
+/* v127.1: крупнее логотипы для выбора, Oswald в заголовках, без кубка в сувенирном наборе */
+#hs-root .pkx .pk-list{width:124px!important}
+#hs-root .pkx .pk-list>div{grid-template-columns:repeat(2,54px)!important;gap:6px!important}
+#hs-root .pkx .pk-team{width:54px!important;height:54px!important;border-radius:10px!important}
+#hs-root .pkx .pk-team img,#hs-root .pkx .pk-team .hs-logo{width:44px!important;height:44px!important;object-fit:contain}
+#hs-root .pkx .pk-slot{width:40px!important;height:40px!important}
+#hs-root .pkx .pk-slot img{width:30px!important;height:30px!important;object-fit:contain}
+#hs-root .pkx .pk-lg img{width:24px!important;height:24px!important;object-fit:contain}
+#hs-root .pkx .pk-box .pk-cells{display:grid;grid-template-columns:repeat(3,40px);gap:6px}
+#hs-root .pkx .pk-box.adv:has(.pk-cells>:nth-child(3)) .pk-cells{grid-template-columns:repeat(3,40px)}
+#hs-root .pkx .pk-box:not(:has(.pk-cells>:nth-child(3))) .pk-cells{grid-template-columns:repeat(2,40px)}
+#hs-root .pkx .pk-list small{font:600 13px/1.2 'Oswald','Golos Text',sans-serif!important;letter-spacing:.04em;text-transform:uppercase}
+#hs-root .pkx-timer{font:500 18px/1.3 'Oswald','Golos Text',sans-serif!important;letter-spacing:.02em}
+#hs-root .pkx-board header{font:600 13px/1 'Oswald','Golos Text',sans-serif!important}
+#hs-root .pkx-souv b,#hs-root .pkx-item b{font:600 14px/1.2 'Oswald','Golos Text',sans-serif!important;letter-spacing:.02em}
+#hs-root .pkx-saved{font:600 16px/1 'Oswald','Golos Text',sans-serif!important;letter-spacing:.04em}
+#hs-root .pkx-coin p{font:500 15px/1.3 'Oswald','Golos Text',sans-serif!important;letter-spacing:.01em}
+#hs-root .pkx-ch li{font:500 13px/1.3 'Golos Text',sans-serif}
+#hs-root .pkx-crate{bottom:22%;height:44%}

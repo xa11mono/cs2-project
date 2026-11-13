@@ -6,14 +6,14 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const hub = read('js/manager/v25-hltv-hub.js');
-const trophies = read('js/manager/v26-trophies.js');
-const legacySite = read('js/manager/v27-hltv-site.js');
-const portalPeople = read('js/manager/v30-portal-people.js');
-const career = read('js/manager/v31-career-ui.js');
-const prestige = read('js/manager/v33-prestige.js');
-const rewardRegistry = read('js/manager/v62-reward-registry.js');
-const css = read('css/v30-portal.css');
+const hub = read('js/competition/hltv-hub.js');
+const trophies = read('js/awards/trophies.js');
+const legacySite = read('js/portal/hltv-site.js');
+const portalPeople = read('js/portal/people.js');
+const career = read('js/career/career-ui.js');
+const prestige = read('js/competition/prestige.js');
+const rewardRegistry = read('js/awards/reward-registry.js');
+const css = read('css/portal/tokens.css');
 
 // A single shared classifier drives parallel snapshots, trophy art and achievement shelves.
 const classify = vm.createContext({ window: {}, console });
@@ -42,7 +42,7 @@ assert(/else if \(f\.tab === 'teams'\)[\s\S]*?Tier-1[\s\S]*?Tier-2[\s\S]*?Tier-3
 assert(/const all = \[\.\.\.byId\.values\(\)\]/.test(portalPeople) && /Object\.values\(H\.archive\(\)\)\.forEach/.test(portalPeople), 'season archive should merge the title ledger with all full event snapshots');
 assert(/window\.twTeamAchievements\(name, t\)/.test(portalPeople) && /RewardSystem\?\.getTeamAwards\(name\)/.test(portalPeople), 'team profiles should use the shared achievement ledger and central annual-awards store');
 assert(/window\.twTeamAchievements\(t\.name, t\)/.test(career) && !/titles\.slice\(0,\s*18\)/.test(career), 'career pages should use the shared achievement ledger without truncation');
-assert(/function getAllPlayerAwards\(\)/.test(rewardRegistry) && /RewardSystem\?\.getAllPlayerAwards/.test(read('js/manager/v31-career-core.js')), 'career milestone checks should read player awards through the central registry');
+assert(/function getAllPlayerAwards\(\)/.test(rewardRegistry) && /RewardSystem\?\.getAllPlayerAwards/.test(read('js/career/career-core.js')), 'career milestone checks should read player awards through the central registry');
 assert(!/\)\.slice\(0,\s*14\)\.map\(h =>/.test(legacySite), 'legacy team trophy rendering should not truncate the trophy list at 14');
 assert(/major: 'Major'/.test(prestige) && /elite: 'S-Tier'/.test(prestige) && /t1: 'Tier-1'/.test(prestige), 'team shelves should expose distinct Major, S-Tier and Tier-1 categories');
 

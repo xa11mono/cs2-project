@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const root = path.resolve(__dirname, '..');
-const source = fs.readFileSync(path.join(root, 'js/manager/v62-reward-registry.js'), 'utf8');
+const source = fs.readFileSync(path.join(root, 'js/awards/reward-registry.js'), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
 const db = {
@@ -50,7 +50,7 @@ const seasonState = {
   hallOfFame: [{ champion: 'Beta', season: 2, year: 2027, scorePts: 44 }]
 };
 const sandbox = { window: win, seasonState, teams: [{ name: 'Alpha' }, { name: 'Beta' }], saveSeasonState: () => saves++, CustomEvent: function CustomEvent() {}, console, Date };
-vm.runInNewContext(source, sandbox, { filename: 'v62-reward-registry.js' });
+vm.runInNewContext(source, sandbox, { filename: 'js/awards/reward-registry.js' });
 
 assert(win.RewardSystem && win.RewardSystem.version === 1, 'unified RewardSystem API should initialize');
 assert(db.teamTitles.length === 1 && db.teamTitles[0].id === 'archived-team-title', 'legacy duplicate team achievement ledger should be normalized at startup');
@@ -92,20 +92,20 @@ assert(win.RewardSystem.getPlayerAwards('star').top.every(x => Number(x.y) !== 2
 assert(!win.RewardSystem.getPlayerAwards('star').aw.some(x => x.type === 'poty' && Number(x.y) === 2030) && win.RewardSystem.getPlayerAwards('other').aw.some(x => x.type === 'poty' && Number(x.y) === 2030), 'rebuild should replace POTY without duplicating the old winner');
 assert(win.RewardSystem.getYearRankingVersion(2030) === 2, 'rebuilt year should persist the new ranking version');
 assert(saves > 0, 'legacy award migration should be persisted');
-const prestigeSource = fs.readFileSync(path.join(root, 'js/manager/v33-prestige.js'), 'utf8');
-const peopleSource = fs.readFileSync(path.join(root, 'js/manager/v30-portal-people.js'), 'utf8');
+const prestigeSource = fs.readFileSync(path.join(root, 'js/competition/prestige.js'), 'utf8');
+const peopleSource = fs.readFileSync(path.join(root, 'js/portal/people.js'), 'utf8');
 assert(/honour: 'Особые награды'/.test(prestigeSource) && /honour: all\.filter/.test(prestigeSource), 'annual/Grand Slam honours must stay in their own shelf category, not Tier-1');
-const awardsSource = fs.readFileSync(path.join(root, 'js/manager/v33-awards.js'), 'utf8');
+const awardsSource = fs.readFileSync(path.join(root, 'js/awards/grand-slam-top20.js'), 'utf8');
 assert(/RewardSystem\?\.getTeamSpecialAwards\(name\)/.test(awardsSource), 'team trophy shelves should consume the central special-awards collection');
 assert(/RewardSystem\?\.getTeamEventAchievements\(t\.name, t\)/.test(peopleSource), 'team list title counters should use the central team-achievement model');
 assert(!/const trophies = wins\.filter/.test(peopleSource), 'team overview must not render a second inline copy of the unified trophy shelf');
-const trophiesSource = fs.readFileSync(path.join(root, 'js/manager/v26-trophies.js'), 'utf8');
+const trophiesSource = fs.readFileSync(path.join(root, 'js/awards/trophies.js'), 'utf8');
 assert(/RewardSystem\?\.addTeamEventAchievement/.test(trophiesSource) && /RewardSystem\?\.addPlayerEventAchievement/.test(trophiesSource) && /RewardSystem\?\.addPlayerMvp/.test(trophiesSource), 'tournament title, player title and MVP writes should use the common registry');
 assert(/RewardSystem\?\.getPlayerAwards\(p\.nick\)/.test(trophiesSource), 'player trophy shelves should read their MVP and annual awards from the common registry');
 assert(/teamAwards\.some\(a => a\.type === 'team-season'/.test(trophiesSource), 'legacy Hall-of-Fame rows must not duplicate canonical team-season awards');
-const v36Source = fs.readFileSync(path.join(root, 'js/manager/v36-fixes.js'), 'utf8');
+const v36Source = fs.readFileSync(path.join(root, 'js/awards/calendar-year-fixes.js'), 'utf8');
 assert(/RewardSystem\?\.commitPlayerYearAwards/.test(v36Source), 'Top-20 and yearly individual awards should be written atomically through the registry');
-const v27Source = fs.readFileSync(path.join(root, 'js/manager/v27-hltv-site.js'), 'utf8');
+const v27Source = fs.readFileSync(path.join(root, 'js/portal/hltv-site.js'), 'utf8');
 assert(/RewardSystem\?\.getTeamSpecialAwards/.test(v27Source), 'HLTV Hall of Fame should read team-season awards from the central registry');
 assert(/function teamSeasonAwards\(\)[\s\S]*?RewardSystem\?\.getTeamSpecialAwards/.test(peopleSource), 'portal Hall of Fame and season counts should use the central team-season model');
 

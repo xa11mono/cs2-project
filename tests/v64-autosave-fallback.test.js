@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const assert = (v, m) => { if (!v) throw new Error(m); };
-const source = fs.readFileSync(path.join(__dirname, '..', 'js/manager/v56-autosave.js'), 'utf8');
+const source = fs.readFileSync(path.join(__dirname, '..', 'js/core/autosave.js'), 'utf8');
 
 const records = new Map();
 const store = {
@@ -62,7 +62,7 @@ const sandbox = {
   clearTimeout() {},
   setInterval() { return 1; }
 };
-vm.runInNewContext(source, sandbox, { filename: 'v56-autosave.js' });
+vm.runInNewContext(source, sandbox, { filename: 'js/core/autosave.js' });
 
 (async () => {
   assert(typeof window.showDirectoryPicker === 'undefined', 'test runtime intentionally has no folder picker');

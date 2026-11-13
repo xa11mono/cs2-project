@@ -46,7 +46,7 @@ const H = {
 };
 win.HS = H;
 const sandbox = { window: win, document: { addEventListener() {} }, seasonState: { currentSeason: 4 }, saveSeasonState: () => captured.saves++, console, setInterval: () => 0 };
-vm.runInNewContext(read('js/manager/v36-fixes.js'), sandbox, { filename: 'v36-fixes.js' });
+vm.runInNewContext(read('js/awards/calendar-year-fixes.js'), sandbox, { filename: 'js/awards/calendar-year-fixes.js' });
 
 const rows = win.V36Fixes.yearRows(year);
 assert(rows[0].nick === 'donk', `six MVPs should move donk above higher-rating m0NESY; got #1 ${rows[0]?.nick}`);
@@ -64,13 +64,13 @@ const migrationWindow = {
   RewardSystem: { getCalendarYears: () => [2027, 2028], getYearRankingVersion: y => migrationWindow.versions[y] || 0 },
   V36Fixes: { generateYearAwards: y => { migrationWindow.updated.push(y); migrationWindow.versions[y] = 2; return { top: [] }; } }
 };
-vm.runInNewContext(read('js/manager/v71-yearly-mvp-ranking.js'), { window: migrationWindow, console, saveSeasonState() {} });
+vm.runInNewContext(read('js/awards/yearly-mvp.js'), { window: migrationWindow, console, saveSeasonState() {} });
 assert(migrationWindow.updated.length === 1 && migrationWindow.updated[0] === 2028, 'startup migration should only rebuild years with an outdated formula');
 assert(migrationWindow.V71YearlyMvpRanking.version === 2, 'the migration module should publish the active formula version');
 
-const people = read('js/manager/v30-portal-people.js');
-const hltv = read('js/manager/v27-hltv-site.js');
-const trophies = read('js/manager/v26-trophies.js');
+const people = read('js/portal/people.js');
+const hltv = read('js/portal/hltv-site.js');
+const trophies = read('js/awards/trophies.js');
 assert(/mvpCount \? `\$\{x\.mvpCount\} MVP/.test(people) && /\$\{x\.mvpCount\} MVP/.test(hltv), 'Top-20 displays should show yearly MVP count transparently');
 assert(/x\.mvpCount \?/.test(trophies), 'player achievement tooltip should disclose yearly MVP count in Top-20 record');
 console.log('PASS v71: six MVPs can outweigh a modest raw-rating lead in annual ranking');

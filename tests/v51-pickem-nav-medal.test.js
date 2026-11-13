@@ -6,10 +6,10 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const pickem = read('js/manager/v33-pickem.js');
-const portal = read('js/manager/v27-hltv-site.js');
+const pickem = read('js/fan/pickem.js');
+const portal = read('js/portal/hltv-site.js');
 const html = read('index.html');
-const css = read('css/v30-portal.css');
+const css = read('css/portal/tokens.css');
 
 // v54 groups Pick’Em, Major Path and Major winners into one top navigation menu.
 assert(!/NAV_MORE\.unshift\(\['pickem'/.test(pickem), 'Pick’Em must not be placed in the More menu');
@@ -44,7 +44,7 @@ const ctx = {
   teams:names.map(name=>({name,pts:100})), saveSeasonState:()=>{}, console:{log(){},warn(){},info(){}},
   setTimeout:()=>{}, setInterval:()=>{}, Date, Math, Number, String, Object, Array, Set, Map
 };
-vm.runInNewContext(pickem, ctx, {filename:'v33-pickem.js'});
+vm.runInNewContext(pickem, ctx, {filename:'js/fan/pickem.js'});
 
 assert(window.V33Pickem.isAvailable(), 'Pick’Em navigation should be available while a Major is live');
 let out = H.PAGES.pickem();

@@ -7,13 +7,13 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const v17 = read('js/manager/v17-smart-calendar-skip.js');
-const v18 = read('js/manager/v18-calendar-match-sync.js');
-const v30 = read('js/manager/v30-portal-events.js');
-const v35 = read('js/manager/v35-major-path.js');
-const v40 = read('js/manager/v40-realism.js');
-const v42 = read('js/manager/v42-calendar-schedule-fix.js');
-const v21 = read('js/manager/v21-parallel-tournaments-academies-layer.js');
+const v17 = read('js/calendar/smart-skip.js');
+const v18 = read('js/calendar/match-sync.js');
+const v30 = read('js/portal/events.js');
+const v35 = read('js/competition/major-path-odds.js');
+const v40 = read('js/match/realism.js');
+const v42 = read('js/calendar/schedule-fix.js');
+const v21 = read('js/competition/parallel-tournaments.js');
 
 assert(/q\.v18PlannedTime\s*=\s*at/.test(v17) && /q\.plannedTime\s*=\s*at/.test(v17) && /q\.gameScheduledAt\s*=\s*at/.test(v17), 'day skip must synchronize every planned-time alias');
 assert(/q\.actualStartAt\s*=\s*0/.test(v17) && /q\.v18ShiftedByMs\s*=\s*0/.test(v17), 'day skip must clear stale launch/shift metadata');
@@ -37,7 +37,7 @@ for (let i=0;i<5;i++) poolTeams.push({name:`AS${i+1}`,pts:1200-i*10,region:'AS',
 poolTeams[0].players = [{country:'BR'},{country:'US'},{country:'DE'},{country:'FR'},{country:'PL'}];
 const apiWindow = { CS2_REAL:{newTeams:[]}, CS2_EMDB_2026:{players:{}}, setTimeout:()=>{} };
 const apiCtx = { window:apiWindow, teams:poolTeams, document:{}, console, setTimeout:()=>{} };
-vm.runInNewContext(v40, apiCtx, {filename:'v40-realism.js'});
+vm.runInNewContext(v40, apiCtx, {filename:'js/match/realism.js'});
 const api = apiWindow.CS2Realism;
 assert(api.regionOfTeam(poolTeams[0]) === 'EU', 'explicit team region must override mixed player nationalities');
 const before = api.majorPools(poolTeams);
@@ -61,7 +61,7 @@ const H = { esc:s=>String(s??''), logo:n=>`<b>${n}</b>`, box:(t,b)=>`<section>${
 const simWindow = { HS:H, CS2Realism:api, V29News:null, setInterval:()=>{} };
 const simSeason = { currentSeason:1, tournamentIndex:1, calendar:{currentMs:Date.now()}, seasonSchedule:[null,{type:'major',name:'Major Test',size:32,calendar:{startMs:sStart}}], parallelSchedule:[] };
 const simCtx = { window:simWindow, teams:simTeams, seasonState:simSeason, currentTournament:null, calcMatchOdds:()=>({pct1:50}), setInterval:()=>{}, Date, Math, console };
-vm.runInNewContext(v35, simCtx, {filename:'v35-major-path.js'});
+vm.runInNewContext(v35, simCtx, {filename:'js/competition/major-path-odds.js'});
 const result = simWindow.V35Major.simulateInvites();
 const r32 = result.rows.find(r=>r.name==='EU-18');
 const r33 = result.rows.find(r=>r.name==='EU-19');

@@ -5,11 +5,11 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 
-const v21 = fs.readFileSync(path.join(root, 'js/manager/v21-parallel-tournaments-academies-layer.js'), 'utf8');
-const match = fs.readFileSync(path.join(root, 'js/manager/auto_script_1.js'), 'utf8');
-const events = fs.readFileSync(path.join(root, 'js/manager/v30-portal-events.js'), 'utf8');
-const people = fs.readFileSync(path.join(root, 'js/manager/v30-portal-people.js'), 'utf8');
-const pickem = fs.readFileSync(path.join(root, 'js/manager/v33-pickem.js'), 'utf8');
+const v21 = fs.readFileSync(path.join(root, 'js/competition/parallel-tournaments.js'), 'utf8');
+const match = fs.readFileSync(path.join(root, 'js/base/game.js'), 'utf8');
+const events = fs.readFileSync(path.join(root, 'js/portal/events.js'), 'utf8');
+const people = fs.readFileSync(path.join(root, 'js/portal/people.js'), 'utf8');
+const pickem = fs.readFileSync(path.join(root, 'js/fan/pickem.js'), 'utf8');
 
 // Open -> Closed: в Closed попадают только финалисты Open и посев; Open берёт следующий слой рейтинга.
 assert(/const openSlots=Number\(op\?\.qual\?\.slots\)/.test(v21), 'closed qualifier should use the actual Open advancement quota');

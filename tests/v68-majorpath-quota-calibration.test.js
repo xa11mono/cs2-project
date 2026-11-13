@@ -4,13 +4,13 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const root = path.resolve(__dirname, '..');
-const source = fs.readFileSync(path.join(root, 'js/manager/v35-major-path.js'), 'utf8');
+const source = fs.readFileSync(path.join(root, 'js/competition/major-path-odds.js'), 'utf8');
 const assert = (value, message) => { if (!value) throw new Error(message); };
 
 const H = { PAGES: {}, SECTION_OF: {}, esc: s => String(s ?? ''), box: (t, b) => `${t}${b}`, empty: s => s };
 const win = { HS: H, setInterval() { return 1; } };
 const ctx = { window: win, setInterval() { return 1; }, console: { info() {}, warn() {} }, Date, Math, Number, String, Object, Array, Map, Set };
-vm.runInNewContext(source, ctx, { filename: 'v35-major-path.js' });
+vm.runInNewContext(source, ctx, { filename: 'js/competition/major-path-odds.js' });
 const api = win.V35Major;
 assert(typeof api.buildQuotaPositionProfile === 'function', 'v68 must expose the regional quota position profile');
 assert(typeof api.calibrateStageProbabilities === 'function', 'v68 must expose the quota-aware probability calibrator');

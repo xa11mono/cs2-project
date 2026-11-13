@@ -6,15 +6,15 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const v36 = read('js/manager/v36-fixes.js');
-const v53 = read('js/manager/v53-season-awards-and-no-popups.js');
-const sim = read('js/manager/auto_script_1.js');
+const v36 = read('js/awards/calendar-year-fixes.js');
+const v53 = read('js/awards/season-awards.js');
+const sim = read('js/base/game.js');
 const index = read('index.html');
 
 assert(/function tickCalendarAwards\(\)[\s\S]*?return false;/.test(v36), 'December-only awards trigger must be disabled');
 assert(/\/awp\|snip\|снайпер\//.test(v36), 'AWP/AWPer/Sniper role aliases should be recognized');
 assert(/\['awper', choose\(/.test(v36), 'yearly AWPer category should be present');
-assert(/v53-season-awards-and-no-popups\.js/.test(index) && index.indexOf('v53-season-awards-and-no-popups.js') < index.indexOf('</body>'), 'v53 module must load before body closes');
+assert(/v53-season-awards-and-no-popups\.js/.test(index) && index.indexOf('js/awards/season-awards.js') < index.indexOf('</body>'), 'v53 module must load before body closes');
 assert(!/alert\([`"']🎯 Топ-8 команд вышли на LAN-финал/.test(sim), 'Bounty qualification success alert must be removed');
 assert(!/alert\([`"']🇨🇭 Швейцарский этап завершен/.test(sim), 'Swiss qualification success alert must be removed');
 assert(!/alert\(`🎉 СЕЗОН \$\{seasonState\.currentSeason - 1\} ЗАВЕРШЕН/.test(sim), 'season completion success alert must be removed');
@@ -41,7 +41,7 @@ const win = {
 };
 const seasonState = { currentSeason: 4 };
 const sandbox = { window: win, seasonState, saveSeasonState: () => captured.saves++, console };
-vm.runInNewContext(v53, sandbox, { filename: 'v53-season-awards-and-no-popups.js' });
+vm.runInNewContext(v53, sandbox, { filename: 'js/awards/season-awards.js' });
 N.H['season-end']({ season: 3, champion: 'Team A' });
 assert(captured.baseCalled === 3, 'previous season-end news handlers must still run');
 assert(captured.generated.length === 1 && captured.generated[0] === 2028, 'year awards should be generated for the just-ended season');

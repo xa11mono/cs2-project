@@ -35,7 +35,7 @@ function createSandbox() {
   ctx.CS2ParallelTournamentPools = { extend(groups) { ctx.lastParallel = groups; }, list() { return {}; } };
   ctx.window.CS2ParallelTournamentPools = ctx.CS2ParallelTournamentPools;
   vm.createContext(ctx);
-  const modulePath = path.join(__dirname, '..', 'js', 'manager', 'v59-database-import.js');
+  const modulePath = path.join(__dirname, '..', 'js', 'manager', 'js/core/database-import.js');
   vm.runInContext(fs.readFileSync(modulePath, 'utf8'), ctx, { filename: modulePath });
   return { ctx, store, nodes };
 }
@@ -45,8 +45,8 @@ async function fakeFile(fileName) {
   return { name: path.basename(full), text: async () => fs.readFileSync(full, 'utf8') };
 }
 
-const siteSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'manager', 'v27-hltv-site.js'), 'utf8');
-const uiSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'manager', 'v27-ui.js'), 'utf8');
+const siteSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'manager', 'js/portal/hltv-site.js'), 'utf8');
+const uiSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'manager', 'js/portal/game-ui.js'), 'utf8');
 const htmlSource = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 assert.match(siteSource, /NAV_MORE = \[.*\['settings', 'Сейвы и базы'\]/, 'save/base settings should be directly discoverable under More');
 assert.match(uiSource, /Выбрать папку для автосейва/, 'folder picker must be present on the visible settings page');
@@ -57,7 +57,7 @@ assert.match(htmlSource, /v59-database-import\.js\?v=114/, 'v59 database importe
   // The real EMDB and legacy CS2_REAL JS assignment formats parse as passive objects.
   {
     const { ctx } = createSandbox();
-    await ctx.v59ImportRosters(await fakeFile('js/data-real-2026.js'));
+    await ctx.v59ImportRosters(await fakeFile('js/data/real-players-2026.js'));
     assert.ok(ctx.TEAM_ROSTER_2026['Rare Atom']?.length >= 5, 'CS2_REAL rosters should be imported');
     assert.ok(ctx.PLAYER_META_2026.donk, 'player metadata should be imported');
     assert.ok(ctx.teams.length > 1, 'unknown teams should be added to the team pool');
@@ -65,7 +65,7 @@ assert.match(htmlSource, /v59-database-import\.js\?v=114/, 'v59 database importe
   }
   {
     const { ctx } = createSandbox();
-    await ctx.v59ImportRosters(await fakeFile('js/data-emdb-2026.js'));
+    await ctx.v59ImportRosters(await fakeFile('js/data/emdb-2026.js'));
     assert.ok(ctx.TEAM_ROSTER_2026.NRG?.length >= 5, 'EMDB rosters should be imported');
     assert.ok(ctx.PLAYER_META_2026.hallzerk, 'EMDB player metadata should be imported');
     const stored = JSON.parse(ctx.localStorage.getItem('cs2_custom_rosters_v59'));
@@ -74,7 +74,7 @@ assert.match(htmlSource, /v59-database-import\.js\?v=114/, 'v59 database importe
   }
   {
     const { ctx } = createSandbox();
-    await ctx.v59ImportTournaments(await fakeFile('js/manager/auto_script_1.js'));
+    await ctx.v59ImportTournaments(await fakeFile('js/base/game.js'));
     assert.ok(ctx.TOUR_DATABASE.major.length > 0, 'TOUR_DATABASE JS object should be imported');
     assert.ok(ctx.TOUR_DATABASE.elite.length > 0, 'S-Tier pool should be imported');
     assert.ok(ctx.TOUR_DATABASE.weak.length > 0, 'weak/open pool should be imported');

@@ -6,12 +6,12 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const trophySource = read('js/manager/v26-trophies.js');
-const hubSource = read('js/manager/v25-hltv-hub.js');
-const siteSource = read('js/manager/v27-hltv-site.js');
-const peopleSource = read('js/manager/v30-portal-people.js');
-const careerSource = read('js/manager/v31-career-ui.js');
-const prestigeSource = read('js/manager/v33-prestige.js');
+const trophySource = read('js/awards/trophies.js');
+const hubSource = read('js/competition/hltv-hub.js');
+const siteSource = read('js/portal/hltv-site.js');
+const peopleSource = read('js/portal/people.js');
+const careerSource = read('js/career/career-ui.js');
+const prestigeSource = read('js/competition/prestige.js');
 
 // The shared category classifier and visual API must initialize before the UI integration guard.
 const context = vm.createContext({ window: {}, console });

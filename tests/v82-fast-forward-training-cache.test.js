@@ -2,7 +2,7 @@
 const fs = require('fs'); const path = require('path'); const vm = require('vm');
 const assert = (v,m) => { if(!v) throw new Error(m); };
 const root=path.resolve(__dirname,'..'); const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const career=read('js/manager/v31-career-core.js'), calendar=read('js/manager/v17-smart-calendar-skip.js'), batch=read('js/manager/v33-time.js'), html=read('index.html'), site=read('js/manager/v27-hltv-site.js');
+const career=read('js/career/career-core.js'), calendar=read('js/calendar/smart-skip.js'), batch=read('js/calendar/skip-days.js'), html=read('index.html'), site=read('js/portal/hltv-site.js');
 const aiStart=career.indexOf('function aiTrainingPlan('), helpersStart=career.indexOf('const v31TrainingDiagnostics =');
 assert(helpersStart>=0 && aiStart>helpersStart,'training index helper section exists');
 assert(/function getTrainingMatches\(\)[\s\S]*?window\.HS\.matchIndex\(\)/.test(career),'training should use lightweight match index rather than full player stats');
@@ -12,7 +12,7 @@ assert(/syncClockCooperative: syncCareerClockCooperative/.test(career) && /syncC
 assert(/__CS2_BATCH_CPU_BUDGET_MS = 10/.test(batch) && /__CS2_FAST_FORWARD_IDLE_MS = 0/.test(batch),'v84: skips use 10 ms work slices without artificial idle gaps');
 assert(/window\.__CS2_BATCH_TRAINING_MAP_STATS = null/.test(batch) && /delete window\.__CS2_BATCH_TRAINING_MAP_STATS/.test(batch),'batch historical map index is scoped to one skip');
 assert(/window\.CS2SimulationPerf\.lastBatch/.test(batch) && /training: window\.V31\?\.trainingDiagnostics/.test(batch),'lastBatch exposes training diagnostics');
-assert(html.includes('v17-smart-calendar-skip.js?v=114') && html.includes('v31-career-core.js?v=131') && html.includes('v33-time.js?v=114') && html.includes('v27-hltv-site.js?v=131.5'),'changed scripts bypass browser cache');
+assert(html.includes('js/calendar/smart-skip.js') && html.includes('js/career/career-core.js') && html.includes('js/calendar/skip-days.js') && html.includes('js/portal/hltv-site.js'),'changed scripts bypass browser cache');
 assert(site.includes('CS2 Manager <i class="pt-ver">v86</i>'),'visible version is v82');
 
 const matches=[

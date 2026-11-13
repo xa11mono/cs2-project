@@ -10,7 +10,7 @@ const assert = (condition, message) => { if (!condition) throw new Error(message
 // Реальная симуляция раунда v34: исход, события и план команды.
 const simContext = { window: {}, console: { log(){}, warn(){}, info(){} }, Math, Map, Number, String, Object, Array, Set, Date };
 vm.createContext(simContext);
-vm.runInContext(read('js/manager/v34-round.js'), simContext);
+vm.runInContext(read('js/match/round-sim.js'), simContext);
 const V34 = simContext.window.V34Round;
 function rng(seed) { let s = seed >>> 0 || 1; return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 const player = nick => ({ nick, role: 'Rifler', firepower: 75, tacticalIQ: 80, clutch: 80, utility: 80 });
@@ -35,7 +35,7 @@ const context = {
   }
 };
 vm.createContext(context);
-vm.runInContext(read('js/manager/v43-match-immersion.js'), context);
+vm.runInContext(read('js/match/immersion.js'), context);
 const API = context.window.CS2MatchImmersion;
 assert(API && API.technicalPauseChancePerRound === .0025, 'частота технической паузы должна быть 0.25% на подходящий раунд');
 const makeItem = id => ({ id, match: { t1: 'Alpha', t2: 'Beta' }, state: { phase: 'playing', finished: false, round: 8, mapIndex: 0, maps: ['Mirage'], map1: 4, map2: 4, mode: 'BO3', t1Pauses: 3, t2Pauses: 3, mapRoundWinners: [1,2,1,2,1], pauseHistory: [] } });

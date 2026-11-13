@@ -6,18 +6,18 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const batch = read('js/manager/v33-time.js');
-const v17 = read('js/manager/v17-smart-calendar-skip.js');
-const v15 = read('js/manager/v15-training-calendar-layer.js');
-const v21 = read('js/manager/v21-parallel-tournaments-academies-layer.js');
-const v63 = read('js/manager/v63-simulation-kernel.js');
-const v29 = read('js/manager/v29-news.js');
-const v56 = read('js/manager/v56-autosave.js');
-const v57 = read('js/manager/v57-player-career.js');
-const autoScript = read('js/manager/auto_script_1.js');
-const spectator = read('js/manager/v32-spectator.js');
-const v30Market = read('js/manager/v30-market.js');
-const v31Career = read('js/manager/v31-career-core.js');
+const batch = read('js/calendar/skip-days.js');
+const v17 = read('js/calendar/smart-skip.js');
+const v15 = read('js/calendar/training-calendar.js');
+const v21 = read('js/competition/parallel-tournaments.js');
+const v63 = read('js/core/sim-kernel.js');
+const v29 = read('js/media/news-feed.js');
+const v56 = read('js/core/autosave.js');
+const v57 = read('js/rosters/player-career-stats.js');
+const autoScript = read('js/base/game.js');
+const spectator = read('js/match/spectator.js');
+const v30Market = read('js/rosters/market.js');
+const v31Career = read('js/career/career-core.js');
 const html = read('index.html');
 
 assert(!/setTimeout\(r,\s*45\)/.test(batch), 'there must be no fixed 45ms sleep for every virtual day');
@@ -43,11 +43,11 @@ assert(/if\(!window\.v57BatchCalendarSkip\) drain\(\)/.test(v29) && /v29FlushNew
 assert(/if \(window\.v57BatchCalendarSkip \|\| !b\.running/.test(autoScript) && /if \(window\.v57BatchCalendarSkip\) \{ item\.tickInProgress = false; scheduleTick\(1000\); return; \}/.test(autoScript), 'broadcast watchdog and live match ticks must pause while virtual time is batch-owned');
 assert(/if\(wasRunning && !window\.v57BatchCalendarSkip/.test(v17) && /batchBroadcastWasRunning/.test(batch) && /startTVBroadcastMode\(\)/.test(batch), 'a previously active live broadcast should resume once after the batch, not after each day');
 assert(/window\.v57BatchCalendarSkip \|\| H\.S\.page/.test(spectator), 'spectator UI polling should suspend during long fast-forward');
-for (const f of ['v17-smart-calendar-skip.js', 'v33-time.js', 'v63-simulation-kernel.js', 'v21-parallel-tournaments-academies-layer.js', 'auto_script_1.js', 'v32-spectator.js']) {
+for (const f of ['js/calendar/smart-skip.js', 'js/calendar/skip-days.js', 'js/core/sim-kernel.js', 'js/competition/parallel-tournaments.js', 'js/base/game.js', 'js/match/spectator.js']) {
   const version = 114; // v114: all scripts share one cache version
   assert(html.includes(`${f}?v=${version}`), `${f} must bypass stale browser cache after the relevant patch`);
 }
-assert(html.includes('v56-autosave.js?v=131.1'), 'autosave snapshot scheduler must bypass the v80 browser cache');
+assert(html.includes('js/core/autosave.js'), 'autosave snapshot scheduler must bypass the v80 browser cache');
 
 (async () => {
   let days = 0, parallelTicks = 0, yields = 0, finalAutosaves = 0, renders = 0, savesTeams = 0, savesSeason = 0;
@@ -71,7 +71,7 @@ assert(html.includes('v56-autosave.js?v=131.1'), 'autosave snapshot scheduler mu
     HS: { render() { renders++; } }
   };
   const ctx = { window: win, document: { ...doc, visibilityState: 'visible' }, saveTeams, saveSeasonState, console, Promise, setTimeout(fn, ms) { if (ms <= 4) yields++; return setTimeout(fn, ms); }, setInterval() { return 1; }, clearInterval() {}, Math, Number, String, Object, Array, Date };
-  vm.runInNewContext(batch, ctx, { filename: 'v33-time.js' });
+  vm.runInNewContext(batch, ctx, { filename: 'js/calendar/skip-days.js' });
   await win.v33SkipDays(25);
   assert(days === 25 && parallelTicks === 25, 'all virtual days and daily scheduler ticks must run exactly once');
   assert(yields >= 25, 'the browser should receive a paint/input opportunity after every virtual day');

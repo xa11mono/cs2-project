@@ -5,10 +5,10 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const core = read('js/manager/auto_script_1.js');
-const v17 = read('js/manager/v17-smart-calendar-skip.js');
-const v21 = read('js/manager/v21-parallel-tournaments-academies-layer.js');
-const v55 = read('js/manager/v55-simulation-liveness.js');
+const core = read('js/base/game.js');
+const v17 = read('js/calendar/smart-skip.js');
+const v21 = read('js/competition/parallel-tournaments.js');
+const v55 = read('js/core/sim-liveness.js');
 const html = read('index.html');
 
 // Season-end work must be linear, and the new season must rebuild all 14 Tier-1 events.
@@ -43,7 +43,7 @@ const context = {
   console,
   Map, Set, Number, Math, Array, Object, Date
 };
-vm.runInNewContext(v55, context, {filename:'v55-simulation-liveness.js'});
+vm.runInNewContext(v55, context, {filename:'js/core/sim-liveness.js'});
 assert(seasonRebuilds === 0, 'valid current-season calendar must not be reset');
 
 // A completed Swiss round with a stale currentRound must generate the next round.

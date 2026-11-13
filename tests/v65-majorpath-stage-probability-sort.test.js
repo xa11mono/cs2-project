@@ -3,13 +3,13 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const root = path.resolve(__dirname, '..');
-const source = fs.readFileSync(path.join(root, 'js/manager/v35-major-path.js'), 'utf8');
+const source = fs.readFileSync(path.join(root, 'js/competition/major-path-odds.js'), 'utf8');
 const assert = (value, message) => { if (!value) throw new Error(message); };
 
 const H = { PAGES: {}, SECTION_OF: {}, esc: s => String(s ?? ''), box: (t, b) => `${t}${b}`, empty: s => s };
 const win = { HS: H, setInterval() { return 1; } };
 const context = { window: win, setInterval() { return 1; }, console: { info() {}, warn() {} }, Date, Math, Number, String, Object, Array, Map, Set };
-vm.runInNewContext(source, context, { filename: 'v35-major-path.js' });
+vm.runInNewContext(source, context, { filename: 'js/competition/major-path-odds.js' });
 const api = win.V35Major;
 assert(api && typeof api.sortProbabilityRows === 'function', 'Major Path must expose its canonical sorter');
 assert(typeof api.probabilityStage === 'function', 'Major Path must expose its dominant-stage classifier');

@@ -5,10 +5,10 @@ const root = path.resolve(__dirname, '..');
 const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const source = read('js/manager/v15-training-calendar-layer.js');
+const source = read('js/calendar/training-calendar.js');
 const html = read('index.html');
-const css = read('css/v15-training-calendar-styles.css');
-const portal = read('js/manager/v27-hltv-site.js');
+const css = read('css/base/training-calendar.css');
+const portal = read('js/portal/hltv-site.js');
 assert(/V15_SPEEDS\s*=\s*\[1,2,5,16\]/.test(source), '16x must be an allowed persisted calendar speed');
 assert(/data-calendar-speed="16"[^>]*onclick="setGameCalendarSpeed\(16\)"/.test(html), 'calendar UI must expose the 16x speed button');
 assert(/\[1, 2, 5, 16\]\.map/.test(portal), 'HLTV portal speed selector must also expose 16x');
@@ -34,7 +34,7 @@ const context = {
   saveSeasonState() { context.saved = (context.saved || 0) + 1; },
   saveTeams() {}, ensurePlayerLayer() {},
 };
-vm.runInNewContext(source, context, { filename: 'v15-training-calendar-layer.js' });
+vm.runInNewContext(source, context, { filename: 'js/calendar/training-calendar.js' });
 assert(timers.some(t => t.ms === 1000 && t.active), 'normal mode should retain the 1-second ticker');
 window.setGameCalendarSpeed(16);
 const active16 = timers.filter(t => t.active).slice(-1)[0];

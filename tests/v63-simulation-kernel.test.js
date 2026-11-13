@@ -3,10 +3,10 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const root = path.resolve(__dirname, '..');
-const source = fs.readFileSync(path.join(root, 'js/manager/v63-simulation-kernel.js'), 'utf8');
-const v21 = fs.readFileSync(path.join(root, 'js/manager/v21-parallel-tournaments-academies-layer.js'), 'utf8');
-const v25 = fs.readFileSync(path.join(root, 'js/manager/v25-hltv-hub.js'), 'utf8');
-const v30 = fs.readFileSync(path.join(root, 'js/manager/v30-portal-events.js'), 'utf8');
+const source = fs.readFileSync(path.join(root, 'js/core/sim-kernel.js'), 'utf8');
+const v21 = fs.readFileSync(path.join(root, 'js/competition/parallel-tournaments.js'), 'utf8');
+const v25 = fs.readFileSync(path.join(root, 'js/competition/hltv-hub.js'), 'utf8');
+const v30 = fs.readFileSync(path.join(root, 'js/portal/events.js'), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
 const calls = [];
@@ -34,7 +34,7 @@ const sandbox = {
   Date,
   setInterval(fn, ms) { timers.push({ fn, ms }); return timers.length; }
 };
-vm.runInNewContext(source, sandbox, { filename: 'v63-simulation-kernel.js' });
+vm.runInNewContext(source, sandbox, { filename: 'js/core/sim-kernel.js' });
 
 assert(win.CS2SimulationKernel?.version === 1, 'kernel API should initialize');
 assert(timers.length === 1 && timers[0].ms === 500, 'kernel should own exactly one recurring gameplay dispatcher');
@@ -81,8 +81,8 @@ assert(timing.nextWake({ at: slot }, slot + 60 * 60000) === deadline, 'a match a
 assert(timing.nextWake({ at: slot }, deadline + 60000) === deadline + 60000, 'an overdue match must wake immediately');
 assert(/v22RepairMatchTimes\(ev\)/.test(v21), 'older brackets with missing timestamps should be repaired before simulation');
 assert(!/setInterval/.test(v21), 'parallel tournament layer must not own a second scheduler timer');
-assert(/CS2SimulationTasks\.v20Resync/.test(fs.readFileSync(path.join(root, 'js/manager/v20-schedule-resync-and-realistic-day.js'), 'utf8')), 'Tier-1 resync must register with the central dispatcher');
-assert(!/CS2SimulationTasks\.v20SyncSpeed/.test(fs.readFileSync(path.join(root, 'js/manager/v20-schedule-resync-and-realistic-day.js'), 'utf8')), 'redundant second playback-speed owner must be removed');
+assert(/CS2SimulationTasks\.v20Resync/.test(fs.readFileSync(path.join(root, 'js/calendar/schedule-resync.js'), 'utf8')), 'Tier-1 resync must register with the central dispatcher');
+assert(!/CS2SimulationTasks\.v20SyncSpeed/.test(fs.readFileSync(path.join(root, 'js/calendar/schedule-resync.js'), 'utf8')), 'redundant second playback-speed owner must be removed');
 win.CS2SimulationTasks = {
   v20Resync: () => calls.push({ type: 'task', name: 'v20Resync' }),
   v18Broadcast: () => calls.push({ type: 'task', name: 'v18Broadcast' }),
@@ -98,15 +98,15 @@ assert(/o\.resolveAt=timing\.dueAt\(m\)/.test(v25), 'HLTV snapshots should carry
 assert(/Симуляция матча/.test(v30) && /Матч ожидает обработки/.test(v30), 'portal should distinguish simulation/overdue from unknown schedule');
 
 const schedulingLayers = [
-  'v17-smart-calendar-skip.js', 'v18-calendar-match-sync.js',
-  'v19-pretty-schedule-and-speed-sync.js', 'v20-schedule-resync-and-realistic-day.js',
-  'v21-parallel-tournaments-academies-layer.js', 'v42-calendar-schedule-fix.js'
+  'js/calendar/smart-skip.js', 'js/calendar/match-sync.js',
+  'js/calendar/schedule-speed.js', 'js/calendar/schedule-resync.js',
+  'js/competition/parallel-tournaments.js', 'js/calendar/schedule-fix.js'
 ];
 for (const file of schedulingLayers) {
   const text = fs.readFileSync(path.join(root, 'js/manager', file), 'utf8');
   assert(!/setInterval\s*\(/.test(text), `${file} must register tasks rather than own a recurring scheduler timer`);
 }
-const v33 = fs.readFileSync(path.join(root, 'js/manager/v33-time.js'), 'utf8');
+const v33 = fs.readFileSync(path.join(root, 'js/calendar/skip-days.js'), 'utf8');
 assert(/CS2SimulationKernel\?\.afterClockJump/.test(v33) && /flush: true/.test(v33), 'multi-day skips must use the kernel and flush deferred writes once at the end');
 
 console.log('PASS v63 shared clock and parallel scheduler kernel');

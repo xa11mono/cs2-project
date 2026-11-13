@@ -7,11 +7,11 @@ const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
-const pickem = read('js/manager/v33-pickem.js');
-const logos = read('js/manager/v27-hltv-site.js');
-const market = read('js/manager/v30-market.js');
-const rosterAI = read('js/manager/v34-roster-ai.js');
-const css = read('css/v30-portal.css');
+const pickem = read('js/fan/pickem.js');
+const logos = read('js/portal/hltv-site.js');
+const market = read('js/rosters/market.js');
+const rosterAI = read('js/rosters/roster-ai.js');
+const css = read('css/portal/tokens.css');
 
 // Logo selection must walk through every known source, not stop at one stale blob URL.
 assert(/const saved = t\?\.photo \|\| t\?\.crest/.test(logos), 'legacy saved photo/crest fields should remain supported');
@@ -39,7 +39,7 @@ const seasonState = { calendar:{currentMs:1000}, v33Pickem:{t:'Major v50',major:
 const window = { HS:H, scrollY:0, scrollTo:()=>{}, V31Media:null };
 const ctx = { window, document:{getElementById:()=>null}, seasonState, currentTournament, currentPickem:{major:majorData}, teams:names.map(name=>({name,pts:100})),
   saveSeasonState:()=>{}, console:{log(){},warn(){},info(){}}, setTimeout:()=>{}, Date, Math, Number, String, Object, Array, Set, Map };
-vm.runInNewContext(pickem, ctx, {filename:'v33-pickem.js'});
+vm.runInNewContext(pickem, ctx, {filename:'js/fan/pickem.js'});
 let html = H.PAGES.pickem();
 assert(html.includes('data-pkcat="zeroThree"'), 'Pick’em should expose a direct 0:3 category control');
 assert(/Счёты 1:3 и 2:3 — результаты выбывания/.test(html), 'Pick’em should explain that 1:3/2:3 are outcomes, not prediction slots');

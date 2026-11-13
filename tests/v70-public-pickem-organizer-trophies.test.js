@@ -41,7 +41,7 @@ const window = {
   seasonState: { calendar: { currentMs: 1_800_000_000_000 } }
 };
 const vmContext = { window, console, setTimeout: () => 0, setInterval: () => 0, Date, Math, Map, Set, Object, Array, Number, String };
-vm.runInNewContext(read('js/manager/v70-pickem-publishers.js'), vmContext);
+vm.runInNewContext(read('js/media/pickem-publishers.js'), vmContext);
 const Pub = window.V70PickemPublications;
 assert(Pub && typeof Pub.sync === 'function', 'publisher integration must be registered');
 const first = Pub.sync();
@@ -85,7 +85,7 @@ assert(Pub.sync().created === 0 && publications.length === startedCount, 'a stag
 
 // Organizer trophy silhouettes: no sharing between organizer brands, while ESL has internal variants.
 const gameWindow = {};
-vm.runInNewContext(read('js/manager/v26-trophies.js'), { window: gameWindow, console });
+vm.runInNewContext(read('js/awards/trophies.js'), { window: gameWindow, console });
 const TW = gameWindow.TW;
 assert(TW && typeof TW.specFor === 'function', 'trophy generator must be available');
 const specs = {
@@ -114,12 +114,12 @@ for (const event of ['BLAST Premier Qualifier','PGL Regional Qualifier','ESL Ope
 }
 
 // Wiring: separate publisher tab, publisher article cards and v29 shared news API.
-const site = read('js/manager/v27-hltv-site.js');
-const news = read('js/manager/v29-news.js');
-const pickem = read('js/manager/v33-pickem.js');
+const site = read('js/portal/hltv-site.js');
+const news = read('js/media/news-feed.js');
+const pickem = read('js/fan/pickem.js');
 const html = read('index.html');
 assert(site.includes("['publishers', 'Паблики Pick’Em']") && site.includes('publicPickemArticle'), 'Pick’Em publisher page and article renderer must be wired');
 assert(news.includes("'pickem-pub'") && news.includes('publishPublicPickem') && news.includes('publicPickem:'), 'public posts must use the common news store');
 assert(pickem.includes('publicContext') && pickem.includes('window.V33Pickem'), 'public Pick’Em must read the real Major roster context');
-assert(html.includes('v70-pickem-publishers.js?v=114') && html.includes('v70-publications.css?v=114'), 'new module and styles must load with cache busting');
+assert(html.includes('js/media/pickem-publishers.js') && html.includes('css/media/publications.css'), 'new module and styles must load with cache busting');
 console.log('v72 public Pick’Em + organizer trophy tests passed');

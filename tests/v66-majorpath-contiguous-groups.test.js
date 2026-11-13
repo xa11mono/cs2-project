@@ -3,14 +3,14 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const root = path.resolve(__dirname, '..');
-const source = fs.readFileSync(path.join(root, 'js/manager/v35-major-path.js'), 'utf8');
+const source = fs.readFileSync(path.join(root, 'js/competition/major-path-odds.js'), 'utf8');
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-const css = fs.readFileSync(path.join(root, 'css/v30-portal.css'), 'utf8');
+const css = fs.readFileSync(path.join(root, 'css/portal/tokens.css'), 'utf8');
 const assert = (value, message) => { if (!value) throw new Error(message); };
 const H = { PAGES: {}, SECTION_OF: {}, esc: s => String(s ?? ''), box: (t, b) => `${t}${b}`, empty: s => s };
 const win = { HS: H, setInterval() { return 1; } };
 const context = { window: win, setInterval() { return 1; }, console: { info() {}, warn() {} }, Date, Math, Number, String, Object, Array, Map, Set };
-vm.runInNewContext(source, context, { filename: 'v35-major-path.js' });
+vm.runInNewContext(source, context, { filename: 'js/competition/major-path-odds.js' });
 const api = win.V35Major;
 assert(api && typeof api.probabilityBuckets === 'function' && typeof api.inviteProbability === 'function', 'v72 must expose probability bucket/total helpers');
 
@@ -52,6 +52,6 @@ assert(Math.abs(api.inviteProbability({ s3: '70%', s2: '5%', s1: '2%' }) - .77) 
 
 assert(source.includes('mp-stage-divider') && source.includes('const stageSections = [3, 2, 1]'), 'table should render continuous explicit stage sections');
 assert(!source.includes('Number(x.in) > 0'), 'legacy `in` field should not override the normalized total');
-assert(index.includes('v35-major-path.js?v=114') && index.includes('v30-portal.css?v=114'), 'cache busting should force v72 JS/CSS to load');
+assert(index.includes('js/competition/major-path-odds.js') && index.includes('css/portal/tokens.css'), 'cache busting should force v72 JS/CSS to load');
 assert(css.includes('.mp-stage-divider td'), 'stage divider rows need visible group styling');
 console.log('PASS v72: Major Path stage groups are contiguous; each is sorted by derived invite probability descending');

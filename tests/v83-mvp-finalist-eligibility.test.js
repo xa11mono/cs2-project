@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const source = fs.readFileSync(path.join(__dirname, '..', 'js/manager/v26-trophies.js'), 'utf8');
+const source = fs.readFileSync(path.join(__dirname, '..', 'js/awards/trophies.js'), 'utf8');
 const assert = (v, m) => { if (!v) throw new Error(m); };
 
 const eventId = 'major-test';
@@ -54,10 +54,10 @@ function buildEnv({ lines, initialAwards = {}, archiveRosters = true, rewardRegi
     showHistory() {},
     CustomEvent: function CustomEvent(type, init) { this.type = type; this.detail = init?.detail; }
   };
-  vm.runInNewContext(source, sandbox, { filename: 'v26-trophies.js' });
+  vm.runInNewContext(source, sandbox, { filename: 'js/awards/trophies.js' });
   if (rewardRegistry) {
-    const registrySource = fs.readFileSync(path.join(__dirname, '..', 'js/manager/v62-reward-registry.js'), 'utf8');
-    vm.runInNewContext(registrySource, sandbox, { filename: 'v62-reward-registry.js' });
+    const registrySource = fs.readFileSync(path.join(__dirname, '..', 'js/awards/reward-registry.js'), 'utf8');
+    vm.runInNewContext(registrySource, sandbox, { filename: 'js/awards/reward-registry.js' });
   }
   return { window, archive, teams, getAwards: () => window.twAwardsExport() };
 }

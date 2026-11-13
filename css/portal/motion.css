@@ -1,0 +1,246 @@
+/* =====================================================================
+   v85 — дизайн-проход «Broadcast Polish»
+   Последний слой стилей. Ничего не меняет в механике — только исправления вёрстки,
+   единая система движения и мелкая типографика. Значения берутся из токенов DESIGN.md.
+   Порядок: 1) токены движения  2) исправления  3) компоненты  4) движение  5) производительность
+   6) уменьшенное движение.
+   ===================================================================== */
+
+/* ---------- 1. Токены движения ---------- */
+:root{
+  --m-press:90ms;--m-micro:120ms;--m-small:180ms;--m-medium:260ms;--m-large:420ms;
+  --ease:cubic-bezier(.2,0,0,1);--ease-in:cubic-bezier(0,0,0,1);--ease-out:cubic-bezier(.3,0,1,1);
+  --ease-emph:cubic-bezier(.16,1,.3,1);
+  --sh-lift:0 14px 32px -18px rgba(0,0,0,.9),0 2px 0 rgba(255,255,255,.03) inset;
+  --ring:0 0 0 3px rgba(255,122,61,.22);
+}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+::selection{background:rgba(255,122,61,.32);color:#fff}
+
+/* ---------- 2. Исправления ---------- */
+/* 2.1 Битый логотип: атрибут hidden перебивался display:block, и браузер рисовал значок «нет картинки» */
+#hs-root .hs-logo img[hidden],.hs-logo img[hidden],#hs-root img[hidden]{display:none!important}
+#hs-root .hs-logo-fallback[hidden]{display:none!important}
+/* тёмные эмблемы (чёрный логотип на тёмном фоне) — тонкий светлый контур, чтобы знак читался */
+#hs-root .hs-logo.img:not(.plate) img{filter:drop-shadow(0 0 .6px rgba(232,237,243,.38))}
+
+/* 2.2 Ярлыки уровня не переносятся по слогам («TIER-↵2», «TOP-↵20») */
+#hs-root .hs-kind,#hs-root .hs-live,#hs-root .hs-tier{white-space:nowrap}
+#hs-root .cal-n{min-width:0}
+
+/* 2.3 Целая строка «идущего» турнира мигала вместе с меткой LIVE (v84pulse на tr.live) — строка
+   теряла контраст до 35 %. Мигает только точка внутри метки, строка выделяется фоном. */
+#hs-root tr.live,#hs-root .live:not(.hs-live),#hs-root .is-live{animation:none!important}
+#hs-root tr.live td{background:linear-gradient(90deg,rgba(255,77,109,.09),rgba(255,77,109,.02) 60%,transparent)!important;color:var(--c-text-2)}
+#hs-root tr.live td:first-child{box-shadow:inset 2px 0 0 var(--c-live)}
+#hs-root .hs-live{animation:none!important;display:inline-flex;align-items:center;gap:5px}
+#hs-root .hs-live::before{animation:v85dot 1.8s var(--ease) infinite!important}
+@keyframes v85dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.8)}}
+
+/* 2.4 Главная: колонка героя растягивается на высоту колонки новостей — без пустой «дыры» под ним;
+   обе сетки главной на одной вертикали (правая колонка 360 px) */
+#hs-root .v37-home-layout{grid-template-columns:minmax(0,1fr) 360px!important;gap:20px!important;align-items:stretch}
+#hs-root .hm-grid,#hs-root .hs-grid2.hm-grid{grid-template-columns:minmax(0,1fr) 360px!important;gap:20px!important}
+#hs-root .v37-feature-col{display:flex;flex-direction:column;min-height:100%}
+#hs-root .v37-feature-col>.v37-premium-hero{flex:1 1 auto;align-content:center;min-height:300px}
+#hs-root .v37-feature-foot{flex:none}
+@media (max-width:1100px){#hs-root .v37-home-layout,#hs-root .hm-grid,#hs-root .hs-grid2.hm-grid{grid-template-columns:minmax(0,1fr)!important}}
+
+/* 2.5 «Сейчас идут»: строка-сетка — иконка · название (2 строки) · метка LIVE; ничего не наезжает */
+#hs-root .hm-ev{display:grid!important;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:10px;text-align:left}
+#hs-root .hm-ev>span:nth-child(2){min-width:0;display:flex;flex-direction:column;gap:3px}
+#hs-root .hm-ev b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+#hs-root .hm-ev small{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;white-space:nowrap}
+#hs-root .hm-ev .hs-live{align-self:center}
+#hs-root .hs-box-h h3{text-wrap:balance}
+
+/* 2.6 Новости без фото: значок рубрики вместо эмодзи (CS2Glyph) или логотип команды */
+#hs-root .nl-ic,#hs-root .v37-story-glyph,#hs-root .hm-hero-ic,.v29-toast-ic,.v29-mini-row .ic{display:grid;place-items:center}
+.cs2-gl{--gc:#8a97ad;display:grid;place-items:center;width:100%;height:100%;border-radius:inherit;color:var(--gc);
+  background:radial-gradient(120% 90% at 30% 20%,color-mix(in srgb,var(--gc) 22%,transparent),color-mix(in srgb,var(--gc) 6%,transparent) 70%)}
+.cs2-gl svg{width:46%;height:46%;max-width:34px;max-height:34px}
+.cs2-gl.txt{font:700 15px/1 "IBM Plex Mono",ui-monospace,monospace}
+#hs-root .nl-ic{overflow:hidden;border-radius:10px}
+#hs-root .nl-ic.nl-logo{background:var(--c-surface-2);border:1px solid var(--c-line)}
+#hs-root .nl-ic.nl-logo .hs-logo{width:28px;height:28px}
+#hs-root .v37-story-glyph{width:100%;height:100%;border-radius:10px;overflow:hidden}
+#hs-root .v37-story-glyph .cs2-gl svg{max-width:30px;max-height:30px}
+.v29-toast-ic .cs2-gl,.v29-mini-row .ic .cs2-gl{border-radius:8px}
+
+/* 2.7 Кнопки: «тихая» кнопка больше не получает градиент основной (v84-theme красил все не-ghost) */
+#hs-root .hs-btn.quiet{background:transparent!important;border-color:transparent!important;box-shadow:none!important;color:var(--c-text-2)!important}
+#hs-root .hs-btn.quiet:hover{background:rgba(255,255,255,.05)!important;color:var(--c-text)!important}
+#hs-root .hs-btn.quiet.danger,#hs-root .hs-btn.danger.quiet{color:var(--c-loss)!important}
+#hs-root .hs-btn.quiet.danger:hover{background:rgba(251,113,133,.1)!important}
+#hs-root .hs-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+#hs-root .hs-btn .ic,#hs-root button .ic{width:16px;height:16px;flex:none}
+#hs-page .row>button.primary,#hs-page button.primary{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;padding:0 16px;min-height:34px;border-radius:var(--r-control);border:0;background:var(--g-action);color:var(--c-on-action);font-weight:650;cursor:pointer;box-shadow:0 6px 18px -8px rgba(255,122,61,.65)}
+
+/* 2.8 Настройки: галочки импорта — строкой «квадрат · подпись», а не столбиком по центру */
+#hs-root .v59-page-check{display:flex!important;flex-direction:row!important;align-items:center;gap:10px;justify-content:flex-start;text-align:left;margin:6px 0;cursor:pointer;color:var(--c-text-2);font-size:13px}
+#hs-root .v59-page-check input{margin:0!important;flex:0 0 16px!important;width:16px!important;height:16px!important;display:inline-block!important}
+#hs-root input[type=checkbox],#hs-root input[type=radio]{accent-color:var(--c-action);cursor:pointer}
+
+/* 2.9 Пустые состояния: читаемая плашка вместо одинокой строки на пустом фоне */
+#hs-root .hs-page>.hs-empty,#hs-root .hs-head+.hs-empty{margin:24px auto;max-width:560px;padding:36px 24px;border:1px dashed var(--c-line-strong);border-radius:var(--r-box);background:rgba(255,255,255,.015)}
+#hs-root .hs-empty{color:var(--c-text-3)}
+
+/* ---------- 3. Компоненты ---------- */
+/* шапка: акцентная тонкая линия по низу и ровная высота элементов управления временем */
+#hs-root .pt-top{box-shadow:0 1px 0 rgba(255,255,255,.03)}
+#hs-root .pt-brand b{transition:transform var(--m-small) var(--ease),box-shadow var(--m-small) var(--ease)}
+@media (hover:hover){#hs-root .pt-brand:hover b{transform:translateY(-1px);box-shadow:0 8px 20px -10px rgba(255,122,61,.9)}}
+#hs-root .pt-ink{transition:transform var(--m-medium) var(--ease-emph),width var(--m-medium) var(--ease-emph),opacity var(--m-small) var(--ease)!important;will-change:transform;border-radius:3px}
+#hs-root .pt-tabs .hs-tab{position:relative}
+@media (hover:hover){#hs-root .pt-tabs>.hs-tab:not(.on):hover,#hs-root .pt-dd-btn:not(.on):hover{color:var(--c-text)}}
+#hs-root .pt-speed button{transition:background-color var(--m-small) var(--ease),color var(--m-small) var(--ease)}
+#hs-root .pt-clock b{font-variant-numeric:tabular-nums}
+
+/* поиск: подсветка при фокусе */
+#hs-root .hs-search{transition:box-shadow var(--m-small) var(--ease)}
+#hs-root .hs-search:focus-within{box-shadow:var(--ring);border-radius:var(--r-control)}
+#hs-root .hs-sugg.on{animation:v85pop var(--m-small) var(--ease-emph) both;transform-origin:top center}
+
+/* блоки: мягкий отклик на наведение у кликабельных карточек */
+#hs-root .hs-box{transition:border-color var(--m-small) var(--ease),box-shadow var(--m-medium) var(--ease)}
+@media (hover:hover){
+  #hs-root .hs-rankrow{transition:transform var(--m-small) var(--ease),border-color var(--m-small) var(--ease),background-color var(--m-small) var(--ease),box-shadow var(--m-medium) var(--ease)}
+  #hs-root .hs-rankrow:hover{transform:translateY(-1px);border-color:var(--c-line-strong)!important;box-shadow:var(--sh-lift)}
+  #hs-root .hs-rankrow:hover .hs-logo,#hs-root .mrow:hover .hs-logo,#hs-root tr[data-team]:hover .hs-logo{transform:scale(1.08)}
+  #hs-root .hm-ev:hover,#hs-root .hm-rk:hover{background:rgba(255,255,255,.03)}
+  #hs-root .mrow:hover{background:rgba(255,255,255,.028)}
+}
+#hs-root .hs-logo{transition:transform var(--m-small) var(--ease)}
+/* топ-3 рейтинга: золото · серебро · бронза — все три выделены одинаково, а не только #1 и #3 */
+#hs-root .hs-rankrow.top1{border-color:rgba(251,191,36,.45)!important;background:linear-gradient(90deg,rgba(251,191,36,.08),transparent 45%),var(--c-surface)!important}
+#hs-root .hs-rankrow.top2{border-color:rgba(203,213,225,.38)!important;background:linear-gradient(90deg,rgba(203,213,225,.07),transparent 45%),var(--c-surface)!important}
+#hs-root .hs-rankrow.top3{border-color:rgba(217,140,82,.45)!important;background:linear-gradient(90deg,rgba(217,140,82,.08),transparent 45%),var(--c-surface)!important}
+#hs-root .hs-rankrow.top2 .hs-rk,#hs-root .hs-rankrow.top2>:first-child{color:#d6dde8}
+
+/* таблицы: шапка не прыгает, строки чуть плотнее подсвечиваются */
+#hs-root .hs-tbl tbody tr{transition:background-color var(--m-micro) var(--ease)}
+#hs-root .hs-tbl thead th[data-sort],#hs-root .hs-tbl thead th button{cursor:pointer}
+
+/* чипы и вкладки внутри страниц */
+#hs-root .hs-chip{transition:background-color var(--m-small) var(--ease),border-color var(--m-small) var(--ease),color var(--m-small) var(--ease),transform var(--m-press) var(--ease)}
+#hs-root .hs-chip:active,#hs-root .hs-btn:active,#hs-root .pt-tbtn:active,#hs-root .pt-gamebtn:active,#hs-root .pt-speed button:active,#hs-root .v37-primary-action:active,#hs-root .hs-tab:active{transform:scale(.97);transition-duration:var(--m-press)}
+#hs-root .hs-btn:not(.ghost):not(.quiet){transition:filter var(--m-small) var(--ease),box-shadow var(--m-small) var(--ease),transform var(--m-press) var(--ease)}
+
+/* профиль игрока/команды: плитки чисел */
+#hs-root .hs-ptile,#hs-root .pt-kpis>div{transition:border-color var(--m-small) var(--ease),background-color var(--m-small) var(--ease)}
+@media (hover:hover){#hs-root .hs-ptile:hover{border-color:var(--c-line-strong)}}
+#hs-root .hs-ptile b,#hs-root .pt-kpis b{font-variant-numeric:tabular-nums}
+
+/* выпадающие меню: появление из-под кнопки с лёгким масштабом */
+#hs-root .pt-dd.open .pt-menu{animation:v85pop var(--m-small) var(--ease-emph) both!important;transform-origin:top left}
+#hs-root .pt-menu.right{transform-origin:top right}
+#hs-root .pt-dd.open .pt-menu>button{animation:v85fade var(--m-medium) var(--ease) both}
+#hs-root .pt-dd.open .pt-menu>button:nth-child(2){animation-delay:15ms}#hs-root .pt-dd.open .pt-menu>button:nth-child(3){animation-delay:30ms}
+#hs-root .pt-dd.open .pt-menu>button:nth-child(4){animation-delay:45ms}#hs-root .pt-dd.open .pt-menu>button:nth-child(n+5){animation-delay:60ms}
+#hs-root .pt-dd-btn svg,#hs-root .pt-gamebtn svg:last-child{transition:transform var(--m-small) var(--ease)}
+
+/* модальные окна: затемнение + карточка «всплывает» */
+#v84-legacy-modal{animation:v85fade var(--m-medium) var(--ease) both}
+#v84-legacy-modal .v84-lg-card{animation:v85rise var(--m-large) var(--ease-emph) both;box-shadow:0 40px 80px -24px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.03) inset}
+#v84-legacy-modal .v84-lg-opts button{transition:transform var(--m-small) var(--ease),border-color var(--m-small) var(--ease),background-color var(--m-small) var(--ease)}
+@media (hover:hover){#v84-legacy-modal .v84-lg-opts button:hover{transform:translateY(-2px);border-color:var(--c-action)}}
+.modal-backdrop[style*="flex"],#dice-modal[style*="flex"]{animation:v85fade var(--m-medium) var(--ease) both}
+.modal-backdrop[style*="flex"]>*,#dice-modal[style*="flex"]>*{animation:v85rise var(--m-large) var(--ease-emph) both}
+
+/* всплывающие новости */
+#v29-toasts .v29-toast{animation:v85toast var(--m-large) var(--ease-emph) both!important;box-shadow:var(--sh-pop)}
+
+/* загрузка картинок: плавное проявление, пока грузится — мягкий отблеск подложки */
+#hs-root img.v85-ld{opacity:0}
+#hs-root img.v85-in{animation:v85fade var(--m-medium) var(--ease) both}
+#hs-root .hs-logo.img:has(img.v85-ld),#hs-root .hs-pphoto:has(img.v85-ld){background:linear-gradient(100deg,rgba(255,255,255,.03) 30%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.03) 70%) 0 0/300% 100%;animation:v85shimmer 1.2s linear infinite}
+
+/* заставка загрузки */
+#cs2-splash{font-family:"Golos Text",system-ui,sans-serif!important}
+#cs2-splash b{animation:v85rise .5s var(--ease-emph) both}
+#cs2-splash span{animation:v85fade .5s .12s var(--ease) both;color:#8a97ad}
+
+/* ---------- 4. Движение ---------- */
+@keyframes v85fade{from{opacity:0}to{opacity:1}}
+@keyframes v85pop{from{opacity:0;transform:translateY(-6px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes v85rise{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes v85toast{from{opacity:0;transform:translateX(24px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes v85shimmer{from{background-position:100% 0}to{background-position:-200% 0}}
+@keyframes v85up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes v85bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* смена страницы: блоки входят каскадом (заменяет v84enter, шаг 40 мс, максимум 8 ступеней) */
+#hs-page.v84-enter>*{animation:v85up var(--m-large) var(--ease-emph) both!important}
+#hs-page.v84-enter>*:nth-child(1){animation-delay:0ms!important}
+#hs-page.v84-enter>*:nth-child(2){animation-delay:40ms!important}
+#hs-page.v84-enter>*:nth-child(3){animation-delay:80ms!important}
+#hs-page.v84-enter>*:nth-child(4){animation-delay:120ms!important}
+#hs-page.v84-enter>*:nth-child(5){animation-delay:160ms!important}
+#hs-page.v84-enter>*:nth-child(n+6){animation-delay:200ms!important}
+/* строки длинных списков: первые 12 появляются лесенкой — дальше без задержки (не тормозит прокрутку) */
+#hs-page.v84-enter .hs-ranklist>.hs-rankrow,#hs-page.v84-enter .hs-tbl>tbody>tr,#hs-page.v84-enter .hs-box-b>.mrow,#hs-page.v84-enter .hs-box-b>.nl,#hs-page.v84-enter .v37-news-rail>.v37-story-card{animation:v85up var(--m-medium) var(--ease-emph) both}
+#hs-page.v84-enter :is(.hs-ranklist>.hs-rankrow,.hs-tbl>tbody>tr,.hs-box-b>.mrow,.hs-box-b>.nl,.v37-news-rail>.v37-story-card):nth-child(2){animation-delay:25ms}
+#hs-page.v84-enter :is(.hs-ranklist>.hs-rankrow,.hs-tbl>tbody>tr,.hs-box-b>.mrow,.hs-box-b>.nl,.v37-news-rail>.v37-story-card):nth-child(3){animation-delay:50ms}
+#hs-page.v84-enter :is(.hs-ranklist>.hs-rankrow,.hs-tbl>tbody>tr,.hs-box-b>.mrow,.hs-box-b>.nl,.v37-news-rail>.v37-story-card):nth-child(4){animation-delay:75ms}
+#hs-page.v84-enter :is(.hs-ranklist>.hs-rankrow,.hs-tbl>tbody>tr,.hs-box-b>.mrow,.hs-box-b>.nl,.v37-news-rail>.v37-story-card):nth-child(5){animation-delay:100ms}
+#hs-page.v84-enter :is(.hs-ranklist>.hs-rankrow,.hs-tbl>tbody>tr,.hs-box-b>.mrow,.hs-box-b>.nl,.v37-news-rail>.v37-story-card):nth-child(6){animation-delay:125ms}
+#hs-page.v84-enter :is(.hs-ranklist>.hs-rankrow,.hs-tbl>tbody>tr,.hs-box-b>.mrow,.hs-box-b>.nl,.v37-news-rail>.v37-story-card):nth-child(7){animation-delay:150ms}
+#hs-page.v84-enter :is(.hs-ranklist>.hs-rankrow,.hs-tbl>tbody>tr,.hs-box-b>.mrow,.hs-box-b>.nl,.v37-news-rail>.v37-story-card):nth-child(8){animation-delay:175ms}
+#hs-page.v84-enter :is(.hs-ranklist>.hs-rankrow,.hs-tbl>tbody>tr,.hs-box-b>.mrow,.hs-box-b>.nl,.v37-news-rail>.v37-story-card):nth-child(9){animation-delay:200ms}
+#hs-page.v84-enter :is(.hs-ranklist>.hs-rankrow,.hs-tbl>tbody>tr,.hs-box-b>.mrow,.hs-box-b>.nl,.v37-news-rail>.v37-story-card):nth-child(10){animation-delay:225ms}
+#hs-page.v84-enter :is(.hs-ranklist>.hs-rankrow,.hs-tbl>tbody>tr,.hs-box-b>.mrow,.hs-box-b>.nl,.v37-news-rail>.v37-story-card):nth-child(n+11){animation:none}
+
+/* блоки ниже первого экрана проявляются при прокрутке (класс ставит js/portal/motion.js) */
+#hs-page .v85-rv{opacity:0;transform:translateY(16px)}
+#hs-page .v85-rv.v85-on{opacity:1;transform:none;transition:opacity var(--m-large) var(--ease),transform var(--m-large) var(--ease-emph)}
+
+/* полосы прогресса и доли: растут от нуля при показе страницы */
+#hs-page.v84-enter :is(.v84-conf>i,.hs-bar>i,.hs-meter>i,.pt-lvl>i){transform-origin:left center;animation:v85bar .7s var(--ease-emph) .15s both}
+
+/* счёт и числа, которые «перекатываются» (js/portal/motion.js) */
+.v85-count{font-variant-numeric:tabular-nums}
+
+/* ---------- 5. Производительность ---------- */
+/* длинные списки: браузер не рисует строки за пределами экрана (рейтинг — 116 карточек, лента — 20+) */
+#hs-root .hs-ranklist>.hs-rankrow:nth-child(n+14){content-visibility:auto;contain-intrinsic-size:auto 70px}
+#hs-root .hs-box-b>.nl:nth-child(n+10){content-visibility:auto;contain-intrinsic-size:auto 76px}
+/* размытие под стеклянной шапкой дорого на слабых видеокартах — ограничиваем радиус */
+@media (max-width:1100px),(prefers-reduced-transparency:reduce){#hs-root .pt-top,#hs-root .pt-nav{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(10,14,23,.97)!important}}
+/* фон с background-attachment:fixed заставлял браузер перерисовывать весь экран на каждом кадре прокрутки —
+   то же свечение теперь на отдельном закреплённом слое, который композитор просто не трогает */
+body.portal-on{background:var(--c-canvas)!important;background-attachment:scroll!important}
+body.portal-on::before,body.portal-on.ui27::before{content:"";display:block!important;position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(1200px 600px at 12% -10%,rgba(255,122,61,.07),transparent 60%),radial-gradient(1000px 520px at 92% -8%,rgba(91,140,255,.08),transparent 60%)}
+/* «пульс» через box-shadow перерисовывал элемент 60 раз в секунду — заменён на opacity/transform (только композитинг) */
+#hs-root .v37-live-pill i,.u27-live,#hs-root .cm-live i{animation:v85dot 1.8s var(--ease) infinite!important;box-shadow:none!important}
+#hs-root .v37-event-hero.is-live .v37-event-status{animation:none!important}
+/* фоновая вкладка: бесконечные анимации на паузе */
+html.v85-hidden *{animation-play-state:paused!important}
+
+/* ---------- 6. Меньше движения ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #hs-page .v85-rv{opacity:1;transform:none}
+  #hs-root *,#v29-toasts *,#v84-legacy-modal,#v84-legacy-modal *,.modal-backdrop *{animation-duration:1ms!important;animation-delay:0ms!important;animation-iteration-count:1!important;transition-duration:1ms!important}
+  #hs-root .hs-live::before{animation:none!important}
+}
+
+/* ---------- 7. Узкие экраны (1024–1280): шапка не наезжает сама на себя ---------- */
+#hs-root .pt-season{flex:0 1 auto;overflow:hidden}
+#hs-root .pt-season>*{white-space:nowrap}
+#hs-root .pt-time{flex:none}
+@media (max-width:1280px){
+  #hs-root .pt-brand span{display:none}
+  #hs-root .pt-top .hs-search{flex:1 1 200px;min-width:140px}
+  #hs-root .pt-top-in{gap:12px;padding:0 16px}
+}
+@media (max-width:1180px){
+  #hs-root .pt-season>:not(:first-child){display:none}
+  #hs-root .pt-tabs .hs-tab{padding:0 6px!important}
+  #hs-root .pt-gamebtn span{display:none}
+}
+@media (max-width:1060px){
+  #hs-root #pt-skip-l{display:none}
+  /* без overflow у полосы навигации: иначе выпадающие меню папок обрезались бы */
+  #hs-root .pt-tabs .hs-tab{padding:0 5px!important}
+}

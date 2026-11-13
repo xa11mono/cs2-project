@@ -22,4 +22,4 @@
 
 ## Полный сброс
 
-Модуль `v58-factory-reset.js` вызывает `v56PrepareFactoryReset` и `v56ClearAutosaveDatabase`. Второй вызов очищает весь object store, включая обе внутренние копии и сохранённый дескриптор папки.
+Модуль `js/core/factory-reset.js` вызывает `v56PrepareFactoryReset` и `v56ClearAutosaveDatabase`. Второй вызов очищает весь object store, включая обе внутренние копии и сохранённый дескриптор папки.
