@@ -355,7 +355,11 @@
     H.CLICKS.push(['[data-jprobe]', async () => { await checkService(true); await pump(); H.render(); }]);
     H.CLICKS.push(['[data-jretry]', () => { pump(); }]);
     H.CLICKS.push(['[data-jsave]', saveKitFromUI]);
-    H.CLICKS.push(['[data-jteam]', el => { selectedTeam = el.value; H.render(); }]);
+    document.addEventListener('change', event => {
+      if (!event.target?.matches?.('[data-jteam]')) return;
+      selectedTeam = event.target.value;
+      H.render();
+    });
     H.CLICKS.push(['[data-jgenerate]', () => {
       const root = document.getElementById('hs-root');
       const name = root?.querySelector('[data-jteam]')?.value || selectedTeam;
