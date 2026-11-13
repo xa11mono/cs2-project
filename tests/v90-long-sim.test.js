@@ -12,7 +12,7 @@ const path = require('path'), fs = require('fs'), os = require('os');
   const p = ctx.pages()[0] || await ctx.newPage(); const errs = [];
   p.on('pageerror', e => errs.push(e.message)); p.on('dialog', d => d.accept());
   await p.goto('file://' + dir + '/index.html'); await p.waitForTimeout(3000);
-  const lg = await p.$('#v84-legacy-modal [data-lg="history"]'); if (lg) { await lg.click(); await p.waitForTimeout(400); }
+  await require('./lib/project').chooseStart(p, 'history');
   await p.waitForFunction(() => window.CS2Roster && window.v33SkipDays && seasonState.v88Seed, null, { timeout: 40000 }).catch(() => {});
 
   // снимок мира на старте
@@ -156,7 +156,8 @@ const path = require('path'), fs = require('fs'), os = require('os');
       const arch = Object.values(window.hubArchiveExport ? window.hubArchiveExport() : {}).filter(x => x && x.prestige === 'major' && x.champion);
       const bad = q.filter(e => { const snap = arch.find(x => x.name === e.team); const played = snap ? new Set((snap.results || []).map(r => r.n)) : null; return (e.qualified || []).length < 6 || (played && !(e.qualified || []).every(n => played.has(n))); });
       const done = inv.filter(e => seasonState.calendar.currentMs - e.ts > 40 * 864e5);
-      add('путь к Мейджору: отборы у каждого Мейджора, победители отборов играют на нём', done.length > 0 && q.length >= done.length && !bad.length, `приглашения объявлены ${inv.length} раз, отборы завершены ${q.length}, без 6+ победителей или не сыгравших: ${bad.length}`, bad.slice(0, 4).map(e => ({ major: e.team, q: e.qualified, at: e.atLarge, quals: e.quals, date: new Date(e.ts).toISOString().slice(0, 10) })));
+      // первый Мейджор сезона — в июне: при коротком прогоне (20 недель, до конца мая) сыгранных Мейджоров ещё нет — проверять нечего
+      add('путь к Мейджору: отборы у каждого Мейджора, победители отборов играют на нём', (done.length === 0 || q.length >= done.length) && !bad.length, (done.length ? '' : 'в окне прогона Мейджор ещё не начался; ') + `приглашения объявлены ${inv.length} раз, отборы завершены ${q.length}, без 6+ победителей или не сыгравших: ${bad.length}`, bad.slice(0, 4).map(e => ({ major: e.team, q: e.qualified, at: e.atLarge, quals: e.quals, date: new Date(e.ts).toISOString().slice(0, 10) })));
       const ps = window.CS2Press ? window.CS2Press.stats() : {}, internal = ['salary', 'burnout', 'rift', 'system'].reduce((a, k) => a + (ps[k] || 0), 0);
       const seasons = Math.max(1, weeks / 52), perClub = internal / pro.length / seasons;
       add('внутренние события живут, но без спама (0.2–6 на клуб за сезон)', perClub >= 0.2 && perClub <= 6, `${internal} событий (${JSON.stringify(ps)}), ${perClub.toFixed(2)} на клуб за сезон`, null);

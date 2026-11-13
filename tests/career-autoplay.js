@@ -15,7 +15,7 @@ const path = require('path'), fs = require('fs'), os = require('os');
   const p = ctx.pages()[0] || await ctx.newPage(); const errs = [];
   p.on('pageerror', e => errs.push(e.message)); p.on('dialog', d => d.accept());
   await p.goto('file://' + dir + '/index.html'); await p.waitForTimeout(3000);
-  try { await p.waitForSelector('#v84-legacy-modal [data-lg="history"]', { timeout: 20000 }); await p.click('#v84-legacy-modal [data-lg="history"]'); await p.waitForTimeout(400); } catch (e) {}
+  await require('./lib/project').chooseStart(p, 'history');
   await p.waitForFunction(() => window.CS2Roster && window.v33SkipDays && window.V99Transfers && window.V98Squad && window.CS2Control && seasonState.v88Seed, null, { timeout: 60000 });
   let cdp = null; try { cdp = await ctx.newCDPSession(p); } catch (e) {}
 

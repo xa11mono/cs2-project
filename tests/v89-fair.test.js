@@ -11,7 +11,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   const p = ctx.pages()[0] || await ctx.newPage(); const errs = [];
   p.on('pageerror', e => errs.push(e.message)); p.on('dialog', d => d.accept());
   await p.goto('file://' + dir + '/index.html'); await p.waitForTimeout(3000);
-  const lg = await p.$('#v84-legacy-modal [data-lg="zero"]'); if (lg) { await lg.click(); await p.waitForTimeout(500); }
+  await require('./lib/project').chooseStart(p, 'zero');
   await p.waitForFunction(() => window.CS2V89 && window.v30MarketDebug && window.CS2VRSH2H, null, { timeout: 30000 });
   const pass = m => console.log('PASS ' + m);
 
@@ -161,6 +161,7 @@ assert(v.l2 > 0 && v.l3 > 0 && v.s2 <= v.l2 + 1e-9 && Math.abs(v.s3 - v.l3) < 1e
     const R = window.V34Roster, a0 = R && R.allowSearch, r0 = R && R.replaceable;
     if (R) { R.allowSearch = () => true; R.replaceable = () => true; }   // открываем рынок, чтобы прошли все ветки
     const S = window.CS2Stature; let changes = 0, worse = [], starBench = [];
+    const where = n => { const lc = String(n).toLowerCase(); const t = teams.find(tt => (tt.players || []).some(y => String(y.nick).toLowerCase() === lc)); if (t) { const y = t.players.find(y => String(y.nick).toLowerCase() === lc); return `${t.name}/${y.status || 'STARTER'}`; } const f = (transferState.freeAgents || []).find(y => String(y.nick).toLowerCase() === lc); return f ? `FA/${f.status || ''}/${f.benchFrom || ''}/${f.reservedFor || ''}` : 'нигде'; };
     const bus = () => (window.__v29Bus || []).length;
     try {
       for (let i = 0; i < 12; i++) {
@@ -176,7 +177,7 @@ assert(v.l2 > 0 && v.l3 > 0 && v.s2 <= v.l2 + 1e-9 && Math.abs(v.s3 - v.l3) < 1e
             if (t.players.some(y => y.nick === o.nick && (!y.status || y.status === 'STARTER'))) return;   // перестановка внутри состава
             if (teams.some(tt => tt !== t && (tt.players || []).some(y => y.nick === o.nick))) return;      // игрока купили — замена у продавшей команды
             changes++;
-            const g = val(x, o.role) - o.v; if (g < -0.01) worse.push(`${t.name}: ${o.nick}→${x.nick} ${g.toFixed(1)}`);
+            const g = val(x, o.role) - o.v; if (g < -0.01) { const lc = String(o.nick).toLowerCase(); const why = (window.__v29Bus || []).slice(b0).filter(e => JSON.stringify(e.data || {}).toLowerCase().includes(lc)).map(e => e.type + ' ' + JSON.stringify(e.data).slice(0, 160)); const jr = (window.CS2Journal ? window.CS2Journal.list() : []).filter(e => JSON.stringify(e).toLowerCase().includes(lc)).slice(0, 3).map(e => `${e.type}/${e.kind || e.action || ''}: ${e.reason || ''}`.slice(0, 200)); worse.push(`${t.name}: ${o.nick}→${x.nick} ${g.toFixed(1)} | ${o.nick}: ${where(o.nick)} | bus: ${why.join(' ; ')} | journal: ${jr.join(' ; ')}`); }
             if (o.star) starBench.push(`${t.name}: ${o.nick}`);
           });
         });

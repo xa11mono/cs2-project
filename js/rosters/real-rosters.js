@@ -195,6 +195,9 @@ function replaceFakes(busy) {
       if (t.isAcademy) np.age = 17 + (h32s(x.nick) % 4);
       t.players[i] = np; rep++;
       try { if (typeof transferLog === 'function') transferLog(`✏️ ${t.name}: ${p.nick} → ${np.nick} (реальный игрок).`, 'market'); } catch (e) {}
+      // v144: замена — тоже изменение состава: без записи в журнале сторож Roster Engine видел «ушёл из основы → нигде»
+      // (долгая симуляция: выдуманный transs в Alliance)
+      try { window.CS2Journal && window.CS2Journal.log('REPAIR', { team: t.name, player: np.nick, out: p.nick, players: [p.nick, np.nick], kind: 'real-player', reason: `выдуманный игрок ${p.nick} заменён реальным ${np.nick}` }); } catch (e) {}
     });
   });
   if (Array.isArray(transferState.freeAgents)) transferState.freeAgents = transferState.freeAgents.map(p => {

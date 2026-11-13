@@ -12,7 +12,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   p.on('pageerror', e => errs.push(e.message)); p.on('dialog', d => d.accept());
   await p.addInitScript(() => { try { localStorage.setItem('cs2.ax.mode', 'manager'); } catch (e) {} });   // v100: без окна выбора режима
   await p.goto('file://' + dir + '/index.html'); await p.waitForTimeout(3500);
-  const lg = await p.$('#v84-legacy-modal [data-lg="history"]'); if (lg) { await lg.click(); await p.waitForTimeout(500); }
+  await require('./lib/project').chooseStart(p, 'history');
   await p.waitForFunction(() => window.V99Talks && window.V99Scout && window.V99Spec && window.HS, null, { timeout: 30000 });
   const pass = m => console.log('PASS ' + m);
 

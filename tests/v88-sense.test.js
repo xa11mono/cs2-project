@@ -10,7 +10,7 @@ const assert = (v, m) => { if (!v) throw new Error(m); };
   const p = ctx.pages()[0] || await ctx.newPage(); const errs = [];
   p.on('pageerror', e => errs.push(e.message)); p.on('dialog', d => d.accept());
   await p.goto('file://' + dir + '/index.html'); await p.waitForTimeout(3000);
-  const lg = await p.$('#v84-legacy-modal [data-lg="history"]'); if (lg) { await lg.click(); await p.waitForTimeout(500); }
+  await require('./lib/project').chooseStart(p, 'history');
   await p.waitForFunction(() => seasonState.v87Rosters2026 || (seasonState.currentSeason || 1) > 1, null, { timeout: 30000 }).catch(() => {});
   // один турнир — чтобы появились новости
   await p.evaluate(async () => { for (let i = 0; i < 40 && !(currentTournament && !currentTournament.completed); i++) { skipGameCalendarDay(); await new Promise(r => setTimeout(r, 30)); }
