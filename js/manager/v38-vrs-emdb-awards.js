@@ -52,7 +52,15 @@
   // «сила побеждённых», «сеть соперников» и «победы на LAN» брали вес из призового фонда: десяток побед на LAN Tier-2
   // давал тот же максимум, что победы на Tier-1, и команды без призовых (100 Thieves: $4k против $160k у MOUZ)
   // поднимались в топ-10.
+  // v135: вес Tier-2/Tier-3 — из настроек (больше очков за успехи на Tier-2), отборы — как раньше. Берётся по уровню
+  // турнира, а не по записанному pointsMult — так новые веса работают и для турниров, созданных в старых сохранениях.
+  const isQualEv = ev => !!(ev && (ev.qual || ev.isQualifier)) || /qualifier|квалиф|отбор/i.test(String(ev?.name || ev?.tournament || ''));
+  const CFv = (k, d) => { try { return window.CS2Config ? window.CS2Config.get(k, d) : d; } catch (e) { return d; } };
+  const levelW = ev => { if (!ev || isQualEv(ev)) return 0; const tier = String(ev.tier ?? ''), kind = String(ev.kind || '');
+    if (/academy/i.test(kind)) return 0; if (tier === '2' || /tier2/i.test(kind)) return CFv('vrs.tier2Weight', 0.5); if (tier === '3' || /tier3/i.test(kind)) return CFv('vrs.tier3Weight', 0.16); return 0; };
+  window.CS2VRSLevelWeight = levelW;
   const tierCap = ev => {
+    const lw = levelW(ev); if (lw) return lw;
     const m = Number(ev?.pointsMult); if (Number.isFinite(m) && m > 0 && m < 1) return m;
     if (ev && (ev.qual || ev.isQualifier || /qualifier|квалиф|отбор/i.test(String(ev.name || ev.tournament || '')))) return 0.25;
     const tier = String(ev?.tier ?? ''), kind = String(ev?.kind || '');
@@ -330,7 +338,7 @@
   // v89: у фоновых турниров есть собственная значимость (pointsMult: Tier-2 — 0.35, академии — 0.18, Tier-3 — 0.12,
   // открытые отборы — 0.12, закрытые — 0.3). Раньше она нигде не учитывалась, и победа на Tier-3 с фондом $15 000
   // давала почти столько же, сколько на Tier-2 (+5.7 против +6.4 при равных соперниках).
-  const pointsMult = ev => { const m = Number(ev?.pointsMult); return Number.isFinite(m) && m > 0 && m < 1 ? m : 0; };
+  const pointsMult = ev => { const lw = window.CS2VRSLevelWeight ? window.CS2VRSLevelWeight(ev) : 0; if (lw) return lw; const m = Number(ev?.pointsMult); return Number.isFinite(m) && m > 0 && m < 1 ? m : 0; };
   const h2hScale = ev => { const base = isQual(ev) ? CF('vrs.qualScale', 0.3) : 0.4 + 0.6 * eventWeight(ev), m = pointsMult(ev); return m ? Math.min(base, m) : base; };
   const isLowEvent = ev => !!pointsMult(ev) || isQual(ev) || /^(2|3)$/.test(String(ev?.tier ?? '')) || /tier[23]|academy/i.test(String(ev?.kind || ''));
   window.CS2VRSH2HScale = h2hScale;

@@ -1275,6 +1275,17 @@ function teamIdentityFit(t,p){
     return lang.includes('english') ? 0.85 : (['russian','portuguese','french','danish','spanish','swedish','polish','turkish'].includes(pg) ? 0.72 : 0.55);
   }
   if(tg===pg) return 1;
+  // v135: языковое правило мягче. Близкие языки понимают друг друга (шведский/датский; испанский/португальский).
+  const FAM=[['swedish','danish'],['spanish','portuguese']];
+  if(FAM.some(f=>f.includes(tg)&&f.includes(pg))) return tg==='spanish'||tg==='portuguese'?0.6:0.75;
+  // Один «легионер»: национальный состав без иностранцев может взять одного игрока, говорящего по-английски
+  // (общение на английском с одним игроком — обычное дело). Второго иностранца не берёт — это уже другой клуб.
+  const lang=String(p?.language||'').toLowerCase(), speaksEn=pg==='english'||lang.includes('english');
+  if(speaksEn && !['chinese','mongolian'].includes(tg)){
+    const ps=(Array.isArray(t?.players)?t.players:[]).filter(x=>x&&x!==p&&x.nick&&!/^(BENCH|RESERVE|FREE AGENT|STAND-IN)$/i.test(String(x.status||''))).slice(0,5);
+    const foreign=ps.filter(x=>playerLangGroup(x)!==tg).length;
+    if(foreign===0) return 0.6;
+  }
   // v86: команда с одним языком общения не берёт игрока, который на нём не говорит (монгол в русскоязычный состав и т.п.)
   return 0.12;
 }

@@ -72,15 +72,27 @@ function salaryOf(p, team) { // зарплата за сезон: уровень
 }
 // v101: стоимость — уровень + часть оставшегося потенциала (у молодых), возрастная кривая, форма, контракт, академия.
 // Растёт вместе с развитием игрока и падает с возрастом, спадом формы и истечением контракта (история — v101-economy).
+// ранги для цены — кэш на ~2 с (valueOf зовут в циклах рынка; полная сортировка 116 клубов на каждый вызов дорога)
+let rkCache = null, rkAt = 0;
+const rankCached = n => { const t0 = Date.now(); if (!rkCache || t0 - rkAt > 2000) { rkCache = new Map(pro().slice().sort((a, b) => b.pts - a.pts).map((t, i) => [t.name, i + 1])); rkAt = t0; } return rkCache.get(n) || 0; };
 const valueOf = p => {
+  const CF = (k, d) => { try { return window.CS2Config ? window.CS2Config.get(k, d) : d; } catch (e) { return d; } };
   const lv = pow(p), age = +p.age || 24, yrs = Math.max(0, (+p.contractUntil || season()) - season());
-  const pot = Math.max(lv, +p.pot || lv), grow = age <= 19 ? .6 : age <= 21 ? .45 : age <= 23 ? .3 : age <= 25 ? .12 : 0;
+  // v135: надбавка за потенциал и молодость примерно вдвое меньше — раньше молодые обычные игроки (dziugss, PR, dem0n)
+  // стоили дороже ZywOo; цена теперь в первую очередь от уровня и статуса
+  const pot = Math.max(lv, +p.pot || lv), grow = age <= 19 ? .3 : age <= 21 ? .22 : age <= 23 ? .14 : age <= 25 ? .06 : 0;
   const eff = lv + (pot - lv) * grow + clamp(((+p.form || 100) - 100) * .06, -1.2, 1.2);
-  const ageK = age <= 21 ? 1.3 : age <= 24 ? 1.15 : age <= 27 ? 1 : age <= 29 ? .85 : age <= 31 ? .65 : .45;
-  const t = (p.v31team && teams.find(x => x.name === p.v31team)) || null;
+  const ageK = age <= 21 ? 1.15 : age <= 24 ? 1.08 : age <= 27 ? 1 : age <= 29 ? .85 : age <= 31 ? .65 : .45;
+  const t = (p.v31team && teams.find(x => x.name === p.v31team)) || teams.find(x => (x.players || []).includes(p)) || null;
   const acad = (t && t.isAcademy) || p.isProspect || p.academy ? .55 : 1;             // ещё не доказал на про-сцене
   const con = yrs <= 0 ? .45 : .55 + .25 * Math.min(2, yrs);                          // истекающий контракт — дёшево
-  return Math.round(clamp(Math.pow(Math.max(0, eff - 68) / 22, 2.6) * 2300000 * ageK * acad * con, 15000, 6000000) / 1000) * 1000;
+  // v135: статус игрока (вес карьеры): франшиза и звезда стоят кратно дороже обычного игрока того же уровня
+  let tier = 'regular'; try { if (window.CS2Stature) tier = window.CS2Stature.tier(p); } catch (e) {}
+  const tierK = tier === 'franchise' ? CF('price.franchiseMul', 2.2) : tier === 'star' ? CF('price.starMul', 1.5) : 1;
+  const cap = acad < 1 ? CF('price.capAcademy', 1500000) : tier === 'franchise' ? CF('price.capFranchise', 12000000) : tier === 'star' ? CF('price.capStar', 7000000) : CF('price.capRegular', 3000000);
+  // видимость: игрок клуба топ-10 на виду у всего рынка, вне топ-60 — дешевле
+  const rk = t && !t.isAcademy ? rankCached(t.name) : 0, vis = !rk ? 1 : rk <= 10 ? CF('price.top10Mul', 1.1) : rk > 60 ? CF('price.lowMul', .85) : 1;
+  return Math.round(clamp(Math.pow(Math.max(0, eff - 68) / 22, 2.6) * 2300000 * ageK * acad * con * tierK * vis, 15000, cap) / 1000) * 1000;
 };
 
 /* ------------------------------------------------------------ организация */
