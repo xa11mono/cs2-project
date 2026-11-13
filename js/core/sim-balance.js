@@ -20,7 +20,8 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const byName = n => teams.find(t => t && t.name === n) || null;
 const calNow = () => { try { return Number(seasonState.calendar?.currentMs) || Date.now(); } catch (e) { return Date.now(); } };
 const h32 = s => { let h = 2166136261 >>> 0; s = String(s); for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };
-const emit = (type, data) => { try { (window.__v29Bus = window.__v29Bus || []).push({ type, data, at: calNow() }); if (typeof window.v29OnEvent === 'function') window.v29OnEvent(); } catch (e) {} };
+// v144: события игры дублируются в шину ядра — на них можно подписаться CS2.on('transfer', fn) вместо обёртки функций
+const emit = (type, data) => { try { (window.__v29Bus = window.__v29Bus || []).push({ type, data, at: calNow() }); if (typeof window.v29OnEvent === 'function') window.v29OnEvent(); } catch (e) {} try { window.CS2 && window.CS2.emit(type, data); } catch (e) {} };
 window.v29Emit = emit;
 const setStatus = txt => { const el = document.getElementById('tour-status'); if (el) el.innerText = txt; };
 function wrapGlobal(name, make) {

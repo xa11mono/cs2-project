@@ -1,0 +1,19 @@
+# CS2 Manager
+
+Браузерная игра-менеджер киберспортивной организации в стиле портала HLTV: живой мир CS2 с турнирами, рейтингами,
+трансферами, новостями и режимом менеджера.
+
+**Запуск:** открыть `index.html` в Chrome/Edge (сервер не нужен). Релизная сборка: `npm run setup && npm run build`,
+затем открыть `dist/index.html`.
+
+- [ARCHITECTURE.md](ARCHITECTURE.md) — устройство проекта и правила внесения правок (начните отсюда).
+- [DESIGN.md](DESIGN.md) — дизайн-система интерфейса.
+- [docs/LAYERS.md](docs/LAYERS.md) — какие модули расширяют какие функции.
+- [docs/changelog/](docs/changelog/) — история версий.
+
+```bash
+npm run setup     # инструменты сборки (один раз)
+npm test          # все тесты (нужен Playwright с Chromium)
+npm run analyze   # проверка модулей, карта слоёв
+npm run build     # релиз в dist/
+```
