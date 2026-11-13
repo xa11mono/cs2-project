@@ -112,8 +112,8 @@ H.transfer = d => {
   const it = N.all()[0]; if (it && it.player === d.player) { it.ttype = 'трансфер'; if (r) it.body = (it.body || []).filter(x => !/Слухи, о которых/.test(x)).concat(['Слухи, о которых мы писали ранее, подтвердились.']);
     if (d.window === 'mid' || !d.window) it.body = (it.body || []).map(x => x === 'Редкий случай: сделка прошла по ходу сезона.' ? 'Сделка закрыта по ходу сезона, между турнирами.' : x); }
 };
-H.coach = d => add({ cat: 'roster', icon: '🧠', title: pk([`${d.team} меняют тренера`, `Новый тренер в ${d.team}: ${d.to}`, `${d.from} больше не тренер ${d.team}`, `${d.team} доверили штаб ${d.to}`], d.team + d.to),
-  lead: `${d.to} сменил ${d.from} на посту главного тренера ${d.team}.`, body: [d.reason ? `Причина: ${d.reason}.` : '', 'Новому тренеру предстоит перестроить подготовку к ближайшим турнирам.'].filter(Boolean), tags: [T(d.team)], imp: rankOf(d.team) <= 12 ? 5 : 3, team: d.team });
+H.coach = d => add({ cat: 'roster', icon: '🧠', title: pk([`${d.team} меняют тренера`, `Новый тренер в ${d.team}: ${d.to}`, d.from ? `${d.from} больше не тренер ${d.team}` : `${d.team} меняют тренера`, `${d.team} доверили штаб ${d.to}`], d.team + d.to),   // v146: без прежнего тренера — не «— больше не тренер»
+  lead: d.from ? `${d.to} сменил ${d.from} на посту главного тренера ${d.team}.` : `${d.to} — новый главный тренер ${d.team}.`, body: [d.reason ? `Причина: ${d.reason}.` : '', 'Новому тренеру предстоит перестроить подготовку к ближайшим турнирам.'].filter(Boolean), tags: [T(d.team)], imp: rankOf(d.team) <= 12 ? 5 : 3, team: d.team });
 const baseRetire = H.retire;
 H.retire = d => {
   const A = window.RewardSystem?.getPlayerAwards?.(d.player) || (window.twAwardsExport ? window.twAwardsExport().p : {})[d.player] || {}, titles = (A.ti || []).length, maj = (A.ti || []).filter(x => x.k === 'major').length;

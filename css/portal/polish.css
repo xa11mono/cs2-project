@@ -29,7 +29,7 @@
 #hs-root .hs-mapstat dd[data-team]{display:inline-flex;align-items:center;gap:4px;cursor:pointer}
 /* Pick'Em: пустые и фактические ячейки */
 #hs-root .pk-slot.empty.locked{border-style:dashed;opacity:.55;background:transparent}
-#hs-root .pk-slot.actual{opacity:.45;filter:grayscale(.6);border-style:dashed}
+#hs-root .pk-slot.actual{border-style:dashed;opacity:.92}   /* v146: фактический результат — цветной логотип в пунктирной рамке (было 45% и обесцвечено: логотипы казались серыми) */
 #hs-root .pk-m.pending .pk-q{width:auto;min-width:30px;padding:0 4px;font:700 10px/26px var(--f-num,inherit);letter-spacing:.04em;opacity:.7}
 /* Портреты игроков: единая рамка — фото не выходит за границы, лицо в кадре */
 #hs-root .hs-pphoto,#hs-root .tm-p .ph,#hs-root .hs-tplayer .ph,#hs-root .hm-potw-ph,#hs-root .mx-ph,#hs-root .mx-potm-ph,#hs-root .tt-ph,#hs-root .fb-p{overflow:hidden;border-radius:10px;position:relative;isolation:isolate}

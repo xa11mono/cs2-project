@@ -28,6 +28,9 @@
   const tlogo = (name, cls) => img(media('team', name), cls || 'pp-tl');
   const flagOf = nick => { try { const x = H.playerNow(nick); return x && x.p && H.pFlag ? H.pFlag(x.p) : ''; } catch (e) { return ''; } };
   const teamOfNick = nick => { try { const x = H.playerNow(nick); return (x && x.t && x.t.name) || ''; } catch (e) { return ''; } };
+  // v146: фото есть? Нет — шаблон берёт логотип клуба (игрока или новости), а не пустую рамку
+  const hasPh = nick => !!(nick && full(nick));
+  const visOr = (nick, team, cls) => hasPh(nick) ? img(full(nick), cls) : (team || teamOfNick(nick)) ? `<span class="pp-f-logo">${tlogo(team || teamOfNick(nick))}</span>` : '';
   const MONTHS = ['янв.', 'февр.', 'мар.', 'апр.', 'мая', 'июн.', 'июл.', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.'];
   const MONTHS_G = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
   const dshort = ts => { const d = new Date(ts); return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`; };
@@ -204,7 +207,7 @@
   T.fact = (ch, text, nick, team, mini) => {
     const t = String(text || ''), sz = t.length > 95 ? 's' : t.length > 48 ? 'm' : 'l';
     const bg = `<i class="pp-f-bg" style="${bgStyle(t, team, ch)}"></i>`;
-    const vis = nick ? img(full(nick), 'pp-f-ph') : team ? `<span class="pp-f-logo">${tlogo(team)}</span>` : '';
+    const vis = visOr(nick, team, 'pp-f-ph');
     return card(ch, 'pp-fact' + (mini ? ' mini' : ''), `${mini ? '' : ticker(ch)}<div class="pp-f-top">${bg}${vis}<i class="pp-f-fade"></i><span class="pp-f-brand">${brand(ch)}</span><i class="pp-hot">🔥</i></div><div class="pp-f-band"><span class="pp-box">ФАКТ</span><h3 class="${sz}">${U(t)}</h3></div>${cs3foot(ch, 'ФАКТ')}`, false);
   };
   T.digest = (ch, factText, nick, team, ts) => `<div class="pp-cq"><div class="pp-card pp-b pp-digest">${img(full(nick), 'pp-dg-ph')}<i class="pp-dg-fade"></i><span class="pp-f-brand">${brand(ch)}</span><i class="pp-bolt">⚡</i><div class="pp-dg-mini">${T.fact(ch, factText, nick, team, true)}</div><div class="pp-dg-b"><span class="pp-box">ДАЙДЖЕСТ</span><b>НОВОСТЕЙ</b><em>${U(dlong(ts))}</em></div>${cs3foot(ch, 'НОВОСТИ')}</div></div>`;
@@ -223,8 +226,8 @@
   const sizeOf = (t, a, b) => t.length > a ? 's' : t.length > b ? 'm' : 'l';
   // новость: фото сверху, плашка рубрики на стыке, крупный заголовок на светлой ленте
   T.news3 = (ch, title, label, nick, team) => {
-    const t = String(title || ''), ros = team && !nick ? rosterOf(team).slice(0, 3) : [];
-    const vis = nick ? img(full(nick), 'pp-n3-ph') : ros.length >= 3 ? ros.map((n, i) => img(full(n), `pp-n3-tri p${i}`)).join('') : team ? `<span class="pp-f-logo">${tlogo(team)}</span>` : `<i class="pp-n3-wm">${U(label)}</i>${ch === 'hltv' ? '<i class="pp-n3-big">HLTV</i>' : ''}`;
+    const t = String(title || ''), ros = team && !hasPh(nick) ? rosterOf(team).slice(0, 3).filter(hasPh) : [];
+    const vis = hasPh(nick) ? img(full(nick), 'pp-n3-ph') : ros.length >= 3 ? ros.map((n, i) => img(full(n), `pp-n3-tri p${i}`)).join('') : team ? `<span class="pp-f-logo">${tlogo(team)}</span>` : `<i class="pp-n3-wm">${U(label)}</i>${ch === 'hltv' ? '<i class="pp-n3-big">HLTV</i>' : ''}`;
     return card(ch, 'pp-news3', `${ticker(ch)}<div class="pp-n3-top"><i class="pp-f-bg" style="${bgStyle(t, team || teamOfNick(nick), ch)}"></i>${vis}<i class="pp-n3-fade"></i><span class="pp-n3-brand">${brand(ch)}${verified(ch)}</span></div>` +
       `<div class="pp-n3-band"><span class="pp-n3-lab">${U(label)}</span><h3 class="${sizeOf(t, 50, 32)}">${U(t)}</h3></div>${cs3foot(ch, label)}`, false);
   };
@@ -262,7 +265,7 @@
     `<div class="pp-t7-r${i ? '' : ' first'}">${img(media('player', r.nick) || full(r.nick), 'pp-t7-av')}${tlogo(r.team, 'pp-tl pp-t7-l')}<span class="pp-t7-n"><b>${esc(r.nick)}</b><small>${esc(r.note || '')}</small></span><strong>${esc(r.v)}</strong></div>`).join('')}</div>`, foot || '');
   // факт CS2 NEWS: портрет, жёлтая плашка, узкий крупный текст
   T.fact2 = (ch, text, nick, team) => { const t = String(text || '');
-    return card(ch, 'pp-fact2', `<i class="pp-side-tx l">T.ME // ${esc(CH[ch].handle)}</i><i class="pp-side-tx r">T.ME // ${esc(CH[ch].handle)}</i><div class="pp-f2-ph"${team ? ` style="--c:${rgb(team)}"` : ''}>${nick ? img(full(nick), 'pp-f2-img') : team ? `<span class="pp-f-logo">${tlogo(team)}</span>` : ''}<span class="pp-f2-brand">${brand(ch)}</span><i class="pp-f2-cross"></i></div><span class="pp-f2-lab">ФАКТ</span><h3 class="pp-f2-t ${sizeOf(t, 150, 95)}">${U(t)}</h3>`, false); };
+    return card(ch, 'pp-fact2', `<i class="pp-side-tx l">T.ME // ${esc(CH[ch].handle)}</i><i class="pp-side-tx r">T.ME // ${esc(CH[ch].handle)}</i><div class="pp-f2-ph"${team ? ` style="--c:${rgb(team)}"` : ''}>${visOr(nick, team, 'pp-f2-img')}<span class="pp-f2-brand">${brand(ch)}</span><i class="pp-f2-cross"></i></div><span class="pp-f2-lab">ФАКТ</span><h3 class="pp-f2-t ${sizeOf(t, 150, 95)}">${U(t)}</h3>`, false); };
 
   // сводная статистика игроков по картам последних матчей (из mapLines — есть и для идущих турниров)
   function aggLines(BM) {

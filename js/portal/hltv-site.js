@@ -573,7 +573,9 @@ function render() {
   let html = '';
   try { html = fn(S.arg); } catch (e) { console.warn('[portal]', S.page, e); html = `<div class="hs-empty">Не удалось показать страницу: ${esc(e.message)}</div>`; }
   pg.innerHTML = html;
-  pg.classList.remove('hs-anim'); void pg.offsetWidth; pg.classList.add('hs-anim');
+  // v146: перезапуск анимации входа — через кадр, без принудительного пересчёта раскладки (void offsetWidth стоил
+  // ~180 мс на больших страницах: «Команды», «Рейтинг»)
+  pg.classList.remove('hs-anim'); requestAnimationFrame(() => pg.classList.add('hs-anim'));
   AFTER.forEach(f => { try { f(S.page, S.arg, pg); } catch (e) { console.warn('[portal after]', e); } });
   sigLast = liveSig();
 }

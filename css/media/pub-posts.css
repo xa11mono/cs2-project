@@ -710,3 +710,7 @@ html.ax-on #hs-root .pp-thbox.ax-scened.ax-has-vis>.pp-thw:not(.ax-nvis),html #h
 .pp-dg2-tl.one{left:50%;transform:translateX(-50%)}
 .pp-dg2-ph~.pp-bub{left:19cqw;top:5cqw;max-width:22cqw;font-size:2.7cqw}
 .pp-dg2-ph~.pp-bub::after{right:-1.2cqw;bottom:1.2cqw;border-top-color:transparent;border-left-color:#fff}
+/* v146: сетка плей-офф помещается в карточку и при 4 четвертьфиналах (раньше нижние строки уходили под подвал) */
+.pp-bk{top:33cqw;bottom:8cqw}
+.pp-bk-c{gap:1.6cqw}
+.pp-bk-t{height:4.9cqw}
