@@ -194,16 +194,17 @@ function offer(id, amount) {
   else n.log.push(`${n.from} отклоняют ${money(amount)}. Ориентир — ${money(ask)}.`);
 }
 function demand(p) { const ag = agentOf(p), t = T(), cur = findP(p.nick)?.t; const up = cur ? V.rankOf(t.name) - V.rankOf(cur.name) : 0;
-  return Math.round(V.salaryOf(p, t) * ag.greed * (1 + p.pers.amb / 50) * (up > 8 ? 1.25 : 1) * (window.V33Prestige ? V33Prestige.wageMul(t.name) : 1) / 1000) * 1000; }
+  // v137: надбавки агента мягче — раньше жадность (до ×1.27) и амбиции (до ×1.4) вместе давали до ×1.8 к шкале
+  return Math.round(V.salaryOf(p, t) * Math.min(1.15, ag.greed) * (1 + Math.min(20, +p.pers.amb || 10) / 100) * (up > 8 ? 1.2 : 1) * (window.V33Prestige ? V33Prestige.wageMul(t.name) : 1) / 1000) * 1000; }
 function terms(id, salary, years) {
   const n = negs().find(x => x.id === id); if (!n || n.st !== 'terms') return;
   const x = findP(n.nick); if (!x) { n.st = 'failed'; return; }
   const p = x.p, d = demand(p), ag = agentOf(p), age = +p.age || 24, want = age <= 23 ? 3 : age >= 29 ? 1 : 2;
   const need = d * (1 + Math.abs(years - want) * .05);
   n.tries = (n.tries || 0) + 1;
-  if (salary >= need) { n.salary = salary; n.years = years; n.st = 'ready'; n.log.push(`${ag.name}: условия приняты — ${money(salary)} за сезон, ${years} ${years === 1 ? 'сезон' : 'сезона'}.`); }
+  if (salary >= need) { n.salary = salary; n.years = years; n.st = 'ready'; n.log.push(`${ag.name}: условия приняты — ${money(salary)} за сезон (~${money(Math.round(salary / 12))} в месяц), ${years} ${years === 1 ? 'сезон' : 'сезона'}.`); }
   else if (n.tries >= 3) { n.st = 'failed'; n.log.push(`${ag.name}: клиент выбрал другое предложение.`); }
-  else n.log.push(`${ag.name}: мало. Клиент хочет не меньше ${money(Math.round(need / 1000) * 1000)}${years !== want ? ` (или контракт на ${want} ${want === 1 ? 'сезон' : 'сезона'})` : ''}.`);
+  else n.log.push(`${ag.name}: мало. Клиент хочет не меньше ${money(Math.round(need / 1000) * 1000)} за сезон (~${money(Math.round(need / 12000) * 1000)} в месяц)${years !== want ? ` (или контракт на ${want} ${want === 1 ? 'сезон' : 'сезона'})` : ''}.`);
 }
 function sign(id) {
   const n = negs().find(x => x.id === id); if (!n || n.st !== 'ready') return;

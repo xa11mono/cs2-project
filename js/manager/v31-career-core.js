@@ -57,7 +57,7 @@ function ensurePerson(p) {
   if (!Number.isFinite(+p.conf)) p.conf = 60;
   const age = +p.age || 24;
   if (!Number.isFinite(+p.pot)) p.pot = Math.round(clamp(pow(p) + Math.max(0, 24 - age) * 1.6 + (u01('pot|' + p.nick) - .4) * 8, pow(p), 97) * 10) / 10;
-  if (!Number.isFinite(+p.salary) || p.v31sv !== 5) { p.salary = salaryOf(p, teams.find(t => (t.players || []).includes(p)) || null); p.v31sv = 5; }   // v92: пересчёт по новой шкале
+  if (!Number.isFinite(+p.salary) || p.v31sv !== 6) { p.salary = salaryOf(p, teams.find(t => (t.players || []).includes(p)) || null); p.v31sv = 6; }   // v137: пересчёт по шкале со статусом   // v92: пересчёт по новой шкале
   return p;
 }
 function wageTier(name) { const rk = rankOf(name), CF = (k, d) => { try { return window.CS2Config ? window.CS2Config.get(k, d) : d; } catch (e) { return d; } }; return !rk || rk <= 10 ? 1.15 : rk <= 30 ? 1 : rk <= 60 ? CF('econ.wageMid', 0.7) : CF('econ.wageLow', 0.5); }
@@ -68,7 +68,11 @@ function salaryOf(p, team) { // зарплата за сезон: уровень
   // уходила в долги за год (долгая симуляция v92).
   const CF = (k, d) => { try { return window.CS2Config ? window.CS2Config.get(k, d) : d; } catch (e) { return d; } };
   const tier = !rk || rk <= 10 ? 1.15 : rk <= 30 ? 1 : rk <= 60 ? CF('econ.wageMid', 0.7) : CF('econ.wageLow', 0.5);
-  return Math.round(clamp((30000 + Math.pow(Math.max(0, lv - 72) / 20, 2.6) * 560000) * tier * ac, 15000, 1400000) / 1000) * 1000;
+  // v137: статус игрока в зарплате — обычный игрок получает примерно на треть меньше, чем раньше (в клубе середины ~$5–8 тыс.
+  // в месяц, Tier-2/3 — $2–4 тыс.), звезда — около $40–60 тыс., франшиза — до ~$85 тыс. в месяц
+  let st = 'regular'; try { if (window.CS2Stature && !team?.isAcademy) st = window.CS2Stature.tier(p); } catch (e) {}
+  const stK = st === 'franchise' ? CF('wage.franchiseK', 1.15) : st === 'star' ? CF('wage.starK', 1) : CF('wage.regularK', 0.65);
+  return Math.round(clamp((24000 + Math.pow(Math.max(0, lv - 72) / 20, 2.6) * 560000) * tier * ac * stK, 12000, 1100000) / 1000) * 1000;
 }
 // v101: стоимость — уровень + часть оставшегося потенциала (у молодых), возрастная кривая, форма, контракт, академия.
 // Растёт вместе с развитием игрока и падает с возрастом, спадом формы и истечением контракта (история — v101-economy).

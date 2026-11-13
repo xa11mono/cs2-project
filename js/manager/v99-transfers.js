@@ -84,6 +84,14 @@
       const o = outFor(t, p); if (!o) out.blocks.push(`В вашем составе некого вывести под роль ${p.role}: капитан и снайпер — по одному.`); else out.notes.push(`При переходе ${o.nick} уйдёт на скамейку.`);
       out.notes.push(out.mid ? `Сейчас не межсезонье: это выкуп контракта по ходу сезона — клуб просит на 25% больше и отвечает дольше (3–6 дней).` : 'Межсезонье: обычная цена, клуб отвечает за 2–4 дня.');
     }
+    // v137: предупреждение — хватит ли бюджета на выкуп и зарплату до конца сезона
+    try {
+      const o = outFor(t, p), N0 = W.V31Nego, want = N0 && N0.demand ? N0.demand(p) : 0, fee = from && N0 && N0.askPrice ? N0.askPrice(p, from) : 0;
+      const d = new Date(now()), left = Math.max(1, 12 - d.getMonth()) / 12, delta = Math.max(0, want - ((o && +o.salary) || 0)) * left;
+      const budget = Number(V.org(t.name).budget) || 0, after = budget - fee - delta;
+      if (after < 0) out.notes.push(`⚠ Агент предупреждает: выкуп ${money(fee)} и зарплата ~${money(want)} за сезон (~${money(Math.round(want / 12))} в месяц) выведут бюджет в минус — к концу сезона около ${money(Math.round(after))}.`);
+      else if (want) out.notes.push(`Ожидаемая зарплата — около ${money(want)} за сезон (~${money(Math.round(want / 12))} в месяц).`);
+    } catch (e) {}
     const lk = lockUntil({ from: from ? from.name : null });
     if (lk > now()) out.notes.push(`Сейчас идёт турнир — регистрация контракта пройдёт после него (не раньше ${fdate(lk)}).`);
     out.ok = !out.blocks.length;
