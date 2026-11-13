@@ -105,10 +105,26 @@
     // в основе (так tN1R навсегда потерял место в Spirit). Теперь: если вернувшийся не в пятёрке, а в ней тот, кто пришёл
     // за время отсутствия, — меняем их местами; временного игрока из свободных агентов отпускаем.
     try {
-      if (rec.team === me() && W.V98Squad && !starters(t).some(x => x.nick === rec.nick) && (W.V98Squad.bench() || []).some(x => x.nick === rec.nick)) {
+      if (rec.team === me() && !starters(t).some(x => x.nick === rec.nick)) {
         const st = starters(t), was = rec.before || [];
         const cand = st.find(x => x.nick === rec.sub) || st.filter(x => !was.includes(x.nick) && !isOut(x.nick))[0];
-        if (cand) { const r = W.V98Squad.swap(cand.nick, rec.nick); if (r && r.ok && cand.isStandIn && W.V98Squad.release) { try { W.V98Squad.release(cand.nick); } catch (e) {} } }
+        const onBench = W.V98Squad && (W.V98Squad.bench() || []).some(x => x.nick === rec.nick);
+        if (cand && onBench) { const r = W.V98Squad.swap(cand.nick, rec.nick); if (r && r.ok && cand.isStandIn && W.V98Squad.release) { try { W.V98Squad.release(cand.nick); } catch (e) {} } }
+        else if (cand) {
+          // временную замену сняли раньше: игрок лежит в общем списке свободных агентов с пометкой «запас» —
+          // возвращаем его в пятёрку на место пришедшего (так donk навсегда выпал из основы Spirit после травмы)
+          const fa = transferState.freeAgents || [], i = fa.findIndex(x => x && x.nick === rec.nick && (!x.status || x.status === 'BENCH' || x.status === 'FREE AGENT') && (!x.reservedFor || x.reservedFor === t.name));
+          if (i >= 0) {
+            const back = fa.splice(i, 1)[0]; back.status = 'STARTER'; delete back.benchFrom; delete back.reservedFor; delete back.v84FaSince;
+            const j = t.players.indexOf(cand); t.players[j] = back;
+            if (cand.isStandIn) { cand.status = 'FREE AGENT'; delete cand.isStandIn; delete cand.standInReason; cand.v84FaSince = now(); }
+            else { cand.status = 'BENCH'; cand.benchFrom = t.name; cand.reservedFor = t.name; }
+            fa.push(cand);
+            if (t.tempStandIn && t.tempStandIn.original && t.tempStandIn.original.nick === rec.nick) t.tempStandIn = null;
+            try { if (typeof ensurePlayerLayer === 'function') ensurePlayerLayer(t); } catch (e) {}
+            try { W.CS2Journal && W.CS2Journal.log('ROSTER_CHANGE', { team: t.name, kind: 'standin-return', actor: 'system', player: rec.nick, out: cand.nick, reason: 'возвращение после отсутствия (страховка v133)' }); } catch (e) {}
+          }
+        }
       }
     } catch (e) { console.warn('[v133 talks] страховка возвращения', e); }
     const p = (t.players || []).find(x => x && x.nick === rec.nick);
