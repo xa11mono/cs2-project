@@ -679,3 +679,34 @@ html.ax-on #hs-root .pp-thbox.ax-scened.ax-has-vis>.pp-thw:not(.ax-nvis),html #h
 .pp-n3-tri.p1,.pp-n3-tri.p2{z-index:2}
 .pp-ft-p.p0{z-index:1;left:25cqw;width:52cqw;height:72cqw}
 .pp-ft-p.p1,.pp-ft-p.p2{z-index:2}
+/* v146: ветка комментариев поста — как обсуждение в Telegram */
+#hs-root .pp-th{position:fixed;inset:0;z-index:9000;display:flex;justify-content:flex-end;background:rgba(5,7,10,.55);backdrop-filter:blur(2px)}
+#hs-root .pp-th[hidden]{display:none}
+#hs-root .pp-th-panel{width:min(440px,100vw);height:100%;display:flex;flex-direction:column;background:#0e1621;color:#e9eef4;box-shadow:-10px 0 30px rgba(0,0,0,.5);animation:ppThIn .18s ease-out}
+@keyframes ppThIn{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+#hs-root .pp-th-panel header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#17212b;border-bottom:1px solid rgba(255,255,255,.06)}
+#hs-root .pp-th-panel header b{display:block;font:700 15px/1.2 var(--f-ui)}
+#hs-root .pp-th-panel header small{color:#7f91a4;font:500 12px/1.3 var(--f-ui)}
+#hs-root .pp-th-x{width:30px;height:30px;border-radius:50%;background:transparent!important;color:#9fb0c2!important;font-size:16px;border:0;cursor:pointer}
+#hs-root .pp-th-x:hover{background:rgba(255,255,255,.07)!important}
+#hs-root .pp-th-src{padding:9px 16px;border-left:3px solid #4ea4f6;margin:10px 16px 0;background:rgba(78,164,246,.08);border-radius:0 8px 8px 0;color:#bcd3ea;font:600 12.5px/1.35 var(--f-ui)}
+#hs-root .pp-th-list{flex:1;overflow:auto;padding:12px 12px 16px;display:flex;flex-direction:column;gap:8px}
+#hs-root .pp-th-m{display:flex;gap:8px;align-items:flex-end;max-width:92%}
+#hs-root .pp-th-m.mine{align-self:flex-end;flex-direction:row-reverse}
+#hs-root .pp-th-av{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--av);color:#fff;font:700 13px/1 var(--f-ui)}
+#hs-root .pp-th-b{padding:7px 11px 6px;border-radius:12px 12px 12px 4px;background:#182533}
+#hs-root .pp-th-m.mine .pp-th-b{background:#2b5278;border-radius:12px 12px 4px 12px}
+#hs-root .pp-th-b b{display:block;font:700 13px/1.25 var(--f-ui);cursor:pointer}
+#hs-root .pp-th-b p{margin:2px 0 3px;font:400 14px/1.38 var(--f-ui);color:#e9eef4;word-break:break-word}
+#hs-root .pp-th-b small{display:block;text-align:right;color:#6d8296;font:500 11px/1 var(--f-ui)}
+#hs-root .pp-th-at{color:#6ab3f3;cursor:pointer}
+#hs-root .pp-th-empty{color:#7f91a4;text-align:center;margin-top:30px}
+#hs-root .pp-th-panel footer{display:flex;gap:8px;align-items:flex-end;padding:10px 12px;background:#17212b;border-top:1px solid rgba(255,255,255,.06)}
+#hs-root .pp-th-panel footer textarea{flex:1;resize:none;min-height:38px;max-height:120px;padding:9px 12px;border-radius:18px;border:0;background:#0e1621;color:#e9eef4;font:400 14px/1.3 var(--f-ui)}
+#hs-root .pp-th-panel footer button{width:38px;height:38px;border-radius:50%;border:0;background:#4ea4f6!important;color:#fff!important;font-size:16px;cursor:pointer}
+#hs-root .pp-cm{cursor:pointer}
+#hs-root .pp-th-b p b{display:inline;font:inherit;font-weight:700}
+/* v146: дайджест — один логотип по центру; «облачко» реплики — слева от портрета, не на лице */
+.pp-dg2-tl.one{left:50%;transform:translateX(-50%)}
+.pp-dg2-ph~.pp-bub{left:19cqw;top:5cqw;max-width:22cqw;font-size:2.7cqw}
+.pp-dg2-ph~.pp-bub::after{right:-1.2cqw;bottom:1.2cqw;border-top-color:transparent;border-left-color:#fff}

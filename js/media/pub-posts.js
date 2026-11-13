@@ -84,7 +84,7 @@
   /* ------------------------------------------------------------ данные */
   const TIERW = { major: 6, elite: 5, regular: 4, tier2: 2, tier3: 1, qual: 0, academy: 0 };
   function matches() { try { return (H.allMatches() || []).filter(m => m && m.a && m.b && m.w && Array.isArray(m.s)); } catch (e) { return []; } }
-  function bigMatches() { const ms = matches(); const top = Math.max(0, ...ms.map(m => TIERW[m.kind] || 0)); return ms.filter(m => (TIERW[m.kind] || 0) >= Math.min(top, 4) && (m.mp || []).length); }
+  function bigMatches() { const ms = matches(); const top = Math.max(0, ...ms.map(m => TIERW[m.kind] || 0)); void top; return ms.filter(m => (TIERW[m.kind] || 0) >= 4 && (m.mp || []).length); }   // v146: только Tier-1 (Tier-2/3 — без постов статистики)
   let STATS = null, STATS_AT = 0;
   const stats = () => { if (!STATS || Date.now() - STATS_AT > 20000) { try { STATS = H.stats(); } catch (e) { STATS = { P: {} }; } STATS_AT = Date.now(); } return STATS; };
   const line = z => { try { return z ? H.line(z) : null; } catch (e) { return null; } };
@@ -278,7 +278,7 @@
   }
   const ORD = ['ПЕРВОЙ', 'ВТОРОЙ', 'ТРЕТЬЕЙ', 'ЧЕТВЁРТОЙ', 'ПЯТОЙ'];
   function morePosts(BM, ALL, T0) {
-    const out = [], recent = BM.slice(0, 14);
+    const out = [], recent = BM.slice(0, 8);   // v146: меньше постов (было 14 матчей)
     recent.forEach((m, i) => {
       const n = (m.mp || []).length; if (!n) return;
       // К/Д лучшего на первой карте — ответом на пост с результатом
@@ -330,9 +330,11 @@
     Object.entries(byDay).slice(0, 4).forEach(([d, L]) => {
       if (L.length < 4) return; const top = L.slice().sort((a, b) => (b.imp || 0) - (a.imp || 0)).slice(0, 5), lead = top[0], tags = lead.tags || [];
       const tms = tags.filter(t => t.t === 'team').map(t => t.v), nick = (tags.find(t => t.t === 'player') || {}).v;
-      const vis = tms.length >= 2 ? dgVisTeams(tms[0], tms[1]) : nick ? dgVisNick(nick) : tms[0] ? dgVisTeams(tms[0], tms[0]) : '';
+      // v146: один клуб — один логотип по центру (раньше тот же логотип дважды); реплика-«облачко» — только у портрета игрока
+      // (у двух логотипов она висела между ними без смысла)
+      const vis = tms.length >= 2 && !(nick && full(nick)) ? dgVisTeams(tms[0], tms[1]) : nick && full(nick) ? dgVisNick(nick) : tms[0] ? `<span class="pp-dg2-tl one">${tlogo(tms[0])}</span>` : '';
       const ts = Math.max(...L.map(n => n.ts)) + 6e4;
-      out.push({ id: 'dg2-' + d, ch: 'cs2news', ts, imp: 6, tone: 0, html: T.digest2('cs2news', ts, vis, DG_PHR[h32(d) % DG_PHR.length]),
+      out.push({ id: 'dg2-' + d, ch: 'cs2news', ts, imp: 6, tone: 0, html: T.digest2('cs2news', ts, vis, /pp-dg2-ph/.test(vis) ? DG_PHR[h32(d) % DG_PHR.length] : ''),
         cap: para(`🗞 <b>${['Дайджест дня', 'Коротко о главном', 'Что вы пропустили', 'Дайджестенко Дайджест Дайджестович'][h32(d + 'c') % 4]}:</b>`) +
           `<blockquote class="pp-bq dg">${top.map(n => `<span class="pp-dash"></span> ${DG_EM[n.cat] || '⚡'} <a data-art-open="${esc(n.id)}">${esc(n.title)}</a>`).join('<br><br>')}</blockquote>` + para('<span class="pp-tag">#дайджест</span>') });
     });
@@ -354,9 +356,14 @@
   const para = s => `<p>${s}</p>`;
 
   /* ------------------------------------------------------------ сборка постов */
+  // v146: паблики пишут о популярных — клубы топ-20, их игроки, звёзды; Tier-2/3 и малоизвестные игроки — без постов
+  const rkOf = name => { try { const t = (typeof teams !== 'undefined' ? teams : []).find(x => x && x.name === name); return t && !t.isAcademy ? (W.CS2Rank ? W.CS2Rank.of(t) : 999) : 999; } catch (e) { return 999; } };
+  const popular = n => { if (!n) return false; if (n.cat === 'tier2' || n.cat === 'academy') return false; if ((+n.imp || 0) >= 8) return true;
+    const tags = n.tags || []; if (tags.some(t => t.t === 'team' && rkOf(t.v) <= 20)) return true;
+    return tags.some(t => t.t === 'player' && rkOf(teamOfNick(t.v)) <= 20); };
   function newsPosts() {
     const out = []; let feed = []; try { feed = H.feed() || []; } catch (e) {}
-    feed.slice(0, 260).forEach(n => {
+    feed.slice(0, 260).filter(n => n && !n.pp && popular(n)).slice(0, 60).forEach(n => {
       if (n.pp) return;   // наш же опубликованный пост
       let s = null; try { s = W.V111News ? W.V111News.srcOf(n) : null; } catch (e) {}
       const ch = CH[n.src] ? n.src : s && CH[s.id] ? s.id : 'hltv';
@@ -584,7 +591,7 @@
   function publish() {
     const N = W.V29News; if (PUB_BUSY || !N || !N.add || !N.get) return; PUB_BUSY = true;
     try {
-      const T1 = now(), fresh = posts().filter(p => !p.id.startsWith('n-') && !N.get('pp-' + p.id) && p.ts > T1 - 4 * DAY).sort((a, b) => a.ts - b.ts).slice(-24);
+      const T1 = now(), fresh = posts().filter(p => !p.id.startsWith('n-') && !N.get('pp-' + p.id) && p.ts > T1 - 4 * DAY && (p.imp || 0) >= 6).sort((a, b) => a.ts - b.ts).slice(-6);   // v146: в ленту — только важные посты, до 6 за 4 дня (было 24: дубли новостей)
       fresh.forEach(p => {
         const lines = strip(p.cap).split(/\n+/).map(x => x.trim()).filter(Boolean), title = lines[0].replace(/^[^\p{L}\p{N}«"]+/u, '').replace(/:$/, '').trim();
         if (!title) return;
@@ -594,7 +601,7 @@
     PUB_BUSY = false;
   }
   const every = (W.CS2Loop && W.CS2Loop.every) || ((f, ms) => setInterval(f, ms));
-  setTimeout(() => { const run = () => { try { assignSources(); curate(); } catch (e) {} publish(); }; run(); every(run, 6000, 'v129-pubs'); }, 9000);
+  setTimeout(() => { const run = () => { try { assignSources(); curate(); } catch (e) {} publish(); }; run(); every(run, 20000, 'v129-pubs'); }, 9000);
   try { assignSources(); } catch (e) {}
 
   // сообщение канала (как в Telegram)
@@ -609,8 +616,10 @@
       `<div class="pp-reacts">${re.map(([e, n]) => `<button type="button" class="pp-re${mine === e ? ' on' : ''}${e === '⭐' ? ' star' : ''}" data-ppre="${esc(p.id)}|${e}">${e}<b>${kfmt(n + (mine === e ? 1 : 0))}</b></button>`).join('')}</div>` +
       `<div class="pp-meta"><span class="pp-views">👁 ${kfmt(p.views || 0)}</span><span>${esc(p.adm || '')}${p.edited ? ', изменено' : ''} ${hhmm(p.ts)}</span></div>` +
       cmPreview(p) +
-      `<div class="pp-cm"${opts.open ? ` data-art-open="${esc(opts.open)}"` : ''}><span class="pp-cm-av">${['🙂', '😎', '🤓'].map(x => `<i>${x}</i>`).join('')}</span>${p.cm || 0} ${plural(p.cm || 0, 'комментарий', 'комментария', 'комментариев')}<i>›</i></div></article>`;
+      `<div class="pp-cm"${(opts.open || artIdOf(p)) ? ` data-ppcm="${esc(opts.open || artIdOf(p))}"` : ''}><span class="pp-cm-av">${['🙂', '😎', '🤓'].map(x => `<i>${x}</i>`).join('')}</span>${cmCount(p)} ${plural(cmCount(p), 'комментарий', 'комментария', 'комментариев')}<i>›</i></div></article>`;
   };
+  // v146: счётчик под постом — настоящее число комментариев новости (как в открывающейся ветке)
+  function cmCount(p) { try { const N = W.V29News, it = N && N.get && N.get(p.nid || p.art || ('pp-' + p.id)); if (it && N.comments) return N.comments(it).length; } catch (e) {} return p.cm || 0; }
   function cmPreview(p) { // два свежих комментария болельщиков (из системы комментариев новостей)
     try { const N = W.V29News, it = N && N.get && N.get(p.nid || p.art || ('pp-' + p.id)); if (!it || !N.comments) return '';
       const C = N.comments(it).slice(0, 2); if (!C.length) return '';
@@ -628,7 +637,34 @@
       const on = m[id] === ee; b.classList.toggle('on', on); num.textContent = kfmt(base + (on ? 1 : 0)); if (on && ee === e) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); } }); }]);
   const parseK = t => { t = String(t || '').trim(); const v = parseFloat(t); return /K$/.test(t) ? Math.round(v * 1e3) : /M$/.test(t) ? Math.round(v * 1e6) : v || 0; };
   // v146: «N комментариев» в посте внутри статьи — раскрывает обсуждение (поле ввода и ветку) под статьёй
-  H.CLICKS.push(['.pp-art .pp-cm', el => { const c = el.closest('.hs-col') && el.closest('.hs-col').querySelector(':scope > .hs-cmts'); if (c) { c.classList.add('pp-open'); c.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }]);
+  // v146: «N комментариев» открывает ветку обсуждения как в Telegram — панель поверх страницы: те же болельщики, что в
+  // комментариях новостей (V29News.comments), ник и аватар ведут в профиль, внизу — поле для своего комментария
+  const newsOf = id => { const N = W.V29News; return (N && N.get && N.get(String(id))) || (H.findNews ? H.findNews(String(id)) : null); };
+  const cmAgo = m => m < 1 ? 'только что' : m < 60 ? m + ' мин' : m < 1440 ? Math.floor(m / 60) + ' ч' : Math.floor(m / 1440) + ' дн';
+  const cmAv = n => `<span class="pp-th-av" style="--av:hsl(${h32(n) % 360} 55% 45%)">${esc(String(n || '?').slice(0, 1).toUpperCase())}</span>`;
+  function threadHtml(it) {
+    const N = W.V29News, C = (N && N.comments ? N.comments(it) : []).slice(0, 120), p = postFor(it), ch = p && CH[p.ch];
+    const list = C.map(c => { const txt = esc(c.text).replace(/^@([\w.\-]+)/, '<b class="v84-ulink pp-th-at" data-user="$1">@$1</b>');
+      return `<div class="pp-th-m${c.mine ? ' mine' : ''}">${c.mine ? cmAv(c.nick) : `<span class="v84-ulink" data-user="${esc(c.nick)}">${cmAv(c.nick)}</span>`}<div class="pp-th-b"><b${c.mine ? '' : ` class="v84-ulink" data-user="${esc(c.nick)}"`} style="color:hsl(${h32(c.nick) % 360} 70% 66%)">${esc(c.nick || 'аноним')}</b><p>${txt}</p><small>${c.likes ? `♥ ${c.likes} · ` : ''}${cmAgo(+c.mins || 0)}</small></div></div>`; }).join('');
+    return `<div class="pp-th-panel" role="dialog" aria-label="Комментарии"><header><button type="button" class="pp-th-x" data-ppthx aria-label="Закрыть">✕</button><div><b>Комментарии</b><small>${C.length} ${plural(C.length, 'комментарий', 'комментария', 'комментариев')}${ch ? ' · ' + esc(ch.name) : ''}</small></div></header>
+      <div class="pp-th-src">${esc(it.title || '')}</div>
+      <div class="pp-th-list">${list || '<p class="pp-th-empty">Пока никто не написал — будьте первым.</p>'}</div>
+      <footer><textarea id="pp-th-t" rows="1" maxlength="400" placeholder="Комментарий…"></textarea><button type="button" data-ppthsend="${esc(it.id)}" aria-label="Отправить">➤</button></footer></div>`;
+  }
+  function openThread(id) {
+    const it = newsOf(id), root = document.getElementById('hs-root'); if (!it || !root) return false;
+    let o = document.getElementById('pp-thread'); if (!o) { o = document.createElement('div'); o.id = 'pp-thread'; o.className = 'pp-th'; root.appendChild(o); }
+    o.dataset.art = it.id; o.innerHTML = threadHtml(it); o.hidden = false;
+    const L = o.querySelector('.pp-th-list'); if (L) L.scrollTop = 0; return true;
+  }
+  const closeThread = () => { const o = document.getElementById('pp-thread'); if (o) o.hidden = true; };
+  H.CLICKS.push(['[data-ppcm]', el => { if (!openThread(el.dataset.ppcm) && W.hltvSiteOpenArticle) W.hltvSiteOpenArticle(el.dataset.ppcm); }]);
+  H.CLICKS.push(['[data-ppthx]', () => { closeThread(); }]);
+  H.CLICKS.push(['#pp-thread .v84-ulink', () => { closeThread(); return false; }]);   // профиль откроет общий обработчик [data-user]
+  H.CLICKS.push(['[data-ppthsend]', el => { const t = document.getElementById('pp-th-t'), N = W.V29News, id = el.dataset.ppthsend; if (!t || !N || !N.comment) return; if (N.comment(id, t.value)) openThread(id); }]);
+  document.addEventListener('keydown', e => { const o = document.getElementById('pp-thread'); if (!o || o.hidden) return; if (e.key === 'Escape') closeThread(); if (e.key === 'Enter' && !e.shiftKey && e.target && e.target.id === 'pp-th-t') { e.preventDefault(); const b = o.querySelector('[data-ppthsend]'); if (b) b.click(); } });
+  document.addEventListener('click', e => { const o = document.getElementById('pp-thread'); if (o && !o.hidden && e.target === o) closeThread(); });
+  { let lastPg = ''; (H.AFTER || []).push((pg, arg) => { const k = pg + '|' + (arg || ''); if (k !== lastPg) { lastPg = k; closeThread(); } }); }   // переход в профиль и т. п. — ветка закрывается
   H.CLICKS.push(['[data-art-open]', el => { if (W.hltvSiteOpenArticle) W.hltvSiteOpenArticle(el.dataset.artOpen); }]);
   const BOX = '.v37-story-media, .nl-img, .hs-news-img, .hs-top-img, [class*="story-img"]';
   // превью новости = карточка поста. Свой элемент рядом со старым превью (старое прячем): другие модули перерисовывают

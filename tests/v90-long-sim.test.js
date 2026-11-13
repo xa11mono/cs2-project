@@ -13,6 +13,8 @@ const path = require('path'), fs = require('fs'), os = require('os');
   p.on('pageerror', e => errs.push(e.message)); p.on('dialog', d => d.accept());
   await p.goto('file://' + dir + '/index.html'); await p.waitForTimeout(3000);
   await require('./lib/project').chooseStart(p, 'history');
+  // v146: защита стартовых составов (roster.freshDays) выключена — тест меряет долгую жизнь мира, а не старт сезона
+  await p.evaluate(() => { try { window.CS2Config.set('roster.freshDays', 0); } catch (e) {} });
   await p.waitForFunction(() => window.CS2Roster && window.v33SkipDays && seasonState.v88Seed, null, { timeout: 40000 }).catch(() => {});
 
   // снимок мира на старте
