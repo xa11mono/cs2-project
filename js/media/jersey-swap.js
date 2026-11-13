@@ -327,6 +327,7 @@
   }
   W.CS2JerseySwap = {
     state,
+    settingsHtml: settingsBox,
     photoFor,
     reconcile,
     checkService,
@@ -344,9 +345,7 @@
   else setTimeout(reconcile, 2500);
 
   const H = W.HS;
-  if (H && H.PAGES && typeof H.PAGES.settings === 'function') {
-    const oldSettings = H.PAGES.settings;
-    H.PAGES.settings = function () { return oldSettings.apply(this, arguments) + settingsBox(); };
+  if (H && Array.isArray(H.CLICKS)) {
     H.CLICKS.push(['[data-jtoggle]', () => {
       const d = state(); if (!d) return;
       d.enabled = !d.enabled; save();
