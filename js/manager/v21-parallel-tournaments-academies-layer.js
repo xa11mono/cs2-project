@@ -1048,8 +1048,12 @@
     if(past.length){ past.forEach((s,j)=>v22SetStepDay(s,dayNow-(past.length-j)*3)); changed=true; }
     const nx=arr[idx];
     if(nx&&nx.calendar){
-      const target=dayNow+5, cur=Number(nx.calendar.dayOffset);
-      if(cur>target){
+      // v133: подтягиваем расписание только при аномальном разрыве (как старая «дыра» в 150+ дней). Раньше порог был
+      // 5 дней: любой плановый перерыв в 2–3 недели «закрывался», все оставшиеся турниры сдвигались раньше, и к
+      // концу сезона календарь сжимался на 2,5 месяца — Мейджор ноября шёл в сентябре, сезон менялся в октябре.
+      const GAP=(window.CS2Config?CS2Config.get('calendar.tier1MaxGapDays',45):45), LEAD=(window.CS2Config?CS2Config.get('calendar.tier1PullLeadDays',14):14);
+      const target=dayNow+LEAD, cur=Number(nx.calendar.dayOffset);
+      if(cur>dayNow+GAP){
         const d=cur-target;
         for(let i=idx;i<arr.length;i++) if(arr[i]&&arr[i].calendar) v22SetStepDay(arr[i],Number(arr[i].calendar.dayOffset)-d);
         changed=true;

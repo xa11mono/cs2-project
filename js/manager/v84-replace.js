@@ -40,14 +40,27 @@
         if (src === t || i + 1 <= rank + 3) return;
         (src.players || []).forEach(p => { if (p && p.status !== 'BENCH' && !p.onLoan && roleOk(p, role) && (+p.age || 25) <= Math.min(ageMax, 31) && okFit(p) && SJ(p, src) && !(W.CS2Stature?.protectedIn(p, src))) buy.push({ p, from: src }); });
       });
-      return { fa, buy };
+      // v133: таланты академий (до 21 года) — для клубов топ-30: топ-клуб скорее подтянет молодую звезду академии,
+      // чем возьмёт случайного свободного агента
+      const acad = [];
+      if (rank <= 30) teams.forEach(src => { if (!src || !src.isAcademy) return;
+        (src.players || []).forEach(p => { if (p && p.status !== 'BENCH' && !p.onLoan && roleOk(p, role) && (+p.age || 25) <= 21 && okFit(p)) acad.push({ p, from: src, acad: true }); }); });
+      return { fa, buy, acad };
     }
+    // запас роста таланта (потенциал − текущая сила), до +4 к оценке
+    const upside = p => Math.max(0, Math.min(4, ((+p.pot || 0) - pow(p)) * 0.5));
+    // «заметный» свободный агент для клуба топ-20: играл в топ-40 или явно сильнее уровня замены
+    const notable = (p, floor, score) => { if (score(p) >= floor + 2) return true; const was = p.v30LastProTeam || p.v84FaTeam || ''; const i = list.findIndex(x => x.name === was); return i >= 0 && i < 40; };
     function pickBest(role, floor, score, ageMax) {
       const c = candidates(role, ageMax), by = (a, b) => score(b.p) - score(a.p);
-      c.fa.sort(by); c.buy.sort(by);
-      let best = c.fa[0] && score(c.fa[0].p) >= floor - 3 ? c.fa[0] : null;
+      c.fa.sort(by); c.buy.sort(by); c.acad.sort((a, b) => (score(b.p) + upside(b.p)) - (score(a.p) + upside(a.p)));
+      const top = rank <= 20;
+      const fa = top ? c.fa.find(x => notable(x.p, floor, score)) : c.fa[0];
+      let best = fa && score(fa.p) >= floor - (top ? 0 : 3) ? fa : null;
       const b = c.buy[0];
       if (b && (!best || score(b.p) > score(best.p) + 1.5) && score(b.p) >= floor) best = b;
+      const a = c.acad[0];
+      if (a && score(a.p) + upside(a.p) >= floor - (top ? 1 : 3) && (!best || score(a.p) + upside(a.p) >= score(best.p) - 1)) best = a;
       return best;
     }
 

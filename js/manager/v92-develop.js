@@ -38,8 +38,17 @@
   function staffMul(team, p) {
     let m = 1;
     try { if (W.CS2Staff && team) m *= W.CS2Staff.devMul(team, p); } catch (e) {}
-    try { if (W.V31 && team && !team.isAcademy) m *= 1 + 0.06 * ((W.V31.org(team.name).fac || {}).training || 0); } catch (e) {}
+    // v133: академия тренируется на базе своего основного клуба (раньше база академии не учитывалась вовсе)
+    try { const club = team && team.isAcademy ? ((W.V21AcademyParent || {})[team.name] || '') : team && team.name; if (W.V31 && club) m *= 1 + 0.06 * ((W.V31.org(club).fac || {}).training || 0); } catch (e) {}
     return m;
+  }
+  // v133: игровая практика — молодой игрок растёт быстрее, когда играет против сильных: топ-20 и топ-40 дают прибавку,
+  // академия и Tier-3 — базовый темп. Так переход таланта из академии в Tier-1 ускоряет его развитие.
+  function levelMul(team, p) {
+    if (!team || team.isAcademy) return { k: 1, why: '' };
+    let rk = 999; try { const l = teams.filter(t => t && !t.isAcademy).sort((a, b) => (b.pts || 0) - (a.pts || 0)); rk = l.indexOf(team) + 1 || 999; } catch (e) {}
+    const k = rk <= 20 ? C('dev.levelTop20', 1.3) : rk <= 40 ? C('dev.levelTop40', 1.15) : 1;
+    return { k, why: k > 1 ? `игровая практика в №${rk} (×${k})` : '' };
   }
   // годовое изменение характеристик (без записи) — для симуляции и тестов
   function delta(p, team, season, ctx) {
@@ -52,9 +61,11 @@
     if (age < pr.peak) {
       // реализация таланта: потенциал раскрывают не все — у каждого игрока своя доля (закреплена на всю карьеру)
       const real = C('dev.realizeMin', 0.25) + (1.1 - C('dev.realizeMin', 0.25)) * u('real', String(p.nick).toLowerCase());
-      const g = Math.min(room, (C('dev.growBase', 0.9) + C('dev.growPerYear', 0.45) * (pr.peak - age)) * profK * staffMul(team, p) * real * (0.6 + u('g', p.nick, season) * 0.8));
+      const lv = levelMul(team, p);
+      const g = Math.min(room, (C('dev.growBase', 0.9) + C('dev.growPerYear', 0.45) * (pr.peak - age)) * profK * staffMul(team, p) * lv.k * real * (0.6 + u('g', p.nick, season) * 0.8));
       fp += g; cl += g * 0.7; iq += g * 0.5; ut += g * 0.5;
       why.push(`рост до пика (${pr.label}, пик ~${pr.peak})`);
+      if (lv.why) why.push(lv.why);
       if (room > 0.5 && room < 2) why.push('почти достиг потенциала');
       if (room <= 0.5) why.push('потенциал исчерпан');
     } else if (age <= pr.peak + C('dev.plateau', 3)) {

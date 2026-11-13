@@ -42,6 +42,17 @@
     // амбиции
     if (from && !from.isAcademy && (pp.amb || 0) >= C('expect.ambHigh', 14) && rt > rf + C('expect.ambDrop', 10) && !expiring && !p.v31listed)
       no('PLAYER_AMBITION', `${p.nick} амбициозен и не хочет уходить из №${rf} в №${rt}`);
+    // v133: престиж клуба — не только для звёзд. Игрок с контрактом не уходит в клуб на 30+ мест ниже (если клуб его
+    // не выставил и контракт не истекает); свободный агент, недавно игравший в топ-20, первые два месяца не идёт
+    // в клуб ниже топ-50. Раньше обычный сильный игрок соглашался перейти куда угодно — даже в безымянную команду.
+    if (!to.isAcademy && from && !from.isAcademy && rt - rf >= C('expect.prestigeDrop', 30) && !expiring && !p.v31listed)
+      no('PLAYER_PRESTIGE', `${p.nick} не видит смысла уходить из №${rf} в №${rt}`);
+    if (!to.isAcademy && !from) {
+      const was = p.v30LastProTeam || p.v84FaTeam, wt = was ? teams.find(t => t && t.name === was) : null, wr = wt ? rankOf(wt) : 999;
+      const faDays = p.v84FaSince ? (now() - p.v84FaSince) / DAY : 999;
+      if (wr <= 20 && rt > C('expect.faTopMinRank', 50) && faDays < C('expect.faWaitDays', 60))
+        no('PLAYER_PRESTIGE', `${p.nick} недавно играл в №${wr} и ждёт предложений сильнее, чем №${rt}`);
+    }
     // лояльность
     const tenure = p.v31since ? (now() - p.v31since) / DAY : 0;
     if (from && (pp.loy || 0) >= C('expect.loyHigh', 16) && tenure >= C('expect.loyDays', 365) && rf - rt < 6 && !p.v31listed)

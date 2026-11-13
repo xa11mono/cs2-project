@@ -71,6 +71,13 @@
     if (p.onLoan) out.blocks.push('Игрок в аренде — до её окончания переход невозможен.');
     if (t.isAcademy && (+p.age || 25) > 21) out.blocks.push('В академию переходят только игроки до 21 года.');
     try { if (W.CS2Stature && !W.CS2Stature.canJoin(p, t, from)) out.blocks.push(`Агент: ${p.nick} не рассматривает клуб вашего уровня — игроки его статуса идут только в команды выше в рейтинге.`); } catch (e) {}
+    // v133: те же правила решения игрока, что и для клубов ИИ (престиж, амбиции, преданность клубу, язык, лидерство, роль)
+    try {
+      if (W.CS2Expect && !t.isAcademy) {
+        const ev = W.CS2Expect.evaluate(p, from, t, { out: outFor(t, p) });
+        ev.reasons.filter(r => r.code !== 'PLAYER_LEVEL').forEach(r => out.blocks.push(`Агент: ${r.text}.`));
+      }
+    } catch (e) {}
     if (from) {
       try { if (W.CS2Stature && W.CS2Stature.protectedIn(p, from) && !p.v31listed) out.blocks.push(`${from.name} не продают ${p.nick}: игрок — лицо клуба.`); } catch (e) {}
       try { if (typeof W.findCompatibleFreeAgent === 'function' && !W.findCompatibleFreeAgent(from, p)) out.blocks.push(`${from.name} не отпустят игрока: на рынке нет замены на роль ${p.role || 'игрока'}.`); } catch (e) {}

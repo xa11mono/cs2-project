@@ -173,7 +173,8 @@ function startNeg(nick) {
   const p = x.p, n = { id: 'ng' + Date.now().toString(36), nick, from: x.t ? x.t.name : null, st: x.t ? 'offer' : 'terms', rounds: 0, log: [], ts: Date.now() };
   if (x.t) {
     const rk = V.rankOf(x.t.name), best = (x.t.players || []).slice().sort((a, b) => V.pow(b) - V.pow(a))[0];
-    if (rk <= 5 && best === p && !p.v31listed) { n.st = 'failed'; n.log.push(`${x.t.name}: игрок не продаётся — ключевой игрок команды из топ-5.`); }
+    if (!x.t.isAcademy && rk <= 5 && best === p && !p.v31listed) {   // v133: к академиям правило «лидер топ-5» не относится
+     n.st = 'failed'; n.log.push(`${x.t.name}: игрок не продаётся — ключевой игрок команды из топ-5.`); }
     else { n.ask = askPrice(p, x.t); n.log.push(`${x.t.name} готовы обсуждать. Ориентир по выкупу — около ${money(n.ask)}.`); }
   } else n.log.push('Свободный агент: выкуп не нужен, обсуждаем условия с агентом.');
   negs().unshift(n); if (negs().length > 30) negs().length = 30;

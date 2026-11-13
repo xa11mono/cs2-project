@@ -425,9 +425,22 @@ function returnLoans() {
 }
 function releaseBench() { // скамейка → свободные агенты через 2 тика
   const s = M(); let n = 0;
+  // v133: каждый клуб ИИ держит одного запасного — лучшего со своей скамейки. Раньше скамейка через два тика рынка
+  // целиком уходила в свободные агенты: у всех команд топ-30 не было ни одного запасного, и на болезнь/травму
+  // в состав брали случайного свободного агента. Лишние запасные по-прежнему отпускаются; клуб в долгах не держит никого.
+  const keep = {};
+  s.v30Bench.forEach(b => {
+    const p = (transferState.freeAgents || []).find(x => lc(x.nick) === lc(b.nick)), t = teams.find(x => x && x.name === b.team);
+    if (!p || !t || t.isAcademy || onRoster(b.nick) || p.status === 'FREE AGENT') return;
+    try { if (window.V31 && V31.isManaged && V31.isManaged(t.name)) return; } catch (e) {}
+    try { if ((Number(window.V31.org(t.name).budget) || 0) < 0) return; } catch (e) {}
+    if (!keep[b.team] || pow(p) > pow(keep[b.team])) keep[b.team] = p;
+  });
   s.v30Bench = s.v30Bench.filter(b => {
     const p = (transferState.freeAgents || []).find(x => lc(x.nick) === lc(b.nick));
     if (!p || onRoster(b.nick)) return false;
+    if (keep[b.team] === p) { p.status = 'BENCH'; p.benchFrom = b.team; p.v133Sub = b.team; p.reservedFor = b.team; return true; }
+    if (p.v133Sub === b.team) { delete p.v133Sub; if (p.reservedFor === b.team) delete p.reservedFor; }
     if (run() - b.since < 2) return true;
     // v131: молодой игрок с запасом роста — не выбрасываем сразу: сначала предложение клубам топ-30, иначе ждём дольше
     const young = (+p.age || 25) <= 21 && (+p.pot || 0) - pow(p) >= 3;

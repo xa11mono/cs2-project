@@ -1351,10 +1351,14 @@ function findCompatibleFreeAgent(team, outPlayer){
   ensureFreeAgentPool();
   let best=null, bestScore=-999;
   transferState.freeAgents.forEach((p,idx)=>{
+    // v133: запасной другого клуба — не свободный агент; свой запасной — первый кандидат
+    const subOf=p&&(p.v133Sub||p.reservedFor||(p.status==='BENCH'?p.benchFrom:''));
+    if(subOf && team && subOf!==team.name) return;
+    const own=subOf && team && subOf===team.name ? 1000 : 0;
     const fit=teamIdentityFit(team,p);
     const roleFit=p.role===outPlayer?.role?8:0;
     const skill=Math.max(0,playerPower(p)-playerPower(outPlayer||p));
-    const score=fit*100+roleFit+skill-idx*0.1;
+    const score=own+fit*100+roleFit+skill-idx*0.1;
     if(fit>=0.55 && score>bestScore){best={p,idx};bestScore=score;}
   });
   return best;
@@ -1416,7 +1420,7 @@ function applyTemporaryStandIn(t, reason){
   if(!candidate) return false;
   const free=findCompatibleFreeAgent(t,candidate);
   if(!free) return false;
-  const replacement=JSON.parse(JSON.stringify(free.p)); replacement.status='STAND-IN'; replacement.isStandIn=true; replacement.standInReason=reason;
+  const replacement=JSON.parse(JSON.stringify(free.p)); const ownSub=(free.p.v133Sub||free.p.reservedFor||(free.p.status==='BENCH'?free.p.benchFrom:''))===t.name; replacement.status='STAND-IN'; replacement.isStandIn=true; replacement.standInReason=reason; if(ownSub) replacement.v133SubOf=t.name;
   t.tempStandIn={original:JSON.parse(JSON.stringify(candidate)), reason, returnAfterTournament:true};
   const idx=t.players.findIndex(p=>p.nick===candidate.nick);
   t.players[idx]=replacement;
@@ -1441,7 +1445,12 @@ function restoreTemporaryStandIn(t){
     // перевёрнуто: состав нормализуется и замена получает статус STARTER — такой игрок просто исчезал из игры
     // (сторож UNTRACKED на 5 сезонах: Deskv, Momia и ещё 14 игроков «нигде»).
     const elsewhere=teams.some(x=>x!==t&&(x.players||[]).some(p=>p&&p.nick===replacement.nick))||transferState.freeAgents.some(p=>p&&p.nick===replacement.nick);
-    if(!elsewhere){ replacement.status='FREE AGENT'; delete replacement.isStandIn; delete replacement.standInReason; replacement.v84FaSince=Number(seasonState?.calendar?.currentMs)||Date.now(); transferState.freeAgents.push(replacement); }
+    if(!elsewhere && replacement.v133SubOf===t.name){
+      // v133: свой запасной после замены возвращается на скамейку клуба, а не в свободные агенты
+      replacement.status='BENCH'; replacement.benchFrom=t.name; replacement.v133Sub=t.name; replacement.reservedFor=t.name; delete replacement.isStandIn; delete replacement.standInReason; delete replacement.v133SubOf;
+      transferState.freeAgents.push(replacement);
+      const B=(transferState.v30Bench=transferState.v30Bench||[]); if(!B.some(b=>b&&String(b.nick).toLowerCase()===String(replacement.nick).toLowerCase())) B.push({nick:replacement.nick,team:t.name,since:Number(transferState.marketRuns)||0});
+    } else if(!elsewhere){ replacement.status='FREE AGENT'; delete replacement.isStandIn; delete replacement.standInReason; replacement.v84FaSince=Number(seasonState?.calendar?.currentMs)||Date.now(); transferState.freeAgents.push(replacement); }
   }
   t.tempStandIn=null;
   ensurePlayerLayer(t);

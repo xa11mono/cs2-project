@@ -69,7 +69,7 @@
   function out(p, days, reason, kind) {
     const t = team(); if (!t || !p) return '';
     const s = S(); if (s.out[p.nick]) { s.out[p.nick].until = Math.max(s.out[p.nick].until, now() + days * DAY); return `пропустит ещё ${days} дн.`; }
-    const rec = { nick: p.nick, team: t.name, from: now(), until: now() + days * DAY, reason, kind: kind || 'other', mode: 'none' };
+    const rec = { nick: p.nick, team: t.name, from: now(), until: now() + days * DAY, reason, kind: kind || 'other', mode: 'none', before: starters(t).map(x => x.nick) };
     // 1) запасной клуба
     let bench = []; try { bench = (W.V98Squad && W.V98Squad.bench()) || []; } catch (e) {}
     const sub = bench.filter(b => !isOut(b.nick)).sort((a, b) => (V.pow(b) || 0) - (V.pow(a) || 0))[0];
@@ -100,6 +100,17 @@
         W.restoreTemporaryStandIn(t);
       }
     } catch (e) { console.warn('[v99 talks] возвращение', e); }
+    // v133: страховка возвращения. Когда отсутствия накладываются (один заболел — его заменил запасной, следом уехал
+    // другой) или временную замену сняли раньше (конец турнира), игрок после возвращения оставался в запасе, а замена —
+    // в основе (так tN1R навсегда потерял место в Spirit). Теперь: если вернувшийся не в пятёрке, а в ней тот, кто пришёл
+    // за время отсутствия, — меняем их местами; временного игрока из свободных агентов отпускаем.
+    try {
+      if (rec.team === me() && W.V98Squad && !starters(t).some(x => x.nick === rec.nick) && (W.V98Squad.bench() || []).some(x => x.nick === rec.nick)) {
+        const st = starters(t), was = rec.before || [];
+        const cand = st.find(x => x.nick === rec.sub) || st.filter(x => !was.includes(x.nick) && !isOut(x.nick))[0];
+        if (cand) { const r = W.V98Squad.swap(cand.nick, rec.nick); if (r && r.ok && cand.isStandIn && W.V98Squad.release) { try { W.V98Squad.release(cand.nick); } catch (e) {} } }
+      }
+    } catch (e) { console.warn('[v133 talks] страховка возвращения', e); }
     const p = (t.players || []).find(x => x && x.nick === rec.nick);
     if (p && rec.team === me()) { post(rec.nick, 'p', pick(rec.nick + rec.until, ['Я вернулся и готов играть 💪', 'Снова в строю. Спасибо, что дали время.', 'Всё, я в порядке. Включаюсь в тренировки.']), true); }
   }

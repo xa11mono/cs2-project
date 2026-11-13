@@ -112,10 +112,10 @@
     ['players', 'Игроки', 'players'], ['teams', 'Команды', 'teams'], ['transfers', 'Трансферы', 'transfer']
   ];
   // вкладки внутри разделов — не показываем в меню (раздел подсвечивается сам)
-  const TAB_PAGES = new Set(['training', 'tactics', 'staff', 'academy', 'finance', 'control', 'manage', 'pick', 'inbox', 'dm', 'debrief', 'decisions', 'scout', 'season', 'settings', 'gs', 'veto', 'desk']);
+  const TAB_PAGES = new Set(['capsules', 'training', 'tactics', 'staff', 'academy', 'finance', 'control', 'manage', 'pick', 'inbox', 'dm', 'debrief', 'decisions', 'scout', 'season', 'settings', 'gs', 'veto', 'desk']);
   const GROUPS = [
     ['hist', 'История', 'history', ['majorpath', 'majors', 'awards', 'hof', 'records', 'eras', 'rivalries', 'archive', 'nations', 'stats']],
-    ['comm', 'Фан-зона', 'community', ['news', 'transfers', 'predict', 'community', 'forum', 'fantasy', 'fpl', 'betting', 'cards', 'stickers', 'capsules', 'fan']]
+    ['comm', 'Фан-зона', 'community', ['news', 'transfers', 'predict', 'community', 'forum', 'fantasy', 'fpl', 'betting', 'cards', 'stickers', 'fan']]
   ];
   const labelOf = b => { const c = b.cloneNode(true); c.querySelectorAll('i,b,small,.gs-badge,svg').forEach(n => n.remove()); return c.textContent.replace(/\s+/g, ' ').trim(); };
   function allNav() {   // все разделы, которые модули зарегистрировали в старой навигации

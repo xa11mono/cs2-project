@@ -92,7 +92,7 @@
     sync();
     const v = inv() || { tokens: 0, items: [], earned: [] }, U = H.S.cpx, list = majors();
     const tabs = [['shop', 'Капсулы'], ['inv', `Коллекция · ${v.items.length}`], ['earn', 'Жетоны']].map(([k, l]) => `<button type="button" class="cpx-tab${U.tab === k ? ' on' : ''}" data-cpxtab="${k}">${esc(l)}</button>`).join('');
-    const head = `<section class="cpx-head"><div><small>Режим зрителя · награды Pick'Em</small><h1>Капсулы и наклейки</h1><p>Выполняйте испытания Pick'Em, получайте жетоны и открывайте капсулы Мейджоров. Каждая наклейка сохраняется в коллекции.</p></div>
+    const head = `<section class="cpx-head"><div><button type="button" class="cpx-back" data-nav="pickem">← Pick'Em</button><small>Награды Pick'Em</small><h1>Капсулы и наклейки</h1><p>Выполняйте испытания Pick'Em, получайте жетоны и открывайте капсулы Мейджоров. Каждая наклейка сохраняется в коллекции.</p></div>
       <div class="cpx-bal"><span class="cpx-coin"></span><div><b>${v.tokens}</b><small>${plural(v.tokens, 'жетон', 'жетона', 'жетонов')}</small></div></div></section><nav class="cpx-tabs">${tabs}</nav>`;
     let body = '';
     if (U.tab === 'inv') {
@@ -185,9 +185,10 @@
   H.CLICKS.push(['[data-cpxnav]', el => { const o = H.S.cpx.open; if (!o || !o.list) return; o.i = (o.i + Number(el.dataset.cpxnav) + o.list.length) % o.list.length; rerender(); }]);
   H.CLICKS.push(['[data-cpxclose]', () => { const o = H.S.cpx.open; if (o && o.back === 'preview') { H.S.cpx.open = { stage: 'preview', mName: o.mName, capId: o.capId }; rerender(); return; } H.S.cpx.open = null; rerender(); }]);
   H.CLICKS.push(['[data-cpxclose-x]', () => { H.S.cpx.open = null; rerender(); }]);
-  // пункт меню (боковое меню собирает разделы из старой навигации)
-  const addMenu = () => { try { const mm = D.querySelector('.pt-menu[data-menu="more"]'); if (mm && !mm.querySelector('[data-nav="capsules"]')) mm.insertAdjacentHTML('beforeend', '<button type="button" data-nav="capsules">Капсулы</button>'); } catch (e) {} };
-  (H.AFTER || []).push(addMenu); setTimeout(addMenu, 1700);
+  // v133: капсулы — часть Pick'Em, а не отдельный раздел: пункта меню нет, страница открывается из Pick'Em (кнопка
+  // жетонов) и подсвечивает раздел Pick'Em; в шапке — возврат в Pick'Em
+  try { if (H.SECTION_OF) H.SECTION_OF.capsules = H.SECTION_OF.pickem || 'pickem'; } catch (e) {}
+  try { D.querySelectorAll('.pt-menu [data-nav="capsules"]').forEach(b => b.remove()); } catch (e) {}
   // окно открытия — поверх всего экрана (внутри страницы fixed привязывается к анимированному контейнеру)
   (H.AFTER || []).push(pg => { D.querySelectorAll('#hs-root > .cpx-ov-host').forEach(n => n.remove()); if (pg !== 'capsules') return;
     const ov = D.querySelector('#hs-page .cpx-ov'), root = D.getElementById('hs-root'); if (!ov || !root) return;
