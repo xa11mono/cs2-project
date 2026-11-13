@@ -1431,7 +1431,7 @@ function applyTemporaryStandIn(t, reason){
   if(!candidate) return false;
   const free=findCompatibleFreeAgent(t,candidate);
   if(!free) return false;
-  const replacement=JSON.parse(JSON.stringify(free.p)); const ownSub=(free.p.v133Sub||free.p.reservedFor||(free.p.status==='BENCH'?free.p.benchFrom:''))===t.name; replacement.status='STAND-IN'; replacement.isStandIn=true; replacement.standInReason=reason; if(ownSub) replacement.v133SubOf=t.name;
+  const replacement=JSON.parse(JSON.stringify(free.p)); const ownSub=(free.p.v133Sub||free.p.reservedFor||(free.p.status==='BENCH'?free.p.benchFrom:''))===t.name; replacement.status='STAND-IN'; replacement.isStandIn=true; replacement.standInReason=reason; replacement.v141Temp={team:t.name, for:candidate.nick}; if(ownSub) replacement.v133SubOf=t.name;
   t.tempStandIn={original:JSON.parse(JSON.stringify(candidate)), reason, returnAfterTournament:true};
   const idx=t.players.findIndex(p=>p.nick===candidate.nick);
   t.players[idx]=replacement;

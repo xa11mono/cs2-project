@@ -131,7 +131,7 @@
     while (P.length < slots) {
       const k = P.length, off = offers(t, o, k + 2)[k + 1], share = rk <= 10 ? C('econ.partnerShareTop', 0.12) : rk <= 40 ? C('econ.partnerShareMid', 0.1) : C('econ.partnerShareLow', 0.1);
       const x = { id: off.id + 'p' + k, name: off.name + (P.some(q => q.name === off.name) ? ' ' + (k + 2) : ''), industry: off.industry, industryL: off.industryL, perSeason: Math.round(baseAmount(t, o) * share * (0.85 + u('pt', t.name, season(), k) * 0.3) / 1000) * 1000,
-        until: season() + (h32(t.name + 'pt' + k + season()) % 2), target: clamp(rk + 6, 1, 80), since: now(), miss: 0 };
+        until: season() + (h32(t.name + 'pt' + k + season()) % 2), target: clamp(rk + 6, 1, 130), since: now(), miss: 0 };   // v141: без потолка 80 — у клуба ниже №74 требование было невыполнимым с первого дня
       if (x.name === (o.sponsor && o.sponsor.name)) x.name = x.name + ' Partner';
       P.push(x);
       journal('FINANCE', { team: t.name, action: 'partner', reason: `${x.name} (${x.industryL}): ${money(x.perSeason)} за сезон до сезона ${x.until}; требование — место не ниже ${x.target}` });

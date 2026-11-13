@@ -146,7 +146,10 @@ applyTemporaryStandIn = function (t, reason) { // eslint-disable-line no-global-
   const free = findCompatibleFreeAgent(t, candidate);
   if (!free) return false;
   const replacement = JSON.parse(JSON.stringify(free.p));
-  Object.assign(replacement, { status: 'STAND-IN', isStandIn: true, standInReason: reason }); delete replacement.reservedFor;
+  // v141: свой запасной (v133) после замены возвращается на скамейку; метка «за кого вышел» — для страховки v141
+  const ownSub = (free.p.v133Sub || free.p.reservedFor || (free.p.status === 'BENCH' ? free.p.benchFrom : '')) === t.name;
+  Object.assign(replacement, { status: 'STAND-IN', isStandIn: true, standInReason: reason, v141Temp: { team: t.name, for: candidate.nick } }); delete replacement.reservedFor;
+  if (ownSub) replacement.v133SubOf = t.name;
   t.tempStandIn = { original: JSON.parse(JSON.stringify(candidate)), reason, returnAfterTournament: true };
   t.players[t.players.findIndex(p => p.nick === candidate.nick)] = replacement;
   transferState.freeAgents.splice(free.idx, 1);
@@ -168,8 +171,14 @@ restoreTemporaryStandIn = function (t) { // eslint-disable-line no-global-assign
     const idx = t.players.findIndex(p => p === stand);
     t.players[idx] = original; t.players[idx].status = 'STARTER'; delete t.players[idx].reservedFor;
     if (faIdx >= 0) transferState.freeAgents.splice(faIdx, 1);
-    stand.status = 'FREE AGENT'; delete stand.isStandIn; delete stand.standInReason;
-    if (!t.isAcademy) { stand.v30ProOrigin = true; stand.v30LastProTeam = t.name; stand.v31team = stand.v31team || t.name; }
+    delete stand.isStandIn; delete stand.standInReason; delete stand.v141Temp;
+    if (stand.v133SubOf === t.name) {   // v141: свой запасной — обратно на скамейку клуба
+      stand.status = 'BENCH'; stand.benchFrom = t.name; stand.reservedFor = t.name; stand.v133Sub = t.name; delete stand.v133SubOf;
+      const B = (transferState.v30Bench = transferState.v30Bench || []); if (!B.some(b => b && lc(b.nick) === lc(stand.nick))) B.push({ nick: stand.nick, team: t.name, since: Number(transferState.marketRuns) || 0 });
+    } else {
+      stand.status = 'FREE AGENT';
+      if (!t.isAcademy) { stand.v30ProOrigin = true; stand.v30LastProTeam = t.name; stand.v31team = stand.v31team || t.name; }
+    }
     if (!onRoster(stand.nick)) transferState.freeAgents.push(stand);
   } else if (stand) { // основной уже играет за другую команду — замена остаётся в составе
     stand.status = 'STARTER'; delete stand.isStandIn; delete stand.standInReason;

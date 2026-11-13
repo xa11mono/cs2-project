@@ -500,9 +500,32 @@
   function follow(nick, key, days, data) { S().follow.push({ nick, key, due: now() + days * DAY, data: data || {}, team: me() }); }
 
   /* ------------------------------------------------------------ ход времени */
+  // v141: страховка от «вечных» временных замен у всех клубов. Временный игрок (метка v141Temp — за кого он вышел) стоит
+  // в основе, а тот, за кого он вышел, уже не отсутствует и числится в запасе клуба (или среди свободных агентов с
+  // пометкой клуба) — меняем обратно, временного отпускаем. Раньше при наложении отсутствий и обмене со скамейкой
+  // метка «замена» терялась, и случайный свободный агент навсегда занимал место (Alliance: nosraC вместо adamS, Crisp).
+  function tempSweep() {
+    const outNow = S().out || {}, fa = transferState.freeAgents || [];
+    teams.forEach(t => {
+      if (!t || t.isAcademy || t.tempStandIn) return;
+      (t.players || []).forEach((x, i) => {
+        const tag = x && x.v141Temp; if (!tag || tag.team !== t.name || x.isStandIn && t.tempStandIn) return;
+        if (outNow[tag.for]) return;                                   // тот, за кого вышел, ещё отсутствует
+        if ((t.players || []).some(q => q && q.nick === tag.for && (!q.status || q.status === 'STARTER'))) { delete x.v141Temp; return; }
+        const j = fa.findIndex(q => q && q.nick === tag.for && (q.reservedFor === t.name || q.benchFrom === t.name || q.v133Sub === t.name || (q.status === 'BENCH' && !q.reservedFor)));
+        if (j < 0) { delete x.v141Temp; return; }                       // игрок ушёл совсем — замена остаётся
+        const back = fa.splice(j, 1)[0]; back.status = 'STARTER'; delete back.benchFrom; delete back.reservedFor; delete back.v84FaSince;
+        t.players[i] = back;
+        x.status = 'FREE AGENT'; delete x.isStandIn; delete x.standInReason; delete x.v141Temp; delete x.reservedFor; delete x.benchFrom; x.v84FaSince = now(); fa.push(x);
+        try { if (typeof ensurePlayerLayer === 'function') ensurePlayerLayer(t); } catch (e) {}
+        try { W.CS2Journal && W.CS2Journal.log('ROSTER_CHANGE', { team: t.name, kind: 'standin-return', actor: 'system', player: back.nick, out: x.nick, reason: 'временная замена закончилась (страховка v141)' }); } catch (e) {}
+      });
+    });
+  }
   function daily() {
     const t = team(), s = S(); if (!t) return;
     const d = dayNo(); if (s.day === d) return; s.day = d;
+    try { tempSweep(); } catch (e) { console.warn('[v141 temp sweep]', e); }
     // возвращение игроков
     Object.values(s.out).forEach(rec => { if (rec.until <= now()) comeBack(rec); });
     // разговоры с истёкшим сроком
