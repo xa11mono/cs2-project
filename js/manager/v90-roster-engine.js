@@ -105,6 +105,11 @@
     const allowed = W.__v31ForceBuy && W.__v31ForceBuy === team.name;   // менеджер сам поручил ИИ найти игрока (решение в «Центре событий»)
     if (actor === 'ai' && !forced && !allowed && team.name && team.name === managed() && !marketAuto()) hard('MANAGED', `${team.name} управляет менеджер — рынок не делегирован ИИ`);
     if (actor === 'ai' && !forced && from && from.name === managed() && !marketAuto() && incoming && !incoming.v31listed) hard('MANAGED_SELL', `игрок ${from.name} не выставлен менеджером на продажу`);
+    // v136: «концептуальные» клубы (стримерский стак, микс ветеранов — WW Team и т.п.): ИИ не перекраивает их состав
+    // ради усиления и не скупает их игроков; замена ушедшего на пенсию и временные замены — разрешены
+    const concept = n => { try { return !!n && (C('concept.clubs', ['WW Team', 'Without a Roof']) || []).includes(n); } catch (e) { return false; } };
+    if (actor === 'ai' && !forced && concept(team.name) && team.name !== managed()) hard('CONCEPT', `${team.name} — клуб со своим составом-концепцией: ИИ не меняет его ради усиления`);
+    if (actor === 'ai' && !forced && from && concept(from.name) && from.name !== managed()) hard('CONCEPT_SELL', `${from.name} не продают игроков — состав-концепция`);
     if (incoming) {
       // 1. контракт и статус
       if (incoming.onLoan && op.kind !== 'loan-return' && op.kind !== 'loan') hard('ON_LOAN', `${incoming.nick} в аренде`);

@@ -66,15 +66,47 @@
       else if (j.key === 'crisis' && (h[25] || 99) <= C('era.crisisNewsTop', 30) && (crisisN++) < 2) news({ cat: 'ranking', icon: '📉', imp: 5, title: `${t.name} в кризисе`, lead: j.why, body: [], tags: [{ t: 'team', v: t.name }] });
       else if (j.key === 'return') news({ cat: 'ranking', icon: '🔁', imp: 6, title: `${t.name} возвращается на вершину`, lead: j.why, body: [], tags: [{ t: 'team', v: t.name }] });
     });
+    try { slumpWeekly(); } catch (e) { console.warn('[v136 slump]', e); }
     return n;
   }
-  W.CS2Eras = { weekly, of: name => S().cur[name] || null, history: name => (S().hist[name] || []).slice(), judge, LABELS: L };
+  /* ------------------------------------------------------------ v136: спад формы команды
+     Раньше «кризис» был только подписью эпохи — на игру не влиял, и сильный состав годами держался в топ-5, а клуб,
+     прорвавшийся в топ-20, оставался там. Теперь раз в неделю у команды топ-30 есть небольшой шанс войти в спад на
+     3–6 недель (форма основы прижата на 5–8 пунктов ниже нормы, мораль падает). Шанс выше у тех, кто полгода держится
+     в топ-5 (усталость, привыкание к успеху), и у тех, кто недавно поднялся в топ-20 снизу. После спада — пауза. */
+  const hh = (k) => { let h = 2166136261 >>> 0; k = String(k); for (let i = 0; i < k.length; i++) { h ^= k.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return (h % 100000) / 100000; };
+  function slumpWeekly() {
+    const s = S(), sl = s.slump = s.slump || {}, wk = Math.floor(now() / WEEK);
+    let started = 0;
+    ranked().forEach((t, i) => {
+      const rk = i + 1, h = s.ranks[t.name] || [], cur = sl[t.name];
+      if (cur && cur.until > now()) return;
+      if (cur && now() - cur.until < C('slump.cooldownDays', 120) * DAY) return;
+      if (rk > C('slump.topRank', 30) || h.length < 8) return;
+      const top5 = h.slice(0, 26).filter(r => r <= 5).length / 26, rose = (h[25] || h[h.length - 1] || 99) > 25 && rk <= 20;
+      let p = C('slump.baseWeekly', 0.006) * (1 + top5 * C('slump.top5Mul', 2)) * (rose ? C('slump.newcomerMul', 2.5) : 1);
+      if (hh('slump|' + t.name + '|' + wk + '|' + (seasonState.v88Seed || '')) >= p) return;
+      const days = 21 + Math.floor(hh('sd|' + t.name + wk) * 22), depth = 5 + Math.floor(hh('sp|' + t.name + wk) * 4);
+      const why = rose ? 'после быстрого взлёта команда не выдерживает темпа' : top5 > .7 ? 'усталость после долгого пребывания на вершине' : 'полоса неудач, игра не клеится';
+      sl[t.name] = { from: now(), until: now() + days * DAY, depth, why };
+      (t.players || []).forEach(x => { if (x && (!x.status || x.status === 'STARTER')) x.morale = Math.max(40, (+x.morale || 85) - 6); });
+      if (rk <= 20 && started++ < 2) news({ cat: 'ranking', icon: '🥶', imp: 5, title: `${t.name}: кризис формы`, lead: `${why[0].toUpperCase() + why.slice(1)}. Тренерский штаб ищет выход.`, body: [], tags: [{ t: 'team', v: t.name }] });
+      try { W.CS2Journal && W.CS2Journal.log('TEAM_SLUMP', { team: t.name, reason: why, days, depth }); } catch (e) {}
+    });
+  }
+  // каждый день, пока идёт спад: форма основы не выше нормы минус глубина спада (иначе после пары матчей форма вернулась бы к норме)
+  function slumpDaily() {
+    const sl = S().slump || {}, t0 = now();
+    Object.entries(sl).forEach(([name, x]) => { if (!x || x.until <= t0) return; const t = teams.find(q => q && q.name === name); if (!t) return;
+      const cap = 100 - x.depth; (t.players || []).forEach(p => { if (p && (!p.status || p.status === 'STARTER') && (+p.form || 100) > cap) p.form = cap; }); });
+  }
+  W.CS2Eras = { slump: name => { const x = (S().slump || {})[name]; return x && x.until > now() ? x : null; }, weekly, of: name => S().cur[name] || null, history: name => (S().hist[name] || []).slice(), judge, LABELS: L };
   const every = (W.CS2Loop && W.CS2Loop.every) || ((fn, ms) => setInterval(fn, ms));
   every(() => { try { if (!W.v57BatchCalendarSkip) weekly(); } catch (e) { console.warn('[v93 eras]', e); } }, 5000, 'v93-eras');
   (function hookDaily() {
     const f = W.V30RankSnapshotTick; if (typeof f !== 'function') { setTimeout(hookDaily, 1000); return; }
     if (f.__v93e) return;
-    const w = function () { const r = f.apply(this, arguments); try { weekly(); } catch (e) {} return r; };
+    const w = function () { const r = f.apply(this, arguments); try { weekly(); } catch (e) {} try { slumpDaily(); } catch (e) {} return r; };
     Object.keys(f).forEach(k => { w[k] = f[k]; }); w.__v93e = true; W.V30RankSnapshotTick = w;
   })();
 

@@ -467,6 +467,7 @@ function releaseBench() { // скамейка → свободные агент�
     let signed = 0;
     pro().filter(t => rankOf(t) <= C133('market.subTopRank', 40)).forEach(t => {
       if (signed >= 4 || hasSub.has(t.name)) return;
+      if ((C133('concept.clubs', ['WW Team', 'Without a Roof']) || []).includes(t.name)) return;   // v136: клубы-концепции — без навязанного шестого
       try { if (window.V31 && V31.isManaged && V31.isManaged(t.name)) return; if ((Number(V31.org(t.name).budget) || 0) < 0) return; } catch (e) {}
       const st = (t.players || []).filter(x => x && (!x.status || x.status === 'STARTER')); if (st.length < 5) return;
       const avg = st.reduce((a, x) => a + pow(x), 0) / st.length;
