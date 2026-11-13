@@ -6,7 +6,7 @@
 **Запуск:** открыть `index.html` в Chrome/Edge (сервер не нужен). Релизная сборка: `npm run setup && npm run build`,
 затем открыть `dist/index.html`.
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) — устройство проекта и правила внесения правок (начните отсюда).
+- [ARCHITECTURE.md](ARCHITECTURE.md) — устройство проекта и правила внесения правок (начните отсюда). Главное правило: **все правки — в уже существующий модуль-хозяин**, без независимых функций и слоёв поверх.
 - [DESIGN.md](DESIGN.md) — дизайн-система интерфейса.
 - [docs/LAYERS.md](docs/LAYERS.md) — какие модули расширяют какие функции.
 - [docs/changelog/](docs/changelog/) — история версий.
