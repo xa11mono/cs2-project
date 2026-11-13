@@ -55,13 +55,25 @@
   }
   W.CS2Loop = Object.freeze({ every, clear, diagnostics, BASE_MS, FRAME_BUDGET });
 
-  let sliceStart = now();
+  /* v144: уступка браузеру без лишнего простоя. Раньше каждая уступка ждала следующего кадра (requestAnimationFrame,
+     до 16 мс): профиль перемотки на 30 дней — 60% времени поток простаивал. Теперь кадр (перерисовка) — не чаще
+     раза в PAINT_MS; в остальные разы — мгновенная макрозадача (MessageChannel): браузер обрабатывает ввод и таймеры,
+     но не ждёт кадра. В фоновой вкладке setTimeout троттлится до 1 с, MessageChannel — нет.
+     Все самописные «yield frame» модулей перемотки идут сюда (CS2Yield.frame). */
+  const PAINT_MS = 50;
+  let sliceStart = now(), lastPaint = 0;
+  const mq = [];
+  let mc = null;
+  try { mc = new MessageChannel(); mc.port1.onmessage = () => { const f = mq.shift(); if (f) f(); }; } catch (e) { mc = null; }
+  const macrotask = fn => { if (mc) { mq.push(fn); mc.port2.postMessage(0); } else setTimeout(fn, 0); };
+  const stats = { frames: 0, quick: 0 };
   function frame() {
     return new Promise(resolve => {
       const done = () => { sliceStart = now(); resolve(true); };
       try {
-        if (document.visibilityState !== 'hidden' && typeof W.requestAnimationFrame === 'function') W.requestAnimationFrame(done);
-        else setTimeout(done, 0);
+        const visible = document.visibilityState !== 'hidden' && typeof W.requestAnimationFrame === 'function';
+        if (visible && now() - lastPaint >= PAINT_MS) { stats.frames++; W.requestAnimationFrame(() => { lastPaint = now(); done(); }); }
+        else { stats.quick++; macrotask(done); }
       } catch (e) { setTimeout(done, 0); }
     });
   }
@@ -70,7 +82,7 @@
     if (now() - sliceStart < budget) return Promise.resolve(false);
     return frame();
   }
-  W.CS2Yield = Object.freeze({ maybe, frame, reset: () => { sliceStart = now(); } });
+  W.CS2Yield = Object.freeze({ maybe, frame, reset: () => { sliceStart = now(); }, stats: () => Object.assign({}, stats), PAINT_MS });
 })();
 // Ненавязчивое уведомление (вместо alert) — используется при остановке перемотки.
 window.v84ShowToast = function (text, ms) {

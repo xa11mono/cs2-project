@@ -170,6 +170,7 @@
   const V17_WEEK_MS = 7 * V17_DAY_MS;
   let v17BatchCpuSinceYield = 0;
   function v17YieldToBrowser(){
+    if (window.CS2Yield) return window.CS2Yield.frame();   // v144: общий планировщик уступок (js/core/scheduler.js)
     return new Promise(resolve => {
       const finish = () => { try { window.CS2Yield?.reset?.(); } catch(e) {} resolve(); }; // v84: no artificial idle gap
       try { if (document.visibilityState !== 'hidden' && typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(finish); else setTimeout(finish,4); }

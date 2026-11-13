@@ -247,9 +247,7 @@ function collectChampions() {
 
 /* ---------------- подключение к рынку ---------------- */
 // applyPlayerTransfer: покупатель вне TRANSFER_SEARCH/NEGOTIATION — сделка не проходит (кроме сделок менеджера и вынужденных)
-(function gate() {
-  const f = window.applyPlayerTransfer; if (typeof f !== 'function' || f.__v34) return;
-  const w = function (fromTeam, toTeam, player) {
+CS2.patch('applyPlayerTransfer', f => function (fromTeam, toTeam, player) {
     // Профессионал не может оказаться в чужой академии даже через forced-сделку
     // или повторный переход между академиями после потери исходной команды.
     const proOrigin = !!(player && (player.v30ProOrigin === true || player.v30LastProTeam || window.v30ProfessionalSource?.(player)));
@@ -260,9 +258,7 @@ function collectChampions() {
     const r = f.apply(this, arguments);
     if (r && toTeam) { if (!forced) notePlanned(toTeam); try { fixRoles(toTeam); if (fromTeam) fixRoles(fromTeam); } catch (e) {} if (sig(toTeam) !== before) recordHistory(toTeam); }
     return r;
-  };
-  w.__v34 = true; Object.keys(f).forEach(k => { w[k] = f[k]; }); window.applyPlayerTransfer = w; try { applyPlayerTransfer = w; } catch (e) {}
-})();
+  }, { id: '__v34' });
 // еженедельная оценка (по игровому времени) + роли + история
 function weekly() {
   const o = S(), wk = Math.floor(now() / WEEK); if (o.week === wk) return; o.week = wk;

@@ -325,6 +325,7 @@ async function buildTrainingMapStatsCooperative() {
     addTrainingMatch(byTeam, matches[i]);
     if ((i + 1) % 300 === 0 && i + 1 < matches.length) {
       v31TrainingDiagnostics.cooperativeYields++;
+      if (window.CS2Yield) { await window.CS2Yield.frame(); continue; }
       await new Promise(resolve => {
         try { if (document.visibilityState !== 'hidden' && typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(() => resolve()); else setTimeout(resolve, 4); }
         catch (e) { setTimeout(resolve, 4); }
@@ -334,6 +335,7 @@ async function buildTrainingMapStatsCooperative() {
   return finishTrainingMapBuild(byTeam, matches, started, key);
 }
 function v31YieldFrame() {
+  if (window.CS2Yield) return window.CS2Yield.frame();   // v144: общий планировщик уступок (js/core/scheduler.js)
   return new Promise(resolve => {
     try { if (document.visibilityState !== 'hidden' && typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(() => resolve()); else setTimeout(resolve, 4); }
     catch (e) { setTimeout(resolve, 4); }
@@ -858,8 +860,7 @@ function sellProspect(teamName, nick) { // продажа таланта в ко
 
 /* ------------------------------------------------------------ рынок: деньги и характер */
 // выкуп двигает деньги; покупатель без бюджета не может купить (для всех, включая окно после Major)
-(() => { const f = window.applyPlayerTransfer; if (typeof f !== 'function' || f.__v31) return;
-  const w = function (fromTeam, toTeam, player, reason) {
+CS2.patch('applyPlayerTransfer', f => function (fromTeam, toTeam, player, reason) {
     if (!fromTeam || !toTeam || !player) return f.apply(this, arguments);
     if (isManaged(toTeam.name) && !auto('market') && !window.__v31UserDeal && window.__v31ForceBuy !== toTeam.name) return false;   // за управляемую команду AI не покупает
     if (isManaged(fromTeam.name) && !auto('market') && !window.__v31UserDeal && !player.v31listed) return false;                     // и не продаёт её игроков без разрешения
@@ -874,8 +875,7 @@ function sellProspect(teamName, nick) { // продажа таланта в ко
       if (isManaged(toTeam.name) || isManaged(fromTeam.name)) careerLog(`Трансфер: ${player.nick} ${fromTeam.name} → ${toTeam.name} за ${money(fee)}`);
     }
     return ok;
-  };
-  w.__v31 = true; Object.keys(f).forEach(k => { w[k] = f[k]; }); window.applyPlayerTransfer = w; try { applyPlayerTransfer = w; } catch (e) {} })();
+  }, { id: '__v31' });
 // амбиции и лояльность решают, согласится ли игрок
 (() => { const f = window.playerWillAccept; if (typeof f !== 'function' || f.__v31) return;
   const w = function (p, fromTeam, toTeam) { ensurePerson(p); const base = f.apply(this, arguments);

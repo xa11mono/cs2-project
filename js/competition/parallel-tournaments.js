@@ -611,6 +611,7 @@
     return out;
   }
   function v21YieldBatchFrame(){
+    if(window.CS2Yield) return window.CS2Yield.frame();   // v144: общий планировщик уступок (js/core/scheduler.js)
     return new Promise(resolve=>{
       try{
         if(document.visibilityState!=='hidden' && typeof requestAnimationFrame==='function') requestAnimationFrame(()=>resolve());

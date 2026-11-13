@@ -717,13 +717,11 @@ if (typeof prevGate === 'function' && !prevGate.__v30) {
   g.__v30 = g.__v29 = true; window.processTransferMarket = g; try { processTransferMarket = g; } catch (e) {}
 }
 // запрет перепродажи игрока в аренде
-(() => { const f = window.applyPlayerTransfer; if (typeof f !== 'function' || f.__v30) return;
-  const w = function (fromTeam, toTeam, player) {
+CS2.patch('applyPlayerTransfer', f => function (fromTeam, toTeam, player) {
     if (player?.onLoan) return false;
     if (toTeam?.isAcademy && ((fromTeam && !fromTeam.isAcademy) || player?.v30ProOrigin === true || !!professionalSource(player))) return false;
     return f.apply(this, arguments);
-  };
-  w.__v30 = true; Object.keys(f).forEach(k => { w[k] = f[k]; }); window.applyPlayerTransfer = w; try { applyPlayerTransfer = w; } catch (e) {} })();
+  }, { id: '__v30' });
 // Игровая неделя → тик рынка. Catch-up идёт по календарю, а не по частоте
 // реального setInterval: быстрый пропуск не теряет промежуточные недели.
 function syncMarketClock(){

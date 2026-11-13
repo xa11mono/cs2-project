@@ -7,6 +7,7 @@ let run = null;
 const $ = id => document.getElementById(id);
 function label(t) { const l = $('pt-skip-l'); if (l) l.textContent = t; }
 function yieldToBrowser() {
+  if (window.CS2Yield) return window.CS2Yield.frame();   // v144: общий планировщик уступок (js/core/scheduler.js)
   return new Promise(resolve => {
     try {
       if (document.visibilityState !== 'hidden' && typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(() => resolve());

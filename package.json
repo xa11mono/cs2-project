@@ -1,0 +1,12 @@
+{
+  "name": "cs2-manager",
+  "private": true,
+  "description": "CS2 Manager — браузерная игра-менеджер (открывается из файла index.html, без сервера)",
+  "scripts": {
+    "setup": "npm --prefix tools/build install",
+    "test": "node tests/run-all.js",
+    "analyze": "node tools/build/analyze.mjs --md",
+    "build": "node tools/build/build.mjs",
+    "check": "node tools/build/analyze.mjs && node tools/build/build.mjs --check"
+  }
+}

@@ -39,9 +39,13 @@
   const META = typeof Symbol === 'function' ? Symbol.for('cs2.patch') : '__cs2patch';
   const patchLog = new Map();     // name -> [{ layer, kind, at }]
   function note(map, name, rec) { let a = map.get(name); if (!a) map.set(name, a = []); a.push(rec); }
+  // opts: { id: 'метка слоя' — повторный вызов того же слоя ничего не делает (метка видна и у верхних слоёв),
+  //         optional: true — base может отсутствовать, layer: 'имя' — вместо автоматического }
+  // Свойства base (метки прежних слоёв, служебные поля) переносятся на новую функцию, как делали ручные обёртки.
   function patch(name, factory, opts) {
     opts = opts || {};
     const base = W[name];
+    if (opts.id && base && base[opts.id]) return base;
     if (typeof base !== 'function' && !opts.optional) {
       console.warn('[CS2.patch] нечего расширять: ' + name + ' (слой ' + (opts.layer || currentLayer()) + ')');
       return base;
@@ -49,20 +53,22 @@
     let next;
     try { next = factory(base); } catch (e) { console.error('[CS2.patch] ' + name, e); return base; }
     if (typeof next !== 'function' || next === base) return base;
+    if (typeof base === 'function') Object.keys(base).forEach(k => { if (!Object.prototype.hasOwnProperty.call(next, k)) { try { next[k] = base[k]; } catch (e) {} } });
+    if (opts.id) { try { next[opts.id] = true; } catch (e) {} }
     const layer = opts.layer || currentLayer();
     try { Object.defineProperty(next, META, { value: { name, layer, base }, configurable: true }); } catch (e) {}
     W[name] = next;
     note(patchLog, name, { layer, kind: base ? 'patch' : 'define', at: modules.length });
     return next;
   }
+  // Слои функции сверху вниз. Источник — автоматическая карта загрузки (видит и старые ручные обёртки);
+  // kind: 'patch' — слой через CS2.patch, 'wrap' — ручная обёртка/замена, 'define' — исходное объявление.
   function chain(name) {
-    const out = []; let f = W[name], guard = 0;
-    while (typeof f === 'function' && guard++ < 64) {
-      const m = f[META];
-      if (!m) { out.push({ layer: firstDefiner(name) || 'исходная реализация', kind: 'base' }); break; }
-      out.push({ layer: m.layer, kind: 'patch' }); f = m.base;
-    }
-    return out;
+    const recs = (layerMap.get(name) || []).slice();
+    const patched = new Set((patchLog.get(name) || []).map(r => r.layer));
+    // слои, подключённые CS2.patch уже после загрузки (во время игры), — сверху
+    (patchLog.get(name) || []).forEach(r => { if (!recs.some(x => x.layer === r.layer)) recs.push({ layer: r.layer, kind: 'replace' }); });
+    return recs.map((r, i) => ({ layer: r.layer, kind: i === 0 && r.kind === 'define' ? 'define' : patched.has(r.layer) ? 'patch' : 'wrap' })).reverse();
   }
 
   // ------------------------------------------------------------ автоматическая карта слоёв

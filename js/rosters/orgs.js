@@ -82,9 +82,7 @@
   //  • в академию — только игроки до 21 года;
   //  • «лицо клуба» (два лучших игрока команды топ-12, до 31 года) не уходит в команду ниже рейтингом —
   //    кроме сделок самого игрока-менеджера и клубов в долгах.
-  (function gate() {
-    const f = W.applyPlayerTransfer; if (typeof f !== 'function' || f.__v84gate) return;
-    const w = function (fromTeam, toTeam, player) {
+  CS2.patch('applyPlayerTransfer', f => function (fromTeam, toTeam, player) {
       try {
         if (toTeam?.isAcademy && (Number(player?.age) || 25) > 21) return false;
         if (!fromTeam && toTeam && !W.__v31UserDeal && W.CS2Stature && !W.CS2Stature.canJoin(player, toTeam, null)) return false;
@@ -98,8 +96,6 @@
         }
       } catch (e) {}
       return f.apply(this, arguments);
-    };
-    w.__v84gate = true; Object.keys(f).forEach(k => { w[k] = f[k]; }); W.applyPlayerTransfer = w; try { applyPlayerTransfer = w; } catch (e) {} // eslint-disable-line no-global-assign
-  })();
+    }, { id: '__v84gate' });
   W.CS2Orgs = { offseason, crisis, buyout, disband, state: S };
 })();
