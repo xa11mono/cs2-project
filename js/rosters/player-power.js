@@ -15,26 +15,39 @@
     catch (_) { return fallback; }
   };
   const round1 = n => Math.round(n * 10) / 10;
-  function weights(role) {
+  // v144: сила игрока считается сотни тысяч раз за перемотку (рынок, матчи, рейтинги). Веса ролей и коэффициенты
+  // формы — параметры CS2Config; теперь они читаются один раз и пересчитываются только после изменения конфига
+  // (CS2Config.version). Профиль перемотки: CS2Config.get + weights/weighted были самыми «горячими» функциями.
+  let memoVer = -1; const memo = new Map();
+  const cached = (key, make) => {
+    const v = W.CS2Config ? W.CS2Config.version : 0;
+    if (v !== memoVer) { memo.clear(); memoVer = v; }
+    let x = memo.get(key); if (x === undefined) { x = make(); memo.set(key, x); } return x;
+  };
+  function makeWeights(role) {
     const out = {};
     KEYS.forEach(k => { out[k] = role ? cfg('power.role.' + role + '.' + k, DEFAULTS[k]) : cfg('power.base.' + k, DEFAULTS[k]); });
     if (role === 'IGL') out.leadership = cfg('power.role.IGL.leadership', .15);
-    return out;
+    return Object.freeze(out);
   }
-  function weighted(p, w) {
+  const weightsOf = role => cached('w|' + (role || ''), () => makeWeights(role));
+  const weightList = role => cached('l|' + (role || ''), () => Object.entries(weightsOf(role)));
+  function weights(role) { return Object.assign({}, weightsOf(role)); }   // наружу — копия (можно менять)
+  function weighted(p, list) {
     let sum = 0, total = 0;
-    Object.entries(w).forEach(([k, v]) => {
+    for (let i = 0; i < list.length; i++) {
+      const k = list[i][0], v = list[i][1];
       const value = k === 'leadership'
         ? clamp((num(p?.pers?.lead, 10) - 1) / 18 * 100, 0, 100)
         : clamp(num(p?.[k], 0), 0, 100);
       if (v > 0) { sum += value * v; total += v; }
-    });
+    }
     return total > 0 ? sum / total : 0;
   }
-  function base(p) { return round1(weighted(p, weights(null))); }
+  function base(p) { return round1(weighted(p, weightList(null))); }
   function role(p, requestedRole) {
     const r = ROLES.includes(requestedRole || p?.role) ? (requestedRole || p.role) : 'Rifler';
-    return round1(weighted(p, weights(r)));
+    return round1(weighted(p, weightList(r)));
   }
   function current(p, context) {
     if (!p) return 0;
@@ -43,10 +56,11 @@
     const morale = clamp(num(ctx.morale, num(p.morale, 80)), 0, 100);
     const fatigue = clamp(num(ctx.fatigue, num(p.fatigue, 0)), 0, 100);
     const confidence = clamp(num(ctx.confidence, num(p.conf, 60)), 0, 100);
-    const delta = (form - 100) * cfg('power.current.form', .15)
-      + (morale - 80) * cfg('power.current.morale', .10)
-      - fatigue * cfg('power.current.fatigue', .08)
-      + (confidence - 60) * cfg('power.current.confidence', .05);
+    const c = cached('cur', () => ({ form: cfg('power.current.form', .15), morale: cfg('power.current.morale', .10), fatigue: cfg('power.current.fatigue', .08), confidence: cfg('power.current.confidence', .05) }));
+    const delta = (form - 100) * c.form
+      + (morale - 80) * c.morale
+      - fatigue * c.fatigue
+      + (confidence - 60) * c.confidence;
     return round1(clamp(base(p) + clamp(delta, -5, 5), 0, 100));
   }
   function potential(p) {

@@ -34,7 +34,7 @@ const iglPow = p => window.CS2Power ? window.CS2Power.role(p, 'IGL') : (+p.tacti
 const val = (p, role) => window.CS2Power ? window.CS2Power.role(p, role || p?.role) : ((role || p?.role) === 'IGL' ? iglPow(p) : pow(p));
 const fitOf = (team, p) => { try { return typeof teamIdentityFit === 'function' ? teamIdentityFit(team, p) : 1; } catch (e) { return 1; } };
 const pro = () => teams.filter(t => !t.isAcademy);
-const rankOf = t => pro().sort((a, b) => b.pts - a.pts).indexOf(t) + 1;
+const rankOf = t => window.CS2Rank ? window.CS2Rank.of(t) : pro().sort((a, b) => b.pts - a.pts).indexOf(t) + 1;   // v144: общий кеш мест (js/core/ranking.js)
 const clone = o => JSON.parse(JSON.stringify(o));
 const run = () => Number(transferState.marketRuns) || 0;
 const rnd = (() => { let s = (h32(String(seasonState.v29Salt || '') + Date.now()) || 1); return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; })();

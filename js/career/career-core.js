@@ -20,7 +20,7 @@ const calNow = () => Number(seasonState.calendar?.currentMs) || Date.now();
 const season = () => Number(seasonState.currentSeason) || 1;
 const pro = () => teams.filter(t => !t.isAcademy);
 const byName = n => teams.find(t => t.name === n) || null;
-const rankOf = n => pro().sort((a, b) => b.pts - a.pts).findIndex(t => t.name === n) + 1;
+const rankOf = n => window.CS2Rank ? window.CS2Rank.of(String(n)) : pro().sort((a, b) => b.pts - a.pts).findIndex(t => t.name === n) + 1;   // v144: общий кеш мест (js/core/ranking.js)
 const pow = p => (+p.firepower || 0) * .4 + (+p.tacticalIQ || 0) * .25 + (+p.clutch || 0) * .2 + (+p.utility || 0) * .15;
 const emit = (type, data) => { try { window.v29Emit && window.v29Emit(type, data); } catch (e) {} };
 const money = v => (v < 0 ? '−' : '') + '$' + Math.round(Math.abs(v)).toLocaleString('en-US');

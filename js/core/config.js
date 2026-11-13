@@ -253,9 +253,12 @@
   const KEY = 'cs2.config.v90';
   let over = {};
   try { over = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { over = {}; }
+  // version растёт при каждом изменении параметров: горячий код может кешировать производные значения
+  // (например, веса ролей в js/rosters/player-power.js) и пересчитывать их только после set/reset
+  let version = 0;
   const get = (k, def) => (k in over ? over[k] : P[k] ? P[k].v : def);
-  const set = (k, v) => { over[k] = v; try { localStorage.setItem(KEY, JSON.stringify(over)); } catch (e) {} return v; };
-  const reset = k => { if (k) delete over[k]; else over = {}; try { localStorage.setItem(KEY, JSON.stringify(over)); } catch (e) {} };
+  const set = (k, v) => { over[k] = v; version++; try { localStorage.setItem(KEY, JSON.stringify(over)); } catch (e) {} return v; };
+  const reset = k => { if (k) delete over[k]; else over = {}; version++; try { localStorage.setItem(KEY, JSON.stringify(over)); } catch (e) {} };
   const list = () => Object.entries(P).map(([k, x]) => ({ key: k, value: get(k), def: x.v, kind: x.kind, note: x.note, overridden: k in over }));
-  W.CS2Config = { get, set, reset, list, PARAMS: P };
+  W.CS2Config = { get, set, reset, list, PARAMS: P, get version() { return version; } };
 })();

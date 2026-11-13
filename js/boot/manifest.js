@@ -105,6 +105,7 @@
     'js/portal/hltv-site.js',
     'js/portal/game-ui.js',
     'js/core/config.js',  // core
+    'js/core/ranking.js',  // core: общий рейтинг команд (CS2Rank)
     'js/core/save-profile.js',
     'js/rosters/stature.js',  // rosters
     'js/rosters/coaches.js',
