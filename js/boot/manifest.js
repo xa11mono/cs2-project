@@ -10,7 +10,7 @@
    • Сборка для релиза: node tools/build/build.mjs → dist/ (один минифицированный JS и один CSS). */
 (function () {
   'use strict';
-  const BUILD = '146';
+  const BUILD = '146-sticker-v2';
   const CSS = [
     'css/base/app.css',  // base
     'css/base/match-modal.css',
@@ -180,6 +180,10 @@
     'js/portal/layout.js',  // portal
     'js/media/community.js',  // media
     'js/fan/sticker-art.js',  // fan
+    'js/fan/stickers-v2/themes.js',
+    'js/fan/stickers-v2/signatures.js',
+    'js/fan/stickers-v2/materials.js',
+    'js/fan/stickers-v2/composer.js',
     'js/fan/stickers.js',
     'js/match/world-mods.js',  // match
     'js/portal/hltv-extra.js',  // portal

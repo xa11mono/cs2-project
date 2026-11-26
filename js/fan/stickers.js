@@ -30,11 +30,11 @@
     const host = HOSTS.find(x => x.re.test(name)) || { org: 'Major', pal: [['#1a1a2e', '#e2b13c', '#ffffff'], ['#0f3057', '#00a8cc', '#ffffff']] };
     const pal = host.pal[h % host.pal.length];
     const city = name.replace(/\b(PGL|IEM|BLAST(\.tv)?|Perfect World|StarLadder|FiRe|ESL One|CS2?|Major|20\d\d)\b/gi, '').replace(/\s+/g, ' ').trim() || 'Major';
-    return { org: host.org, bg: pal[0], acc: pal[1], ink: pal[2], shape: ['circle', 'shield', 'hex', 'badge'][(h >>> 4) % 4], city, year: major.year || '', tag: (c2 => c2.length <= 13 ? c2 : c2.split(' ').sort((x, y) => y.length - x.length)[0])(city.replace(/^(Saint|St\.?|San|Sankt)\s+/i, '')).slice(0, 13).toUpperCase() };
+    return { org: host.org, bg: pal[0], acc: pal[1], ink: pal[2], shape: ['circle', 'shield', 'hex', 'badge'][(h >>> 4) % 4], city, year: major.year || (name.match(/20\d\d/) || [])[0] || '', tag: (c2 => c2.length <= 13 ? c2 : c2.split(' ').sort((x, y) => y.length - x.length)[0])(city.replace(/^(Saint|St\.?|San|Sankt)\s+/i, '')).slice(0, 13).toUpperCase() };
   }
 
   // ---------------------------------------------------------------- исполнения
-  const FINISHES = [['paper', 'Paper'], ['glitter', 'Glitter'], ['holo', 'Holo'], ['gold', 'Gold']];
+  const FINISHES = [['paper', 'Paper'], ['glitter', 'Glitter'], ['holo', 'Holo'], ['gold', 'Gold'], ['foil', 'Foil']];
   function Defs() { this.id = 'stk' + (++UID).toString(36) + '_'; this.k = 0; this.d = []; }
   Defs.prototype.add = function (body) { const id = this.id + (this.k++); this.d.push(body.replace('$ID', id)); return id; };
   Defs.prototype.lin = function (stops, x2, y2) { return 'url(#' + this.add(`<linearGradient id="$ID" x1="0" y1="0" x2="${x2 ?? 1}" y2="${y2 ?? 1}">${stops.map(s => `<stop offset="${s[0]}" stop-color="${s[1]}"${s[2] != null ? ` stop-opacity="${s[2]}"` : ''}/>`).join('')}</linearGradient>`) + ')'; };
@@ -222,7 +222,7 @@
   // Ориентировочная цена на рынке
   function price(kind, finish, popular) {
     const base = { event: [.03, .4, 1.6, 9], team: [.03, .25, 1.1, 6], auto: [.03, .2, .9, 4.5] }[kind] || [.03, .2, 1, 5];
-    const i = FINISHES.findIndex(f => f[0] === finish);
+    const i = finish === 'foil' ? 1 : FINISHES.findIndex(f => f[0] === finish);
     return '$' + (base[Math.max(0, i)] * (popular || 1)).toFixed(2);
   }
 
@@ -235,7 +235,8 @@
       const cap = list.find(c => c.name === f.major) || list[0];
       const maj = { name: cap.name, year: cap.year, champion: cap.champion || '' };
       const chips = list.map(c => `<button type="button" class="hs-chip${c === cap ? ' on' : ''}" data-stkmajor="${esc(c.name)}">${esc(c.name)}</button>`).join('');
-      const fin = FINISHES.map(([k, l]) => `<button type="button" class="hs-chip${f.finish === k ? ' on' : ''}" data-stkfin="${k}">${l}</button>`).join('');
+      if (f.finish === 'foil' && Number(maj.year) < 2025) f.finish = 'paper';
+      const fin = FINISHES.filter(([k]) => k !== 'foil' || Number(maj.year) >= 2025).map(([k, l]) => `<button type="button" class="hs-chip${f.finish === k ? ' on' : ''}" data-stkfin="${k}">${l}</button>`).join('');
       const views = [['teams', 'Команды'], ['autos', 'Автографы']].map(([k, l]) => `<button type="button" class="hs-chip${f.view === k ? ' on' : ''}" data-stkview="${k}">${l}</button>`).join('');
       const cell = (svg, title, sub, pr, attrs) => `<div class="v84-stk"${attrs || ''}>${svg}<b>${esc(title)}</b><small>${esc(sub)} · ${pr}</small></div>`;
       let grid = '';

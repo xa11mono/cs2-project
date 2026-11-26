@@ -14,7 +14,7 @@
   const inv = () => { const s = SS(); if (!s) return null; const v = s.v127Inv = s.v127Inv || { tokens: 0, claimed: {}, items: [], opened: 0, earned: [] }; v.items = v.items || []; v.claimed = v.claimed || {}; v.earned = v.earned || []; return v; };
   const REWARD = { challenge: 100, coin: 50, upgrade: 300 };
   const PRICE = { legends: 250, challengers: 250, contenders: 200, autographs: 400 };
-  const RAR = { paper: ['Paper', '#4b69ff', 'Высшего класса'], glitter: ['Glitter', '#8847ff', 'Примечательного типа'], holo: ['Holo', '#d32ce6', 'Экзотичного вида'], gold: ['Gold', '#eb4b4b', 'Экстраординарного типа'] };
+  const RAR = { foil: ['Foil', '#8847ff', 'Примечательного типа'], paper: ['Paper', '#4b69ff', 'Высшего класса'], glitter: ['Glitter', '#8847ff', 'Примечательного типа'], holo: ['Holo', '#d32ce6', 'Экзотичного вида'], gold: ['Gold', '#eb4b4b', 'Экстраординарного типа'] };
   const FIN = ['paper', 'glitter', 'holo', 'gold'];
   const ODDS = { sticker: [['paper', 70], ['glitter', 20], ['holo', 8], ['gold', 2]], auto: [['paper', 68], ['glitter', 20], ['holo', 9], ['gold', 3]] };
   const plural = (v, a, b, c) => v % 10 === 1 && v % 100 !== 11 ? a : v % 10 >= 2 && v % 10 <= 4 && (v % 100 < 10 || v % 100 >= 20) ? b : c;
@@ -64,13 +64,13 @@
     const base = [];
     if (cap.kind === 'auto') (m.teams || []).filter(x => cap.teams.includes(x.name)).forEach(x => (x.players || []).forEach(pn => base.push({ k: 'auto', t: x.name, p: String(pn) })));
     else { cap.teams.forEach(t => base.push({ k: 'team', t })); base.push({ k: 'event', t: '' }); }
-    const out = []; FIN.forEach(f => base.forEach(b => out.push(Object.assign({ f, m: m.name, y: m.year, c: cap.id }, b))));
+    const out = []; (Number(m.year || (String(m.name).match(/20\d\d/) || [])[0]) >= 2025 ? FIN.concat('foil') : FIN).forEach(f => base.forEach(b => out.push(Object.assign({ f, m: m.name, y: m.year, c: cap.id }, b))));
     return out;
   }
   function roll(m, cap, list) {
     const odds = ODDS[cap.kind === 'auto' ? 'auto' : 'sticker'], tot = odds.reduce((a, x) => a + x[1], 0);
     let r = Math.random() * tot, f = 'paper'; for (const [k, w] of odds) { if (r < w) { f = k; break; } r -= w; }
-    const pool = (list || contents(m, cap)).filter(x => x.f === f);
+    const pool = (list || contents(m, cap)).filter(x => x.f === f || (f === 'glitter' && x.f === 'foil'));
     return Object.assign({}, pick(pool, Math.random()));
   }
   const cityOf = name => String(name || '').replace(/\b(PGL|IEM|BLAST(\.tv)?|Perfect World|StarLadder|FiRe|ESL( One)?|CS2?|Major|20\d\d)\b/gi, '').replace(/\s+/g, ' ').trim();
@@ -112,7 +112,7 @@
           return `<div class="cpx-cap" data-cpxopen="${esc(m.name)}|${c.id}" role="button" tabindex="0"><div class="cpx-cap-art">${capArt(m, c)}</div><b>Капсула ${esc(c.n)}</b><small>${c.kind === 'auto' ? 'Автографы игроков' : `${c.teams.length} ${plural(c.teams.length, 'команда', 'команды', 'команд')} + стикер турнира`}</small>
             <button type="button" class="cpx-btn${can ? '' : ' dim'}" data-cpxopen="${esc(m.name)}|${c.id}">Открыть · ${pr}</button></div>`; }).join('')}</div></section>`).join('')
         : `<div class="cpx-empty"><b>Капсул пока нет</b><span>Капсулы выходят к старту Мейджора (раздел «Стикеры»).</span></div>`;
-      body += `<p class="cpx-note">Шансы: Paper ${ODDS.sticker[0][1]}% · Glitter ${ODDS.sticker[1][1]}% · Holo ${ODDS.sticker[2][1]}% · Gold ${ODDS.sticker[3][1]}% (у автографов Gold — ${ODDS.auto[3][1]}%).</p>`;
+      body += `<p class="cpx-note">Шансы: Paper ${ODDS.sticker[0][1]}% · Glitter / Foil ${ODDS.sticker[1][1]}% · Holo ${ODDS.sticker[2][1]}% · Gold ${ODDS.sticker[3][1]}% (у автографов Gold — ${ODDS.auto[3][1]}%).</p>`;
     }
     return `<div class="cpx">${head}${body}${U.open ? overlay(U.open) : ''}</div>`;
   }
@@ -127,7 +127,7 @@
     if (o.stage === 'preview') {
       const card = (it, i) => `<button type="button" class="cpx-it" data-cpxins="${i}" style="--rc:${RAR[it.f][1]}"><div class="cpx-it-art">${art(it)}</div><b>${esc(shortOf(it))}</b><small>${esc(RAR[it.f][0])}</small></button>`;
       return `<div class="cpx-ov cpx-u" style="--scn:url('${SCN()}')"><i class="cpx-u-bg"></i>${head}${caseArt}
-        <section class="cpx-u-list"><div class="cpx-u-lh"><span>Откройте и получите один из следующих предметов</span><small>${FIN.map((f, k) => `<em style="--rc:${RAR[f][1]}">${RAR[f][0]} ${od[k][1]}%</em>`).join('')}</small></div>
+        <section class="cpx-u-list"><div class="cpx-u-lh"><span>Откройте и получите один из следующих предметов</span><small>${FIN.map((f, k) => `<em style="--rc:${RAR[f][1]}">${RAR[f][0]}${f === 'glitter' && list.some(it => it.f === 'foil') ? ' / Foil' : ''} ${od[k][1]}%</em>`).join('')}</small></div>
           <div class="cpx-u-grid">${list.map(card).join('')}</div></section>
         <footer class="cpx-u-bar"><span class="cpx-coin"></span><p>Нужно <b>${pr} жетонов</b>, чтобы открыть капсулу и получить один предмет · у вас ${v.tokens}</p><button type="button" class="cpx-u-buy${can ? '' : ' off'}" data-cpxgo ${can ? '' : 'disabled'}>${can ? pr : 'Мало жетонов'}</button><button type="button" class="cpx-u-close" data-cpxclose>Закрыть</button></footer></div>`;
     }
