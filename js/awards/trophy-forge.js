@@ -1083,12 +1083,50 @@
   const RIFLE_ICON = 'M0 .42H.18L.2 .36H.62L.66 .3H.72L.74 .36H1V.44H.78L.74 .5H.62L.58 .62H.5L.52 .5H.36L.3 .7H.2L.24 .5H.16L.04 .56H0z';
   const AWP_ICON = 'M0 .44H.14L.16 .38H.3V.32H.52V.38H1V.45H.56L.52 .5H.42L.38 .66H.3L.33 .5H.2L.06 .56H0zM.33 .32V.26H.5V.32z';
   const CROWN_ICON = 'M.02 .66L.08 .2L.3 .44L.5 .06L.7 .44L.92 .2L.98 .66zM.04 .72H.96V.82H.04z';
+  // Experimental sculpted role reliefs. The stone silhouette and pedestal are unchanged.
+  function labRoleRelief(c, type, metal) {
+    const m = c.mH(metal), v = c.mV(metal), edge = '#171719';
+    const path = (d, fill = m) => '<path d="'+d+'" fill="'+fill+'" stroke="'+edge+'" stroke-width=".26" stroke-linejoin="round"/>';
+    const head = (x,y) => '<ellipse cx="'+x+'" cy="'+y+'" rx="2.6" ry="3.1" fill="'+v+'" stroke="'+edge+'" stroke-width=".3"/>';
+    const torso = (x,y) => path('M'+(x-2)+' '+y+'l-3 3 -1 8 6 2 6-2 -1-8 -3-3z');
+    let a = '';
+    if (type === 'team' || type === 'teamseason') {
+      for(const x of [25,39,32]) a += head(x,x===32?15:19)+torso(x,x===32?18:22);
+      return a;
+    }
+    a += head(32,15)+torso(32,18);
+    a += path('M27 21L23 26 25 29 31 25 35 28 39 26 36 21 33 24 29 23z',v);
+    if (type==='awper') {
+      a += path('M23 24L28 23 39 27 43 28 43 29 38 29 31 26 29 29 27 28 28 25 23 26z');
+      a += path('M29 22L34 24 34 25 29 23z',v)+path('M41 27L47 29 47 30 41 28z',v);
+    } else if (type==='coach'||type==='igl'||type==='captain'||type==='analyst') {
+      a += path('M27 15Q27 9 32 9Q37 9 37 15L36 17 35 17V14Q35 11 32 11Q29 11 29 14V17H27z',v);
+      a += path('M36 16L39 17 39 18 35 18z',v);
+      a += path('M29 25L39 23 40 32 30 34z',v);
+      a += '<path d="M32 27l5-1m-5 3 5-1" stroke="'+edge+'" stroke-width=".4"/>';
+    } else if (type==='support'||type==='utility') {
+      a += path('M28 25L36 25 37 31 29 32z',v);
+      a += path('M31 26h2v1.7h1.7v2H33v1.7h-2v-1.7h-1.7v-2H31z','#171719');
+    } else if (type==='rookie'||type==='youngstar') {
+      a += path('M32 24l1.4 2.8 3 .5-2.2 2.2.5 3-2.7-1.5-2.7 1.5.5-3-2.2-2.2 3-.5z',v);
+    } else {
+      a += path('M23 24L29 23 38 27 43 27 43 29 36 29 32 27 31 31 28 30 29 26 23 26z',v);
+    }
+    return a;
+  }
   function statueAward(type, year, o) {
     o = o || {};
     const c = new Ctx(), lines = PLAYER_AWARDS[type] || PLAYER_AWARDS.poty;
     const key = o.model || (type === 'team' || type === 'teamseason' ? 'statueHelmet' : hash('st|' + type) % 2 ? 'statueBeret' : 'statueHelmet');
     const sm = STATUE_METAL[type] || STATUE_METAL.poty, metal = o.metal || sm[0], metal3 = o.metal3 || sm[1];
-    const { body } = art(c, key, Object.assign({}, o, { metal, metal3 }));
+    let { body } = art(c, key, Object.assign({}, o, { metal, metal3 }));
+    if (o.labPalette && ['awper','coach','igl','captain','analyst','support','utility','rookie','youngstar','team','teamseason'].includes(type)) {
+      // Remove the baked soldier only in its original region and place a role-specific vector relief.
+      const id = c.id + 'rolecut';
+      c.defs.push('<clipPath id="'+id+'"><path d="M0 0H64V72H0Z M20 8H47V34H20Z" clip-rule="evenodd"/></clipPath>');
+      const stone = c.mV(o.body || 'blacktitan');
+      body = '<g clip-path="url(#'+id+')">'+body+'</g><path d="M23 8L39 8 43 14 43 33 22 33 22 16z" fill="'+stone+'"/>'+labRoleRelief(c,type,metal);
+    }
     const [x0, y0, x1, y1] = STATUE_PLATE[key], w = x1 - x0, cx = n((x0 + x1) / 2), gold = sampleStops(metalStops(['gold', 'pale', 'blackgold', 'bronze', 'copper', 'rose'].includes(metal) ? metal : 'gold'), .78);
     const team = type === 'team' || type === 'teamseason';
     const icon = type === 'awper' ? AWP_ICON : (team || type === 'coach' || type === 'hall' || type === 'analyst') ? CROWN_ICON : RIFLE_ICON, iw = w * (team ? .42 : .62);
