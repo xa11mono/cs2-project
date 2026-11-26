@@ -479,7 +479,7 @@
       `<path d="M42.4 9C43.6 17 43.4 24 41 31.5L40.4 31.4C42.4 24 42.6 17 41.6 9z" fill="#fff" opacity=".22"/></g></g>`;
   }
   D.pglLattice = (c, o) => { const body = art(c, 'pglLattice', o).body;
-    return shadowUnder(c, 16) + `<g filter="${latticeFx(c)}">${body}</g>` + latticeGlare(c, body); };
+    return shadowUnder(c, 16) + (o.clean ? body : `<g filter="${latticeFx(c)}">${body}</g>` + latticeGlare(c, body)); };
   D.xseTower = (c, o) => shadowUnder(c, 17) + art(c, 'xseTower', o).body;
   D.ringChalice = (c, o) => shadowUnder(c, 14) + art(c, 'iemRings', o).body;
   D.iemClassic = (c, o) => { // двуручный кубок IEM с процедурной гравировкой (белые надписи, без рамки): «IEM DALLAS / 2027»
@@ -1465,7 +1465,7 @@
     if (o.second && o.glass === undefined) o.glass = o.second;
     if (o.second) o.accent = gc(o.second);
     let body = (D[o.d] || D.classicCup)(c, o);
-    if (o.major) body = majorDress(c, body, o);
+    if (o.major && !o.clean) body = majorDress(c, body, o);
     return c.svg(body, null, 'tw-cup tw-org-' + (o.org || 'custom'));
   }
   window.CS2TrophyForge = Object.freeze({ cup, cupSpec, draw, goldBar, mvpMedal, award, statueAward, rankBadge, marker, organizers: ORGS.map(o => o.key), awardTypes: Object.keys(AWARDS) });
