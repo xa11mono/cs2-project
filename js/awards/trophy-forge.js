@@ -378,6 +378,7 @@
   }
   function artRamps(key, o) {
     const A = ARTS[key], out = {}, def = A.def || {};
+    if (o.labPalette) { for (const role of Object.keys(A.cols)) { const chosen = role === 'a' ? o.glass : role === 'k' ? o.body : role === 'p' ? o.metal3 : role === 'g' ? o.metal2 : o.metal; const ramp = role === 'a' ? glassStops(chosen || 'blue') : metalStops(chosen || 'silver'); out[role] = A.cols[role].map(x => sampleStops(ramp, .12 + .76 * lumHex(x))); } return out; }
     if (def.nativeAll) return Object.assign({}, A.cols); // цвета как на рендере (значки Top-20)
     for (const role of Object.keys(A.cols)) {
       const Ls = A.cols[role].map(lumHex);
@@ -1087,7 +1088,7 @@
     const c = new Ctx(), lines = PLAYER_AWARDS[type] || PLAYER_AWARDS.poty;
     const key = o.model || (type === 'team' || type === 'teamseason' ? 'statueHelmet' : hash('st|' + type) % 2 ? 'statueBeret' : 'statueHelmet');
     const sm = STATUE_METAL[type] || STATUE_METAL.poty, metal = o.metal || sm[0], metal3 = o.metal3 || sm[1];
-    const { body } = art(c, key, { metal, metal3 });
+    const { body } = art(c, key, Object.assign({}, o, { metal, metal3 }));
     const [x0, y0, x1, y1] = STATUE_PLATE[key], w = x1 - x0, cx = n((x0 + x1) / 2), gold = sampleStops(metalStops(['gold', 'pale', 'blackgold', 'bronze', 'copper', 'rose'].includes(metal) ? metal : 'gold'), .78);
     const team = type === 'team' || type === 'teamseason';
     const icon = type === 'awper' ? AWP_ICON : (team || type === 'coach' || type === 'hall' || type === 'analyst') ? CROWN_ICON : RIFLE_ICON, iw = w * (team ? .42 : .62);
@@ -1464,7 +1465,7 @@
     const c = new Ctx(), o = Object.assign({}, spec);
     if (o.second && o.glass === undefined) o.glass = o.second;
     if (o.second) o.accent = gc(o.second);
-    let body = (D[o.d] || D.classicCup)(c, o);
+    let body = o.artKey && ARTS[o.artKey] ? art(c, o.artKey, o).body : (D[o.d] || D.classicCup)(c, o);
     if (o.major && !o.clean) body = majorDress(c, body, o);
     return c.svg(body, null, 'tw-cup tw-org-' + (o.org || 'custom'));
   }
